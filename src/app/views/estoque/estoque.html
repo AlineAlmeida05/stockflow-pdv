@@ -1,0 +1,30 @@
+<app-main-layout>
+    <app-page-title
+        title="Estoque"
+        subtitle="Acompanhe os níveis de estoque e identifique produtos com baixo saldo.">
+    </app-page-title>
+
+    <app-search-input
+        placeholder="Buscar produto..."
+        [(value)]="textoBusca">
+    </app-search-input>
+
+    @if (
+    produtosFiltrados.length === 0
+    ) {
+
+    <app-empty-state
+        message="Nenhum produto encontrado.">
+    </app-empty-state>
+    }
+
+    @if (
+    produtosFiltrados.length > 0
+    ) {
+
+    <app-data-table
+        [columns]="colunasEstoque"
+        [data]="produtosEstoque">
+    </app-data-table>
+    }
+</app-main-layout>

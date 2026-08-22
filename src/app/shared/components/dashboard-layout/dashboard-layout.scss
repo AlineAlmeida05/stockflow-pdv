@@ -1,0 +1,32 @@
+:host {
+    display: block;
+}
+
+.dashboard-layout {
+    display: grid;
+
+    grid-template-columns:
+        320px
+        minmax(0, 1fr);
+
+    gap: 24px;
+
+    margin-top: 24px;
+}
+
+.dashboard-layout__summary {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 16px;
+}
+
+.dashboard-layout__main {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 16px;
+}
+

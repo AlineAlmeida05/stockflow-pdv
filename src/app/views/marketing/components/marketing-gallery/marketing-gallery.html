@@ -1,0 +1,66 @@
+<div class="marketing-card">
+
+    <h2>
+
+        Campanhas Criadas
+
+    </h2>
+
+    @if (campanhas.length) {
+
+    @for (
+    campanha of campanhas;
+    track campanha.dataCriacao
+    ) {
+
+    <div class="gallery-item">
+        
+        <p>
+
+            {{ campanha.tom }}
+
+        </p>
+
+        <small>
+
+            {{ campanha.dataCriacao }}
+
+        </small>
+
+        <div class="gallery-actions">
+
+            <button>
+
+                👁 Abrir
+
+            </button>
+
+            <button>
+
+                📋 Copiar
+
+            </button>
+
+            <button>
+
+                🗑 Excluir
+
+            </button>
+
+        </div>
+
+    </div>
+
+    }
+
+    } @else {
+
+    <p>
+
+        Nenhuma campanha criada.
+
+    </p>
+
+    }
+
+</div>

@@ -1,0 +1,32 @@
+<app-main-layout>
+
+    <app-page-title
+        title="Marketing IA"
+        subtitle="Crie campanhas para divulgar promoções da sua adega">
+    </app-page-title>
+
+    <div class="marketing-page">
+
+        <app-split-panel>
+
+            <div left>
+
+                <app-marketing-campaign-form
+                    (campanhaGerada)="atualizarCampanha($event)">
+                </app-marketing-campaign-form>
+
+            </div>
+
+            <div right>
+
+                <app-marketing-generated-content
+                    [campanha]="campanhaAtual">
+                </app-marketing-generated-content>
+
+            </div>
+
+        </app-split-panel>
+
+    </div>
+
+</app-main-layout>

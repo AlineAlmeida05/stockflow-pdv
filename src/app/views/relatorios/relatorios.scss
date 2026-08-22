@@ -1,0 +1,42 @@
+.abas {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.abas button {
+    padding: 10px 16px;
+    border: 1px solid var(--color-gray-300);
+    border-radius: 8px;
+    background: var(--color-white);
+    transition: all 0.2s ease;
+}
+
+.abas button.active {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+.abas button:hover {
+    border-color: var(--color-primary);
+}
+
+.indicadores-carrossel {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+}
+
+.indicadores-carrossel app-stat-card {
+    flex: 0 0 240px;
+}
+
+.indicadores-carrossel::-webkit-scrollbar {
+    height: 8px;
+}
+
+.indicadores-carrossel::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+}

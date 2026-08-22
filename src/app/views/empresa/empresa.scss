@@ -1,0 +1,22 @@
+.company-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.company-layout {
+    display: grid;
+    grid-template-columns:
+        55%
+        45%;
+    gap: 24px;
+    align-items: stretch;
+}
+
+.company-layout__right {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+

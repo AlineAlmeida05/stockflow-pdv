@@ -1,0 +1,27 @@
+<app-main-layout>
+
+    <app-page-title
+        title="Empresa"
+        subtitle="Informações institucionais da adega">
+    </app-page-title>
+
+    <div class="company-page">
+        <div class="company-layout">
+            <div class="company-layout__left">
+                <app-company-profile-card
+                    [empresa]="empresa">
+                </app-company-profile-card>
+            </div>
+
+            <div class="company-layout__right">
+                <app-company-brand-card
+                    [empresa]="empresa">
+                </app-company-brand-card>
+
+                <app-company-support-card
+                    [empresa]="empresa">
+                </app-company-support-card>
+            </div>
+        </div>
+    </div>
+</app-main-layout>

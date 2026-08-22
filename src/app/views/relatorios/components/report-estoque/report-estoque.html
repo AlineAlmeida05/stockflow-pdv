@@ -1,0 +1,171 @@
+<app-stat-card-carousel
+    [cards]="cardsEstoque">
+</app-stat-card-carousel>
+
+<app-report-layout>
+    <div insights>
+        <div class="card">
+            <h2>
+                📦 Produtos Sem Movimentação
+            </h2>
+
+            @if (
+            produtosSemMovimentacao.length === 0
+            ) {
+            <p>
+                Todos os produtos possuem movimentação.
+            </p>
+
+            } @else {
+
+            @for (
+            produto of produtosSemMovimentacao;
+            track produto.id
+            ) {
+            <p>
+                {{ produto.nome }}
+            </p>
+            }
+
+            }
+        </div>
+
+        <div class="card">
+            <h2>
+                📦 Sugestões de Reposição
+            </h2>
+
+            @if (
+            sugestoesReposicao.length === 0
+            ) {
+            <p>
+                Nenhum produto precisa de reposição.
+            </p>
+
+            } @else {
+
+            @for (
+            produto of sugestoesReposicao;
+            track produto.id
+            ) {
+            <p>
+                <strong>
+                    {{ produto.nome }}
+                </strong>
+                <br>
+                Atual:
+                {{ produto.estoqueAtual }}
+                |
+                Mínimo:
+                {{ produto.estoqueMinimo }}
+                |
+                Comprar:
+                {{ produto.quantidadeReposicao }}
+            </p>
+            }
+            }
+
+        </div>
+
+        <div class="card">
+            <h2>
+                📉 Produtos com Menor Giro
+            </h2>
+
+            @if (
+            produtosMenorGiro.length === 0
+            ) {
+
+            <p>
+                Nenhum produto encontrado.
+            </p>
+
+            } @else {
+
+            @for (
+            produto of produtosMenorGiro;
+            track produto.nome
+            ) {
+
+            <p>
+
+                {{ produto.nome }}
+
+                -
+
+                {{ produto.giro }}%
+
+            </p>
+
+            }
+
+            }
+
+        </div>
+
+        <div class="card">
+
+            <h2>
+                🚀 Produtos com Maior Giro
+            </h2>
+
+            @if (
+            produtosMaiorGiro.length === 0
+            ) {
+
+            <p>
+                Nenhum produto encontrado.
+            </p>
+
+            } @else {
+
+            @for (
+            produto of produtosMaiorGiro;
+            track produto.nome
+            ) {
+
+            <p>
+
+                {{ produto.nome }}
+
+                -
+
+                {{ produto.giro }}%
+
+            </p>
+
+            }
+
+            }
+
+        </div>
+    </div>
+
+    <div tables>
+        <div class="table-section">
+            <h2>
+                📦 Estoque Atual
+            </h2>
+            <p>
+                Situação atual dos produtos cadastrados.
+            </p>
+            <app-data-table
+                [columns]="colunasEstoque"
+                [data]="produtosTabela">
+            </app-data-table>
+        </div>
+
+        <div class="table-section">
+            <h2>
+                📊 Giro de Estoque
+            </h2>
+            <p>
+                Comparativo entre entradas e saídas dos produtos.
+            </p>
+            <app-data-table
+                [columns]="colunasGiroEstoque"
+                [data]="produtosGiroEstoque">
+            </app-data-table>
+        </div>
+    </div>
+</app-report-layout>

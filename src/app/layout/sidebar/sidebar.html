@@ -1,0 +1,25 @@
+<div class="sidebar-brand">
+  <img
+    [src]="branding.logo"
+    [alt]="branding.nomeExibicao">
+  <h2>
+    {{ branding.nomeExibicao }}
+  </h2>
+  <p>
+    {{ branding.slogan }}
+  </p>
+</div>
+
+<nav class="sidebar-nav">
+
+  @for (item of menu; track item.route) {
+  <a
+    [routerLink]="item.route"
+    routerLinkActive="sidebar-link--active"
+    [routerLinkActiveOptions]="{ exact: true }"
+    class="sidebar-link"
+    (click)="fecharMenu()">
+    {{ item.label }}
+  </a>
+  }
+</nav>

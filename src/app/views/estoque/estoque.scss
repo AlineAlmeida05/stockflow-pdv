@@ -1,0 +1,12 @@
+.produto-card {
+  border: 1px solid var(--color-gray-300);
+  background: var(--color-white);
+}
+
+.estoque-ok {
+  color: var(--color-success);
+}
+
+.estoque-baixo {
+  color: var(--color-danger);
+}

@@ -1,0 +1,75 @@
+<app-main-layout>
+
+    <app-page-title
+        title="Entrada de Estoque"
+        subtitle="Registre reposições e acompanhe o estoque atual dos produtos.">
+    </app-page-title>
+
+    <app-split-panel>
+        <div left>
+            <div class="formulario">
+                <div class="field">
+                    <label>Produto</label>
+                    <select
+                        [(ngModel)]="produtoSelecionadoId">
+
+                        <option value>
+                            Selecione um produto
+                        </option>
+
+                        @for (produto of produtos; track produto.id) {
+
+                        <option [value]="produto.id">
+                            {{ produto.nome }}
+                        </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Quantidade</label>
+                    <input
+                        type="number"
+                        placeholder="Quantidade"
+                        [(ngModel)]="quantidade">
+                </div>
+                <div class="field">
+                    <app-currency-input
+                        label="Preço de Compra"
+                        [(value)]="precoCompra">
+                    </app-currency-input>
+                </div>
+                <button
+                    type="button"
+                    (click)="adicionarEstoque()">
+                    Adicionar Estoque
+                </button>
+            </div>
+        </div>
+
+        <div right>
+            <h2>Produtos</h2>
+            <app-search-input
+                placeholder="Buscar produto..."
+                [(value)]="textoBusca">
+            </app-search-input>
+
+            @if (
+            produtosFiltrados.length === 0
+            ) {
+            <app-empty-state
+                message="Nenhum produto encontrado.">
+            </app-empty-state>
+            }
+            @if (
+            produtosFiltrados.length > 0
+            ) {
+
+            <app-data-table
+                [columns]="colunasProdutos"
+                [data]="produtosTabela">
+            </app-data-table>
+            }
+        </div>
+    </app-split-panel>
+</app-main-layout>

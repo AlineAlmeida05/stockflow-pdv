@@ -1,0 +1,36 @@
+.formulario {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.field input,
+.field select {
+  padding: 8px;
+}
+
+input,
+select {
+  border: 1px solid var(--color-gray-300);
+}
+
+label {
+  color: var(--color-gray-700);
+}
+
+button {
+  width: fit-content;
+  min-width: 200px;
+}

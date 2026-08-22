@@ -1,0 +1,11 @@
+:host {
+    display: block;
+    width: 100%;
+}
+
+.indicadores-carrossel {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    width: 100%;
+}

@@ -1,0 +1,14 @@
+<div class="indicadores-carrossel">
+    @for (
+    card of cards;
+    track card.title
+    ) {
+
+    <app-stat-card
+        [title]="card.title"
+        [value]="card.value"
+        [variant]="card.variant">
+    </app-stat-card>
+    }
+
+</div>

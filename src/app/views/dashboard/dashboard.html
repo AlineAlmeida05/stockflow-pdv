@@ -1,0 +1,182 @@
+<app-main-layout>
+    <app-page-title
+        title="Dashboard"
+        subtitle="Visão geral das vendas, estoque, fiados e promoções.">
+    </app-page-title>
+
+    <div class="dashboard-filters">
+
+        <button
+            type="button"
+            [class.active]="periodoSelecionado === 'hoje'"
+            (click)="periodoSelecionado = 'hoje'">
+
+            Hoje
+
+        </button>
+
+        <button
+            type="button"
+            [class.active]="periodoSelecionado === '7dias'"
+            (click)="periodoSelecionado = '7dias'">
+
+            7 dias
+
+        </button>
+
+        <button
+            type="button"
+            [class.active]="periodoSelecionado === '30dias'"
+            (click)="periodoSelecionado = '30dias'">
+
+            30 dias
+
+        </button>
+
+        <button
+            type="button"
+            [class.active]="periodoSelecionado === 'mes'"
+            (click)="periodoSelecionado = 'mes'">
+
+            Mês Atual
+
+        </button>
+
+        <button
+            type="button"
+            [class.active]="periodoSelecionado === 'todos'"
+            (click)="periodoSelecionado = 'todos'">
+
+            Todos
+
+        </button>
+
+    </div>
+
+    <app-stat-card-carousel
+        [cards]="cardsDashboard">
+    </app-stat-card-carousel>
+
+    <app-dashboard-layout>
+        <div summary>
+            <div class="dashboard-panel">
+                <h2>
+                    📋 Resumo Executivo
+                </h2>
+                <div class="executive-summary">
+                    <div class="summary-item">
+                        <span>Vendas Hoje</span>
+                        <strong>
+                            {{ totalVendasPeriodo }}
+                        </strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>Faturamento Hoje</span>
+                        <strong>
+                            {{ faturamentoPeriodo | currency:'BRL' }}
+                        </strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>Clientes Devedores</span>
+                        <strong>
+                            {{ clientesDevedores }}
+                        </strong>
+                    </div>
+
+                    <div class="summary-item">
+                        <span>Estoque Baixo</span>
+                        <strong>
+                            {{ produtosComEstoqueBaixo }}
+                        </strong>
+                    </div>
+
+                    @if (topProdutosVendidos.length > 0) {
+
+                    <div class="summary-item">
+                        <span>Produto Top</span>
+                        <strong>
+                            {{ topProdutosVendidos[0].nome }}
+                        </strong>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div main>
+            <div class="dashboard-panel">
+                <h2>
+                    📈 Evolução das Vendas
+                </h2>
+
+                <app-dashboard-chart
+                    [chartData]="vendasChartData"
+                    [chartOptions]="vendasChartOptions">
+                </app-dashboard-chart>
+            </div>
+        </div>
+    </app-dashboard-layout>
+
+    <app-dashboard-layout>
+        <div summary>
+            <div class="dashboard-panel">
+                <h2>
+                    💳 Receita por Forma de Pagamento
+                </h2>
+
+                <app-dashboard-chart
+                    type="doughnut"
+                    [chartData]="pagamentoChartData"
+                    [chartOptions]="pagamentoChartOptions">
+                </app-dashboard-chart>
+            </div>
+        </div>
+
+        <div main>
+            <div class="dashboard-panel">
+                <h2>
+                    🏆 Top Produtos Vendidos
+                </h2>
+
+                <app-dashboard-chart
+                    type="bar"
+                    [chartData]="topProdutosChartData"
+                    [chartOptions]="topProdutosChartOptions">
+                </app-dashboard-chart>
+            </div>
+        </div>
+    </app-dashboard-layout>
+
+    <app-dashboard-layout>
+        <div summary>
+            <div class="dashboard-panel">
+                <h2>
+                    📦 Giro de Estoque
+                </h2>
+
+                <app-dashboard-chart
+                    type="bar"
+                    [chartData]="giroChartData"
+                    [chartOptions]="giroChartOptions">
+                </app-dashboard-chart>
+            </div>
+        </div>
+
+        <div main>
+            <div class="dashboard-panel">
+                <h2>
+                    📒 Evolução dos Fiados
+                </h2>
+
+                <app-dashboard-chart
+                    type="line"
+                    [chartData]="fiadosChartData"
+                    [chartOptions]="fiadosChartOptions">
+                </app-dashboard-chart>
+            </div>
+        </div>
+    </app-dashboard-layout>
+
+</app-main-layout>

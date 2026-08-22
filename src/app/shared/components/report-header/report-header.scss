@@ -1,0 +1,35 @@
+:host {
+    display: block;
+}
+
+.report-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.report-header__tabs {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.report-header__actions {
+    display: flex;
+    gap: 12px;
+}
+
+.report-header__actions button {
+    padding: 10px 16px;
+    border: 1px solid var(--color-gray-300);
+    border-radius: 8px;
+    background: var(--color-white);
+    transition: all 0.2s ease;
+}
+
+.report-header__actions button:hover {
+    border-color: var(--color-primary);
+}

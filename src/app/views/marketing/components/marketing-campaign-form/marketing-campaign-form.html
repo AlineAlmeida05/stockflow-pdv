@@ -1,0 +1,194 @@
+<div class="marketing-card">
+
+    <h3>
+        Configurações da Campanha
+    </h3>
+
+    <p>
+        Configure sua campanha de divulgação.
+    </p>
+
+    <div class="marketing-form">
+        <label>
+            Produto
+            <select
+                [(ngModel)]="promocaoSelecionada">
+                <option value>
+                    Selecione
+                </option>
+
+                @for (
+                promocao of promocoesAtivas;
+                track promocao.id
+                ) {
+
+                <option
+                    [value]="promocao.id">
+                    {{ promocao.nome }}
+                    -
+                    R$
+                    {{ promocao.precoPromocional }}
+                </option>
+
+                }
+                @if (
+                promocoesAtivas.length === 0
+                ) {
+
+                <div
+                    class="marketing-empty">
+                    Nenhuma promoção ativa encontrada.
+                </div>
+                }
+            </select>
+        </label>        
+
+        <h3>
+            Direção Criativa
+        </h3>
+
+        <label>
+            Tom
+            <select
+                [(ngModel)]="tomSelecionado">
+                <option>
+                    Promocional
+                </option>
+
+                <option>
+                    Divertido
+                </option>
+
+                <option>
+                    Urgente
+                </option>
+
+                <option>
+                    Premium
+                </option>
+            </select>
+        </label>
+
+        <label>
+            Tipo da Promoção
+            <select
+                [(ngModel)]="tipoPromocaoSelecionado">
+
+                <option>
+                    Mega Promoção
+                </option>
+
+                <option>
+                    Oferta Relâmpago
+                </option>
+
+                <option>
+                    Combo Especial
+                </option>
+
+                <option>
+                    Mais Vendido
+                </option>
+
+                <option>
+                    Lançamento
+                </option>
+
+            </select>
+
+        </label>
+
+        <label>
+
+            Objetivo da Campanha
+
+            <select
+                [(ngModel)]="objetivoSelecionado">
+
+                <option>
+                    Atrair Clientes
+                </option>
+
+                <option>
+                    Aumentar Vendas
+                </option>
+
+                <option>
+                    Girar Estoque
+                </option>
+
+                <option>
+                    Divulgar Lançamento
+                </option>
+
+                <option>
+                    Promover Combo
+                </option>
+
+            </select>
+
+        </label>
+
+        <label>
+
+            Elemento Visual Principal
+
+            <select
+                [(ngModel)]="elementoVisualSelecionado">
+
+                <option>
+                    Automático
+                </option>
+
+                <option>
+                    Gelo
+                </option>
+
+                <option>
+                    Fumaça
+                </option>
+
+                <option>
+                    Neon
+                </option>
+
+                <option>
+                    Luxo
+                </option>
+
+                <option>
+                    Madeira
+                </option>
+
+                <option>
+                    Churrasco
+                </option>
+
+                <option>
+                    Balada
+                </option>
+
+            </select>
+
+        </label>
+
+        <h3>
+            Informações Adicionais
+        </h3>
+
+        <label>
+            Observações
+            <textarea
+                rows="4"
+                [(ngModel)]="observacoes"
+                placeholder="Ex.: destacar que a promoção termina no domingo.">
+            </textarea>
+        </label>
+
+        <button
+            type="button"
+            (click)="gerarCampanha()">
+            ✨ Criar Arte
+        </button>
+    </div>
+</div>

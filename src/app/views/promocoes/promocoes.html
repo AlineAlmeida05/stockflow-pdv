@@ -1,0 +1,212 @@
+<app-main-layout>
+    <app-page-title
+        title="Promoções Inteligentes"
+        subtitle="Identifique produtos com baixo giro e aumente as vendas.">
+    </app-page-title>
+
+    <app-split-panel>
+        <div left>
+            <h2>
+                Produtos para Análise
+            </h2>
+
+            <app-search-input
+                placeholder="Buscar produto..."
+                [(value)]="textoBusca">
+            </app-search-input>
+
+            @if (
+            produtosPromocaoFiltrados.length === 0
+            ) {
+
+            <app-empty-state
+                message="Nenhum produto encontrado.">
+            </app-empty-state>
+
+            } @else {
+
+            @for (
+            produto of produtosPromocaoFiltrados;
+            track produto.id
+            ) {
+
+            <div
+                class="produto-card"
+                (click)="selecionarProduto(produto)">
+                <h3>
+                    {{ produto.nome }}
+                </h3>
+
+                <p>
+                    {{ obterPrioridade(produto.id) }}
+                </p>
+            </div>
+            }
+
+            }
+
+            @for (
+            produto of produtosPromocaoFiltrados;
+            track produto.id
+            ) {
+
+            <div
+                class="produto-card"
+                (click)="selecionarProduto(produto)">
+                <h3>
+                    {{ produto.nome }}
+                </h3>
+                <p>
+                    {{ obterPrioridade(produto.id) }}
+                </p>
+            </div>
+            }
+        </div>
+
+        <div right>
+            @if (!produtoSelecionado) {
+
+            <app-empty-state
+                message="Selecione um produto para analisar a promoção.">
+            </app-empty-state>
+
+            } @else {
+
+            <div class="produto-card">
+                <h2>
+                    {{ produtoSelecionado.nome }}
+                </h2>
+
+                <p>
+                    Dias em Estoque:
+                    {{
+                    obterDiasEmEstoque(
+                    produtoSelecionado.id
+                    )
+                    }}
+                </p>
+
+                <p>
+                    Estoque Atual:
+                    {{ produtoSelecionado.estoqueAtual }}
+                </p>
+
+                <p>
+                    Quantidade Comprada:
+                    {{
+                    obterQuantidadeComprada(
+                    produtoSelecionado.id
+                    )
+                    }}
+                </p>
+
+                <p>
+                    Quantidade Vendida:
+                    {{
+                    obterQuantidadeVendida(
+                    produtoSelecionado.id
+                    )
+                    }}
+                </p>
+
+                <p>
+                    Giro:
+                    {{
+                    obterPercentualGiro(
+                    produtoSelecionado.id
+                    )
+                    }}%
+                </p>
+
+                <p>
+                    Status Giro:
+                    {{
+                    obterStatusGiro(
+                    produtoSelecionado.id
+                    )
+                    }}
+                </p>
+
+                <p>
+                    Status Estoque:
+                    {{
+                    obterStatusEstoque(
+                    produtoSelecionado.id
+                    )
+                    }}
+                </p>
+
+                <p>
+                    Prioridade:
+                    {{
+                    obterPrioridade(
+                    produtoSelecionado.id
+                    )
+                    }}
+                </p>
+
+                <p>
+                    Preço Atual:
+                    {{
+                    produtoSelecionado.precoVenda
+                    | currency:'BRL'
+                    }}
+                </p>
+
+                @if (produtoSelecionado.promocaoAtiva) {
+
+                <p>
+                    🔥 Preço Promocional:
+                    {{
+                    produtoSelecionado.precoPromocional
+                    | currency:'BRL'
+                    }}
+                </p>
+
+                }
+                @if (!produtoSelecionado.promocaoAtiva) {
+
+                <button
+                    type="button"
+                    (click)="ativarPromocao(produtoSelecionado)">
+                    Ativar Promoção
+                </button>
+
+                } @else {
+
+                <p>
+                    ✅ Promoção Ativa
+                </p>
+
+                @if (
+                promocaoAtingiuObjetivo(
+                produtoSelecionado.id
+                )
+                ) {
+
+                <p>
+                    ✅ Promoção eficiente
+                </p>
+
+                <p>
+                    O giro do produto melhorou.
+                </p>
+
+                <p>
+                    Considere encerrar a promoção.
+                </p>
+
+                }
+
+                <button
+                    type="button"
+                    (click)="desativarPromocao(produtoSelecionado)">
+                    Encerrar Promoção
+                </button>
+                }
+
+            </div>
+            }
+        </div>
+    </app-split-panel>
+</app-main-layout>

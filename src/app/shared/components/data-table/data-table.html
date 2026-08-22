@@ -1,0 +1,58 @@
+<table>
+    <thead>
+        <tr>
+            @for (
+            column of columns;
+            track column.field
+            ) {
+            <th>
+                {{ column.header }}
+            </th>
+            }
+
+            @if (showActions) {
+            <th>
+                Ações
+            </th>
+            }
+        </tr>
+    </thead>
+
+    <tbody>
+        @for (
+        row of data;
+        track $index;
+        let rowIndex = $index
+        ) {
+        <tr>
+            @for (
+            column of columns;
+            track column.field
+            ) {
+            <td>
+                @if (column.type === 'badge') {
+
+                <app-status-badge
+                    [text]="$any(row)[column.field]"
+                    [variant]="
+        obterVariantStatus(
+            $any(row)[column.field])">
+                </app-status-badge>
+                } @else {
+                {{ $any(row)[column.field] }}
+                }
+            </td>
+            }
+
+            @if (showActions) {
+            <td>
+                <app-action-icons
+                    (edit)="edit.emit(row)"
+                    (delete)="delete.emit(row)">
+                </app-action-icons>
+            </td>
+            }
+        </tr>
+        }
+    </tbody>
+</table>

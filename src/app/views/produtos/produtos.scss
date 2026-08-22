@@ -1,0 +1,50 @@
+:host {
+  display: block;
+}
+
+.formulario {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.formulario input {
+  padding: 8px;
+}
+
+.formulario button {
+  padding: 8px 16px;
+}
+
+.produto-card {
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.field input,
+.field select {
+  padding: 8px;
+}
+
+input,
+select {
+  border: 1px solid var(--color-gray-300);
+}
+
+label {
+  color: var(--color-gray-700);
+}

@@ -1,0 +1,55 @@
+<div class="company-support-card">
+    <h2>
+        Informações da Implantação
+    </h2>
+
+    <div class="support-item">
+        <span>
+            Proprietário
+        </span>
+
+        <strong>
+            {{ empresa.proprietario || '-' }}
+        </strong>
+    </div>
+
+    <div class="support-item">
+        <span>
+            Implantação
+        </span>
+
+        <strong>
+            {{ empresa.dataImplantacao | date:'dd/MM/yyyy' }}
+        </strong>
+    </div>
+
+    <div class="support-item">
+        <span>
+            Versão
+        </span>
+
+        <strong>
+            {{ empresa.versaoSistema }}
+        </strong>
+    </div>
+
+    <div class="support-item">
+        <span>
+            Desenvolvedor
+        </span>
+
+        <strong>
+            Aline Andrade de Almeida
+        </strong>
+    </div>
+
+    <div class="support-item">
+        <span>
+            Status
+        </span>
+
+        <span class="status-badge">
+            Ativo
+        </span>
+    </div>
+</div>

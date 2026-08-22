@@ -1,0 +1,10 @@
+.split-panel {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 24px;
+}
+
+.left,
+.right {
+    min-width: 0;
+}

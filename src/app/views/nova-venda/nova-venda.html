@@ -1,0 +1,220 @@
+<app-main-layout>
+
+    <app-page-title
+        title="Nova Venda"
+        subtitle="Registre vendas e aplique promoções automaticamente.">
+    </app-page-title>
+
+    <div class="formulario">
+        <div class="field">
+            <label>Código de Barras</label>
+            <input
+                type="text"
+                [(ngModel)]="codigoBarras"
+                (input)="buscarProdutoPorCodigo()">
+        </div>
+        <div class="field">
+            <label>Produto</label>
+            <app-product-search
+                [produtos]="produtos"
+                (produtoSelecionado)="
+        selecionarProduto($event)">
+            </app-product-search>
+
+            @if (produtoSelecionado) {
+            <small>
+                Estoque disponível:
+                {{ produtoSelecionado.estoqueAtual }}
+            </small>
+            }
+        </div>
+        @if (produtoSelecionado) {
+
+        <div class="produto-info">
+            <small>
+                Estoque disponível:
+                {{ produtoSelecionado.estoqueAtual }}
+            </small>
+            <br>
+            @if (
+            produtoSelecionado.promocaoAtiva
+            ) {
+            <small>
+                Preço Original:
+                {{
+                produtoSelecionado.precoVenda
+                | currency:'BRL'
+                }}
+            </small>
+            <br>
+            <small>
+                🔥 Preço Promocional:
+                {{
+                produtoSelecionado.precoPromocional
+                | currency:'BRL'
+                }}
+            </small>
+            } @else {
+            <small>
+                Valor Unitário:
+                {{
+                produtoSelecionado.precoVenda
+                | currency:'BRL'
+                }}
+            </small>
+            }
+        </div>
+        }
+
+        <div class="field">
+
+            <label>Quantidade</label>
+            <input
+                type="number"
+                placeholder="Quantidade"
+                [(ngModel)]="quantidade">
+
+            <button
+                type="button"
+                (click)="adicionarAoCarrinho()">
+                Adicionar
+            </button>
+        </div>
+    </div>
+
+    <h2>
+        Carrinho
+    </h2>
+
+    @if (carrinho.length === 0) {
+
+    <app-empty-state
+        message="Nenhum item adicionado ao carrinho.">
+    </app-empty-state>
+
+    } @else {
+
+    @for (
+    item of carrinho;
+    track item.produto.id
+    ) {
+
+    <div class="carrinho-item">
+        <div>
+            <strong>
+                {{ item.produto.nome }}
+            </strong>
+            <p>
+                {{
+                item.precoUnitario
+                | currency:'BRL'
+                }}
+                X
+                {{ item.quantidade }}
+                =
+                {{
+                item.subtotal
+                | currency:'BRL'
+                }}
+            </p>
+            @if (item.promocaoAplicada) {
+
+            <small>
+                🔥 Promoção Aplicada
+            </small>
+
+            }
+
+        </div>
+
+        <button
+            type="button"
+            (click)="removerItem(
+                item.produto.id
+            )">
+            🗑️
+        </button>
+    </div>
+
+    }
+    }
+    <div class="resumo-venda">
+        <h2>
+            Valor a Pagar:
+            {{ total | currency:'BRL'}}
+        </h2>
+    </div>
+    <div class="field">
+        <label>Forma de Pagamento</label>
+        <select
+            [(ngModel)]="formaPagamento">
+            <option value="dinheiro">
+                Dinheiro
+            </option>
+            <option value="pix">
+                PIX
+            </option>
+            <option value="debito">
+                Débito
+            </option>
+            <option value="credito">
+                Crédito
+            </option>
+            <option value="fiado">
+                Fiado
+            </option>
+        </select>
+        @if (formaPagamento === 'fiado') {
+
+        <div class="field">
+            <label>Cliente</label>
+            <select
+                [(ngModel)]="clienteSelecionadoId">
+                <option value>
+                    Selecione um cliente
+                </option>
+
+                @for (cliente of clientes; track cliente.id) {
+                <option [value]="cliente.id">
+                    {{ cliente.nome }}
+                </option>
+                }
+            </select>
+        </div>
+        }
+    </div>
+
+    @if (formaPagamento === 'dinheiro') {
+    <div class="field">
+        <label>
+            Valor Recebido
+        </label>
+
+        <input
+            type="number"
+            placeholder="Valor recebido"
+            [(ngModel)]="valorRecebido">
+    </div>
+    @if (
+    formaPagamento === 'dinheiro' &&
+    valorRecebido !== null
+    ) {
+
+    <div class="resumo-troco">
+        <h3>
+            Troco:
+            {{
+            troco
+            | currency:'BRL'
+            }}
+        </h3>
+    </div>
+    }
+    }
+    <button
+        type="button"
+        (click)="finalizarVenda()"
+        [disabled]="carrinho.length === 0">
+        Finalizar Venda
+    </button>
+</app-main-layout>

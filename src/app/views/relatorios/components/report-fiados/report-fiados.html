@@ -1,0 +1,93 @@
+<app-stat-card-carousel
+    [cards]="cardsFiados">
+</app-stat-card-carousel>
+
+<app-report-layout>
+
+    <div insights>
+
+        <div class="card">
+
+            <h2>
+                📒 Maiores Devedores
+            </h2>
+
+            @if (
+            maioresDevedores.length === 0
+            ) {
+
+            <p>
+                Nenhum cliente devedor.
+            </p>
+
+            } @else {
+
+            @for (
+            cliente of maioresDevedores;
+            track cliente.nome
+            ) {
+
+            <p>
+
+                {{ cliente.nome }}
+
+                -
+
+                {{
+                cliente.total
+                | currency:'BRL'
+                }}
+
+            </p>
+
+            }
+
+            }
+
+        </div>
+
+        @if (maiorDevedor) {
+
+        <div class="card">
+
+            <h2>
+                🏆 Maior Devedor
+            </h2>
+
+            <p>
+                {{ maiorDevedor.nome }}
+            </p>
+
+            <strong>
+
+                {{
+                maiorDevedor.total
+                | currency:'BRL'
+                }}
+
+            </strong>
+
+        </div>
+
+        }
+
+    </div>
+
+    <div tables>
+
+        <div class="table-section">
+
+            <h2>
+                📒 Últimos Lançamentos
+            </h2>
+
+            <app-data-table
+                [columns]="colunasFiados"
+                [data]="fiadosTabela">
+            </app-data-table>
+
+        </div>
+
+    </div>
+
+</app-report-layout>

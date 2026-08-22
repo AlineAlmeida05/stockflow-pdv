@@ -1,0 +1,28 @@
+.company-brand-card {
+    padding: 24px;
+    background: var(--color-white);
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.brand-preview {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.brand-preview__primary,
+.brand-preview__secondary {
+    flex: 1;
+    padding: 16px;
+    border-radius: 12px;
+    color: var(--color-white);
+    text-align: center;
+    font-weight: 600;
+}
+
+.brand-description {
+    margin-bottom: 20px;
+    color: var(--color-gray-500);
+}

@@ -1,0 +1,140 @@
+<app-main-layout>
+
+    <app-page-title
+        title="Relatório de Vendas"
+        subtitle="Acompanhe o desempenho das vendas da adega.">
+    </app-page-title>
+
+    <app-report-header>
+        <div tabs>
+            <div class="abas">
+                <button
+                    type="button"
+                    [class.active]="abaSelecionada === 'vendas'"
+                    (click)="abaSelecionada = 'vendas'">
+                    Vendas
+                </button>
+
+                <button
+                    type="button"
+                    [class.active]="abaSelecionada === 'estoque'"
+                    (click)="abaSelecionada = 'estoque'">
+                    Estoque
+                </button>
+
+                <button
+                    type="button"
+                    [class.active]="abaSelecionada === 'fiados'"
+                    (click)="abaSelecionada = 'fiados'">
+                    Fiados
+                </button>
+
+                <button
+                    type="button"
+                    [class.active]="abaSelecionada === 'financeiro'"
+                    (click)="abaSelecionada = 'financeiro'">
+                    Financeiro
+                </button>
+            </div>
+        </div>
+
+        <div actions>
+            <button
+                type="button"
+                (click)="exportarPdf()">
+                📄 PDF
+            </button>
+
+            <button
+                type="button"
+                (click)="exportarExcel()">
+                📊 Excel
+            </button>
+        </div>
+    </app-report-header>
+
+    <div #reportContent>
+
+        <!-- ABA VENDAS -->
+        @if (
+        abaSelecionada === 'vendas'
+        ) {
+
+        <app-report-vendas
+            [totalVendas]="totalVendas"
+            [faturamentoTotal]="faturamentoTotal"
+            [ticketMedio]="ticketMedio"
+            [formaPagamentoMaisUtilizada]="formaPagamentoMaisUtilizada"
+            [topProdutosVendidos]="topProdutosVendidos"
+            [produtoMaisFaturou]="produtoMaisFaturou"
+            [melhorDiaData]="melhorDiaData"
+            [melhorDiaValor]="melhorDiaValor"
+            [evolucaoVendasPorDia]="evolucaoVendasPorDia"
+            [vendasTabela]="vendasTabela"
+            [colunasVendas]="colunasVendas"
+            [faturamentoPorPagamento]="faturamentoPorPagamento"
+            [formaPagamentoSelecionada]="formaPagamentoSelecionada"
+            (formaPagamentoSelecionadaChange)="formaPagamentoSelecionada = $event"
+            [periodoSelecionado]="periodoSelecionado"
+            (periodoSelecionadoChange)="periodoSelecionado = $event">
+        </app-report-vendas>
+
+        }
+
+        <!-- ABA ESTOQUE -->
+        @if (
+        abaSelecionada === 'estoque'
+        ) {
+        <app-report-estoque
+            [totalProdutos]="totalProdutos"
+            [produtosSemEstoque]="produtosSemEstoque"
+            [produtosEstoqueBaixo]="produtosEstoqueBaixo"
+            [produtosReposicao]="produtosReposicao"
+            [produtosSemMovimentacao]="produtosSemMovimentacao"
+            [sugestoesReposicao]="sugestoesReposicao"
+            [produtosMenorGiro]="produtosMenorGiro"
+            [produtosMaiorGiro]="produtosMaiorGiro"
+            [colunasEstoque]="colunasEstoque"
+            [produtosTabela]="produtosTabela"
+            [colunasGiroEstoque]="colunasGiroEstoque"
+            [produtosGiroEstoque]="produtosGiroEstoque">
+        </app-report-estoque>
+        }
+
+        <!-- ABA FIADOS -->
+        @if (
+        abaSelecionada === 'fiados'
+        ) {
+
+        <app-report-fiados
+            [valorEmAberto]="valorEmAberto"
+            [totalPendentes]="totalPendentes"
+            [totalPagos]="totalPagos"
+            [clientesDevedores]="clientesDevedores"
+            [totalParciais]="totalParciais"
+            [maioresDevedores]="maioresDevedores"
+            [maiorDevedor]="maiorDevedor"
+            [colunasFiados]="colunasFiados"
+            [fiadosTabela]="fiadosTabela">
+        </app-report-fiados>
+
+        }
+
+        <!-- ABA FINANCEIRO -->
+        @if (
+        abaSelecionada === 'financeiro'
+        ) {
+
+        <app-report-financeiro
+            [faturamentoTotal]="faturamentoTotal"
+            [valorFiados]="valorFiados"
+            [valorEmAberto]="valorEmAberto"
+            [receitaRealizada]="receitaRealizada"
+            [ticketMedio]="ticketMedio"
+            [faturamentoPorPagamento]="faturamentoPorPagamento">
+        </app-report-financeiro>
+
+        }
+    </div>
+
+</app-main-layout>

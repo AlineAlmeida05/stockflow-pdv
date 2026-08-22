@@ -1,0 +1,72 @@
+@use "./styles/variables";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-gray-100);
+  color: var(--color-gray-900);
+}
+
+.formulario {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field label {
+  font-weight: 600;
+  color: var(--color-gray-700);
+}
+
+.field input,
+.field select,
+.field textarea {
+  padding: 8px;
+  border: 1px solid var(--color-gray-300);
+  border-radius: 6px;
+}
+
+button {
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.card {
+  padding: 16px;
+  border: 1px solid var(--color-gray-300);
+  border-radius: 12px;
+  background: var(--color-white);
+}
+
+.painel-fiados {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 24px;
+}
+
+.cliente-card {
+  cursor: pointer;
+}
+
+.table-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.table-section h2 {
+  margin-bottom: 8px;
+}
+
+

@@ -1,0 +1,53 @@
+<div class="company-profile-card">
+    <div
+        class="company-profile-card__logo">
+        @if (empresa.logoUrl) {
+
+        <img
+            [src]="empresa.logoUrl"
+            [alt]="empresa.nomeFantasia">
+        } @else {
+
+        🏢
+
+        }
+    </div>
+
+    <div class="company-profile-card__content">
+        <span class="company-badge">
+            Perfil Institucional
+        </span>
+
+        <h2>
+            {{ empresa.nomeFantasia }}
+        </h2>
+        <p class="company-slogan">
+            {{ empresa.slogan }}
+        </p>
+
+        <p>
+            {{ empresa.razaoSocial || '-' }}
+        </p>
+
+        <p>
+            CNPJ: {{ empresa.cnpj || '-' }}
+        </p>
+
+        <p>
+            Proprietário: {{ empresa.proprietario || '-' }}
+        </p>
+
+        <p>
+            {{ empresa.telefone || '-' }}
+        </p>
+
+        <p>
+            {{ empresa.email || '-' }}
+        </p>
+
+        <p>
+            {{ empresa.cidade }}
+            {{ empresa.uf ? ' - ' + empresa.uf : '' }}
+        </p>
+    </div>
+</div>

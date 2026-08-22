@@ -1,0 +1,15 @@
+<div
+    class="card"
+    [class]="'card ' + variant">
+    <h3>
+        {{ title }}
+    </h3>
+    <strong>
+        {{ value }}
+    </strong>
+    @if (subtitle) {
+    <p>
+        {{ subtitle }}
+    </p>
+    }
+</div>

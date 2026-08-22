@@ -1,0 +1,59 @@
+<app-stat-card-carousel
+    [cards]="cardsFinanceiro">
+</app-stat-card-carousel>
+
+<app-report-layout>
+    <div insights>
+        <div class="card">
+            <h2>
+                💳 Receita por Forma de Pagamento
+            </h2>
+
+            @for (
+            forma of faturamentoPorPagamento;
+            track forma.formaPagamento
+            ) {
+            <p>
+                {{ forma.formaPagamento }}
+                -
+                {{
+                forma.valor
+                | currency:'BRL'
+                }}
+            </p>
+            }
+        </div>
+
+        <div class="card">
+            <h2>
+                💰 Resumo Financeiro
+            </h2>
+            <p>
+                Receita Realizada:
+                {{
+                receitaRealizada
+                | currency:'BRL'
+                }}
+            </p>
+            <p>
+                Valor em Aberto:
+                {{
+                valorEmAberto
+                | currency:'BRL'
+                }}
+            </p>
+        </div>
+    </div>
+
+    <div tables>
+        <div class="table-section">
+            <h2>
+                📊 Indicadores Financeiros 
+            </h2>
+
+            <p>
+                Resumo consolidado da situação financeira.
+            </p>
+        </div>
+    </div>
+</app-report-layout>

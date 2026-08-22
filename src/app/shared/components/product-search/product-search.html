@@ -1,0 +1,21 @@
+<div class="product-search">
+    <input
+        type="text"
+        placeholder="Buscar produto..."
+        [(ngModel)]="textoBusca">
+
+    @if (resultados.length > 0) {
+    <div class="resultados">
+        @for (
+        produto of resultados;
+        track produto.id
+        ) {
+        <button
+            type="button"
+            (click)="selecionarProduto(produto)">
+            {{ produto.nome }}
+        </button>
+        }
+    </div>
+    }
+</div>

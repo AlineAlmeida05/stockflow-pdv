@@ -1,0 +1,121 @@
+<app-main-layout>
+    <app-page-title
+        title="Fiados"
+        subtitle="Acompanhe clientes com pagamentos pendentes.">
+    </app-page-title>
+
+    <app-split-panel>
+        <div left class="clientes">
+            <h2>
+                Clientes Devedores
+            </h2>
+            <app-search-input
+                placeholder="Buscar cliente devedor..."
+                [(value)]="textoBusca">
+            </app-search-input>
+
+            @for (
+            cliente of clientesDevedoresFiltrados;
+            track cliente.id
+            ) {
+            <div
+                class="card cliente-card"
+                (click)="selecionarCliente(cliente)">
+                <h3>
+                    {{ cliente.nome }}
+                </h3>
+                <p>
+                    {{
+                    obterSaldoCliente(
+                    cliente.id
+                    ) | currency:'BRL'
+                    }}
+                </p>
+            </div>
+            }
+        </div>
+
+        <div right class="extrato">
+            @if (clienteSelecionado) {
+            <h2>
+                {{ clienteSelecionado.nome }}
+            </h2>
+            <h3>
+                Saldo Atual:
+                {{
+                obterSaldoCliente(
+                clienteSelecionado.id
+                ) | currency:'BRL'
+                }}
+            </h3>
+            <button
+                type="button"
+                (click)="mostrarRecebimento = true">
+                Receber Pagamento
+            </button>
+            <h3>
+                Extrato
+            </h3>
+
+            @for (
+            movimento of obterExtratoCliente();
+            track $index
+            ) {
+            <div class="card">
+                <p>
+                    Data:
+                    {{
+                    movimento.data
+                    | date:'dd/MM/yyyy HH:mm'
+                    }}
+                </p>
+
+                <p>
+                    Valor:
+                    @if (
+                    movimento.tipo === 'pagamento'
+                    ) {
+
+                    - {{ movimento.valor | currency:'BRL' }}
+
+                    } @else {
+
+                    {{ movimento.valor | currency:'BRL' }}
+                    }
+                </p>
+            </div>
+            }
+
+            } @else {
+            <app-empty-state
+                message="Selecione um cliente para visualizar o extrato.">
+            </app-empty-state>
+            }
+        </div>
+    </app-split-panel>
+    @if (
+    mostrarRecebimento &&
+    clienteSelecionado
+    ) {
+
+    <div class="card">
+        <h3>
+            Receber Pagamento
+        </h3>
+        <input
+            type="number"
+            [(ngModel)]="valorRecebido">
+        <button
+            type="button"
+            (click)="confirmarRecebimento()">
+            Confirmar
+        </button>
+        <button
+            type="button"
+            (click)="mostrarRecebimento = false">
+            Cancelar
+        </button>
+    </div>
+    }
+
+</app-main-layout>

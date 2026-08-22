@@ -1,0 +1,36 @@
+<div class="toast-container">
+
+    @for (
+    toast of
+    alertService.toasts$
+    | async;
+    track toast.id
+    ) {
+
+    <div
+        class="toast"
+        [class.success]="toast.type === 'success'"
+        [class.error]="toast.type === 'error'"
+        [class.warning]="toast.type === 'warning'"
+        [class.info]="toast.type === 'info'">
+
+        <span class="toast__icon">
+            {{ getIcon(toast.type) }}
+        </span>
+
+        <span class="toast__message">
+            {{ toast.message }}
+        </span>
+
+        <button
+            type="button"
+            class="toast__close"
+            (click)="alertService.removeToast(toast.id)">
+            ✕
+        </button>
+
+    </div>
+
+    }
+
+</div>

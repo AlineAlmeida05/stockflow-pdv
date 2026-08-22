@@ -1,0 +1,22 @@
+import { Component, Input } from '@angular/core';
+
+@Component({
+    selector: 'app-status-badge',
+    standalone: true,
+    templateUrl: './status-badge.html',
+    styleUrl: './status-badge.scss'
+})
+export class StatusBadge {
+
+    @Input()
+    text = '';
+
+    @Input()
+    variant:
+        | 'success'
+        | 'warning'
+        | 'danger'
+        | 'info'
+        = 'info';
+
+}

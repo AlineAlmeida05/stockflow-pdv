@@ -1,0 +1,70 @@
+<app-main-layout>
+
+    <app-page-title
+        title="Clientes"
+        subtitle="Gerencie os clientes cadastrados para vendas e fiados.">
+    </app-page-title>
+
+    <app-toolbar>
+        <button
+            type="button"
+            (click)="novoCliente()">
+            + Novo Cliente
+        </button>
+
+        <app-search-input
+            placeholder="Buscar cliente..."
+            [(value)]="textoBusca">
+        </app-search-input>
+    </app-toolbar>
+    @if (clienteEditandoId) {
+    <p>
+        ✏️ Editando:
+        {{ nome }}
+    </p>
+    }
+    @if (mostrarFormulario) {
+    <div class="formulario">
+        <input
+            type="text"
+            placeholder="Nome"
+            [(ngModel)]="nome">
+
+        <input
+            type="text"
+            placeholder="Telefone"
+            [(ngModel)]="telefone">
+
+        <button
+            type="button"
+            (click)="salvarCliente()">
+            {{
+            clienteEditandoId
+            ? 'Atualizar Cliente'
+            : 'Salvar Cliente'
+            }}
+        </button>
+        <button
+            type="button"
+            (click)="cancelarEdicao()">
+            Cancelar
+        </button>
+
+    </div>
+    }
+    @if (clientes.length === 0) {
+
+    <app-empty-state
+        message="Nenhum cliente cadastrado.">
+    </app-empty-state>
+
+    }
+    <p>Tabela de Clientes</p>
+    <app-data-table
+        [columns]="colunasClientes"
+        [data]="clientesFiltrados"
+        [showActions]="true"
+        (edit)="editarClienteTabela($event)"
+        (delete)="excluirClienteTabela($event)">
+    </app-data-table>
+</app-main-layout>

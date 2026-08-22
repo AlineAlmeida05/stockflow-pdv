@@ -1,0 +1,188 @@
+<app-stat-card-carousel
+    [cards]="cardsVendas">
+</app-stat-card-carousel>
+
+<app-report-layout>
+    <div insights>
+        <div class="card">
+            <h2>
+                🏆 Melhor Dia
+            </h2>
+            <p>
+                {{ melhorDiaData }}
+            </p>
+            <strong>
+                {{ melhorDiaValor }}
+            </strong>
+        </div>
+
+        @if (produtoMaisFaturou) {
+        <div class="card">
+            <h2>
+                💰 Produto que Mais Faturou
+            </h2>
+            <p>
+                {{ produtoMaisFaturou.nome }}
+            </p>
+            <strong>
+                {{
+                produtoMaisFaturou.faturamento
+                | currency:'BRL'
+                }}
+            </strong>
+        </div>
+        }
+
+        <div class="card">
+            <h2>
+                💳 Receita por Forma de Pagamento
+            </h2>
+            @for (
+            forma of faturamentoPorPagamento;
+            track forma.formaPagamento
+            ) {
+            <p>
+                {{ forma.formaPagamento }}
+                -
+                {{
+                forma.valor
+                | currency:'BRL'
+                }}
+            </p>
+            }
+        </div>
+
+        <div class="card">
+            <h2>
+                Evolução das Vendas
+            </h2>
+            @if (
+            evolucaoVendasPorDia.length === 0
+            ) {
+            <p>
+                Nenhuma venda encontrada.
+            </p>
+            } @else {
+
+            @for (
+            dia of evolucaoVendasPorDia;
+            track dia.data
+            ) {
+            <p>
+                {{ dia.data }}
+                -
+                {{
+                dia.total
+                | currency:'BRL'
+                }}
+            </p>
+            }
+            }
+
+        </div>
+
+        <div class="card">
+            <h2>
+                Top 5 Produtos Vendidos
+            </h2>
+            @if (
+            topProdutosVendidos.length === 0
+            ) {
+            <p>
+                Nenhuma venda encontrada.
+            </p>
+            } @else {
+
+            @for (
+            produto of topProdutosVendidos;
+            track produto.nome
+            ) {
+            <p>
+                🏆 {{ produto.nome }}
+                -
+                {{ produto.quantidade }} un.
+            </p>
+            }
+            }
+        </div>
+    </div>
+
+    <div tables>        
+        <h2>
+            📋 Histórico de Vendas
+        </h2>
+        <div class="report-filters">
+            <div class="field">
+
+                <label>
+                    Forma de Pagamento
+                </label>
+
+                <select
+                    [ngModel]="formaPagamentoSelecionada"
+                    (ngModelChange)="formaPagamentoSelecionadaChange.emit($event)">
+
+                    <option value="todos">
+                        Todos
+                    </option>
+
+                    <option value="dinheiro">
+                        💵 Dinheiro
+                    </option>
+
+                    <option value="pix">
+                        ⚡ PIX
+                    </option>
+
+                    <option value="debito">
+                        💳 Débito
+                    </option>
+
+                    <option value="credito">
+                        🏦 Crédito
+                    </option>
+
+                    <option value="fiado">
+                        📝 Fiado
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="field">
+                <label>
+                    Período
+                </label>
+                <select
+                    [ngModel]="periodoSelecionado"
+                    (ngModelChange)="periodoSelecionadoChange.emit($event)">
+
+                    <option value="todos">
+                        Todos
+                    </option>
+
+                    <option value="hoje">
+                        Hoje
+                    </option>
+
+                    <option value="ontem">
+                        Ontem
+                    </option>
+
+                    <option value="7dias">
+                        Últimos 7 dias
+                    </option>
+
+                    <option value="30dias">
+                        Últimos 30 dias
+                    </option>
+                </select>
+            </div>
+        </div>
+        <app-data-table
+            [columns]="colunasVendas"
+            [data]="vendasTabela">
+        </app-data-table>
+    </div>
+</app-report-layout>
