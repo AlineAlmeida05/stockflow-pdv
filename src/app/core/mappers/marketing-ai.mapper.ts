@@ -30,9 +30,6 @@ export class MarketingAiMapper {
             tipoPromocao:
                 campanha.tipoPromocao,
 
-            objetivo:
-                campanha.objetivo,
-
             elementoVisual:
                 campanha.elementoVisual,
 

@@ -1,15 +1,9 @@
-table {
-    width: 100%;
-    border-collapse: collapse;
+.table-actions-column {
+    width: 120px;
 }
 
-th,
-td {
-    padding: 8px;
-    border: 1px solid #ddd;
+.table-empty {
+    text-align: center;
+    color: var(--color-gray-500);
+    padding: 2rem;
 }
-
-th {
-    text-align: left;
-}
-

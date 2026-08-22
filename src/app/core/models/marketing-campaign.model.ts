@@ -1,4 +1,5 @@
 import { MarketingAiResult } from './marketing-ai-result.model';
+import { MarketingAiSuggestion } from './marketing-ai-suggestion.model';
 
 export interface MarketingCampaign {
 
@@ -12,13 +13,7 @@ export interface MarketingCampaign {
 
     precoPromocional: number;
 
-    headline: string;
-
-    cta: string;
-
     tipoPromocao: string;
-
-    objetivo: string;
 
     elementoVisual: string;
 
@@ -27,6 +22,8 @@ export interface MarketingCampaign {
     observacoes: string;
 
     contextoProduto?: string;
+
+    sugestaoIa?: MarketingAiSuggestion;
 
     prompt?: string;
 

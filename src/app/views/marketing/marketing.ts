@@ -30,10 +30,6 @@ export class Marketing {
         campanha: MarketingCampaign
     ): void {
 
-        console.log('Recebi');
-
-        console.log(campanha);
-
         this.campanhaAtual =
             campanha;
 

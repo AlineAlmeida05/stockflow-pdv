@@ -1,3 +1,33 @@
-input {
+.search-input {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0 12px;
+    min-height: 44px;
+    border: 1px solid var(--color-gray-300);
+    border-radius: 8px;
+    background: var(--color-white);
+}
+
+.search-icon {
+    color: var(--color-gray-500);
+    font-size: 1rem;
+}
+
+.search-input input {
     width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--color-gray-900);
+}
+
+.search-input:focus-within {
+    border-color: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+    .search-input {
+        min-width: 240px;
+    }
 }

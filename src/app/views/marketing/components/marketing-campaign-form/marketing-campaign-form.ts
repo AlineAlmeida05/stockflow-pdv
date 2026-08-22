@@ -37,9 +37,9 @@ export class MarketingCampaignForm
 
     tipoPromocaoSelecionado = 'Mega Promoção';
 
-    objetivoSelecionado = 'Aumentar Vendas';
-
     elementoVisualSelecionado = 'Automático';
+
+    modoIaSelecionado = 'Automático';
 
     observacoes = '';
 
@@ -93,23 +93,20 @@ export class MarketingCampaignForm
             sugestao
         );
 
-        this.tomSelecionado = sugestao.tom;
+        if (
+            this.modoIaSelecionado ===
+            'Automático'
+        ) {
 
-        this.tipoPromocaoSelecionado = sugestao.tipoPromocao;
+            this.tomSelecionado =
+                sugestao.tom;
 
-        this.elementoVisualSelecionado = sugestao.elementoVisual;
+            this.tipoPromocaoSelecionado =
+                sugestao.tipoPromocao;
 
-        const headline =
-            this.marketingAiService
-                .gerarHeadline(
-                    this.tipoPromocaoSelecionado
-                );
-
-        const cta =
-            this.marketingAiService
-                .gerarCta(
-                    this.objetivoSelecionado
-                );
+            this.elementoVisualSelecionado =
+                sugestao.elementoVisual;
+        }         
 
         const resultadoIa =
             this.marketingAiService
@@ -140,19 +137,15 @@ export class MarketingCampaignForm
 
             tipoPromocao: this.tipoPromocaoSelecionado,
 
-            objetivo: this.objetivoSelecionado,
-
             elementoVisual: this.elementoVisualSelecionado,
 
             contextoProduto: contextoProduto,
 
             tom: this.tomSelecionado,
 
+            sugestaoIa: sugestao,
+
             observacoes: this.observacoes,
-
-            headline: headline,
-
-            cta: cta,
 
             resultadoIa: resultadoIa,
 

@@ -2,9 +2,16 @@
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: 24px;
+    align-items: start;
 }
 
 .left,
 .right {
     min-width: 0;
+}
+
+@media (max-width: 768px) {
+    .split-panel {
+        grid-template-columns: 1fr;
+    }
 }

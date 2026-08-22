@@ -7,6 +7,7 @@
     <app-toolbar>
         <button
             type="button"
+            class="btn btn-primary"
             (click)="novoProduto()">
             + Novo Produto
         </button>
@@ -17,72 +18,74 @@
         </app-search-input>
     </app-toolbar>
 
-    @if (produtoEditandoId) {
-    <p>
-        ✏️ Editando:
-        {{ nome }}
-    </p>
-    }
-
     @if (mostrarFormulario) {
 
-    <div class="formulario">
-        <div class="field">
-            <label>Nome do Produto</label>
-            <input
-                type="text"
-                placeholder="Nome"
-                [(ngModel)]="nome">
-        </div>
-        <div class="field">
-            <label>Categoria</label>
-            <input
-                type="text"
-                placeholder="Categoria"
-                [(ngModel)]="categoria">
-        </div>
-        <div class="field">
-            <label>Código de Barras</label>
-            <input
-                type="text"
-                placeholder="Código de Barras"
-                [(ngModel)]="codigoBarras">
-        </div>
-        <div class="field">
-            <label>Estoque Mínimo</label>
-            <input
-                type="number"
-                [(ngModel)]="estoqueMinimo">
-        </div>
-        <div class="field">
-            <label>Preço de Venda</label>
-            <input
-                type="number"
-                placeholder="Preço Venda"
-                [(ngModel)]="precoVenda">
-        </div>
+    <div class="card produto-form-card">
+        <div class="formulario">
+            <div class="field">
+                <label>Nome do Produto</label>
+                <input
+                    type="text"
+                    placeholder="Nome"
+                    [(ngModel)]="nome">
+            </div>
+            <div class="field">
+                <label>Categoria</label>
+                <input
+                    type="text"
+                    placeholder="Categoria"
+                    [(ngModel)]="categoria">
+            </div>
+            <div class="field">
+                <label>Código de Barras</label>
+                <input
+                    type="text"
+                    placeholder="Código de Barras"
+                    [(ngModel)]="codigoBarras">
+            </div>
+            <div class="field">
+                <label>Estoque Mínimo</label>
+                <input
+                    type="number"
+                    [(ngModel)]="estoqueMinimo">
+            </div>
+            <div class="field">
+                <label>Preço de Venda</label>
+                <input
+                    type="number"
+                    placeholder="Preço Venda"
+                    [(ngModel)]="precoVenda">
+            </div>
 
-        <button
-            type="button"
-            (click)="salvarProduto()">
-            {{
-            produtoEditandoId
-            ? 'Atualizar Produto'
-            : 'Salvar Produto'
-            }}
-        </button>
+            <div class="form-actions">
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="salvarProduto()">
+                    {{
+                    produtoEditandoId
+                    ? 'Atualizar Produto'
+                    : 'Salvar Produto'
+                    }}
+                </button>
 
-        <button
-            type="button"
-            (click)="cancelarEdicao()">
-            Cancelar
-        </button>
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    (click)="cancelarEdicao()">
+                    Cancelar
+                </button>
+            </div>
+        </div>
     </div>
     }
-    <p>
-        Total de produtos:
+
+    <div class="card produtos-resumo">
+        <strong>
+            Total de produtos:
+        </strong>
         {{ produtosFiltrados.length }}
-    </p>
+    </div>
 
     @if (
     produtosFiltrados.length === 0
@@ -91,11 +94,13 @@
         message="Nenhum produto cadastrado.">
     </app-empty-state>
     }
-    <app-data-table
-        [columns]="colunasProdutos"
-        [data]="produtosFiltrados"
-        [showActions]="true"
-        (edit)="editarProdutoTabela($event)"
-        (delete)="excluirProdutoTabela($event)">
-    </app-data-table>
+    <div class="card">
+        <app-data-table
+            [columns]="colunasProdutos"
+            [data]="produtosFiltrados"
+            [showActions]="true"
+            (edit)="editarProdutoTabela($event)"
+            (delete)="excluirProdutoTabela($event)">
+        </app-data-table>
+    </div>
 </app-main-layout>

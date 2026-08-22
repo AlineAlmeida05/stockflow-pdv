@@ -81,24 +81,6 @@ app-dashboard-layout {
     margin-bottom: 20px;
 }
 
-.dashboard-filters button {
-    padding: 10px 16px;
-
-    border: 1px solid var(--color-gray-300);
-
-    border-radius: 999px;
-
-    background: var(--color-white);
-
-    cursor: pointer;
-
-    transition: all 0.2s ease;
-}
-
-.dashboard-filters button:hover {
-    border-color: var(--color-primary);
-}
-
 .dashboard-filters button.active {
     background: var(--color-primary);
 

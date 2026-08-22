@@ -149,10 +149,12 @@
             <p>
                 Situação atual dos produtos cadastrados.
             </p>
-            <app-data-table
-                [columns]="colunasEstoque"
-                [data]="produtosTabela">
-            </app-data-table>
+            <div class="card">
+                <app-data-table
+                    [columns]="colunasEstoque"
+                    [data]="produtosTabela">
+                </app-data-table>
+            </div>
         </div>
 
         <div class="table-section">
@@ -162,10 +164,12 @@
             <p>
                 Comparativo entre entradas e saídas dos produtos.
             </p>
-            <app-data-table
-                [columns]="colunasGiroEstoque"
-                [data]="produtosGiroEstoque">
-            </app-data-table>
+            <div class="card">
+                <app-data-table
+                    [columns]="colunasGiroEstoque"
+                    [data]="produtosGiroEstoque">
+                </app-data-table>
+            </div>
         </div>
     </div>
 </app-report-layout>

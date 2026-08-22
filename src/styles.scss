@@ -1,4 +1,11 @@
 @use "./styles/variables";
+@use "./styles/buttons";
+@use "./styles/cards";
+@use "./styles/forms";
+@use "./styles/badges";
+@use "./styles/tables";
+@use "./styles/layout";
+
 
 * {
   box-sizing: border-box;
@@ -42,12 +49,7 @@ button {
   cursor: pointer;
 }
 
-.card {
-  padding: 16px;
-  border: 1px solid var(--color-gray-300);
-  border-radius: 12px;
-  background: var(--color-white);
-}
+
 
 .painel-fiados {
   display: grid;

@@ -8,11 +8,10 @@
     ) {
 
     <div
-        class="toast"
-        [class.success]="toast.type === 'success'"
-        [class.error]="toast.type === 'error'"
-        [class.warning]="toast.type === 'warning'"
-        [class.info]="toast.type === 'info'">
+        [class.toast-success]="toast.type === 'success'"
+        [class.toast-error]="toast.type === 'error'"
+        [class.toast-warning]="toast.type === 'warning'"
+        [class.toast-info]="toast.type === 'info'">
 
         <span class="toast__icon">
             {{ getIcon(toast.type) }}

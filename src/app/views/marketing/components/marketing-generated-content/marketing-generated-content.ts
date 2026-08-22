@@ -1,8 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { MarketingCampaign } from '../../../../core/models/marketing-campaign.model';
-import { MarketingService } from '../../../../core/services/marketing.service';
-import html2canvas from 'html2canvas';
-import { ViewChild, ElementRef } from '@angular/core';
 
 @Component({
     selector: 'app-marketing-generated-content',
@@ -10,80 +7,30 @@ import { ViewChild, ElementRef } from '@angular/core';
     templateUrl: './marketing-generated-content.html',
     styleUrl: './marketing-generated-content.scss'
 })
+
 export class MarketingGeneratedContent {
 
     constructor(
-        private marketingService:
-            MarketingService
+        
     ) { }
 
     @Input()
     campanha?: MarketingCampaign;
+    
+    // salvarCampanha(): void {
 
-    @ViewChild('artPreview')
-    artPreview?: ElementRef;
+    //     if (!this.campanha) {
 
-    copiarTexto(): void {
+    //         return;
 
-        if (!this.campanha) {
+    //     }
 
-            return;
+    //     this.marketingService
+    //         .salvar(
+    //             this.campanha
+    //         );
 
-        }
+    // }
 
-        const texto = `
-            ${this.campanha.headline}
-
-            ${this.campanha.cta}
-            `;
-
-        navigator.clipboard.writeText(
-            texto
-        );
-
-    }
-
-    salvarCampanha(): void {
-
-        if (!this.campanha) {
-
-            return;
-
-        }
-
-        this.marketingService
-            .salvar(
-                this.campanha
-            );
-
-    }
-
-    baixarArte(): void {
-
-        if (!this.artPreview) {
-
-            return;
-
-        }
-
-        html2canvas(
-            this.artPreview.nativeElement
-        ).then(canvas => {
-
-            const link =
-                document.createElement('a');
-
-            link.download =
-                'campanha.png';
-
-            link.href =
-                canvas.toDataURL(
-                    'image/png'
-                );
-
-            link.click();
-
-        });
-
-    }
+    
 }

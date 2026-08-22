@@ -107,7 +107,7 @@
         </div>
     </div>
 
-    <div tables>        
+    <div tables>
         <h2>
             📋 Histórico de Vendas
         </h2>
@@ -180,9 +180,11 @@
                 </select>
             </div>
         </div>
-        <app-data-table
-            [columns]="colunasVendas"
-            [data]="vendasTabela">
-        </app-data-table>
+        <div class="card">
+            <app-data-table
+                [columns]="colunasVendas"
+                [data]="vendasTabela">
+            </app-data-table>
+        </div>
     </div>
 </app-report-layout>

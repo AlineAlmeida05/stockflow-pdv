@@ -1,16 +1,12 @@
 <div class="marketing-card">
-
     <h3>
-        Configurações da Campanha
+        Criar Arte de Divulgação
     </h3>
 
-    <p>
-        Configure sua campanha de divulgação.
-    </p>
-
     <div class="marketing-form">
+        <!-- Produto em Promoção -->
         <label>
-            Produto
+            Produto em Promoção
             <select
                 [(ngModel)]="promocaoSelecionada">
                 <option value>
@@ -29,24 +25,39 @@
                     R$
                     {{ promocao.precoPromocional }}
                 </option>
-
                 }
                 @if (
                 promocoesAtivas.length === 0
                 ) {
-
                 <div
                     class="marketing-empty">
                     Nenhuma promoção ativa encontrada.
                 </div>
                 }
             </select>
-        </label>        
+        </label>
 
+        <!-- Modo da IA -->
+        <label>
+            Modo da IA
+            <select
+                [(ngModel)]="modoIaSelecionado">
+                <option>
+                    Automático
+                </option>
+
+                <option>
+                    Manual
+                </option>
+            </select>
+        </label>
+
+        @if (modoIaSelecionado === 'Manual') {
         <h3>
             Direção Criativa
         </h3>
-
+        
+            <!-- Tom -->
         <label>
             Tom
             <select
@@ -69,6 +80,7 @@
             </select>
         </label>
 
+        <!-- Tipo da Promoção -->
         <label>
             Tipo da Promoção
             <select
@@ -96,43 +108,11 @@
 
             </select>
 
-        </label>
+        </label> 
 
+        <!-- Elemento Visual Principal -->
         <label>
-
-            Objetivo da Campanha
-
-            <select
-                [(ngModel)]="objetivoSelecionado">
-
-                <option>
-                    Atrair Clientes
-                </option>
-
-                <option>
-                    Aumentar Vendas
-                </option>
-
-                <option>
-                    Girar Estoque
-                </option>
-
-                <option>
-                    Divulgar Lançamento
-                </option>
-
-                <option>
-                    Promover Combo
-                </option>
-
-            </select>
-
-        </label>
-
-        <label>
-
             Elemento Visual Principal
-
             <select
                 [(ngModel)]="elementoVisualSelecionado">
 
@@ -171,11 +151,13 @@
             </select>
 
         </label>
+        }
 
         <h3>
             Informações Adicionais
         </h3>
 
+        <!-- Observações -->
         <label>
             Observações
             <textarea
@@ -184,7 +166,8 @@
                 placeholder="Ex.: destacar que a promoção termina no domingo.">
             </textarea>
         </label>
-
+        
+        <!-- Criar Arte -->
         <button
             type="button"
             (click)="gerarCampanha()">

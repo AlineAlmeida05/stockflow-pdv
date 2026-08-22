@@ -31,9 +31,9 @@ export class DashboardChart {
         = 'line';
 
     @Input()
-    chartData: any;
+    chartData!: ChartConfiguration['data'];
 
     @Input()
-    chartOptions: any;
+    chartOptions?: ChartConfiguration['options'];
 
 }

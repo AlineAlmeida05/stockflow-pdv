@@ -1,99 +1,42 @@
-<div class="marketing-card">
-
-    @if (campanha?.prompt) {
-
-    <div class="ai-preview">
+<!-- <div class="generated-image-placeholder">
+    <div class="placeholder-content">
+        🖼️
         <h3>
-            Prompt Gerado
+            Arte será exibida aqui
         </h3>
 
-        <pre>
-                {{ campanha.prompt }}
-            </pre>
+        <p>
+            A futura integração com IA
+            gerará a imagem nesta área.
+        </p>
+    </div>
+</div> -->
+
+<div class="marketing-card">
+
+    @if (campanha?.sugestaoIa) {
+    <div class="ai-suggestion">
+        <h3>
+            🤖 Sugestão da IA
+        </h3>
+        <div>
+            <strong>Tom:</strong>
+            {{ campanha.sugestaoIa.tom }}
+        </div>
+        <div>
+            <strong>Tipo da Promoção:</strong>
+            {{ campanha.sugestaoIa.tipoPromocao }}
+        </div>
+        <div>
+            <strong>Elemento Visual:</strong>
+            {{ campanha.sugestaoIa.elementoVisual }}
+        </div>
     </div>
 
     } @else {
 
     <div class="ai-preview__empty">
-        Configure a campanha e clique em
-        "✨ Gerar Arte com IA".
+        Selecione um produto e gere uma campanha.
     </div>
     }
-    @if (campanha?.resultadoIa) {
-
-    <div class="ai-result">
-
-        <h3>
-            📝 Legenda
-        </h3>
-
-        <pre>
-{{ campanha?.resultadoIa?.legenda }}
-    </pre>
-
-        <h3>
-            🏷️ Hashtags
-        </h3>
-
-        <div class="hashtags">
-            @for (
-            hashtag of campanha.resultadoIa.hashtags;
-            track hashtag
-            ) {
-
-            <span>
-                {{ hashtag }}
-            </span>
-
-            }
-
-        </div>
-
-        <h3>
-            💬 WhatsApp
-        </h3>
-
-        <pre>
-            {{ campanha?.resultadoIa?.textoWhatsapp }}
-        </pre>
-
-    </div>
-
-    }
-    <div class="preview-actions">
-        <button
-            (click)="baixarArte()">
-            📥 Baixar Arte
-        </button>
-    </div>
-
-    <div class="ai-preview">
-        @if (campanha) {
-
-        <div class="ai-preview__waiting">
-            <h3>
-                🤖 IA pronta para gerar a arte
-            </h3>
-
-            <p>
-                O StockFlow já possui todas as
-                informações necessárias para criar
-                uma arte profissional.
-            </p>
-
-            <p>
-                Na próxima etapa a IA utilizará
-                essas informações para gerar a
-                imagem automaticamente.
-            </p>
-        </div>
-
-        } @else {
-
-        <div class="ai-preview__empty">
-            Selecione um produto e clique em
-            "✨ Gerar Arte com IA".
-        </div>
-        }
-
-    </div>
+</div>

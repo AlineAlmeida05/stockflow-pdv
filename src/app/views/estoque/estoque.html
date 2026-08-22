@@ -21,10 +21,11 @@
     @if (
     produtosFiltrados.length > 0
     ) {
-
-    <app-data-table
-        [columns]="colunasEstoque"
-        [data]="produtosEstoque">
-    </app-data-table>
+    <div class="card">
+        <app-data-table
+            [columns]="colunasEstoque"
+            [data]="produtosEstoque">
+        </app-data-table>
+    </div>
     }
 </app-main-layout>

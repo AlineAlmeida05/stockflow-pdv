@@ -16,8 +16,6 @@ export class MarketingPromptBuilder {
 
         let estrategiaPromocional = '';
 
-        let objetivoCampanha = '';
-
         let direcaoVisual = '';
 
         switch (campanha.tom) {
@@ -114,59 +112,6 @@ export class MarketingPromptBuilder {
                     Destacar novidade.
                     Criar curiosidade.
                     Comunicação moderna.
-                    `;
-
-                break;
-        }
-
-        switch (campanha.objetivo) {
-
-            case 'Atrair Clientes':
-
-                objetivoCampanha = `
-                    Atrair novos consumidores.
-                    Criar forte impacto visual.
-                    Estimular curiosidade.
-                    `;
-
-                break;
-
-            case 'Aumentar Vendas':
-
-                objetivoCampanha = `
-                    Incentivar compra imediata.
-                    Dar destaque ao preço.
-                    Aumentar conversão.
-                    `;
-
-                break;
-
-            case 'Girar Estoque':
-
-                objetivoCampanha = `
-                    Estimular saída rápida do produto.
-                    Criar sensação de oportunidade.
-                    Destacar promoção.
-                    `;
-
-                break;
-
-            case 'Divulgar Lançamento':
-
-                objetivoCampanha = `
-                    Destacar novidade.
-                    Criar interesse no produto.
-                    Transmitir inovação.
-                    `;
-
-                break;
-
-            case 'Promover Combo':
-
-                objetivoCampanha = `
-                    Destacar vantagem do combo.
-                    Comunicar economia.
-                    Estimular compra conjunta.
                     `;
 
                 break;
@@ -273,8 +218,6 @@ export class MarketingPromptBuilder {
                     Estilo Visual: ${estiloVisual}
 
                     Estratégia Promocional: ${estrategiaPromocional}
-
-                    Objetivo da Campanha: ${objetivoCampanha}
 
                     Elemento Visual Principal: ${campanha.elementoVisual}
 

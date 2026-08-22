@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { RouterLink, RouterLinkActive,  } from '@angular/router';
-import { COMPANY_CONFIG } from '../../config/company.config';
 import { MENU_CONFIG } from '../../config/menu.config';
 import { BRANDING_CONFIG } from '../../config/branding.config';
 
@@ -18,10 +17,6 @@ export class Sidebar {
   closeMenu = new EventEmitter<void>();
 
   branding = BRANDING_CONFIG;
-
-  logoEmpresa = BRANDING_CONFIG.logo;
-
-  nomeEmpresa = BRANDING_CONFIG.nomeExibicao
 
   menu = MENU_CONFIG;
 

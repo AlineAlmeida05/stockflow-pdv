@@ -1,10 +1,10 @@
 :host {
     display: block;
-    width: 240px;
-    flex-shrink: 0;    
+    min-width: 240px;
+    flex: 1;
 }
 
-.card {
+.stat-card {
     height: 100%;
     min-height: 100px;
     padding: 16px;
@@ -15,25 +15,31 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+.stat-card:hover {
+    transform: translateY(-2px);
 }
 
-
-.card h3 {
+.stat-card h3 {
     margin: 0 0 8px;
     font-size: 14px;
     color: var(--color-gray-700);
 }
 
-.card strong {
+.stat-card strong {
     margin-top: 8px;
-    font-size: 24px;
+    font-size: 1.75rem;
     font-weight: 600;
     color: var(--color-gray-900);
 }
 
-.card p {
-    margin-top: 8px;
-    color: var(--color-gray-600);
+.stat-card p {
+    margin: 8px 0 0;
+    color: var(--color-gray-500);
+    font-size: 0.875rem;
 }
 
 .primary {

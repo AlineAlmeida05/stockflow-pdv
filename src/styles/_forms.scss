@@ -1,0 +1,55 @@
+.formulario {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 220px;
+}
+
+.field label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-gray-700);
+}
+
+.field input,
+.field select,
+.field textarea {
+    padding: 12px;
+    border: 1px solid var(--color-gray-300);
+    border-radius: 8px;
+    background: var(--color-white);
+    color: var(--color-gray-900);
+    transition: border-color 0.2s ease;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.field textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.field-full {
+    flex: 1 1 100%;
+}
+
+.field-help {
+    font-size: 0.75rem;
+    color: var(--color-gray-500);
+}
+
+.field-error {
+    font-size: 0.75rem;
+    color: var(--color-danger);
+}

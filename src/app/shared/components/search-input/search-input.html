@@ -1,5 +1,10 @@
-<input
-    type="text"
-    [placeholder]="placeholder"
-    [ngModel]="value"
-    (ngModelChange)="valueChange.emit($event)">
+<div class="search-input">
+    <span class="search-icon">
+        🔍
+    </span>
+    <input
+        type="text"
+        [placeholder]="placeholder"
+        [ngModel]="value"
+        (ngModelChange)="valueChange.emit($event)">
+</div>

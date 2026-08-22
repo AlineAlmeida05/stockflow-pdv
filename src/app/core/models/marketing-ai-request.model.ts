@@ -12,8 +12,6 @@ export interface MarketingAiRequest {
 
     tipoPromocao: string;
 
-    objetivo: string;
-
     elementoVisual: string;
 
     observacoes: string;

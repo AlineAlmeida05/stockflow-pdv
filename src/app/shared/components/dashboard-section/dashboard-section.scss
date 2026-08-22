@@ -7,3 +7,10 @@
     flex-direction: column;
     gap: 16px;
 }
+
+.dashboard-section h2 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-gray-900);
+}

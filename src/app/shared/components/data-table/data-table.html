@@ -1,58 +1,79 @@
-<table>
-    <thead>
-        <tr>
-            @for (
-            column of columns;
-            track column.field
-            ) {
-            <th>
-                {{ column.header }}
-            </th>
-            }
-
-            @if (showActions) {
-            <th>
-                Ações
-            </th>
-            }
-        </tr>
-    </thead>
-
-    <tbody>
-        @for (
-        row of data;
-        track $index;
-        let rowIndex = $index
-        ) {
-        <tr>
-            @for (
-            column of columns;
-            track column.field
-            ) {
-            <td>
-                @if (column.type === 'badge') {
-
-                <app-status-badge
-                    [text]="$any(row)[column.field]"
-                    [variant]="
-        obterVariantStatus(
-            $any(row)[column.field])">
-                </app-status-badge>
-                } @else {
-                {{ $any(row)[column.field] }}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                @for (
+                column of columns;
+                track column.field
+                ) {
+                <th>
+                    {{ column.header }}
+                </th>
                 }
-            </td>
-            }
 
-            @if (showActions) {
-            <td>
-                <app-action-icons
-                    (edit)="edit.emit(row)"
-                    (delete)="delete.emit(row)">
-                </app-action-icons>
-            </td>
+                @if (showActions) {
+                <th>
+                    Ações
+                </th>
+                }
+            </tr>
+        </thead>
+
+        <tbody>
+            @if (!data.length) {
+
+            <tr>
+
+                <td
+                    class="table-empty"
+                    [attr.colspan]="
+            showActions
+                ? columns.length + 1
+                : columns.length">
+
+                    Nenhum registro encontrado.
+
+                </td>
+
+            </tr>
+
+            } @else {
+
+            @for (
+            row of data;
+            track $index;
+            let rowIndex = $index
+            ) {
+            <tr>
+                @for (
+                column of columns;
+                track column.field
+                ) {
+                <td>
+                    @if (column.type === 'badge') {
+
+                    <app-status-badge
+                        [text]="$any(row)[column.field]"
+                        [variant]="
+                            obterVariantStatus($any(row)[column.field])">
+                    </app-status-badge>
+                    } @else {
+                    {{ $any(row)[column.field] }}
+                    }
+                </td>
+                }
+
+                @if (showActions) {
+                <td class="table-actions-column">
+                    <app-action-icons
+                        (edit)="edit.emit(row)"
+                        (delete)="delete.emit(row)">
+                    </app-action-icons>
+                </td>
+                }
+            </tr>
             }
-        </tr>
-        }
-    </tbody>
-</table>
+            }
+        </tbody>
+    </table>
+</div>

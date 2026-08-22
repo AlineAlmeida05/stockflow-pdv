@@ -7,49 +7,6 @@ import { MarketingAiSuggestion } from '../../models/marketing-ai-suggestion.mode
 })
 export class MarketingAiService {
 
-    gerarHeadline(
-        tipoPromocao: string
-    ): string {
-
-        switch (tipoPromocao) {
-
-            case 'Oferta Relâmpago':
-                return '⚡ OFERTA RELÂMPAGO';
-
-            case 'Combo Especial':
-                return '🎁 COMBO ESPECIAL';
-
-            case 'Mais Vendido':
-                return '🏆 MAIS VENDIDO';
-
-            case 'Lançamento':
-                return '✨ LANÇAMENTO';
-
-            default:
-                return '🔥 MEGA PROMOÇÃO';
-        }
-    }
-
-    gerarCta(
-        objetivo: string
-    ): string {
-
-        switch (objetivo) {
-
-            case 'Girar Estoque':
-                return 'Aproveite antes que acabe.';
-
-            case 'Divulgar Lançamento':
-                return 'Conheça a novidade.';
-
-            case 'Promover Combo':
-                return 'Garanta seu combo agora.';
-
-            default:
-                return 'Peça agora mesmo.';
-        }
-    }
-
     gerarResultado(
         produtoNome: string,
         precoPromocional: number,

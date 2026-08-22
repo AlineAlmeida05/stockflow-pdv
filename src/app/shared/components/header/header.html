@@ -1,3 +1,29 @@
 <header class="header">
-  <h1>{{ company.nomeFantasia }}</h1>
+  <div class="header-company">
+    <img
+      [src]="branding.logo"
+      [alt]="branding.nomeExibicao">
+    <div>
+
+      <h2>
+        {{ branding.nomeExibicao }}
+      </h2>
+
+      <p>
+        {{ branding.slogan }}
+      </p>
+    </div>
+
+  </div>
+  <div class="header-actions">
+    <button
+      class="btn btn-secondary">
+      👤 Perfil
+    </button>
+
+    <button
+      class="btn btn-danger">
+      Sair
+    </button>
+  </div>
 </header>

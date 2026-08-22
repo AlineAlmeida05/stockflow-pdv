@@ -2,30 +2,21 @@
     display: block;
 }
 
-.table-section {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.table-section h2 {
-    margin: 0;
-}
-
-.table-section p {
-    margin: 0;
-    color: var(--color-gray-700);
-}
-
 .report-layout {
     display: grid;
     grid-template-columns:
         320px
         minmax(0, 1fr);
     gap: 24px;
-    margin-top: 24px;
 }
 
+.report-layout__insights,
+.report-layout__tables {
+    min-width: 0;
+}
 
-
-
+@media (max-width: 1024px) {
+    .report-layout {
+        grid-template-columns: 1fr;
+    }
+}

@@ -25,7 +25,7 @@
 }
 
 .toast:hover {
-    transform: scale(1.02);
+    transform: translateY(-2px);
 }
 .toast__icon {
     font-size: 1.25rem;
@@ -36,19 +36,18 @@
     flex: 1;
 }
 
-.success {
+.toast-success {
     background: var(--color-success);
 }
-
-.error {
+.toast-error {
     background: var(--color-danger);
 }
 
-.warning {
+.toast-warning {
     background: var(--color-warning);
 }
 
-.info {
+.toast-info {
     background: var(--color-info);
 }
 
@@ -75,5 +74,17 @@
     to {
         opacity: 1;
         transform: translateX(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .toast {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .toast-container {
+        left: 16px;
+        right: 16px;
     }
 }

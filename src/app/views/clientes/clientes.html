@@ -60,11 +60,13 @@
 
     }
     <p>Tabela de Clientes</p>
-    <app-data-table
-        [columns]="colunasClientes"
-        [data]="clientesFiltrados"
-        [showActions]="true"
-        (edit)="editarClienteTabela($event)"
-        (delete)="excluirClienteTabela($event)">
-    </app-data-table>
+    <div class="card">
+        <app-data-table
+            [columns]="colunasClientes"
+            [data]="clientesFiltrados"
+            [showActions]="true"
+            (edit)="editarClienteTabela($event)"
+            (delete)="excluirClienteTabela($event)">
+        </app-data-table>
+    </div>
 </app-main-layout>

@@ -1,3 +1,15 @@
 :host {
     display: block;
 }
+
+.dashboard-chart {
+    padding: 16px;
+    min-height: 300px;
+}
+
+@media (max-width: 768px) {
+    canvas {
+        max-width: 100%;
+        width: 100%;
+    }
+}

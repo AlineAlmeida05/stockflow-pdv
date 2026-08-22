@@ -21,7 +21,6 @@ import { PageTitle } from '../../shared/components/page-title/page-title';
 import { StatCard } from '../../shared/components/stat-card/stat-card';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 
-import { DashboardCard } from '../../shared/components/dashboard-card/dashboard-card';
 
 import { DashboardSection } from '../../shared/components/dashboard-section/dashboard-section';
 import { StatCardCarousel } from '../../shared/components/stat-card-carousel/stat-card-carousel';
@@ -39,7 +38,6 @@ import { AlertService } from '../../core/services/alert.service';
         PageTitle,
         StatCard,
         EmptyState,
-        DashboardCard,
         DashboardSection,
         StatCardCarousel,
         DashboardLayout,

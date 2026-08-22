@@ -1,11 +1,25 @@
 :host {
-    display: block;
-    width: 100%;
+    min-width: 240px;
+    flex: 1;
 }
 
 .indicadores-carrossel {
     display: flex;
     gap: 16px;
     overflow-x: auto;
-    width: 100%;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+}
+
+.indicadores-carrossel::-webkit-scrollbar {
+    height: 6px;
+}
+
+.indicadores-carrossel::-webkit-scrollbar-thumb {
+    background: var(--color-gray-300);
+    border-radius: 999px;
+}
+
+.indicadores-carrossel::-webkit-scrollbar-track {
+    background: transparent;
 }
