@@ -13,6 +13,7 @@ import { EmptyState } from '../../shared/components/empty-state/empty-state';
 
 import { DataTable } from '../../shared/components/data-table/data-table';
 import { Toolbar } from '../../shared/components/toolbar/toolbar';
+import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 
 @Component({
   selector: 'app-produtos',
@@ -75,7 +76,8 @@ export class Produtos implements OnInit {
   ];
 
   constructor(
-    private produtoService: ProdutoService
+    private produtoService: ProdutoService,
+    private confirmDialogService: ConfirmDialogService
   ) { }
 
   ngOnInit(): void {
@@ -185,17 +187,26 @@ export class Produtos implements OnInit {
 
   excluirProduto(id: string): void {
 
-    const confirmar = confirm(
-      'Deseja excluir este produto?'
-    );
+    this.confirmDialogService.open({
 
-    if (!confirmar) {
-      return;
-    }
+      title: 'Excluir Produto',
 
-    this.produtoService.excluir(id);
+      message:
+        'Deseja realmente excluir este produto?',
 
-    this.carregarProdutos();
+      confirmText: 'Excluir',
+
+      cancelText: 'Cancelar',
+
+      onConfirm: () => {
+
+        this.produtoService.excluir(id);
+
+        this.carregarProdutos();
+
+      }
+
+    });
 
   }
 

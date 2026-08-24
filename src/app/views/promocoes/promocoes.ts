@@ -15,6 +15,11 @@ import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { SearchInput } from '../../shared/components/search-input/search-input';
 
+import { AlertService } from '../../core/services/alert.service';
+import { StatusBadge } from '../../shared/components/status-badge/status-badge';
+import { StatCard } from '../../shared/components/stat-card/stat-card';
+
+
 @Component({
     selector: 'app-promocoes',
     standalone: true,
@@ -24,7 +29,9 @@ import { SearchInput } from '../../shared/components/search-input/search-input';
         PageTitle,
         EmptyState,
         SplitPanel,
-        SearchInput
+        SearchInput,
+        StatusBadge,
+        StatCard
     ],
     templateUrl: './promocoes.html',
     styleUrl: './promocoes.scss'
@@ -42,7 +49,8 @@ export class Promocoes implements OnInit {
 
     constructor(
         private produtoService: ProdutoService,
-        private movimentacaoService: MovimentacaoEstoqueService
+        private movimentacaoService: MovimentacaoEstoqueService,
+        private alertService: AlertService
     ) { }
 
     ngOnInit(): void {
@@ -125,14 +133,14 @@ export class Promocoes implements OnInit {
             );
 
         if (percentual >= 70) {
-            return '🟢 Giro Alto';
+            return 'Giro Alto';
         }
 
         if (percentual >= 40) {
-            return '🟡 Giro Médio';
+            return 'Giro Médio';
         }
 
-        return '🔴 Giro Baixo';
+        return 'Giro Baixo';
 
     }
 
@@ -223,14 +231,14 @@ export class Promocoes implements OnInit {
             );
 
         if (dias >= 30) {
-            return '🔴 Produto Parado';
+            return 'Produto Parado';
         }
 
         if (dias >= 15) {
-            return '🟡 Atenção';
+            return 'Atenção';
         }
 
-        return '🟢 Recente';
+        return 'Recente';
 
     }
 
@@ -253,7 +261,7 @@ export class Promocoes implements OnInit {
             dias >= 30
         ) {
 
-            return '🔥 Alta';
+            return 'Alta';
 
         }
 
@@ -262,11 +270,11 @@ export class Promocoes implements OnInit {
             dias >= 15
         ) {
 
-            return '⚠ Média';
+            return 'Média';
 
         }
 
-        return '✅ Baixa';
+        return 'Baixa';
 
     }
 
@@ -291,7 +299,7 @@ export class Promocoes implements OnInit {
             produto
         );
 
-        alert(
+        this.alertService.success(
             'Promoção ativada com sucesso.'
         );
 
@@ -313,7 +321,7 @@ export class Promocoes implements OnInit {
             produto
         );
 
-        alert(
+        this.alertService.success(
             'Promoção desativada com sucesso.'
         );
 
@@ -350,6 +358,71 @@ export class Promocoes implements OnInit {
                             .toLowerCase()
                     )
         );
+
+    }
+
+    obterVariantGiro(
+        produtoId: string
+    ): 'success' | 'warning' | 'danger' {
+
+        const percentual =
+            this.obterPercentualGiro(
+                produtoId
+            );
+
+        if (percentual >= 70) {
+            return 'success';
+        }
+
+        if (percentual >= 40) {
+            return 'warning';
+        }
+
+        return 'danger';
+
+    }
+
+    obterVariantPrioridade(
+        produtoId: string
+    ): 'success' | 'warning' | 'danger' {
+
+        const prioridade =
+            this.obterPrioridade(produtoId);
+
+        if (
+            prioridade.includes('Alta')
+        ) {
+            return 'danger';
+        }
+
+        if (
+            prioridade.includes('Média')
+        ) {
+            return 'warning';
+        }
+
+        return 'success';
+
+    }
+
+    obterVariantEstoque(
+        produtoId: string
+    ): 'success' | 'warning' | 'danger' {
+
+        const dias =
+            this.obterDiasEmEstoque(
+                produtoId
+            );
+
+        if (dias >= 30) {
+            return 'danger';
+        }
+
+        if (dias >= 15) {
+            return 'warning';
+        }
+
+        return 'success';
 
     }
 }

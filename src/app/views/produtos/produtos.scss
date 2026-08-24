@@ -16,39 +16,19 @@
   margin-bottom: 1rem;
   display: inline-flex;
   gap: 0.5rem;
+  align-items: center;
 }
 
 .form-actions {
   display: flex;
-  gap: 0.75rem;
-  align-items: end;
-}
-
-.formulario {
-  display: flex;
-  flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-top: 1.5rem;
+  justify-content: flex-end;
 }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
 
-.field label {
-  font-size: 14px;
-  font-weight: 600;
-}
 
-.field input,
-.field select {
-  padding: 12px;
-  border: 1px solid var(--color-gray-300);
-  border-radius: 8px;
-}
 
-label {
-  color: var(--color-gray-700);
-}
+
+
+

@@ -1,0 +1,54 @@
+@if (
+    confirmDialogService.dialog$ | async;
+as dialog
+) {
+
+<div class="dialog-backdrop">
+
+    <div class="dialog">
+
+        <h2>
+
+            {{ dialog.title }}
+
+        </h2>
+
+        <p>
+
+            {{ dialog.message }}
+
+        </p>
+
+        <div class="dialog-actions">
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="cancelar()">
+
+                {{
+                dialog.cancelText
+                || 'Cancelar'
+                }}
+
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-danger"
+                (click)="confirmar()">
+
+                {{
+                dialog.confirmText
+                || 'Excluir'
+                }}
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+}

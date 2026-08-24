@@ -1,11 +1,85 @@
+.produtos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.produto-detalhes h2 {
+  margin: 0 0 20px;
+  color: var(--color-gray-900);
+}
+
+.produto-detalhes {
+  padding: 24px;
+  border-radius: 16px;
+  background: var(--color-white);
+  border-left: 4px solid var(--color-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.produto-detalhes__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.produto-detalhes__grid div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .produto-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 16px;
-  margin-bottom: 16px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 16px;
+  transition: 0.2s ease;
+  background: var(--color-white);
+}
+
+.produto-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--color-gray-900);
+}
+
+.produto-card app-status-badge {
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+.produto-card p {
+  margin: 0;
+  color: var(--color-gray-700);
+}
+
+.produto-card--active {
+  border: 2px solid var(--color-primary);
+  background: rgba(59, 130, 246, 0.05);
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.produto-card:hover {
+  transform: translateY(-2px);
+}
+
+.produto-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
 }
 
 .preco-promocional {
   font-weight: bold;
   color: green;
+}
+
+.produto-acoes {
+  margin-top: 24px;
 }

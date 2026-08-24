@@ -7,8 +7,22 @@
 .field {
     display: flex;
     flex-direction: column;
+    flex: 1 1 220px;
     gap: 6px;
     min-width: 220px;
+}
+
+.field-large {
+    flex: 2;
+}
+
+.field-small {
+    flex: 0 0 140px;
+    min-width: 140px;
+}
+
+.field-full {
+    flex: 1 1 100%;
 }
 
 .field label {

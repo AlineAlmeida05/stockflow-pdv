@@ -165,11 +165,11 @@ o que recebe
 o que devolve
 
 // TODO:
-2
 // Registrar Chart.js uma única vez
-3
 // em um provider global.
 
 // TODO:
-2
 // Avaliar unificação com ReportLayout.
+
+// TODO
+// Formatar moeda no DataTable

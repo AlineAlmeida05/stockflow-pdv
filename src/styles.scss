@@ -28,7 +28,9 @@ body {
 .field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
+  min-width: 220px;
+  flex: 1;
 }
 
 .field label {

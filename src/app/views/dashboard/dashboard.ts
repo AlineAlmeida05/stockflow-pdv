@@ -7,26 +7,21 @@ import { MainLayout } from '../../layout/main-layout/main-layout';
 import { VendaService } from '../../core/services/venda.service';
 import { FiadoService } from '../../core/services/fiado.service';
 import { ProdutoService } from '../../core/services/produto.service';
-import { ClienteService } from '../../core/services/cliente.service';
 
 import { Venda } from '../../core/models/venda.model';
 import { Fiado } from '../../core/models/fiado.model';
-import { DatePipe } from '@angular/common';
 
 import { Produto } from '../../core/models/produto.model';
 
 import { MovimentacaoEstoque } from '../../core/models/movimentacao-estoque.model';
 import { MovimentacaoEstoqueService } from '../../core/services/movimentacao-estoque.service';
 import { PageTitle } from '../../shared/components/page-title/page-title';
-import { StatCard } from '../../shared/components/stat-card/stat-card';
-import { EmptyState } from '../../shared/components/empty-state/empty-state';
 
 
-import { DashboardSection } from '../../shared/components/dashboard-section/dashboard-section';
 import { StatCardCarousel } from '../../shared/components/stat-card-carousel/stat-card-carousel';
 import { DashboardLayout } from '../../shared/components/dashboard-layout/dashboard-layout';
 import { DashboardChart } from '../../shared/components/dashboard-chart/dashboard-chart';
-import { AlertService } from '../../core/services/alert.service';
+import { ChartConfiguration } from 'chart.js';
 
 @Component({
     selector: 'app-dashboard',
@@ -34,11 +29,7 @@ import { AlertService } from '../../core/services/alert.service';
     imports: [
         MainLayout,
         CurrencyPipe,
-        DatePipe,
         PageTitle,
-        StatCard,
-        EmptyState,
-        DashboardSection,
         StatCardCarousel,
         DashboardLayout,
         DashboardChart,
@@ -65,13 +56,13 @@ export class Dashboard implements OnInit {
         | 'todos'
         = 'hoje';
 
+
+
     constructor(
         private vendaService: VendaService,
         private fiadoService: FiadoService,
         private produtoService: ProdutoService,
-        private clienteService: ClienteService,
         private movimentacaoService: MovimentacaoEstoqueService,
-        private alertService: AlertService
     ) { }
 
     ngOnInit(): void {
@@ -86,9 +77,12 @@ export class Dashboard implements OnInit {
             this.produtoService.listar();
 
         this.movimentacoes =
-            this.movimentacaoService.listar();        
+            this.movimentacaoService.listar();
+
+
 
     }
+
 
     get vendasHoje(): Venda[] {
 
@@ -794,27 +788,23 @@ export class Dashboard implements OnInit {
 
     }
 
-    get pagamentoChartOptions() {
+    pagamentoChartOptions: ChartConfiguration['options'] = {
 
-        return {
+        responsive: true,
 
-            responsive: true,
+        maintainAspectRatio: false,
 
-            maintainAspectRatio: false,
+        plugins: {
 
-            plugins: {
+            legend: {
 
-                legend: {
-
-                    position: 'bottom'
-
-                }
+                position: 'bottom'
 
             }
 
-        };
+        }
 
-    }
+    };
 
     get topProdutosChartData() {
 
@@ -848,19 +838,15 @@ export class Dashboard implements OnInit {
 
     }
 
-    get topProdutosChartOptions() {
+    topProdutosChartOptions: ChartConfiguration['options'] = {
 
-        return {
+        responsive: true,
 
-            responsive: true,
+        maintainAspectRatio: false,
 
-            maintainAspectRatio: false,
+        indexAxis: 'y'
 
-            indexAxis: 'y'
-
-        };
-
-    }
+    };
 
     get evolucaoFiadosPorDia() {
 
@@ -1010,19 +996,15 @@ export class Dashboard implements OnInit {
 
     }
 
-    get giroChartOptions() {
+    giroChartOptions = {
 
-        return {
+        responsive: true,
 
-            responsive: true,
+        maintainAspectRatio: false,
 
-            maintainAspectRatio: false,
+        indexAxis: 'y' as const
 
-            indexAxis: 'y'
-
-        };
-
-    }
+    };
 
     get vendasFiltradas(): Venda[] {
 
