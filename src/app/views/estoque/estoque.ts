@@ -9,6 +9,11 @@ import { PageTitle } from '../../shared/components/page-title/page-title';
 import { SearchInput } from '../../shared/components/search-input/search-input';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { DataTable } from '../../shared/components/data-table/data-table';
+import { Toolbar } from '../../shared/components/toolbar/toolbar';
+import { StatCard } from '../../shared/components/stat-card/stat-card';
+
+import { FormsModule } from '@angular/forms';
+import { SelectInput } from '../../shared/components/select-input/select-input';
 
 @Component({
     selector: 'app-estoque',
@@ -18,7 +23,11 @@ import { DataTable } from '../../shared/components/data-table/data-table';
         PageTitle,
         SearchInput,
         EmptyState,
-        DataTable
+        DataTable,
+        Toolbar,
+        StatCard,
+        FormsModule,
+        SelectInput
     ],
     templateUrl: './estoque.html',
     styleUrl: './estoque.scss'
@@ -28,6 +37,8 @@ export class Estoque implements OnInit {
     produtos: Produto[] = [];
 
     textoBusca = '';
+
+    filtroStatus = 'todos';
 
     colunasEstoque: {
         field: string;
@@ -45,11 +56,15 @@ export class Estoque implements OnInit {
             },
             {
                 field: 'estoqueAtual',
-                header: 'Estoque Atual'
+                header: 'Qtde Atual'
             },
             {
                 field: 'estoqueMinimo',
-                header: 'Estoque Mínimo'
+                header: 'Qtde Mínima'
+            },
+            {
+                field: 'nivelEstoque',
+                header: 'Nível'
             },
             {
                 field: 'statusEstoque',
@@ -57,6 +72,25 @@ export class Estoque implements OnInit {
                 type: 'badge'
             }
         ];
+
+    statusOptions = [
+        {
+            value: 'todos',
+            label: 'Todos'
+        },
+        {
+            value: 'normal',
+            label: 'Normal'
+        },
+        {
+            value: 'atencao',
+            label: 'Atenção'
+        },
+        {
+            value: 'baixo',
+            label: 'Crítico'
+        }
+    ];
 
     constructor(
         private produtoService: ProdutoService
@@ -82,14 +116,24 @@ export class Estoque implements OnInit {
                     produto.estoqueAtual <=
 
                         produto.estoqueMinimo
-                        ? 'Estoque Baixo'
+                        ? 'Baixo'
 
                         : produto.estoqueAtual <=
                             produto.estoqueMinimo * 2
 
                             ? 'Atenção'
-                            : 'Em Estoque'
-            
+                            : 'Em Estoque',
+
+                nivelEstoque:
+                    produto.estoqueMinimo === 0
+                        ? '100%'
+                        : Math.round(
+                            (
+                                produto.estoqueAtual /
+                                produto.estoqueMinimo
+                            ) * 100
+                        ) + '%',
+
             })
         );
 
@@ -98,14 +142,95 @@ export class Estoque implements OnInit {
     get produtosFiltrados(): Produto[] {
 
         return this.produtos.filter(
-            produto =>
-                produto.nome
-                    .toLowerCase()
-                    .includes(
-                        this.textoBusca
-                            .toLowerCase()
-                    )
+            produto => {
+
+                const atendeBusca =
+                    produto.nome
+                        .toLowerCase()
+                        .includes(
+                            this.textoBusca
+                                .toLowerCase()
+                        );
+
+                if (!atendeBusca) {
+                    return false;
+                }
+
+                if (
+                    this.filtroStatus === 'todos'
+                ) {
+                    return true;
+                }
+
+                if (
+                    this.filtroStatus === 'baixo'
+                ) {
+
+                    return (
+                        produto.estoqueAtual <=
+                        produto.estoqueMinimo
+                    );
+
+                }
+
+                if (
+                    this.filtroStatus === 'atencao'
+                ) {
+
+                    return (
+                        produto.estoqueAtual >
+                        produto.estoqueMinimo &&
+                        produto.estoqueAtual <=
+                        produto.estoqueMinimo * 2
+                    );
+
+                }
+
+                return (
+                    produto.estoqueAtual >
+                    produto.estoqueMinimo * 2
+                );
+
+            }
         );
+
+    }
+
+    get totalProdutos(): number {
+
+        return this.produtosFiltrados.length;
+
+    }
+
+    get totalEmEstoque(): number {
+
+        return this.produtosFiltrados.filter(
+            produto =>
+                produto.estoqueAtual >
+                produto.estoqueMinimo * 2
+        ).length;
+
+    }
+
+    get totalBaixo(): number {
+
+        return this.produtosFiltrados.filter(
+            produto =>
+                produto.estoqueAtual <=
+                produto.estoqueMinimo
+        ).length;
+
+    }
+
+    get totalAtencao(): number {
+
+        return this.produtosFiltrados.filter(
+            produto =>
+                produto.estoqueAtual >
+                produto.estoqueMinimo &&
+                produto.estoqueAtual <=
+                produto.estoqueMinimo * 2
+        ).length;
 
     }
 

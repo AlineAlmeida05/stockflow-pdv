@@ -4,10 +4,49 @@
         subtitle="Acompanhe os níveis de estoque e identifique produtos com baixo saldo.">
     </app-page-title>
 
-    <app-search-input
-        placeholder="Buscar produto..."
-        [(value)]="textoBusca">
-    </app-search-input>
+    <app-toolbar>
+        <div class="toolbar-field">
+            <app-search-input
+                placeholder="Buscar produto..."
+                [(value)]="textoBusca">
+            </app-search-input>
+        </div>
+
+        <div class="toolbar-field">
+            <app-select-input
+                [(value)]="filtroStatus"
+                [options]="statusOptions">
+            </app-select-input>
+        </div>
+    </app-toolbar>
+
+    <div class="estoque-resumo">
+
+        <app-stat-card
+            title="Produtos"
+            [value]="totalProdutos"
+            variant="info">
+        </app-stat-card>
+
+        <app-stat-card
+            title="Normal"
+            [value]="totalEmEstoque"
+            variant="success">
+        </app-stat-card>
+
+        <app-stat-card
+            title="Atenção"
+            [value]="totalAtencao"
+            variant="warning">
+        </app-stat-card>
+
+        <app-stat-card
+            title="Crítico"
+            [value]="totalBaixo"
+            variant="danger">
+        </app-stat-card>
+
+    </div>
 
     @if (
     produtosFiltrados.length === 0
