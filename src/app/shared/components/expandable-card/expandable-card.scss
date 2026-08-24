@@ -1,0 +1,17 @@
+.expandable-card__header {
+    width: 100%;
+    border: none;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0;
+    color: var(--color-primary);
+}
+
+.expandable-card__content {
+    margin-top: 16px;
+}

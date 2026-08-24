@@ -21,6 +21,7 @@ export class DataTable {
         field: string;
         header: string;
         type?: 'text' | 'badge';
+        align?: 'left' | 'center' | 'right';
     }[] = [];
 
     @Input()
@@ -43,7 +44,7 @@ export class DataTable {
 
         switch (status) {
 
-            case 'Estoque Baixo':
+            case 'Baixo':
                 return 'danger';
 
             case 'Atenção':

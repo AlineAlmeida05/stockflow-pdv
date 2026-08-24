@@ -74,7 +74,7 @@ export class ReportEstoque {
             },
 
             {
-                title: 'Estoque Baixo',
+                title: 'Baixo',
                 value: this.produtosEstoqueBaixo.length,
                 variant: 'warning' as const
             },

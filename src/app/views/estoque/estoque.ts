@@ -44,32 +44,39 @@ export class Estoque implements OnInit {
         field: string;
         header: string;
         type?: 'text' | 'badge';
+        align: 'left' | 'right' | 'center';
     }[] = [
             {
                 field: 'nome',
                 header: 'Produto',
-                type: 'text'
+                type: 'text',
+                align: 'left'
             },
             {
                 field: 'categoria',
                 header: 'Categoria',
+                align: 'left'
             },
             {
                 field: 'estoqueAtual',
-                header: 'Qtde Atual'
+                header: 'Qtde Atual',
+                align: 'right'
             },
             {
                 field: 'estoqueMinimo',
-                header: 'Qtde Mínima'
+                header: 'Qtde Mínima',
+                align: 'right'
             },
             {
                 field: 'nivelEstoque',
-                header: 'Nível'
+                header: 'Nível',
+                align: 'right'
             },
             {
                 field: 'statusEstoque',
                 header: 'Status',
-                type: 'badge'
+                type: 'badge',
+                align: 'center'
             }
         ];
 

@@ -1,12 +1,14 @@
 <div class="table-container">
-    <table>
+    <table class="table">
         <thead>
             <tr>
                 @for (
                 column of columns;
                 track column.field
                 ) {
-                <th>
+                <th
+                    [class.text-center]="column.align === 'center'"
+                    [class.text-right]="column.align === 'right'">
                     {{ column.header }}
                 </th>
                 }
@@ -49,7 +51,9 @@
                 column of columns;
                 track column.field
                 ) {
-                <td>
+                <td
+                    [class.text-center]="column.align === 'center'"
+                    [class.text-right]="column.align === 'right'">
                     @if (column.type === 'badge') {
 
                     <app-status-badge

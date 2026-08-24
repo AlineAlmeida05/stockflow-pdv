@@ -690,7 +690,7 @@ export class Relatorios
                     produto.estoqueAtual <=
                         produto.estoqueMinimo
 
-                        ? 'Estoque Baixo'
+                        ? 'Baixo'
 
                         : produto.estoqueAtual <=
                             produto.estoqueMinimo * 2
@@ -1314,7 +1314,7 @@ export class Relatorios
 
                 'Sem Estoque': 1,
 
-                'Estoque Baixo': 2,
+                'Baixo': 2,
 
                 'Atenção': 3,
 

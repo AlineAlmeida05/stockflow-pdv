@@ -700,7 +700,7 @@ export class Dashboard implements OnInit {
             },
 
             {
-                title: 'Estoque Baixo',
+                title: 'Baixo',
                 value: this.produtosComEstoqueBaixo,
                 variant: 'warning'
             }

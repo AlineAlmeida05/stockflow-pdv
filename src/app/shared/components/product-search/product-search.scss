@@ -1,5 +1,16 @@
+:host {
+    display: block;
+    width: 100%;
+}
+
 .product-search {
     position: relative;
+    width: 100%;
+}
+
+.product-search__input {
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .resultados {

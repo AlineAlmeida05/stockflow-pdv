@@ -1,14 +1,7 @@
-import {
-    Component,
-    EventEmitter,
-    Input,
-    Output
-} from '@angular/core';
-
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { Produto }
-    from '../../../core/models/produto.model';
+import { Produto } from '../../../core/models/produto.model';
 
 @Component({
     selector: 'app-product-search',
@@ -60,6 +53,12 @@ export class ProductSearch {
         this.produtoSelecionado.emit(
             produto
         );
+
+    }
+
+    limpar(): void {
+
+        this.textoBusca = '';
 
     }
 

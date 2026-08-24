@@ -1,5 +1,4 @@
 <app-main-layout>
-
     <app-page-title
         title="Entrada de Estoque"
         subtitle="Registre reposições e acompanhe o estoque atual dos produtos.">
@@ -7,69 +6,115 @@
 
     <app-split-panel>
         <div left>
-            <div class="formulario">
-                <div class="field">
-                    <label>Produto</label>
-                    <select
-                        [(ngModel)]="produtoSelecionadoId">
+            <div class="card estoque-form-card">
+                <h3>
+                    Cadastro de Entrada de Estoque
+                </h3>
 
-                        <option value>
-                            Selecione um produto
-                        </option>
+                <div class="formulario">
+                    <div class="field">
+                        <label>
+                            Produto
+                        </label>
 
-                        @for (produto of produtos; track produto.id) {
+                        @if (true) {
 
-                        <option [value]="produto.id">
-                            {{ produto.nome }}
-                        </option>
+                        <app-product-search
+                            [produtos]="produtos"
+                            (produtoSelecionado)="selecionarProduto($event)">
+                        </app-product-search> }
+                        @if (produtoSelecionadoId) {
+
+                        <small>
+                            Produto selecionado:
+                            {{
+                            obterNomeProdutoSelecionado()
+                            }}
+                        </small>
                         }
-                    </select>
+
+                    </div>
+
+                    <div class="field">
+                        <label>Quantidade</label>
+                        <input
+                            type="number"
+                            min="1"
+                            placeholder="0"
+                            [(ngModel)]="quantidade">
+                    </div>
+
+                    <div class="field">
+                        <app-currency-input
+                            label="Preço de Compra"
+                            [(value)]="precoCompra">
+                        </app-currency-input>
+                    </div>
+                    <div class="form-actions">
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            (click)="adicionarEstoque()">
+                            Adicionar Estoque
+                        </button>
+                    </div>
                 </div>
 
-                <div class="field">
-                    <label>Quantidade</label>
-                    <input
-                        type="number"
-                        placeholder="Quantidade"
-                        [(ngModel)]="quantidade">
-                </div>
-                <div class="field">
-                    <app-currency-input
-                        label="Preço de Compra"
-                        [(value)]="precoCompra">
-                    </app-currency-input>
-                </div>
-                <button
-                    type="button"
-                    (click)="adicionarEstoque()">
-                    Adicionar Estoque
-                </button>
             </div>
         </div>
 
         <div right>
-            <h2>Produtos</h2>
-            <app-search-input
-                placeholder="Buscar produto..."
-                [(value)]="textoBusca">
-            </app-search-input>
+            <app-expandable-card
+                title="Produtos"
+                [expanded]="false">
 
-            @if (
-            produtosFiltrados.length === 0
-            ) {
-            <app-empty-state
-                message="Nenhum produto encontrado.">
-            </app-empty-state>
-            }
-            @if (
-            produtosFiltrados.length > 0
-            ) {
+                <div class="estoque-resumo">
 
-            <app-data-table
-                [columns]="colunasProdutos"
-                [data]="produtosTabela">
-            </app-data-table>
-            }
+                    <app-stat-card
+                        title="Produtos"
+                        [value]="totalProdutos"
+                        variant="info">
+                    </app-stat-card>
+
+                    <app-stat-card
+                        title="Normal"
+                        [value]="totalNormal"
+                        variant="success">
+                    </app-stat-card>
+
+                    <app-stat-card
+                        title="Atenção"
+                        [value]="totalAtencao"
+                        variant="warning">
+                    </app-stat-card>
+
+                    <app-stat-card
+                        title="Crítico"
+                        [value]="totalCritico"
+                        variant="danger">
+                    </app-stat-card>
+
+                </div>
+
+                <app-search-input
+                    placeholder="Buscar produto..."
+                    [(value)]="textoBusca">
+                </app-search-input>
+
+                <app-data-table
+                    [columns]="colunasProdutos"
+                    [data]="produtosTabela">
+                </app-data-table>
+            </app-expandable-card>
+
+            <app-expandable-card
+                title="Últimas Entradas"
+                [expanded]="true">
+                <app-data-table
+                    [columns]="colunasMovimentacoes"
+                    [data]="movimentacoesRecentes">
+                </app-data-table>
+            </app-expandable-card>
         </div>
     </app-split-panel>
 </app-main-layout>

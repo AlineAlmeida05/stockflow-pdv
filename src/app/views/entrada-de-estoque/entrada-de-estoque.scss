@@ -1,31 +1,44 @@
+:host {
+  display: block;
+}
+
 .formulario {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.field {
-  display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 16px;
 }
 
-.field label {
-  font-size: 14px;
-  font-weight: 600;
+.estoque-form-card h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: var(--color-primary);
 }
 
-.field input,
-.field select {
-  padding: 8px;
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
 }
 
-input,
-select {
-  border: 1px solid var(--color-gray-300);
+.estoque-resumo {
+  display: flex;
+
+  gap: 16px;
+
+  margin: 16px 0 24px;
+
+  flex-wrap: wrap;
 }
 
-label {
-  color: var(--color-gray-700);
+.movimentacoes-card {
+
+    margin-top: 24px;
+}
+
+.movimentacoes-card h3 {
+
+    margin-top: 0;
+    margin-bottom: 16px;
+
+    color: var(--color-primary);
 }

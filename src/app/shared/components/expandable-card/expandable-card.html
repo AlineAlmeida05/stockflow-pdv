@@ -1,0 +1,38 @@
+<div class="card expandable-card">
+
+    <button
+        type="button"
+        class="expandable-card__header"
+        (click)="toggle()">
+
+        <span>
+
+            {{ title }}
+
+        </span>
+
+        <span>
+
+            {{
+            expanded
+            ? '▼'
+            : '▶'
+            }}
+
+        </span>
+
+    </button>
+
+    @if (expanded) {
+
+    <div
+        class="expandable-card__content">
+
+        <ng-content>
+        </ng-content>
+
+    </div>
+
+    }
+
+</div>
