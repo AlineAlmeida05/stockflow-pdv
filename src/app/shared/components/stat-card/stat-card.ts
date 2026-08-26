@@ -20,4 +20,7 @@ export class StatCard {
     @Input()
     variant: 'primary' | 'success' | 'warning' | 'danger' | 'info' = 'primary';
 
+    @Input()
+    active = false;
+
 }

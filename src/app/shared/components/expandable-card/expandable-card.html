@@ -1,26 +1,17 @@
 <div class="card expandable-card">
-
     <button
         type="button"
         class="expandable-card__header"
         (click)="toggle()">
-
         <span>
-
             {{ title }}
-
         </span>
 
-        <span>
-
-            {{
-            expanded
-            ? '▼'
-            : '▶'
-            }}
-
+        <span
+            class="expandable-card__icon"
+            [class.expanded]="expanded">
+            ▶
         </span>
-
     </button>
 
     @if (expanded) {
@@ -32,7 +23,5 @@
         </ng-content>
 
     </div>
-
     }
-
 </div>
