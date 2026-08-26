@@ -1,20 +1,55 @@
-<div class="product-search">
-    <input
-        class="product-search__input"
-        type="text"
-        placeholder="Digite o nome do produto..."
-        [(ngModel)]="textoBusca">
+<div class="field">
+    <label>
+        Produto
+    </label>
 
-    @if (resultados.length > 0) {
+    <input
+    type="text"
+    [(ngModel)]="textoBusca"
+    (input)="mostrarResultados = true"
+    (keyup.enter)="selecionarPrimeiroResultado()">
+
+    @if (
+    mostrarResultados &&
+    resultados.length > 0
+    ) {
+
     <div class="resultados">
+
         @for (
         produto of resultados;
         track produto.id
         ) {
+
         <button
             type="button"
             (click)="selecionarProduto(produto)">
-            {{ produto.nome }}
+            <strong>
+                {{ produto.nome }}
+            </strong>
+
+            <small
+                [class.estoque-baixo]="
+        produto.estoqueAtual > 0 &&
+        produto.estoqueAtual <= 5
+    "
+                [class.sem-estoque]="
+        produto.estoqueAtual <= 0
+    ">
+
+                @if (produto.estoqueAtual <= 0) {
+
+                Sem estoque
+
+                } @else {
+
+                Estoque:
+                {{ produto.estoqueAtual }}
+
+                }
+
+            </small>
+
         </button>
         }
     </div>

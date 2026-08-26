@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { CompanyProfileCard } from './components/company-profile-card/company-profile-card';
@@ -22,21 +22,20 @@ import { CompanyBrandCard } from './components/company-brand-card/company-brand-
     styleUrl: './empresa.scss'
 })
 
-export class EmpresaComponent {
+export class EmpresaComponent implements OnInit {
 
     constructor(
         private empresaService: EmpresaService
     ) { }
 
+    empresa!: Empresa;
 
     ngOnInit(): void {
 
         this.empresa =
-
             this.empresaService
                 .obter();
 
     }
-    empresa!: Empresa;
 
 }

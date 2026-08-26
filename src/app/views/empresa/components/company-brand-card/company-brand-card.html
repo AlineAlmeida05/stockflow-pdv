@@ -7,17 +7,33 @@
         Tema visual ativo do sistema.
     </p>
 
+    <div class="brand-summary">
+        <span>
+            🎨 Identidade ativa
+        </span>
+    </div>
+
     <div class="brand-preview">
         <div
             class="brand-preview__primary"
             [style.background]="empresa.corPrimaria">
-            Primária
+
+            <small>Cor Primária</small>
+
+            <strong>
+                {{ empresa.corPrimaria }}
+            </strong>
         </div>
 
         <div
             class="brand-preview__secondary"
             [style.background]="empresa.corSecundaria">
-            Secundária
+
+            <small>Cor Secundária</small>
+
+            <strong>
+                {{ empresa.corSecundaria }}
+            </strong>
         </div>
     </div>
 </div>

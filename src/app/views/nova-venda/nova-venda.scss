@@ -1,31 +1,162 @@
-.formulario {
+.venda-toolbar {
     display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-end;
     margin-bottom: 24px;
+    padding: 20px;
+    min-height: 90px;
 }
 
-.field {
+.venda-toolbar__produto {
+    flex: 2;
+}
+
+.venda-toolbar__quantidade {
+    width: 220px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
 }
 
-.field label {
-    color: var(--color-gray-700);
+.venda-toolbar__quantidade input {
+    width: 100%;
+}
+
+.venda-toolbar__acoes {
+    width: 220px;
+}
+
+.venda-toolbar__acoes button {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 10px;
     font-weight: 600;
 }
 
-.field input,
-.field select {
-    padding: 8px;
-    border: 1px solid var(--color-gray-300);
+.venda-content {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
 }
 
-.item-card {
+.venda-content__carrinho {
+    min-height: 280px;
+    flex: 2;
+}
+
+.venda-content__pagamento {
+    flex: 1;
+}
+
+.pagamento-card {
+    padding: 20px;
+}
+
+.pagamento-card h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--color-primary);
+}
+
+.total-venda {
+    margin-bottom: 20px;
     padding: 16px;
-    margin-bottom: 12px;
-    border: 1px solid var(--color-gray-300);
+    border-radius: 12px;
+    background: rgba(34, 197, 94, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-venda strong {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--color-danger);
+}
+
+.troco-box {
+    margin-top: 16px;
+    margin-bottom: 20px;
+    padding: 16px;
+    border-radius: 12px;
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.troco-positivo {
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+.troco-box strong {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--color-success);
+}
+
+.venda-content__pagamento button {
+    width: 100%;
+    height: 48px;
+    border: none;
     border-radius: 8px;
-    background: var(--color-white);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.venda-content__pagamento button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.venda-content__pagamento button:not(:disabled) {
+    cursor: pointer;
+}
+
+.venda-content__pagamento .field {
+    margin-bottom: 16px;
+}
+
+.produto-info-card {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(30, 58, 95, 0.08), rgba(30, 58, 95, 0.03));
+    border: 1px solid rgba(37, 99, 235, 0.15);
+}
+
+.estoque-alto {
+    color: var(--color-success);
+}
+
+.estoque-medio {
+    color: var(--color-warning);
+    font-weight: 600;
+}
+
+.estoque-baixo {
+    color: var(--color-danger);
+    font-weight: 700;
+}
+
+.desconto-total {
+    display: block;
+    margin-top: 4px;
+    color: var(--color-success);
+    font-weight: 600;
+}
+
+.produto-info-card strong {
+    font-size: 1.05rem;
+    color: var(--color-primary);
+}
+
+.total-venda small {
+    display: block;
+    margin-top: 4px;
 }

@@ -14,6 +14,7 @@ import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { DataTable } from '../../shared/components/data-table/data-table';
 import { Toolbar } from '../../shared/components/toolbar/toolbar';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
+import { AlertService } from '../../core/services/alert.service';
 
 @Component({
   selector: 'app-produtos',
@@ -25,7 +26,7 @@ import { ConfirmDialogService } from '../../core/services/confirm-dialog.service
     SearchInput,
     EmptyState,
     DataTable,
-    Toolbar
+    Toolbar,
 
   ],
   templateUrl: './produtos.html',
@@ -55,29 +56,41 @@ export class Produtos implements OnInit {
 
   mostrarFormulario = false;
 
-  colunasProdutos = [
-    {
-      field: 'nome',
-      header: 'Nome'
-    },
-    {
-      field: 'categoria',
-      header: 'Categoria'
-    },
-    {
-      field: 'precoVenda',
-      header: 'Preço Venda'
-    },
-    {
-      field: 'estoqueAtual',
-      header: 'Estoque'
-    }
-
-  ];
+  colunasProdutos: {
+    field: string;
+    header: string;
+    type?:
+    | 'text'
+    | 'badge'
+    | 'currency'
+    | 'date';
+    align?: 'left' | 'center' | 'right';
+  }[] = [
+      {
+        field: 'nome',
+        header: 'Nome'
+      },
+      {
+        field: 'categoria',
+        header: 'Categoria'
+      },
+      {
+        field: 'precoVenda',
+        header: 'Preço Venda',
+        type: 'currency',
+        align: 'right'
+      },
+      {
+        field: 'estoqueAtual',
+        header: 'Estoque',
+        align: 'right'
+      }
+    ];
 
   constructor(
     private produtoService: ProdutoService,
-    private confirmDialogService: ConfirmDialogService
+    private confirmDialogService: ConfirmDialogService,
+    private alertService: AlertService
   ) { }
 
   ngOnInit(): void {
@@ -94,7 +107,13 @@ export class Produtos implements OnInit {
   salvarProduto(): void {
 
     if (!this.nome.trim()) {
+
+      this.alertService.warning(
+        'Informe o nome do produto.'
+      );
+
       return;
+
     }
 
     if (this.produtoEditandoId) {
@@ -121,6 +140,11 @@ export class Produtos implements OnInit {
 
       });
 
+      this.alertService.success(
+        'Produto atualizado com sucesso.'
+      );
+
+
     } else {
 
       this.produtoService.salvar({
@@ -142,6 +166,10 @@ export class Produtos implements OnInit {
 
         dataCadastro: new Date().toISOString()
       });
+
+      this.alertService.success(
+        'Produto cadastrado com sucesso.'
+      );
 
     }
 
@@ -203,6 +231,10 @@ export class Produtos implements OnInit {
         this.produtoService.excluir(id);
 
         this.carregarProdutos();
+
+        this.alertService.success(
+          'Produto removido com sucesso.'
+        );
 
       }
 

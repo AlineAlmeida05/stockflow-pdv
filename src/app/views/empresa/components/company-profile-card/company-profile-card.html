@@ -25,29 +25,48 @@
             {{ empresa.slogan }}
         </p>
 
-        <p>
-            {{ empresa.razaoSocial || '-' }}
-        </p>
+        <div class="company-info-group">
+            <strong>
+                Dados Fiscais
+            </strong>
 
-        <p>
-            CNPJ: {{ empresa.cnpj || '-' }}
-        </p>
+            <p>
+                Razão Social:
+                {{ empresa.razaoSocial || '-' }}
+            </p>
 
-        <p>
-            Proprietário: {{ empresa.proprietario || '-' }}
-        </p>
+            <p>
+                CNPJ:
+                {{ empresa.cnpj || '-' }}
+            </p>
+        </div>
 
-        <p>
-            {{ empresa.telefone || '-' }}
-        </p>
+        <div class="company-info-group">
+            <strong>
+                Responsável
+            </strong>
 
-        <p>
-            {{ empresa.email || '-' }}
-        </p>
+            <p>
+                Proprietário:
+                {{ empresa.proprietario || '-' }}
+            </p>
+        </div>
 
-        <p>
-            {{ empresa.cidade }}
-            {{ empresa.uf ? ' - ' + empresa.uf : '' }}
-        </p>
+        <div class="company-info-group">
+            <strong>
+                Contato
+            </strong>
+            <p>
+                📞 {{ empresa.telefone || '-' }}
+            </p>
+
+            <p>
+                ✉️ {{ empresa.email || '-' }}
+            </p>
+
+            <p>
+                📍 {{ empresa.cidade }}
+                {{ empresa.uf ? ' - ' + empresa.uf : '' }}
+            </p>
+        </div>
     </div>
-</div>

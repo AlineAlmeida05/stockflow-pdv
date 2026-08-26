@@ -43,7 +43,7 @@ export class Estoque implements OnInit {
     colunasEstoque: {
         field: string;
         header: string;
-        type?: 'text' | 'badge';
+        type?: | 'text' | 'badge' | 'currency' | 'date';
         align: 'left' | 'right' | 'center';
     }[] = [
             {

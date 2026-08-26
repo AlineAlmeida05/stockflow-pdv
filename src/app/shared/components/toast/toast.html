@@ -8,6 +8,7 @@
     ) {
 
     <div
+        class="toast"
         [class.toast-success]="toast.type === 'success'"
         [class.toast-error]="toast.type === 'error'"
         [class.toast-warning]="toast.type === 'warning'"
@@ -29,6 +30,7 @@
         </button>
 
     </div>
+    <div class="toast__progress"></div>
 
     }
 

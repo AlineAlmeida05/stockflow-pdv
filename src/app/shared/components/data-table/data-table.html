@@ -47,34 +47,68 @@
             let rowIndex = $index
             ) {
             <tr>
+
                 @for (
                 column of columns;
                 track column.field
                 ) {
+
                 <td
                     [class.text-center]="column.align === 'center'"
                     [class.text-right]="column.align === 'right'">
+
                     @if (column.type === 'badge') {
 
                     <app-status-badge
                         [text]="$any(row)[column.field]"
                         [variant]="
-                            obterVariantStatus($any(row)[column.field])">
+                obterVariantStatus(
+                    $any(row)[column.field]
+                )">
                     </app-status-badge>
+
+                    } @else if (column.type === 'currency') {
+
+                    {{
+                    formatCurrency(
+                    $any(row)[column.field]
+                    )
+                    }}
+
+                    } @else if (column.type === 'date') {
+
+                    {{
+                    formatDate(
+                    $any(row)[column.field]
+                    )
+                    }}
+
                     } @else {
-                    {{ $any(row)[column.field] }}
+
+                    {{
+                    $any(row)[column.field]
+                    }}
+
                     }
+
                 </td>
+
                 }
 
                 @if (showActions) {
+
                 <td class="table-actions-column">
+
                     <app-action-icons
+                        [showEdit]="showEditAction"
                         (edit)="edit.emit(row)"
                         (delete)="delete.emit(row)">
                     </app-action-icons>
+
                 </td>
+
                 }
+
             </tr>
             }
             }

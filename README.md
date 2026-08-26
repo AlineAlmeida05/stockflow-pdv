@@ -173,3 +173,26 @@ o que devolve
 
 // TODO
 // Formatar moeda no DataTable
+
+
+Páginas: 
+Dashboard - falta os botões estilizados
+
+Nova Venda - 
+
+Histórico de Vendas - 
+
+Produtos - uma suavidade na hora de aparecer o formulário
+
+Estoque - OK
+
+Promoções - Ok
+
+Marketing IA - é por último
+
+Empresa - Ok
+
+Relatórios - falta
+
+
+implementar o fechar caixa no fim do dia

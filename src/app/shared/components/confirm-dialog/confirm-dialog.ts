@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { ConfirmDialogService } from '../../../core/services/confirm-dialog.service';
+import { HostListener } from '@angular/core';
 
 @Component({
     selector: 'app-confirm-dialog',
@@ -18,6 +19,15 @@ export class ConfirmDialog {
         public confirmDialogService:
             ConfirmDialogService
     ) { }
+
+    @HostListener(
+        'document:keydown.escape'
+    )
+    onEscape(): void {
+
+        this.cancelar();
+
+    }
 
     confirmar(): void {
 

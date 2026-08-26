@@ -7,6 +7,7 @@ export interface Venda {
   dataVenda: string;
 
   formaPagamento:
+    | 'Selecione...'
     | 'pix'
     | 'dinheiro'
     | 'debito'

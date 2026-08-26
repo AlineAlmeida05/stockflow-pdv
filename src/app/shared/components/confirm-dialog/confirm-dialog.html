@@ -1,54 +1,44 @@
 @if (
-    confirmDialogService.dialog$ | async;
+confirmDialogService.dialog$ | async;
 as dialog
 ) {
 
 <div class="dialog-backdrop">
-
-    <div class="dialog">
-
-        <h2>
-
-            {{ dialog.title }}
-
-        </h2>
+    <div class="dialog"
+        (click)="$event.stopPropagation()">
+        <div class="dialog-header">
+            <span class="dialog-icon">
+                ⚠️
+            </span>
+            <h2>
+                {{ dialog.title }}
+            </h2>
+        </div>
 
         <p>
-
             {{ dialog.message }}
-
         </p>
 
         <div class="dialog-actions">
-
             <button
                 type="button"
-                class="btn btn-secondary"
+                class="dialog-backdrop btn btn-secondary"
                 (click)="cancelar()">
-
                 {{
-                dialog.cancelText
-                || 'Cancelar'
+                dialog.cancelText || 'Cancelar'
                 }}
-
             </button>
 
             <button
                 type="button"
                 class="btn btn-danger"
                 (click)="confirmar()">
-
                 {{
                 dialog.confirmText
                 || 'Excluir'
                 }}
-
             </button>
-
         </div>
-
     </div>
-
 </div>
-
 }

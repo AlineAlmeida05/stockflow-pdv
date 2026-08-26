@@ -1,7 +1,8 @@
 import {
     Component,
     EventEmitter,
-    Output
+    Output,
+    Input
 } from '@angular/core';
 
 @Component({
@@ -12,12 +13,14 @@ import {
 })
 export class ActionIcons {
 
-    @Output()
-    edit =
-        new EventEmitter<void>();
+    @Input()
+    showEdit = true;
 
     @Output()
-    delete =
-        new EventEmitter<void>();
+    edit = new EventEmitter<void>();
+
+    @Output()
+    delete = new EventEmitter<void>();   
+
 
 }

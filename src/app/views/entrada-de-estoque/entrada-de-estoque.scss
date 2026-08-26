@@ -22,23 +22,25 @@
 
 .estoque-resumo {
   display: flex;
-
   gap: 16px;
-
   margin: 16px 0 24px;
-
   flex-wrap: wrap;
 }
 
 .movimentacoes-card {
-
-    margin-top: 24px;
+  margin-top: 24px;
 }
 
 .movimentacoes-card h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: var(--color-primary);
+}
 
-    margin-top: 0;
-    margin-bottom: 16px;
-
-    color: var(--color-primary);
+.produto-selecionado {
+  margin-top: 8px;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.15);
 }

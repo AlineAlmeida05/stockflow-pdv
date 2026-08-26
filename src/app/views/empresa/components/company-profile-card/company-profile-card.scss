@@ -16,10 +16,12 @@
     flex-shrink: 0;
     border-radius: 50%;
     overflow: hidden;
-    background: var(--color-white);
     display: flex;
     justify-content: center;
     align-items: center;
+    background: linear-gradient(135deg, rgba(30, 58, 95, 0.08), rgba(30, 58, 95, 0.03));
+    border: 1px solid rgba(30, 58, 95, 0.15);
+    font-size: 4rem;
 }
 
 .company-profile-card__logo img {
@@ -54,4 +56,15 @@
     color: var(--color-gray-500);
     font-style: italic;
     font-size: 0.95rem;
+}
+
+.company-info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.company-info-group strong {
+    color: var(--color-primary);
+    font-size: 0.9rem;
 }

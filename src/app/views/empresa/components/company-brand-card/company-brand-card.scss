@@ -3,6 +3,10 @@
     background: var(--color-white);
     border-radius: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: var(--color-primary);
+    border: 1px solid var(--color-gray-200);
 }
 
 .brand-preview {
@@ -15,14 +19,55 @@
 .brand-preview__primary,
 .brand-preview__secondary {
     flex: 1;
+
     padding: 16px;
+
     border-radius: 12px;
+
     color: var(--color-white);
-    text-align: center;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+    text-align: left;
+
     font-weight: 600;
+}
+
+.brand-preview small {
+    opacity: 0.85;
+
+    font-size: 0.75rem;
+}
+
+.brand-preview strong {
+    font-size: 1rem;
+
+    word-break: break-word;
 }
 
 .brand-description {
     margin-bottom: 20px;
     color: var(--color-gray-500);
+}
+
+.brand-summary {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 6px 12px;
+
+    border-radius: 999px;
+
+    background: rgba(59, 130, 246, 0.08);
+
+    color: var(--color-primary);
+
+    font-size: 0.85rem;
+
+    font-weight: 600;
 }

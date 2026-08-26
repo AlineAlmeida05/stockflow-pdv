@@ -1,0 +1,15 @@
+<div class="product-selector">
+
+    <app-barcode-search
+        [produtos]="produtos"
+        (produtoSelecionado)="
+            selecionarProduto($event)">
+    </app-barcode-search>
+
+    <app-product-search
+        [produtos]="produtos"
+        (produtoSelecionado)="
+            selecionarProduto($event)">
+    </app-product-search>
+
+</div>

@@ -10,7 +10,9 @@ export interface ConfirmDialogData {
 
     confirmText?: string;
 
-    cancelText?: string;
+    cancelText?: string;    
+
+    type?: 'danger' | 'warning' | 'info';
 
     onConfirm: () => void;
 

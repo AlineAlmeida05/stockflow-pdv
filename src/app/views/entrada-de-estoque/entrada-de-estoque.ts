@@ -17,12 +17,12 @@ import { DataTable } from '../../shared/components/data-table/data-table';
 import { CurrencyInput } from '../../shared/components/currency-input/currency-input';
 
 import { SelectInput } from '../../shared/components/select-input/select-input';
-import { ProductSearch } from '../../shared/components/product-search/product-search';
 import { AlertService } from '../../core/services/alert.service';
 
 import { StatCard } from '../../shared/components/stat-card/stat-card';
 import { ExpandableCard } from '../../shared/components/expandable-card/expandable-card';
 import { ViewChild } from '@angular/core';
+import { ProductSearch } from '../../shared/components/product-search/product-search';
 
 @Component({
     selector: 'app-entrada-de-estoque',
@@ -37,9 +37,9 @@ import { ViewChild } from '@angular/core';
         DataTable,
         CurrencyInput,
         SelectInput,
-        ProductSearch,
         StatCard,
-        ExpandableCard
+        ExpandableCard,
+        ProductSearch
     ],
     templateUrl: './entrada-de-estoque.html',
     styleUrl: './entrada-de-estoque.scss'
@@ -57,10 +57,13 @@ export class EntradaDeEstoque implements OnInit {
 
     textoBusca = '';
 
+    @ViewChild(ProductSearch)
+    productSearch?: ProductSearch;
+
     colunasProdutos: {
         field: string;
         header: string;
-        type?: 'text' | 'badge';
+        type?: | 'text' | 'badge' | 'currency' | 'date';
         align: 'left' | 'right' | "center"
     }[] = [
             {
@@ -95,7 +98,11 @@ export class EntradaDeEstoque implements OnInit {
     colunasMovimentacoes: {
         field: string;
         header: string;
-        type?: 'text' | 'badge';
+        type?:
+        | 'text'
+        | 'badge'
+        | 'currency'
+        | 'date';
         align?: 'left' | 'right' | 'center';
     }[] = [
             {
@@ -104,24 +111,23 @@ export class EntradaDeEstoque implements OnInit {
                 align: 'left'
             },
             {
+                field: 'precoCompra',
+                header: 'Preço',
+                type: 'currency',
+                align: 'right'
+            },
+            {
                 field: 'quantidade',
                 header: 'Qtde',
                 align: 'right'
             },
             {
-                field: 'precoCompraFormatado',
-                header: 'Preço',
-                align: 'right'
-            },
-            {
-                field: 'dataFormatada',
+                field: 'dataMovimentacao',
                 header: 'Data',
+                type: 'date',
                 align: 'left'
             }
         ];
-
-    @ViewChild(ProductSearch)
-    productSearch?: ProductSearch;
 
     constructor(
         private produtoService: ProdutoService,
@@ -225,21 +231,20 @@ export class EntradaDeEstoque implements OnInit {
         );
 
         this.alertService.success(
-            'Estoque adicionado com sucesso.'
+            'Entrada de estoque registrada com sucesso.'
         );
 
         this.produtoSelecionadoId = '';
+
+        this.productSearch?.limpar();
 
         this.quantidade = null;
 
         this.precoCompra = null;
 
-        this.productSearch?.limpar();
-
         this.carregarProdutos();
 
     }
-
 
     get produtosFiltrados(): Produto[] {
 
@@ -335,7 +340,6 @@ export class EntradaDeEstoque implements OnInit {
 
     }
 
-
     get totalNormal(): number {
 
         return this.produtosFiltrados.filter(
@@ -381,19 +385,7 @@ export class EntradaDeEstoque implements OnInit {
             .map(
                 mov => ({
 
-                    ...mov,
-
-                    precoCompraFormatado:
-                        mov.precoCompra
-                            ? `R$ ${mov.precoCompra.toFixed(2)}`
-                            : '-',
-
-                    dataFormatada:
-                        new Date(
-                            mov.dataMovimentacao
-                        ).toLocaleDateString(
-                            'pt-BR'
-                        )
+                    ...mov,                    
 
                 })
             );

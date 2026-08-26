@@ -13,26 +13,19 @@
 
                 <div class="formulario">
                     <div class="field">
-                        <label>
-                            Produto
-                        </label>
-
-                        @if (true) {
-
                         <app-product-search
                             [produtos]="produtos"
                             (produtoSelecionado)="selecionarProduto($event)">
-                        </app-product-search> }
+                        </app-product-search>
+
                         @if (produtoSelecionadoId) {
-
-                        <small>
+                        <div class="produto-selecionado">
                             Produto selecionado:
-                            {{
-                            obterNomeProdutoSelecionado()
-                            }}
-                        </small>
+                            <strong>
+                                {{ obterNomeProdutoSelecionado() }}
+                            </strong>
+                        </div>
                         }
-
                     </div>
 
                     <div class="field">
@@ -59,7 +52,6 @@
                         </button>
                     </div>
                 </div>
-
             </div>
         </div>
 
@@ -93,7 +85,6 @@
                         [value]="totalCritico"
                         variant="danger">
                     </app-stat-card>
-
                 </div>
 
                 <app-search-input

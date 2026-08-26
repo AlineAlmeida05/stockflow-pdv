@@ -1,0 +1,41 @@
+<div class="field">
+
+    <label>
+        Código de Barras
+    </label>
+
+    <input
+        #codigoBarrasInput
+        type="text"
+        [(ngModel)]="codigoBarras"
+        (input)="buscar()">
+
+    @if (
+    mostrarResultados &&
+    resultados.length > 0
+    ) {
+
+    <div class="resultados">
+
+        @for (
+        produto of resultados;
+        track produto.id
+        ) {
+
+        <button
+            type="button"
+            (click)="selecionar(produto)">
+
+            {{ produto.codigoBarras }}
+            -
+            {{ produto.nome }}
+
+        </button>
+
+        }
+
+    </div>
+
+    }
+
+</div>

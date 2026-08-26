@@ -59,11 +59,16 @@ export class Relatorios
     colunasVendas: {
         field: string;
         header: string;
-        type?: 'text' | 'badge';
+        type?:
+        | 'text'
+        | 'badge'
+        | 'currency'
+        | 'date';
     }[] = [
             {
                 field: 'dataVenda',
-                header: 'Data'
+                header: 'Data',
+                type: 'date',
             },
             {
                 field: 'formaPagamento',
@@ -89,7 +94,11 @@ export class Relatorios
     colunasEstoque: {
         field: string;
         header: string;
-        type?: 'text' | 'badge';
+        type?:
+        | 'text'
+        | 'badge'
+        | 'currency'
+        | 'date';
     }[] = [
             {
                 field: 'nome',
@@ -113,6 +122,11 @@ export class Relatorios
     colunasGiroEstoque: {
         field: string;
         header: string;
+        type?:
+        | 'text'
+        | 'badge'
+        | 'currency'
+        | 'date';
     }[] = [
             {
                 field: 'nome',
@@ -135,7 +149,11 @@ export class Relatorios
     colunasFiados: {
         field: string;
         header: string;
-        type?: 'text' | 'badge';
+        type?:
+        | 'text'
+        | 'badge'
+        | 'currency'
+        | 'date';
     }[] = [
             {
                 field: 'clienteNome',
@@ -1181,7 +1199,6 @@ export class Relatorios
         );
 
     }
-
 
     exportarExcel(): void {
 

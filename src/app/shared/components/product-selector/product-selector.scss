@@ -1,0 +1,23 @@
+:host {
+    display: block;
+    width: 100%;
+}
+
+.product-selector {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.product-selector .field {
+    flex: 1;
+}
+
+.product-selector app-barcode-search {
+    flex: 1;
+}
+
+.product-selector app-product-search {
+    flex: 1;
+}

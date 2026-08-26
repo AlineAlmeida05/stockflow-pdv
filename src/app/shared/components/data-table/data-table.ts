@@ -20,7 +20,7 @@ export class DataTable {
     columns: {
         field: string;
         header: string;
-        type?: 'text' | 'badge';
+        type?: | 'text' | 'badge' | 'currency' | 'date';
         align?: 'left' | 'center' | 'right';
     }[] = [];
 
@@ -30,13 +30,14 @@ export class DataTable {
     @Input()
     showActions = false;
 
-    @Output()
-    edit =
-        new EventEmitter<unknown>();
+    @Input()
+    showEditAction = true;
 
     @Output()
-    delete =
-        new EventEmitter<unknown>();
+    edit = new EventEmitter<unknown>();
+
+    @Output()
+    delete = new EventEmitter<unknown>();
 
     obterVariantStatus(
         status: string
@@ -54,6 +55,57 @@ export class DataTable {
                 return 'success';
 
         }
+
+    }
+
+    formatCurrency(
+        value: unknown
+    ): string {
+
+        const numberValue =
+            Number(value);
+
+        if (isNaN(numberValue)) {
+
+            return '-';
+
+        }
+
+        return numberValue.toLocaleString(
+            'pt-BR',
+            {
+                style: 'currency',
+                currency: 'BRL'
+            }
+        );
+
+    }
+
+    formatDate(
+        value: unknown
+    ): string {
+
+        if (!value) {
+
+            return '-';
+
+        }
+
+        const date = new Date(
+            String(value)
+        );
+
+        if (
+            isNaN(date.getTime())
+        ) {
+
+            return '-';
+
+        }
+
+        return date.toLocaleDateString(
+            'pt-BR'
+        );
 
     }
 }

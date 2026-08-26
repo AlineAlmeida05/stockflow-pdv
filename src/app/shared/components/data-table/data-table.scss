@@ -15,3 +15,15 @@
 .text-right {
     text-align: right;
 }
+
+.table-container {
+    max-height: 420px;
+    overflow-y: auto;
+}
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--color-gray-100);
+}
