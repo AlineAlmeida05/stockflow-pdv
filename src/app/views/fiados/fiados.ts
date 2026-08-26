@@ -20,6 +20,8 @@ import { EmptyState } from '../../shared/components/empty-state/empty-state';
 
 import { SplitPanel }
     from '../../shared/components/split-panel/split-panel';
+import { AlertService } from '../../core/services/alert.service';
+import { CurrencyInput } from '../../shared/components/currency-input/currency-input';
 
 @Component({
     selector: 'app-fiados',
@@ -32,7 +34,8 @@ import { SplitPanel }
         PageTitle,
         SearchInput,
         EmptyState,
-        SplitPanel
+        SplitPanel,
+        CurrencyInput
     ],
     templateUrl: './fiados.html',
     styleUrl: './fiados.scss'
@@ -52,20 +55,17 @@ export class Fiados implements OnInit {
     valorRecebido = 0;
 
     textoBusca = '';
-    
+
     constructor(
         private clienteService: ClienteService,
         private fiadoService: FiadoService,
-        private pagamentoService: PagamentoService
+        private pagamentoService: PagamentoService,
+        private alertService: AlertService
     ) { }
 
     ngOnInit(): void {
 
         this.carregarDados();
-
-        console.log('CLIENTES', this.clientes);
-
-        console.log('FIADOS', this.fiados);
 
     }
 
@@ -86,8 +86,11 @@ export class Fiados implements OnInit {
         cliente: Cliente
     ): void {
 
-        this.clienteSelecionado =
-            cliente;
+        this.clienteSelecionado = cliente;
+
+        this.mostrarRecebimento = false;
+
+        this.valorRecebido = 0;
 
     }
 
@@ -127,16 +130,6 @@ export class Fiados implements OnInit {
     }
 
     get clientesDevedores(): Cliente[] {
-
-        console.log(
-
-            this.clientes.map(cliente => ({
-
-                nome: cliente.nome,
-
-                saldo: this.obterSaldoCliente(cliente.id)
-            }))
-        );
 
         return this.clientes
             .filter(
@@ -192,8 +185,8 @@ export class Fiados implements OnInit {
             this.valorRecebido > saldoAtual
         ) {
 
-            alert(
-                'O valor recebido não pode ser maior que o saldo devedor.'
+            this.alertService.warning(
+                'O valor informado excede o saldo devedor.'
             );
 
             return;
@@ -225,9 +218,13 @@ export class Fiados implements OnInit {
 
         this.mostrarRecebimento = false;
 
-        alert(
+        this.alertService.success(
             'Pagamento registrado com sucesso.'
         );
+
+        this.mostrarRecebimento = false;
+
+        this.valorRecebido = 0;
 
     }
 
@@ -283,5 +280,5 @@ export class Fiados implements OnInit {
         );
 
     }
-    
+
 }

@@ -1,0 +1,112 @@
+.cliente-card--active {
+    border: 2px solid var(--color-secondary);
+    background: color-mix(in srgb, var(--color-secondary) 8%, white);
+}
+
+.cliente-card {
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.cliente-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.recebimento-card {
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 12px;
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+}
+
+.recebimento-card__actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.extrato-item {
+    padding: 16px;
+    border-radius: 12px;
+    background: var(--color-white);
+    border-left: 4px solid var(--color-danger);
+    margin-bottom: 12px;
+}
+
+.extrato-item--pagamento {
+    border-left-color: var(--color-success);
+}
+
+.extrato-item__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.extrato-item__header span {
+    font-size: 0.85rem;
+    color: var(--color-gray-500);
+}
+
+.extrato-item__valor {
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-left-color: var(--color-danger);
+}
+
+.saldo-card {
+    padding: 20px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--color-secondary) 8%, white);
+    border: 1px solid var(--color-secondary);
+    margin: 16px 0;
+}
+
+.extrato-item--fiado {
+    border-left-color: var(--color-danger);
+}
+
+.extrato-item--fiado .extrato-item__valor {
+    color: var(--color-danger);
+}
+
+.extrato-item--pagamento .extrato-item__valor {
+    color: var(--color-success);
+}
+
+.saldo-card strong {
+    display: block;
+    margin-top: 6px;
+    font-size: 1.5rem;
+    color: var(--color-danger);
+}
+
+.cliente-card__saldo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 12px;
+}
+
+.cliente-card__saldo span {
+    font-size: 0.85rem;
+    color: var(--color-gray-500);
+}
+
+.cliente-card__saldo strong {
+    color: var(--color-danger);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.cliente-subtitle {
+    margin-top: -8px;
+    margin-bottom: 20px;
+    color: var(--color-gray-500);
+}

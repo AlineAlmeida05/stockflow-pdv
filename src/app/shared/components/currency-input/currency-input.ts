@@ -2,7 +2,9 @@ import {
     Component,
     EventEmitter,
     Input,
-    Output
+    Output,
+    OnInit,
+    OnChanges
 } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
@@ -16,7 +18,7 @@ import { FormsModule } from '@angular/forms';
     templateUrl: './currency-input.html',
     styleUrl: './currency-input.scss'
 })
-export class CurrencyInput {
+export class CurrencyInput implements OnInit {
 
     displayValue = '';
 
@@ -37,12 +39,6 @@ export class CurrencyInput {
 
 
     ngOnInit(): void {
-
-        this.atualizarDisplay();
-
-    }
-
-    ngOnChanges(): void {
 
         this.atualizarDisplay();
 
@@ -85,12 +81,22 @@ export class CurrencyInput {
                 ''
             );
 
+        if (!numeros) {
+
+            this.value = null;
+
+            this.displayValue = '';
+
+            this.valueChange.emit(null);
+
+            return;
+
+        }
+
         const valor =
             Number(numeros) / 100;
 
-        this.valueChange.emit(
-            valor || null
-        );
+        this.value = valor;
 
         this.displayValue =
             valor.toLocaleString(
@@ -100,6 +106,10 @@ export class CurrencyInput {
                     maximumFractionDigits: 2
                 }
             );
+
+        this.valueChange.emit(
+            valor
+        );
 
     }
 

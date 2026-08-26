@@ -20,39 +20,87 @@
             ) {
             <div
                 class="card cliente-card"
+                [class.cliente-card--active]="clienteSelecionado?.id === cliente.id"
                 (click)="selecionarCliente(cliente)">
                 <h3>
                     {{ cliente.nome }}
                 </h3>
-                <p>
-                    {{
-                    obterSaldoCliente(
-                    cliente.id
-                    ) | currency:'BRL'
-                    }}
-                </p>
+                <div class="cliente-card__saldo">
+                    <span>
+                        Saldo Devedor
+                    </span>
+
+                    <strong class="danger">
+                        {{
+                        obterSaldoCliente(
+                        cliente.id
+                        ) | currency:'BRL'
+                        }}
+                    </strong>
+                </div>
             </div>
             }
         </div>
 
         <div right class="extrato">
             @if (clienteSelecionado) {
-            <h2>
-                {{ clienteSelecionado.nome }}
-            </h2>
-            <h3>
-                Saldo Atual:
-                {{
-                obterSaldoCliente(
-                clienteSelecionado.id
-                ) | currency:'BRL'
-                }}
-            </h3>
+            <p class="cliente-subtitle">
+                Histórico financeiro e pagamentos.
+            </p>
+
+            <div class="saldo-card">
+                <span>
+                    Saldo Devedor Atual
+                </span>
+
+                <strong>
+                    - {{
+                    obterSaldoCliente(
+                    clienteSelecionado.id
+                    ) | currency:'BRL'
+                    }}
+                </strong>
+            </div>
+
             <button
                 type="button"
+                class="btn btn-success"
                 (click)="mostrarRecebimento = true">
                 Receber Pagamento
             </button>
+            @if (
+            mostrarRecebimento &&
+            clienteSelecionado
+            ) {
+
+            <div class="recebimento-card">
+                <h3>
+                    Receber Pagamento
+                </h3>
+
+                <app-currency-input
+                    label="Valor a receber"
+                    [(value)]="valorRecebido">
+                </app-currency-input>
+
+                <div class="recebimento-card__actions">
+                    <button
+                        class="btn btn-primary"
+                        type="button"
+                        (click)="confirmarRecebimento()">
+                        Confirmar
+                    </button>
+
+                    <button
+                        class="btn btn-secondary"
+                        type="button"
+                        (click)="mostrarRecebimento = false">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+
+            }
             <h3>
                 Extrato
             </h3>
@@ -61,29 +109,62 @@
             movimento of obterExtratoCliente();
             track $index
             ) {
-            <div class="card">
-                <p>
-                    Data:
-                    {{
-                    movimento.data
-                    | date:'dd/MM/yyyy HH:mm'
-                    }}
-                </p>
+            <div
+                class="extrato-item"
+                [class.extrato-item--fiado]="
+        movimento.tipo === 'fiado'
+    "
+                [class.extrato-item--pagamento]="
+        movimento.tipo === 'pagamento'
+    ">
 
-                <p>
-                    Valor:
+                <div class="extrato-item__header">
+
+                    <strong>
+
+                        {{
+                        movimento.tipo === 'fiado'
+                        ? 'Venda Fiada'
+                        : 'Pagamento'
+                        }}
+
+                    </strong>
+
+                    <span>
+
+                        {{
+                        movimento.data
+                        | date:'dd/MM/yyyy HH:mm'
+                        }}
+
+                    </span>
+
+                </div>
+
+                <div class="extrato-item__valor">
+
                     @if (
-                    movimento.tipo === 'pagamento'
+                    movimento.tipo === 'fiado'
                     ) {
 
-                    - {{ movimento.valor | currency:'BRL' }}
+                    - {{
+                    movimento.valor
+                    | currency:'BRL'
+                    }}
 
                     } @else {
 
-                    {{ movimento.valor | currency:'BRL' }}
+                    + {{
+                    movimento.valor
+                    | currency:'BRL'
+                    }}
+
                     }
-                </p>
+
+                </div>
+
             </div>
+
             }
 
             } @else {
@@ -93,29 +174,4 @@
             }
         </div>
     </app-split-panel>
-    @if (
-    mostrarRecebimento &&
-    clienteSelecionado
-    ) {
-
-    <div class="card">
-        <h3>
-            Receber Pagamento
-        </h3>
-        <input
-            type="number"
-            [(ngModel)]="valorRecebido">
-        <button
-            type="button"
-            (click)="confirmarRecebimento()">
-            Confirmar
-        </button>
-        <button
-            type="button"
-            (click)="mostrarRecebimento = false">
-            Cancelar
-        </button>
-    </div>
-    }
-
 </app-main-layout>
