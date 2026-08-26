@@ -5,15 +5,12 @@
     </app-page-title>
 
     <div class="dashboard-filters">
-
         <button
             class="btn btn-primary"
             type="button"
             [class.active]="periodoSelecionado === 'hoje'"
             (click)="periodoSelecionado = 'hoje'">
-
             Hoje
-
         </button>
 
         <button
@@ -21,9 +18,7 @@
             type="button"
             [class.active]="periodoSelecionado === '7dias'"
             (click)="periodoSelecionado = '7dias'">
-
             7 dias
-
         </button>
 
         <button
@@ -31,9 +26,7 @@
             type="button"
             [class.active]="periodoSelecionado === '30dias'"
             (click)="periodoSelecionado = '30dias'">
-
             30 dias
-
         </button>
 
         <button
@@ -41,9 +34,7 @@
             type="button"
             [class.active]="periodoSelecionado === 'mes'"
             (click)="periodoSelecionado = 'mes'">
-
             Mês Atual
-
         </button>
 
         <button
@@ -51,11 +42,8 @@
             type="button"
             [class.active]="periodoSelecionado === 'todos'"
             (click)="periodoSelecionado = 'todos'">
-
             Todos
-
         </button>
-
     </div>
 
     <app-stat-card-carousel
@@ -70,14 +58,18 @@
                 </h2>
                 <div class="executive-summary">
                     <div class="summary-item">
-                        <span>Vendas Hoje</span>
+                        <span>
+                            Vendas {{ descricaoPeriodo }}
+                        </span>
                         <strong>
                             {{ totalVendasPeriodo }}
                         </strong>
                     </div>
 
                     <div class="summary-item">
-                        <span>Faturamento Hoje</span>
+                        <span>
+                            Faturamento {{ descricaoPeriodo }}
+                        </span>
                         <strong>
                             {{ faturamentoPeriodo | currency:'BRL' }}
                         </strong>
@@ -183,5 +175,4 @@
             </div>
         </div>
     </app-dashboard-layout>
-
 </app-main-layout>
