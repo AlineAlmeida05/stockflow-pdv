@@ -1,5 +1,7 @@
 export interface Empresa {
 
+    id: '',
+
     nomeFantasia: string;
 
     razaoSocial: string;
