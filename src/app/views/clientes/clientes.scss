@@ -2,28 +2,17 @@
   display: block;
 }
 
-.cliente-card {
-  padding: 16px;
-  margin-bottom: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+.formulario-cliente {
+  padding: 20px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.formulario {
+.formulario-acoes {
   display: flex;
   gap: 12px;
-  margin-bottom: 24px;
-}
-
-.formulario input {
-  padding: 8px;
-}
-
-.cliente-card {
-  padding: 16px;
-  margin-bottom: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
 }
 
 input,
@@ -33,4 +22,26 @@ select {
 
 label {
   color: var(--color-gray-700);
+}
+
+.secao-clientes {
+  margin-bottom: 12px;
+}
+
+.secao-clientes h2 {
+  margin: 0;
+}
+
+.formulario-cliente h3 {
+  margin-bottom: 4px;
+}
+
+.formulario-cliente__subtitle {
+  color: var(--color-gray-500);
+  margin-bottom: 20px;
+}
+
+.secao-clientes p {
+  margin-top: 4px;
+  color: var(--color-gray-500);
 }

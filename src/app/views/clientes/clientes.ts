@@ -5,16 +5,14 @@ import { Cliente } from '../../core/models/cliente.model';
 import { ClienteService } from '../../core/services/cliente.service';
 import { FormsModule } from '@angular/forms';
 
-import { PageTitle }
-    from '../../shared/components/page-title/page-title';
-import { SearchInput }
-    from '../../shared/components/search-input/search-input';
-import { EmptyState }
-    from '../../shared/components/empty-state/empty-state';
-import { DataTable }
-    from '../../shared/components/data-table/data-table';
-import { Toolbar }
-    from '../../shared/components/toolbar/toolbar';
+import { PageTitle } from '../../shared/components/page-title/page-title';
+import { SearchInput } from '../../shared/components/search-input/search-input';
+import { EmptyState } from '../../shared/components/empty-state/empty-state';
+import { DataTable } from '../../shared/components/data-table/data-table';
+import { Toolbar } from '../../shared/components/toolbar/toolbar';
+import { AlertService } from '../../core/services/alert.service';
+import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
+import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 
 @Component({
     selector: 'app-clientes',
@@ -26,7 +24,8 @@ import { Toolbar }
         SearchInput,
         EmptyState,
         DataTable,
-        Toolbar
+        Toolbar,
+        SplitPanel
     ],
     templateUrl: './clientes.html',
     styleUrl: './clientes.scss'
@@ -46,19 +45,33 @@ export class Clientes implements OnInit {
 
     mostrarFormulario = false;
 
-    colunasClientes = [
-        {
-            field: 'nome',
-            header: 'Nome'
-        },
-        {
-            field: 'telefone',
-            header: 'Telefone'
-        }
-    ];
+    colunasClientes: {
+        field: string;
+        header: string;
+        type?: 'text' | 'badge' | 'currency' | 'date';
+        align?: 'left' | 'center' | 'right';
+    }[] = [
+            {
+                field: 'nome',
+                header: 'Nome'
+            },
+            {
+                field: 'telefone',
+                header: 'Telefone'
+            },
+            {
+                field: 'dataCadastro',
+                header: 'Cadastro',
+                type: 'date',
+                align: 'center'
+            }
+        ];
+
 
     constructor(
-        private clienteService: ClienteService
+        private clienteService: ClienteService,
+        private alertService: AlertService,
+        private confirmDialogService: ConfirmDialogService
     ) { }
 
     ngOnInit(): void {
@@ -87,8 +100,17 @@ export class Clientes implements OnInit {
     salvarCliente(): void {
 
         if (!this.nome.trim()) {
+
+            this.alertService.warning(
+                'Informe o nome do cliente.'
+            );
+
             return;
+
         }
+
+        const editando =
+            !!this.clienteEditandoId;
 
         if (this.clienteEditandoId) {
 
@@ -119,6 +141,12 @@ export class Clientes implements OnInit {
 
         this.carregarClientes();
 
+        this.alertService.success(
+            this.clienteEditandoId
+                ? 'Cliente atualizado com sucesso.'
+                : 'Cliente cadastrado com sucesso.'
+        );
+
     }
 
     excluirCliente(id: string): void {
@@ -126,6 +154,10 @@ export class Clientes implements OnInit {
         this.clienteService.excluir(id);
 
         this.carregarClientes();
+
+        this.alertService.success(
+            'Cliente excluído com sucesso.'
+        );
 
     }
 
@@ -155,8 +187,8 @@ export class Clientes implements OnInit {
         cliente: unknown
     ): void {
 
-        this.excluirCliente(
-            (cliente as Cliente).id
+        this.confirmarExclusaoCliente(
+            cliente as Cliente
         );
 
     }
@@ -185,4 +217,28 @@ export class Clientes implements OnInit {
 
     }
 
+    confirmarExclusaoCliente(
+        cliente: Cliente
+    ): void {
+
+        this.confirmDialogService.open({
+
+            title: 'Excluir Cliente',
+
+            message:
+                `Deseja realmente excluir o cliente "${cliente.nome}"?`,
+
+            type: 'danger',
+
+            confirmText: 'Excluir',
+
+            onConfirm: () => {
+
+                this.excluirCliente(cliente.id);
+
+            }
+
+        });
+
+    }
 }

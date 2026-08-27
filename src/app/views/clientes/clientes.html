@@ -7,6 +7,7 @@
 
     <app-toolbar>
         <button
+            class="btn btn-primary"
             type="button"
             (click)="novoCliente()">
             + Novo Cliente
@@ -17,56 +18,109 @@
             [(value)]="textoBusca">
         </app-search-input>
     </app-toolbar>
-    @if (clienteEditandoId) {
-    <p>
-        ✏️ Editando:
-        {{ nome }}
-    </p>
-    }
-    @if (mostrarFormulario) {
-    <div class="formulario">
-        <input
-            type="text"
-            placeholder="Nome"
-            [(ngModel)]="nome">
 
-        <input
-            type="text"
-            placeholder="Telefone"
-            [(ngModel)]="telefone">
+    <app-split-panel>
+        <div left>
+            @if (!mostrarFormulario) {
 
-        <button
-            type="button"
-            (click)="salvarCliente()">
-            {{
-            clienteEditandoId
-            ? 'Atualizar Cliente'
-            : 'Salvar Cliente'
-            }}
-        </button>
-        <button
-            type="button"
-            (click)="cancelarEdicao()">
-            Cancelar
-        </button>
+            <app-empty-state
+                message="Clique em '+ Novo Cliente' para iniciar um cadastro.">
+            </app-empty-state>
+            }
 
-    </div>
-    }
-    @if (clientes.length === 0) {
+            @if (mostrarFormulario) {
+            <div class="card formulario-cliente">
 
-    <app-empty-state
-        message="Nenhum cliente cadastrado.">
-    </app-empty-state>
+                <h3>
 
-    }
-    <p>Tabela de Clientes</p>
-    <div class="card">
-        <app-data-table
-            [columns]="colunasClientes"
-            [data]="clientesFiltrados"
-            [showActions]="true"
-            (edit)="editarClienteTabela($event)"
-            (delete)="excluirClienteTabela($event)">
-        </app-data-table>
-    </div>
+                    {{
+                    clienteEditandoId
+                    ? 'Editar Cliente'
+                    : 'Cadastrar Cliente'
+                    }}
+
+                </h3>
+
+                @if (clienteEditandoId) {
+
+                <p class="formulario-cliente__subtitle">
+                    {{ nome }}
+                </p>
+
+                }
+                <div class="field">
+                    <label>
+                        Nome
+                    </label>
+
+                    <input
+                        type="text"
+                        placeholder="Informe o nome"
+                        [(ngModel)]="nome">
+                </div>
+
+                <div class="field">
+                    <label>
+                        Telefone
+                    </label>
+
+                    <input
+                        type="text"
+                        placeholder="Informe o telefone"
+                        [(ngModel)]="telefone">
+                </div>
+
+                <div class="formulario-acoes">
+                    <button
+                        class="btn btn-primary"
+                        type="button"
+                        (click)="salvarCliente()">
+                        {{
+                        clienteEditandoId
+                        ? 'Atualizar Cliente'
+                        : 'Salvar Cliente'
+                        }}
+                    </button>
+                    <button
+                        class="btn btn-secondary"
+                        type="button"
+                        (click)="cancelarEdicao()">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+            }
+        </div>
+
+        <div right>
+            <div class="secao-clientes">
+                <h2>
+                    Clientes Cadastrados
+                </h2>
+
+                <p>
+                    Consulte, edite e exclua clientes cadastrados.
+                </p>
+            </div>
+
+            @if (clientes.length === 0) {
+
+            <app-empty-state
+                message="Nenhum cliente cadastrado.">
+
+            </app-empty-state>
+            } @else {
+
+            <div class="card">
+                <app-data-table
+                    [columns]="colunasClientes"
+                    [data]="clientesFiltrados"
+                    [showActions]="true"
+                    (edit)="editarClienteTabela($event)"
+                    (delete)="excluirClienteTabela($event)">
+                </app-data-table>
+            </div>
+            }
+        </div>
+    </app-split-panel>
 </app-main-layout>
