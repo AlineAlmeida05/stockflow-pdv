@@ -3,3 +3,202 @@
   grid-template-columns: 350px 1fr;
   gap: 24px;
 }
+
+.venda-card {
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.venda-card:hover {
+  transform: translateY(-2px);
+}
+
+.venda-card--active {
+  border: 2px solid var(--color-secondary);
+  background: color-mix(in srgb, var(--color-secondary) 8%, white);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-secondary) 15%, transparent);
+}
+
+.status-venda {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.status-venda span {
+  color: var(--color-gray-600);
+  font-size: 0.875rem;
+}
+
+.total-venda-card {
+  padding: 16px;
+  margin: 16px 0;
+  border-radius: 12px;
+  border: 1px solid var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 8%, white);
+}
+
+.total-venda-card span {
+  display: block;
+  color: var(--color-gray-600);
+  margin-bottom: 6px;
+}
+
+.total-venda-card strong {
+  font-size: 1.5rem;
+  color: var(--color-success);
+}
+
+.forma-pagamento {
+  margin: 16px 0;
+}
+
+.forma-pagamento span {
+  display: block;
+  color: var(--color-gray-600);
+  margin-bottom: 4px;
+}
+
+.forma-pagamento strong {
+  color: var(--color-primary);
+}
+
+.item-venda {
+  margin-bottom: 12px;
+  padding: 20px;
+  border: 1px solid var(--color-gray-200);
+  border-radius: 12px;
+  background: var(--color-white);
+}
+
+.item-venda app-status-badge {
+  margin: 8px 0;
+}
+
+.item-venda p:first-child {
+  font-weight: 500;
+  color: var(--color-gray-900);
+}
+
+.item-venda__subtotal {
+  display: block;
+  margin-top: 8px;
+  color: var(--color-success);
+  font-size: 1.1rem;
+}
+
+.cancelamento-card {
+  margin: 16px 0;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 6%, white);
+}
+
+.cancelamento-card textarea {
+  width: 100%;
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+
+.cancelamento-card__actions {
+  display: flex;
+  gap: 12px;
+}
+
+.venda-meta {
+  display: flex;
+  gap: 24px;
+  margin: 16px 0;
+}
+
+.item-venda__subtotal {
+  margin-top: 12px;
+}
+
+.item-venda__subtotal span {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--color-gray-500);
+}
+
+.item-venda__subtotal strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 1.1rem;
+  color: var(--color-success);
+}
+
+.venda-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.venda-card__valor {
+  font-size: 1.2rem;
+  color: var(--color-success);
+}
+
+.venda-card__data {
+  color: var(--color-gray-500);
+  font-size: 0.875rem;
+}
+
+.venda-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.expandable-card__header {
+  font-weight: 500;
+}
+
+.motivo-cancelamento {
+  margin: 16px 0;
+  padding: 16px;
+  border-radius: 12px;
+  border-left: 4px solid var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 6%, white);
+}
+
+.motivo-cancelamento span {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-danger);
+}
+
+.motivo-cancelamento p {
+  margin: 0;
+  color: var(--color-gray-700);
+}
+
+.item-venda__nome {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-gray-900);
+}
+
+.item-venda__quantidade {
+  margin-top: 12px;
+}
+
+.item-venda__quantidade span {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--color-gray-500);
+}
+
+.item-venda__quantidade strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 1rem;
+}

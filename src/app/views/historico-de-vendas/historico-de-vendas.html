@@ -5,67 +5,21 @@
         subtitle="Consulte vendas realizadas, detalhes dos itens e cancelamentos.">
     </app-page-title>
 
-    <div class="indicadores">
-
-        <app-stat-card
-            title="Vendas"
-            [value]="totalVendas"
-            variant="primary">
-        </app-stat-card>
-
-        <app-stat-card
-            title="Faturamento"
-            [value]="faturamentoTotal | currency:'BRL'"
-            variant="success">
-        </app-stat-card>
-
-        <app-stat-card
-            title="Ticket Médio"
-            [value]="ticketMedio | currency:'BRL'"
-            variant="warning">
-        </app-stat-card>
-
-        <app-stat-card
-            title="Fiados"
-            [value]="totalFiados | currency:'BRL'"
-            variant="danger">
-        </app-stat-card>
-    </div>
+    <app-stat-card-carousel
+        [cards]="cardsHistorico">
+    </app-stat-card-carousel>
 
     <div class="formulario">
 
-        <div class="field">
-
-            <label>
-                Forma de Pagamento
-            </label>
-            <select
-                [(ngModel)]="filtroPagamento">
-                <option value>
-                    Todas
-                </option>
-                <option value="pix">
-                    PIX
-                </option>
-                <option value="dinheiro">
-                    Dinheiro
-                </option>
-                <option value="debito">
-                    Débito
-                </option>
-                <option value="credito">
-                    Crédito
-                </option>
-                <option value="fiado">
-                    Fiado
-                </option>
-            </select>
-        </div>
+        <app-select-input
+            label="Forma de Pagamento"
+            [(value)]="filtroPagamento"
+            [options]="opcoesPagamento">
+        </app-select-input>
     </div>
 
     <app-split-panel>
-
-        <div left>
+        <div left class="vendas-panel">
             <h2>
                 Vendas
             </h2>
@@ -75,122 +29,215 @@
             track venda.id
             ) {
             <div
-                class="card"
+                class="card venda-card"
+                [class.venda-card--active]="
+        vendaSelecionada?.id === venda.id
+    "
                 (click)="selecionarVenda(venda)">
-                <p>
-                    {{
-                    venda.dataVenda
-                    | date:'dd/MM/yyyy HH:mm'
-                    }}
-                </p>
-                <p>
-                    {{ venda.formaPagamento }}
-                </p>
-                <p>
+
+                <strong class="venda-card__valor">
+
                     {{
                     venda.valorTotal
                     | currency:'BRL'
                     }}
-                </p>
+
+                </strong>
+
+                <span class="venda-card__data">
+
+                    {{
+                    venda.dataVenda
+                    | date:'dd/MM/yyyy HH:mm'
+                    }}
+
+                </span>
+
+                <div class="venda-card__footer">
+
+                    <app-status-badge
+                        [text]="venda.formaPagamento.toUpperCase()"
+                        variant="info">
+                    </app-status-badge>
+
+                    @if (venda.status === 'cancelada') {
+
+                    <app-status-badge
+                        text="cancelada"
+                        variant="danger">
+                    </app-status-badge>
+
+                    }
+
+                </div>
+
             </div>
             }
         </div>
 
-        <div right>
+        <div right class="detalhes-panel">
             @if (vendaSelecionada) {
             <h2>
                 Detalhes da Venda
             </h2>
+
             <p>
-                Total:
-                {{
-                vendaSelecionada.valorTotal
-                | currency:'BRL'
-                }}
-            </p>
-            <p>
-                Forma de Pagamento:
-                {{ vendaSelecionada.formaPagamento }}
-            </p>
-            <p>
-                Status:
+                Status bruto:
                 {{ vendaSelecionada.status }}
             </p>
+
+            <div class="total-venda-card">
+                <span>
+                    Total da Venda
+                </span>
+
+                <strong>
+
+                    {{
+                    vendaSelecionada.valorTotal
+                    | currency:'BRL'
+                    }}
+
+                </strong>
+            </div>
+
+            <div class="venda-meta">
+                <div class="forma-pagamento">
+                    <span>
+                        Forma de Pagamento
+                    </span>
+
+                    <app-status-badge
+                        [text]="vendaSelecionada.formaPagamento| uppercase"
+                        variant="info">
+                    </app-status-badge>
+                </div>
+
+                <div class="status-venda">
+                    <span>
+                        Status
+                    </span>
+
+                    <app-status-badge
+                        [text]="obterTextoStatus(vendaSelecionada.status)"
+                        [variant]="obterVariantStatus(
+                vendaSelecionada.status)">
+                    </app-status-badge>
+                </div>
+            </div>
+
             @if (
             vendaSelecionada.motivoCancelamento
             ) {
-            <p>
-                Motivo:
-                {{
-                vendaSelecionada
-                .motivoCancelamento
-                }}
-            </p>
+
+            <div class="motivo-cancelamento">
+                <span>
+                    Motivo do Cancelamento
+                </span>
+
+                <p>
+                    {{
+                    vendaSelecionada.motivoCancelamento
+                    }}
+                </p>
+            </div>
+
             }
-            <p>
-                Quantidade de Itens:
-                {{ vendaSelecionada.quantidadeItens }}
-            </p>
+
             @if (
             vendaSelecionada.status === 'finalizada'
             ) {
             <button
+                class="btn btn-danger"
                 type="button"
                 (click)="mostrarCancelamento = true">
                 Cancelar Venda
             </button>
-            }
-            <h3>
-                Itens
-            </h3>
 
-            @for (
-            item of vendaSelecionada.itens;
-            track item.produtoId
-            ) {
-            <div class="card">
-                <p>
-                    {{ item.produtoNome }}
-                </p>
-                @if (item.promocaoAplicada) {
-                <p>
-                    🔥 Venda Promocional
-                </p>
-                }
-                <p>
-                    Quantidade:
-                    {{ item.quantidade }}
-                </p>
-                <p>
-                    {{
-                    item.subtotal
-                    | currency:'BRL'
-                    }}
-                </p>
-            </div>
-            }
             @if (
             mostrarCancelamento &&
             vendaSelecionada
             ) {
 
-            <div class="card">
+            <div class="cancelamento-card">
                 <h3>
                     Motivo do Cancelamento
                 </h3>
+
                 <textarea
                     rows="4"
                     [(ngModel)]="motivoCancelamento"
                     placeholder="Informe o motivo do cancelamento">
                 </textarea>
-                <button
-                    type="button"
-                    (click)="confirmarCancelamento()">
-                    Confirmar Cancelamento
-                </button>
+
+                <div class="cancelamento-card__actions">
+                    <button
+                        class="btn btn-danger"
+                        type="button"
+                        (click)="abrirConfirmacaoCancelamento()">
+                        Confirmar Cancelamento
+                    </button>
+
+                    <button
+                        class="btn btn-secondary"
+                        type="button"
+                        (click)="mostrarCancelamento = false;
+                            motivoCancelamento = '';">
+                        Cancelar
+                    </button>
+                </div>
             </div>
+            }
 
             }
+            <app-expandable-card
+                [title]="'Itens (' + vendaSelecionada.quantidadeItens + ')'">
+
+                @for (
+                item of vendaSelecionada.itens;
+                track item.produtoId
+                ) {
+
+                <div class="card item-venda">
+                    <h4 class="item-venda__nome">
+                        {{ item.produtoNome }}
+                    </h4>
+                    @if (item.promocaoAplicada) {
+
+                    <app-status-badge
+                        text="🔥 Promoção"
+                        variant="warning">
+                    </app-status-badge>
+                    }
+
+                    <div class="item-venda__quantidade">
+                        <span>
+                            Quantidade
+                        </span>
+
+                        <strong>
+                            {{ item.quantidade }}
+                        </strong>
+                    </div>
+
+                    <div class="item-venda__subtotal">
+                        <span>
+                            Subtotal
+                        </span>
+
+                        <strong>
+
+                            {{
+                            item.subtotal
+                            | currency:'BRL'
+                            }}
+
+                        </strong>
+                    </div>
+                </div>
+                }
+            </app-expandable-card>
+
             } @else {
             <app-empty-state
                 message="Selecione uma venda para visualizar os detalhes.">

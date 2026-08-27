@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
 
 import { MainLayout } from '../../layout/main-layout/main-layout';
 
@@ -16,8 +16,13 @@ import { MovimentacaoEstoque } from '../../core/models/movimentacao-estoque.mode
 
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
-import { StatCard } from '../../shared/components/stat-card/stat-card';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
+import { StatCardCarousel } from '../../shared/components/stat-card-carousel/stat-card-carousel';
+import { SelectInput } from '../../shared/components/select-input/select-input';
+import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
+import { AlertService } from '../../core/services/alert.service';
+import { StatusBadge } from '../../shared/components/status-badge/status-badge';
+import { ExpandableCard } from '../../shared/components/expandable-card/expandable-card';
 
 @Component({
     selector: 'app-historico-de-vendas',
@@ -29,8 +34,12 @@ import { SplitPanel } from '../../shared/components/split-panel/split-panel';
         FormsModule,
         PageTitle,
         EmptyState,
-        StatCard,
-        SplitPanel
+        SplitPanel,
+        StatCardCarousel,
+        SelectInput,
+        StatusBadge,
+        ExpandableCard,
+        UpperCasePipe
 
     ],
     templateUrl: './historico-de-vendas.html',
@@ -50,14 +59,41 @@ export class HistoricoDeVendas
 
     motivoCancelamento = '';
 
-    textoBusca = '';
+    opcoesPagamento = [
+        {
+            value: '',
+            label: 'Todas'
+        },
+        {
+            value: 'pix',
+            label: 'PIX'
+        },
+        {
+            value: 'dinheiro',
+            label: 'Dinheiro'
+        },
+        {
+            value: 'debito',
+            label: 'Débito'
+        },
+        {
+            value: 'credito',
+            label: 'Crédito'
+        },
+        {
+            value: 'fiado',
+            label: 'Fiado'
+        }
+
+    ];
 
     constructor(
         private vendaService: VendaService,
         private produtoService: ProdutoService,
         private fiadoService: FiadoService,
-        private movimentacaoService:
-            MovimentacaoEstoqueService
+        private movimentacaoService: MovimentacaoEstoqueService,
+        private alertService: AlertService,
+        private confirmDialogService: ConfirmDialogService
     ) { }
 
     ngOnInit(): void {
@@ -83,19 +119,8 @@ export class HistoricoDeVendas
                     venda.formaPagamento ===
                     this.filtroPagamento;
 
-                const buscaOk =
-                    !this.textoBusca ||
-                    venda.formaPagamento
-                        .toLowerCase()
-                        .includes(
-                            this.textoBusca
-                                .toLowerCase()
-                        );
 
-                return (
-                    pagamentoOk &&
-                    buscaOk
-                );
+                return pagamentoOk;
 
             }
         );
@@ -158,15 +183,19 @@ export class HistoricoDeVendas
 
         this.vendaSelecionada = venda;
 
+        this.mostrarCancelamento = false;
+
+        this.motivoCancelamento = '';
+
     }
 
-    confirmarCancelamento(): void {
+    executarCancelamento(): void {
 
         if (
             !this.motivoCancelamento.trim()
         ) {
 
-            alert(
+            this.alertService.warning(
                 'Informe o motivo do cancelamento.'
             );
 
@@ -178,14 +207,6 @@ export class HistoricoDeVendas
             !this.vendaSelecionada ||
             this.vendaSelecionada.status === 'cancelada'
         ) {
-            return;
-        }
-
-        const confirmar = confirm(
-            'Deseja realmente cancelar esta venda?'
-        );
-
-        if (!confirmar) {
             return;
         }
 
@@ -268,7 +289,7 @@ export class HistoricoDeVendas
                         ).getTime()
                 );
 
-        alert(
+        this.alertService.success(
             'Venda cancelada com sucesso.'
         );
 
@@ -277,4 +298,136 @@ export class HistoricoDeVendas
         this.mostrarCancelamento = false;
 
     }
+
+    get cardsHistorico(): {
+        title: string;
+        value: string | number;
+        variant:
+        | 'info'
+        | 'success'
+        | 'warning'
+        | 'danger';
+    }[] {
+
+        return [
+
+            {
+                title: 'Vendas',
+                value: this.totalVendas,
+                variant: 'info'
+            },
+
+            {
+                title: 'Faturamento',
+                value: this.faturamentoTotal.toLocaleString(
+                    'pt-BR',
+                    {
+                        style: 'currency',
+                        currency: 'BRL'
+                    }
+                ),
+                variant: 'success'
+            },
+
+            {
+                title: 'Ticket Médio',
+                value: this.ticketMedio.toLocaleString(
+                    'pt-BR',
+                    {
+                        style: 'currency',
+                        currency: 'BRL'
+                    }
+                ),
+                variant: 'warning'
+            },
+
+            {
+                title: 'Fiados',
+                value: this.totalFiados.toLocaleString(
+                    'pt-BR',
+                    {
+                        style: 'currency',
+                        currency: 'BRL'
+                    }
+                ),
+                variant: 'danger'
+            }
+
+        ];
+
+    }
+
+    cancelarVenda(): void {
+
+        this.confirmDialogService.open({
+            title: 'Cancelar Venda',
+            message:
+                'Deseja realmente cancelar esta venda?',
+            type: 'danger',
+            confirmText: 'Cancelar Venda',
+            onConfirm: () => {
+
+                this.cancelarVenda();
+
+            }
+        });
+
+    }
+
+    obterVariantStatus(
+        status: string
+    ): 'success' | 'danger' {
+
+        return status === 'cancelada'
+            ? 'danger'
+            : 'success';
+
+    }
+
+    abrirConfirmacaoCancelamento(): void {
+
+        if (
+            !this.motivoCancelamento.trim()
+        ) {
+
+            this.alertService.warning(
+                'Informe o motivo do cancelamento.'
+            );
+
+            return;
+
+        }
+
+        this.confirmDialogService.open({
+
+            title: 'Cancelar Venda',
+
+            message:
+                'Deseja realmente cancelar esta venda?',
+
+            type: 'danger',
+
+            confirmText:
+                'Cancelar Venda',
+
+            onConfirm: () => {
+
+                this.executarCancelamento();
+
+            }
+
+        });
+
+    }
+
+    obterTextoStatus(
+        status: string
+    ): string {
+
+        return status === 'cancelada'
+            ? 'Cancelada'
+            : 'Finalizada';
+
+    }
+    
 }

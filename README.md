@@ -196,3 +196,45 @@ Relatórios - falta
 
 
 implementar o fechar caixa no fim do dia
+
+RoadMap Páginas
+
+Dashboard: ✅ Ok
+Nova Venda: ✅ Ok ( mas é bom ver só se está no padrão)
+Histórico de Vendas: Falta
+Estoque: ✅ Ok
+Produtos: ✅ Ok ( mas é bom ver só se está no padrão) 
+Entrada de Estoque: ✅ Ok
+Clientes: Falta
+Fiados: ✅ Ok
+Promoções: ✅ Ok
+Relatórios: ✅ Ok (falta algumas coisas)
+Marketing IA: Essa será a última, depois do backend
+Empresa: ✅ Ok
+
+RoadMap Componentes
+Action-icons
+barcode-search
+confirm-dialog
+currency-input
+dashboard-chart
+dashboard-layout
+dashboard-section
+data-table: falta algumas coisas
+empty-state
+expandable-card
+header
+page-title
+product-search
+product-selector
+report-header
+report-layout
+search-input
+select-input
+split-panel
+stat-card
+stat-card-carrossel
+status-badge
+toast
+toolbar
+

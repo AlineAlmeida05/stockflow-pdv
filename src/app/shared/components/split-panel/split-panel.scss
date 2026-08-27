@@ -10,6 +10,16 @@
     min-width: 0;
 }
 
+.vendas-panel {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.detalhes-panel {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
 @media (max-width: 768px) {
     .split-panel {
         grid-template-columns: 1fr;
