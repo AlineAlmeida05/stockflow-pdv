@@ -4,6 +4,6 @@ export const SYSTEM_CONFIG = {
 
     versaoSistema: '1.0.0',
 
-    desenvolvedor: 'Aline Andrade de Almeida'
+    desenvolvedor: 'Equipe StockFlow PDV'
 
 };

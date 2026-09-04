@@ -101,6 +101,11 @@ export class Tenants implements OnInit {
 
         this.carregarTenants();
 
+        this.tenantContextService
+            .carregarTenantPorSlug(
+                'adega-sintonia'
+            );
+
     }
 
     salvarTenant(): void {
@@ -246,8 +251,6 @@ export class Tenants implements OnInit {
     }
 
     carregarTenants(): void {
-
-        console.log('Carregando tenants...');
 
         this.tenantService
             .listar()

@@ -2,13 +2,16 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { Tenant } from '../models/tenant.model';
+import { TenantService } from './tenant.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TenantContextService {
 
-    constructor() {
+    constructor(
+        private tenantService: TenantService
+    ) {
 
         const tenantSalvo =
             localStorage.getItem(
@@ -46,6 +49,13 @@ export class TenantContextService {
             tenant
         );
 
+        localStorage.setItem(
+            'tenantAtivo',
+            JSON.stringify(
+                tenant
+            )
+        );
+
         this.aplicarTema(
             tenant
         );
@@ -56,6 +66,43 @@ export class TenantContextService {
 
     }
 
+    carregarTenantPorSlug(
+        slug: string
+    ): void {
+
+        this.tenantService
+            .buscarPorSlug(
+                slug
+            )
+            .subscribe({
+
+                next: tenant => {
+
+                    if (!tenant) {
+
+                        return;
+
+                    }
+
+                    this.setTenant(
+                        tenant
+                    );
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        'Erro ao buscar tenant:',
+                        erro
+                    );
+
+                }
+
+            });
+
+    }
+
     get tenantAtual(): Tenant | null {
 
         return this.tenantSubject.value;
@@ -63,6 +110,10 @@ export class TenantContextService {
     }
 
     clearTenant(): void {
+
+        localStorage.removeItem(
+            'tenantAtivo'
+        );
 
         this.tenantSubject.next(
             null
@@ -128,4 +179,6 @@ export class TenantContextService {
             tenant.faviconUrl;
 
     }
+
+
 }
