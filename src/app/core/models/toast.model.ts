@@ -5,9 +5,12 @@ export interface Toast {
     message: string;
 
     type:
-    | 'success'
-    | 'error'
-    | 'warning'
-    | 'info';
+        | 'success'
+        | 'error'
+        | 'warning'
+        | 'info'
+        | 'loading';
+
+    autoClose?: boolean;
 
 }

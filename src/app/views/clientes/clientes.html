@@ -12,7 +12,6 @@
             (click)="novoCliente()">
             + Novo Cliente
         </button>
-
         <app-search-input
             placeholder="Buscar cliente..."
             [(value)]="textoBusca">
@@ -30,35 +29,29 @@
 
             @if (mostrarFormulario) {
             <div class="card formulario-cliente">
-
                 <h3>
-
                     {{
                     clienteEditandoId
                     ? 'Editar Cliente'
                     : 'Cadastrar Cliente'
                     }}
-
                 </h3>
 
                 @if (clienteEditandoId) {
-
                 <p class="formulario-cliente__subtitle">
                     {{ nome }}
                 </p>
-
                 }
+
                 <div class="field">
                     <label>
                         Nome
                     </label>
-
                     <input
                         type="text"
                         placeholder="Informe o nome"
                         [(ngModel)]="nome">
                 </div>
-
                 <div class="field">
                     <label>
                         Telefone
@@ -97,7 +90,6 @@
                 <h2>
                     Clientes Cadastrados
                 </h2>
-
                 <p>
                     Consulte, edite e exclua clientes cadastrados.
                 </p>
@@ -107,7 +99,6 @@
 
             <app-empty-state
                 message="Nenhum cliente cadastrado.">
-
             </app-empty-state>
             } @else {
 

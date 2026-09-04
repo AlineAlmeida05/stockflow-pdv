@@ -66,6 +66,12 @@
     border-left: 6px solid var(--color-info-border);
 }
 
+.toast-loading {
+    background: var(--color-info-bg);
+    color: var(--color-info-text);
+    border-left: 6px solid var(--color-info-border);
+}
+
 .toast__close {
     border: none;
     background: transparent;

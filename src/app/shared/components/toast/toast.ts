@@ -31,6 +31,8 @@ export class ToastComponent {
 
             case 'warning': return '⚠️';
 
+            case 'loading': return '⏳';
+
             default: return 'ℹ️';
 
         }

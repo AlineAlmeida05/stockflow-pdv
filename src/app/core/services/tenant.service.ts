@@ -13,11 +13,9 @@ export class TenantService {
         inject(HttpClient);
 
     private readonly apiUrl =
-    'https://glorious-cod-5gg6gxqqvxq5fp6g4-8080.app.github.dev/api/tenants';
+        'https://glorious-cod-5gg6gxqqvxq5fp6g4-8080.app.github.dev/api/tenants';
 
     listar(): Observable<Tenant[]> {
-
-        console.log('API URL:', this.apiUrl);
 
         return this.http.get<Tenant[]>(
             this.apiUrl
@@ -46,6 +44,16 @@ export class TenantService {
 
     }
 
+    atualizar(
+        id: string,
+        tenant: Tenant
+    ): Observable<Tenant> {
 
+        return this.http.put<Tenant>(
+            `${this.apiUrl}/${id}`,
+            tenant
+        );
+
+    }
 
 }

@@ -1,5 +1,149 @@
-<p>Total: {{ tenants.length }}</p>
-<app-data-table
-    [columns]="colunasTenants"
-    [data]="tenantsTabela">
-</app-data-table>
+<app-main-layout>
+
+    <app-page-title
+        title="Tenants"
+        subtitle="Consulte, edite e exclua tenants cadastrados.">
+    </app-page-title>
+
+    <app-toolbar>
+        <button
+            class="btn btn-primary"
+            type="button"
+            (click)="novoTenant()">
+            + Cadastrar Tenant
+        </button>
+        <app-search-input
+            placeholder="Buscar tenant..."
+            [(value)]="textoBusca">
+        </app-search-input>
+    </app-toolbar>
+
+    <app-split-panel>
+        <div left>
+            @if (!mostrarFormulario) {
+
+            <app-empty-state
+                message="Clique em '+ Novo Tenant' para iniciar um cadastro.">
+            </app-empty-state>
+            }
+
+            @if (mostrarFormulario) {
+            <div class="card formulario-tenant">
+                <h3>
+                    {{ modoEdicao
+                    ? 'Editar Tenant'
+                    : 'Cadastrar Tenant'
+                    }}
+                </h3>
+
+                @if (tenantEditando) {
+                <p class="formulario-tenant__subtitle">
+                    {{ tenantEditando.nome }}
+                </p>
+
+                }
+                <div class="field">
+                    <label>
+                        Nome
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="Nome"
+                        [(ngModel)]="novoNome">
+                </div>
+                <div class="field">
+                    <label>
+                        Responsável
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="Responsável"
+                        [(ngModel)]="novoResponsavel">
+                </div>
+                <div class="field">
+                    <label>
+                        Email
+                    </label>
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        [(ngModel)]="novoEmail">
+                </div>
+                <div class="field">
+                    <label>
+                        Cidade
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="Cidade"
+                        [(ngModel)]="novaCidade">
+                </div>
+                <div class="formulario-acoes">
+                    @if (modoEdicao) {
+                    <button
+                        class="btn btn-primary"
+                        type="button"
+                        [disabled]="salvando"
+                        (click)="atualizarTenant()">
+                        {{
+                        salvando
+                        ? 'Salvando...'
+                        : 'Salvar Alterações'
+                        }}
+                    </button>
+                    } @else {
+                    <button
+                        class="btn btn-primary"
+                        type="button"
+                        [disabled]="salvando"
+                        (click)="salvarTenant()">
+                        {{
+                        salvando
+                        ? 'Salvando...'
+                        : 'Cadastrar Tenant'
+                        }}
+                    </button>
+                    }
+
+                    <button
+                        class="btn btn-secondary"
+                        type="button"
+                        (click)="cancelarEdicao()">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+            }
+        </div>
+
+        <div right>
+            <div class="secao-tenants">
+                <h2>
+                    Tenants Cadastrados
+                </h2>
+                <p>
+                    Consulte, edite e exclua tenants cadastrados.
+                </p>
+            </div>
+                       
+            @if (tenants.length === 0) {
+
+            <app-empty-state
+                message="Nenhum tenant cadastrado.">
+            </app-empty-state>
+
+            } @else {
+
+            <div class="card">
+                <app-data-table
+                    [columns]="colunasTenants"
+                    [data]="tenantsFiltrados"
+                    [showActions]="true"
+                    (edit)="editarTenant($any($event))"
+                    (delete)="excluirTenant($any($event).id)">
+                </app-data-table>
+            </div>
+            }
+        </div>
+    </app-split-panel>
+</app-main-layout>

@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-
 import { BehaviorSubject } from 'rxjs';
-
 import { Toast } from '../models/toast.model';
 
 @Injectable({
@@ -19,10 +17,11 @@ export class AlertService {
 
     private nextId = 1;
 
+
     private addToast(
         message: string,
         type: Toast['type']
-    ): void {
+    ): Toast {
 
         const toast: Toast = {
 
@@ -30,7 +29,10 @@ export class AlertService {
 
             message,
 
-            type
+            type,
+
+            autoClose:
+                type !== 'loading'
 
         };
 
@@ -40,13 +42,19 @@ export class AlertService {
             [...this.toasts]
         );
 
-        setTimeout(() => {
+        if (toast.autoClose) {
 
-            this.removeToast(
-                toast.id
-            );
+            setTimeout(() => {
 
-        }, 3000);
+                this.removeToast(
+                    toast.id
+                );
+
+            }, 3000);
+
+        }
+
+        return toast;
 
     }
 
@@ -68,9 +76,9 @@ export class AlertService {
 
     success(
         message: string
-    ): void {
+    ): Toast {
 
-        this.addToast(
+        return this.addToast(
             message,
             'success'
         );
@@ -79,9 +87,9 @@ export class AlertService {
 
     error(
         message: string
-    ): void {
+    ): Toast {
 
-        this.addToast(
+        return this.addToast(
             message,
             'error'
         );
@@ -90,9 +98,9 @@ export class AlertService {
 
     warning(
         message: string
-    ): void {
+    ): Toast {
 
-        this.addToast(
+        return this.addToast(
             message,
             'warning'
         );
@@ -101,11 +109,22 @@ export class AlertService {
 
     info(
         message: string
-    ): void {
+    ): Toast {
 
-        this.addToast(
+        return this.addToast(
             message,
             'info'
+        );
+
+    }
+
+    loading(
+        message: string
+    ): Toast {
+
+        return this.addToast(
+            message,
+            'loading'
         );
 
     }

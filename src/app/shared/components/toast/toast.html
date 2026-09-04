@@ -12,7 +12,9 @@
         [class.toast-success]="toast.type === 'success'"
         [class.toast-error]="toast.type === 'error'"
         [class.toast-warning]="toast.type === 'warning'"
-        [class.toast-info]="toast.type === 'info'">
+        [class.toast-info]="toast.type === 'info'"
+        [class.toast-loading]="toast.type === 'loading'"
+        >
 
         <span class="toast__icon">
             {{ getIcon(toast.type) }}
