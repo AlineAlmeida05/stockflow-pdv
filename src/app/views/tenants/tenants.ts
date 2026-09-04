@@ -36,8 +36,21 @@ export class Tenants implements OnInit {
     tenants: Tenant[] = [];
 
     novoNome = '';
+
+    novoSlug = '';
+
+    novoLogoUrl = '';
+
+    novoFaviconUrl = '';
+
+    novaCorPrimaria = '';
+
+    novaCorSecundaria = '';
+
     novoResponsavel = '';
+
     novoEmail = '';
+
     novaCidade = '';
 
     salvando = false;
@@ -106,6 +119,11 @@ export class Tenants implements OnInit {
         this.tenantService
             .salvar({
                 nome: this.novoNome,
+                slug: this.novoSlug,
+                logoUrl: this.novoLogoUrl,
+                faviconUrl: this.novoFaviconUrl,
+                corPrimaria: this.novaCorPrimaria,
+                corSecundaria: this.novaCorSecundaria,
                 responsavel: this.novoResponsavel,
                 email: this.novoEmail,
                 cidade: this.novaCidade,
@@ -123,6 +141,11 @@ export class Tenants implements OnInit {
                     ];
 
                     this.novoNome = '';
+                    this.novoSlug = '';
+                    this.novoLogoUrl = '';
+                    this.novoFaviconUrl = '';
+                    this.novaCorPrimaria = '';
+                    this.novaCorSecundaria = '';
                     this.novoResponsavel = '';
                     this.novoEmail = '';
                     this.novaCidade = '';
@@ -256,7 +279,6 @@ export class Tenants implements OnInit {
 
     }
 
-
     editarTenant(
         tenant: Tenant
     ): void {
@@ -269,6 +291,20 @@ export class Tenants implements OnInit {
 
         this.novoNome =
             tenant.nome ?? '';
+
+        this.novoSlug =
+            tenant.slug ?? '';
+        this.novoLogoUrl =
+            tenant.logoUrl ?? '';
+
+        this.novoFaviconUrl =
+            tenant.faviconUrl ?? '';
+
+        this.novaCorPrimaria =
+            tenant.corPrimaria ?? '';
+
+        this.novaCorSecundaria =
+            tenant.corSecundaria ?? '';
 
         this.novoResponsavel =
             tenant.responsavel ?? '';
@@ -305,6 +341,11 @@ export class Tenants implements OnInit {
                 {
                     ...this.tenantEditando,
                     nome: this.novoNome,
+                    slug: this.novoSlug,
+                    logoUrl: this.novoLogoUrl,
+                    faviconUrl: this.novoFaviconUrl,
+                    corPrimaria: this.novaCorPrimaria,
+                    corSecundaria: this.novaCorSecundaria,
                     responsavel: this.novoResponsavel,
                     email: this.novoEmail,
                     cidade: this.novaCidade
@@ -370,6 +411,14 @@ export class Tenants implements OnInit {
         this.tenantEditando = null;
 
         this.novoNome = '';
+        this.novoSlug = '';
+        this.novoLogoUrl = '';
+
+        this.novoFaviconUrl = '';
+
+        this.novaCorPrimaria = '';
+
+        this.novaCorSecundaria = '';
         this.novoResponsavel = '';
         this.novoEmail = '';
         this.novaCidade = '';
@@ -385,6 +434,11 @@ export class Tenants implements OnInit {
         this.tenantEditando = null;
 
         this.novoNome = '';
+        this.novoSlug = '';
+        this.novoLogoUrl = '';
+        this.novoFaviconUrl = '';
+        this.novaCorPrimaria = '';
+        this.novaCorSecundaria = '';
         this.novoResponsavel = '';
         this.novoEmail = '';
         this.novaCidade = '';
@@ -424,6 +478,40 @@ export class Tenants implements OnInit {
                     .toLowerCase()
                     .includes(filtro)
         );
+
+    }
+
+    gerarSlug(): void {
+
+        if (this.modoEdicao) {
+            return;
+        }
+
+        this.novoSlug =
+            this.novoNome
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(
+                    /[\u0300-\u036f]/g,
+                    ''
+                )
+                .replace(
+                    /[^a-z0-9\s-]/g,
+                    ''
+                )
+                .trim()
+                .replace(
+                    /\s+/g,
+                    '-'
+                );
+
+    }
+
+    gerarUrlTenant(
+        tenant: Tenant
+    ): string {
+
+        return `/${tenant.slug}`;
 
     }
 }

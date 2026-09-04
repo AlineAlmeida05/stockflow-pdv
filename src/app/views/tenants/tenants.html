@@ -49,7 +49,18 @@
                     <input
                         type="text"
                         placeholder="Nome"
-                        [(ngModel)]="novoNome">
+                        [(ngModel)]="novoNome"
+                        (input)="gerarSlug()">
+                </div>
+                <div class="field">
+                    <label>
+                        Slug
+                    </label>
+
+                    <input
+                        type="text"
+                        placeholder="adega-fulano"
+                        [(ngModel)]="novoSlug">
                 </div>
                 <div class="field">
                     <label>
@@ -77,6 +88,48 @@
                         type="text"
                         placeholder="Cidade"
                         [(ngModel)]="novaCidade">
+                </div>
+                <div class="field">
+                    <label>
+                        Logo URL
+                    </label>
+
+                    <input
+                        type="text"
+                        placeholder="https://..."
+                        [(ngModel)]="novoLogoUrl">
+                </div>
+
+                <div class="field">
+                    <label>
+                        Favicon URL
+                    </label>
+
+                    <input
+                        type="text"
+                        placeholder="https://..."
+                        [(ngModel)]="novoFaviconUrl">
+                </div>
+                <div class="field">
+                    <label>
+                        Cor Primária
+                    </label>
+
+                    <input
+                        type="text"
+                        placeholder="#AAAAAA"
+                        [(ngModel)]="novaCorPrimaria">
+                </div>
+
+                <div class="field">
+                    <label>
+                        Cor Secundária
+                    </label>
+
+                    <input
+                        type="text"
+                        placeholder="#000000"
+                        [(ngModel)]="novaCorSecundaria">
                 </div>
                 <div class="formulario-acoes">
                     @if (modoEdicao) {
@@ -125,7 +178,7 @@
                     Consulte, edite e exclua tenants cadastrados.
                 </p>
             </div>
-                       
+
             @if (tenants.length === 0) {
 
             <app-empty-state

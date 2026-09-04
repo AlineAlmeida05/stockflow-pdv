@@ -4,6 +4,8 @@ export interface Tenant {
 
     nome: string;
 
+    slug?: string;
+
     email: string;
 
     telefone?: string;
@@ -23,6 +25,8 @@ export interface Tenant {
     uf?: string;
 
     logoUrl?: string;
+
+    faviconUrl?: string;
 
     corPrimaria?: string;
 

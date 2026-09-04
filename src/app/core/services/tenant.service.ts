@@ -56,4 +56,14 @@ export class TenantService {
 
     }
 
+    buscarPorSlug(
+        slug: string
+    ): Observable<Tenant> {
+
+        return this.http.get<Tenant>(
+            `${this.apiUrl}/slug/${slug}`
+        );
+
+    }
+
 }
