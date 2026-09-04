@@ -46,5 +46,9 @@ export const MENU_CONFIG = [
   {
     label: 'Empresa',
     route: '/empresa'
+  },
+  {
+    label: 'Tenants',
+    route: '/tenants'
   }
 ];
