@@ -16,23 +16,23 @@
     <div class="brand-preview">
         <div
             class="brand-preview__primary"
-            [style.background]="empresa.corPrimaria">
+            [style.background]="tenantAtual?.corPrimaria">
 
             <small>Cor Primária</small>
 
             <strong>
-                {{ empresa.corPrimaria }}
+                {{ tenantAtual?.corPrimaria }}
             </strong>
         </div>
 
         <div
             class="brand-preview__secondary"
-            [style.background]="empresa.corSecundaria">
+            [style.background]="tenantAtual?.corSecundaria">
 
             <small>Cor Secundária</small>
 
             <strong>
-                {{ empresa.corSecundaria }}
+                {{ tenantAtual?.corSecundaria }}
             </strong>
         </div>
     </div>

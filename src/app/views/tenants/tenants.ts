@@ -13,6 +13,7 @@ import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { SearchInput } from '../../shared/components/search-input/search-input';
 import { Toolbar } from '../../shared/components/toolbar/toolbar';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
+import { TenantContextService } from '../../core/services/tenant-context.service';
 
 @Component({
     selector: 'app-tenants',
@@ -63,6 +64,7 @@ export class Tenants implements OnInit {
 
     textoBusca = '';
 
+    novoAtivo = true;
 
     colunasTenants = [
         {
@@ -90,7 +92,9 @@ export class Tenants implements OnInit {
     constructor(
         private tenantService: TenantService,
         private alertService: AlertService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private tenantContextService:
+            TenantContextService
     ) { }
 
     ngOnInit(): void {
@@ -127,7 +131,7 @@ export class Tenants implements OnInit {
                 responsavel: this.novoResponsavel,
                 email: this.novoEmail,
                 cidade: this.novaCidade,
-                ativo: true,
+                ativo: this.novoAtivo,
                 marketingIaHabilitado: false,
                 deliveryHabilitado: false
             })
@@ -149,6 +153,7 @@ export class Tenants implements OnInit {
                     this.novoResponsavel = '';
                     this.novoEmail = '';
                     this.novaCidade = '';
+                    this.novoAtivo = true;
 
                     this.alertService.removeToast(
                         loadingToast.id
@@ -282,6 +287,9 @@ export class Tenants implements OnInit {
     editarTenant(
         tenant: Tenant
     ): void {
+        this.selecionarTenant(
+            tenant
+        );
 
         this.tenantEditando = tenant;
 
@@ -289,31 +297,25 @@ export class Tenants implements OnInit {
 
         this.modoEdicao = true;
 
-        this.novoNome =
-            tenant.nome ?? '';
+        this.novoNome = tenant.nome ?? '';
 
-        this.novoSlug =
-            tenant.slug ?? '';
-        this.novoLogoUrl =
-            tenant.logoUrl ?? '';
+        this.novoSlug = tenant.slug ?? '';
 
-        this.novoFaviconUrl =
-            tenant.faviconUrl ?? '';
+        this.novoLogoUrl = tenant.logoUrl ?? '';
 
-        this.novaCorPrimaria =
-            tenant.corPrimaria ?? '';
+        this.novoFaviconUrl = tenant.faviconUrl ?? '';
 
-        this.novaCorSecundaria =
-            tenant.corSecundaria ?? '';
+        this.novaCorPrimaria = tenant.corPrimaria ?? '';
 
-        this.novoResponsavel =
-            tenant.responsavel ?? '';
+        this.novaCorSecundaria = tenant.corSecundaria ?? '';
 
-        this.novoEmail =
-            tenant.email ?? '';
+        this.novoResponsavel = tenant.responsavel ?? '';
 
-        this.novaCidade =
-            tenant.cidade ?? '';
+        this.novoEmail = tenant.email ?? '';
+
+        this.novaCidade = tenant.cidade ?? '';
+
+        this.novoAtivo = tenant.ativo ?? true;
 
     }
 
@@ -348,7 +350,8 @@ export class Tenants implements OnInit {
                     corSecundaria: this.novaCorSecundaria,
                     responsavel: this.novoResponsavel,
                     email: this.novoEmail,
-                    cidade: this.novaCidade
+                    cidade: this.novaCidade,
+                    ativo: this.novoAtivo,
                 }
 
             )
@@ -378,9 +381,23 @@ export class Tenants implements OnInit {
 
                     this.tenantEditando = null;
 
+                    this.novoAtivo = true;
+
                     this.cdr.detectChanges();
+                    this.novoNome = '';
+                    this.novoSlug = '';
+                    this.novoLogoUrl = '';
+                    this.novoFaviconUrl = '';
+                    this.novaCorPrimaria = '';
+                    this.novaCorSecundaria = '';
+                    this.novoResponsavel = '';
+                    this.novoEmail = '';
+                    this.novaCidade = '';
+                    this.novoAtivo = true;
 
                 },
+
+
 
                 error: erro => {
 
@@ -422,6 +439,7 @@ export class Tenants implements OnInit {
         this.novoResponsavel = '';
         this.novoEmail = '';
         this.novaCidade = '';
+        this.novoAtivo = true;
 
     }
 
@@ -442,6 +460,7 @@ export class Tenants implements OnInit {
         this.novoResponsavel = '';
         this.novoEmail = '';
         this.novaCidade = '';
+        this.novoAtivo = true;
 
     }
 
@@ -512,6 +531,34 @@ export class Tenants implements OnInit {
     ): string {
 
         return `/${tenant.slug}`;
+
+    }
+
+    selecionarTenant(
+        tenant: Tenant
+    ): void {
+
+        this.tenantContextService
+            .setTenant(
+                tenant
+            );
+
+        this.alertService.success(
+            `Tenant ${tenant.nome} selecionado.`
+        );
+
+        localStorage.setItem(
+            'tenantAtivo',
+            JSON.stringify(tenant)
+        );
+
+    }
+
+    get tenantAtual(): Tenant | null {
+
+        return this
+            .tenantContextService
+            .tenantAtual;
 
     }
 }

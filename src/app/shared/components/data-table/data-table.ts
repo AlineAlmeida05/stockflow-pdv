@@ -39,6 +39,10 @@ export class DataTable {
     @Output()
     delete = new EventEmitter<unknown>();
 
+    @Output()
+    rowClick =
+        new EventEmitter<unknown>();
+
     obterVariantStatus(
         status: string
     ): 'success' | 'warning' | 'danger' {

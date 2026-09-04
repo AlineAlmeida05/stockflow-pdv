@@ -1,12 +1,15 @@
 <header class="header">
   <div class="header-company">
     <img
-      [src]="branding.logo"
-      [alt]="branding.nomeExibicao">
+      [src]="tenantAtual?.logoUrl || branding.logo"
+      [alt]="tenantAtual?.nome || branding.nomeExibicao">
     <div>
 
       <h2>
-        {{ branding.nomeExibicao }}
+        {{
+        tenantAtual?.nome
+        || branding.nomeExibicao
+        }}
       </h2>
 
       <p>

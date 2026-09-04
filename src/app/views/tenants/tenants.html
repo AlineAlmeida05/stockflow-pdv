@@ -42,6 +42,14 @@
                 </p>
 
                 }
+
+                @if (tenantAtual) {
+                <div class="tenant-atual">
+                    Tenant ativo:
+                    {{ tenantAtual.nome }}
+                </div>
+
+                }
                 <div class="field">
                     <label>
                         Nome
@@ -52,16 +60,17 @@
                         [(ngModel)]="novoNome"
                         (input)="gerarSlug()">
                 </div>
+
                 <div class="field">
                     <label>
                         Slug
                     </label>
-
                     <input
                         type="text"
                         placeholder="adega-fulano"
                         [(ngModel)]="novoSlug">
                 </div>
+
                 <div class="field">
                     <label>
                         Responsável
@@ -71,6 +80,7 @@
                         placeholder="Responsável"
                         [(ngModel)]="novoResponsavel">
                 </div>
+
                 <div class="field">
                     <label>
                         Email
@@ -80,6 +90,7 @@
                         placeholder="Email"
                         [(ngModel)]="novoEmail">
                 </div>
+
                 <div class="field">
                     <label>
                         Cidade
@@ -89,6 +100,7 @@
                         placeholder="Cidade"
                         [(ngModel)]="novaCidade">
                 </div>
+
                 <div class="field">
                     <label>
                         Logo URL
@@ -96,7 +108,6 @@
 
                     <input
                         type="text"
-                        placeholder="https://..."
                         [(ngModel)]="novoLogoUrl">
                 </div>
 
@@ -107,7 +118,6 @@
 
                     <input
                         type="text"
-                        placeholder="https://..."
                         [(ngModel)]="novoFaviconUrl">
                 </div>
                 <div class="field">
@@ -131,6 +141,24 @@
                         placeholder="#000000"
                         [(ngModel)]="novaCorSecundaria">
                 </div>
+                <div class="field">
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select
+                        [(ngModel)]="novoAtivo">
+                        <option [ngValue]="true">
+                            Ativo
+                        </option>
+
+                        <option [ngValue]="false">
+                            Inativo
+                        </option>
+                    </select>
+                </div>
+
                 <div class="formulario-acoes">
                     @if (modoEdicao) {
                     <button

@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
+import { TenantContextService }
+    from '../../../core/services/tenant-context.service';
 
 import { BRANDING_CONFIG }
-from '../../../config/branding.config';
+    from '../../../config/branding.config';
 
 @Component({
     selector: 'app-header',
@@ -11,7 +13,19 @@ from '../../../config/branding.config';
 })
 export class Header {
 
+    constructor(
+        public tenantContextService:
+            TenantContextService
+    ) { }
+
     branding =
         BRANDING_CONFIG;
 
+    get tenantAtual() {
+
+        return this
+            .tenantContextService
+            .tenantAtual;
+
+    }
 }
