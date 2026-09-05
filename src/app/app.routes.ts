@@ -12,6 +12,7 @@ import { Relatorios } from './views/relatorios/relatorios';
 import { EmpresaComponent } from './views/empresa/empresa';
 import { Marketing } from './views/marketing/marketing';
 import { Tenants } from './views/tenants/tenants';
+import { Usuarios } from './views/usuarios/usuarios';
 
 
 export const routes: Routes = [
@@ -71,7 +72,11 @@ export const routes: Routes = [
     {
         path: 'tenants',
         component: Tenants
-    }
+    },
+    {
+        path: 'usuarios',
+        component: Usuarios
+    },
 
 
 ];

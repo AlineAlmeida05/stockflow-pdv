@@ -50,5 +50,9 @@ export const MENU_CONFIG = [
   {
     label: 'Tenants',
     route: '/tenants'
+  },
+  {
+    label: 'Usuários',
+    route: '/usuarios'
   }
 ];

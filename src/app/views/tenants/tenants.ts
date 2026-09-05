@@ -93,8 +93,7 @@ export class Tenants implements OnInit {
         private tenantService: TenantService,
         private alertService: AlertService,
         private cdr: ChangeDetectorRef,
-        private tenantContextService:
-            TenantContextService
+        private tenantContextService: TenantContextService
     ) { }
 
     ngOnInit(): void {
