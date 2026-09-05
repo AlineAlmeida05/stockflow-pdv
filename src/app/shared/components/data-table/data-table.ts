@@ -49,11 +49,16 @@ export class DataTable {
 
         switch (status) {
 
-            case 'Baixo':
-                return 'danger';
+            case 'GERENTE':
+            case 'Ativo':
+                return 'success';
 
-            case 'Atenção':
+            case 'OPERADOR_CAIXA':
                 return 'warning';
+
+            case 'ESTOQUISTA':
+            case 'Inativo':
+                return 'danger';
 
             default:
                 return 'success';

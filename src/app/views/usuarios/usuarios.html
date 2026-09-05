@@ -8,8 +8,8 @@
     <app-toolbar>
         <button
             class="btn btn-primary"
-            (click)="salvarUsuario()">
-            {{ usuarioEmEdicao ? 'Atualizar' : '+ Cadastrar Usuário' }}
+            (click)="novoUsuario()">
+            {{'+ Cadastrar Usuário' }}
         </button>
         <app-search-input
             placeholder="Buscar usuário..."
@@ -40,7 +40,7 @@
                 </p>
 
                 }
-                
+
                 <div class="field">
                     <label>
                         Nome
@@ -76,36 +76,29 @@
                     </label>
                     <select
                         [(ngModel)]="novoPerfil">
-                        <option
-                            value="GERENTE">
+                        <option value="PROPRIETARIO">
+                            Proprietário
+                        </option>
+
+                        <option value="SOCIO">
+                            Sócio
+                        </option>
+
+                        <option value="GERENTE">
                             Gerente
                         </option>
 
-                        <option
-                            value="OPERADOR_CAIXA">
+                        <option value="OPERADOR_CAIXA">
                             Operador de Caixa
                         </option>
 
-                        <option
-                            value="ESTOQUISTA">
+                        <option value="ESTOQUISTA">
                             Estoquista
                         </option>
                     </select>
                 </div>
                 <div class="formulario-acoes">
-                    @if (modoEdicao) {
-                    <button
-                        class="btn btn-primary"
-                        type="button"
-                        [disabled]="salvando"
-                        (click)="carregarUsuarios()">
-                        {{
-                        salvando
-                        ? 'Salvando...'
-                        : 'Salvar Alterações'
-                        }}
-                    </button>
-                    } @else {
+                    
                     <button
                         class="btn btn-primary"
                         type="button"
@@ -114,15 +107,14 @@
                         {{
                         salvando
                         ? 'Salvando...'
-                        : 'Cadastrar Usuário'
+                        : 'Salvar Alterações'
                         }}
-                    </button>
-                    }
+                    </button>                  
 
                     <button
                         class="btn btn-secondary"
                         type="button"
-                        (click)="limparFormulario()">
+                        (click)="cancelarEdicao()">
                         Cancelar
                     </button>
                 </div>

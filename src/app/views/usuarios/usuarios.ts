@@ -12,7 +12,6 @@ import { TenantContextService } from '../../core/services/tenant-context.service
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../core/services/alert.service';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
-import { TenantService } from '../../core/services/tenant.service';
 
 
 @Component({
@@ -56,28 +55,35 @@ export class Usuarios implements OnInit {
 
     textoBusca = '';
 
-    colunasUsuarios = [
-        {
-            field: 'nome',
-            header: 'Nome'
-        },
-        {
-            field: 'email',
-            header: 'Email'
-        },
-        {
-            field: 'perfil',
-            header: 'Perfil'
-        },
-        {
-            field: 'status',
-            header: 'Status'
-        }
-    ];
+    colunasUsuarios: {
+        field: string;
+        header: string;
+        type?: 'text' | 'badge' | 'currency' | 'date';
+    }[] = [
+            {
+                field: 'nome',
+                header: 'Nome'
+            },
+            {
+                field: 'email',
+                header: 'Email'
+            },
+            {
+                field: 'perfil',
+                header: 'Perfil',
+                type: 'badge'
+            },
+            {
+                field: 'status',
+                header: 'Status',
+                type: 'badge'
+            }
+        ];
 
     constructor(
         private usuarioService: UsuarioService,
-        private tenantContextService: TenantContextService
+        private tenantContextService: TenantContextService,
+        private alertService: AlertService
     ) { }
 
     ngOnInit(): void {
@@ -132,7 +138,6 @@ export class Usuarios implements OnInit {
 
     salvarUsuario(): void {
 
-        this.mostrarFormulario = true;
 
         const tenant =
             this.tenantContextService
@@ -140,7 +145,7 @@ export class Usuarios implements OnInit {
 
         if (!tenant) {
 
-            console.error(
+            this.alertService.error(
                 'Nenhum tenant selecionado.'
             );
 
@@ -148,7 +153,46 @@ export class Usuarios implements OnInit {
 
         }
 
+        if (!this.novoNome.trim()) {
+
+            this.alertService.error(
+                'Informe o nome do usuário.'
+            );
+
+            return;
+
+        }
+
+        if (!this.novoEmail.trim()) {
+
+            this.alertService.error(
+                'Informe o e-mail do usuário.'
+            );
+
+            return;
+        }
+
+        if (
+            !this.usuarioEmEdicao &&
+            !this.novaSenha.trim()
+        ) {
+
+            this.alertService.error(
+                'Informe a senha.'
+            );
+
+            return;
+
+        }
+
         if (this.usuarioEmEdicao?.id) {
+
+            this.salvando = true;
+
+            const loadingToast =
+                this.alertService.loading(
+                    'Atualizando usuário...'
+                );
 
             this.usuarioService
                 .atualizar(
@@ -167,13 +211,33 @@ export class Usuarios implements OnInit {
 
                     next: () => {
 
+                        this.salvando = false;
+
                         this.carregarUsuarios();
 
                         this.limparFormulario();
 
+                        this.alertService.removeToast(
+                            loadingToast.id
+                        );
+
+                        this.alertService.success(
+                            'Usuário atualizado com sucesso.'
+                        );
+
                     },
 
                     error: erro => {
+
+                        this.salvando = false;
+
+                        this.alertService.removeToast(
+                            loadingToast.id
+                        );
+
+                        this.alertService.error(
+                            'Erro ao atualizar usuário.'
+                        );
 
                         console.error(
                             erro
@@ -186,6 +250,13 @@ export class Usuarios implements OnInit {
             return;
 
         }
+
+        this.salvando = true;
+
+        const loadingToast =
+            this.alertService.loading(
+                'Criando usuário...'
+            );
 
         this.usuarioService
             .salvar({
@@ -202,10 +273,14 @@ export class Usuarios implements OnInit {
 
                 tenant
 
+
             })
+
             .subscribe({
 
                 next: () => {
+
+                    this.salvando = false;
 
                     this.carregarUsuarios();
 
@@ -213,9 +288,30 @@ export class Usuarios implements OnInit {
 
                     this.mostrarFormulario = false;
 
+                    this.modoEdicao = false;
+
+                    this.alertService.removeToast(
+                        loadingToast.id
+                    );
+
+                    this.alertService.success(
+                        'Usuário criado com sucesso.'
+                    );
+
                 },
 
                 error: erro => {
+
+                    this.salvando = false;
+
+                    this.alertService.removeToast(
+                        loadingToast.id
+                    );
+
+                    this.alertService.error(
+                        erro.error?.message ??
+                        'Erro ao criar usuário.'
+                    );
 
                     console.error(
                         erro
@@ -240,6 +336,21 @@ export class Usuarios implements OnInit {
 
         }
 
+        if (
+            !confirm(
+                `Deseja realmente excluir o usuário ${usuarioSelecionado.nome}?`
+            )
+        ) {
+
+            return;
+
+        }
+
+        const loadingToast =
+            this.alertService.loading(
+                'Excluindo usuário...'
+            );
+
         this.usuarioService
             .excluir(
                 usuarioSelecionado.id
@@ -250,9 +361,25 @@ export class Usuarios implements OnInit {
 
                     this.carregarUsuarios();
 
+                    this.alertService.removeToast(
+                        loadingToast.id
+                    );
+
+                    this.alertService.success(
+                        'Usuário excluído com sucesso.'
+                    );
+
                 },
 
                 error: erro => {
+
+                    this.alertService.removeToast(
+                        loadingToast.id
+                    );
+
+                    this.alertService.error(
+                        'Erro ao excluir usuário.'
+                    );
 
                     console.error(
                         erro
@@ -267,9 +394,7 @@ export class Usuarios implements OnInit {
     limparFormulario(): void {
 
         this.novoNome = '';
-
         this.novoEmail = '';
-
         this.novaSenha = '';
 
         this.novoPerfil = 'GERENTE';
@@ -277,6 +402,8 @@ export class Usuarios implements OnInit {
         this.novoAtivo = true;
 
         this.usuarioEmEdicao = null;
+
+        this.modoEdicao = false;
 
         this.mostrarFormulario = false;
 
@@ -289,23 +416,17 @@ export class Usuarios implements OnInit {
         const usuarioSelecionado =
             usuario as Usuario;
 
-        this.usuarioEmEdicao =
-            usuarioSelecionado;
+        this.usuarioEmEdicao = usuarioSelecionado;
 
-        this.novoNome =
-            usuarioSelecionado.nome;
+        this.novoNome = usuarioSelecionado.nome;
 
-        this.novoEmail =
-            usuarioSelecionado.email;
+        this.novoEmail = usuarioSelecionado.email;
 
-        this.novaSenha =
-            '';
+        this.novaSenha = '';
 
-        this.novoPerfil =
-            usuarioSelecionado.perfil;
+        this.novoPerfil = usuarioSelecionado.perfil;
 
-        this.novoAtivo =
-            usuarioSelecionado.ativo;
+        this.novoAtivo = usuarioSelecionado.ativo;
 
         this.mostrarFormulario = true;
 
@@ -315,13 +436,12 @@ export class Usuarios implements OnInit {
 
     novoUsuario(): void {
 
+        this.limparFormulario();
+
         this.mostrarFormulario = true;
 
         this.modoEdicao = false;
 
-        this.usuarioEmEdicao = null;
-
-        this.limparFormulario();
 
     }
 
