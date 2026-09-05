@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Tenant } from '../models/tenant.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -13,7 +14,7 @@ export class TenantService {
         inject(HttpClient);
 
     private readonly apiUrl =
-        'https://glorious-cod-5gg6gxqqvxq5fp6g4-8080.app.github.dev/api/tenants';
+    `${environment.apiUrl}/api/tenants`;
 
     listar(): Observable<Tenant[]> {
 

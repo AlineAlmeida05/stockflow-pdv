@@ -1,3 +1,4 @@
+import { LoginComponent } from './features/auth/login/login.component';
 import { Routes } from '@angular/router';
 import { Clientes } from './views/clientes/clientes';
 import { Produtos } from './views/produtos/produtos';
@@ -13,69 +14,88 @@ import { EmpresaComponent } from './views/empresa/empresa';
 import { Marketing } from './views/marketing/marketing';
 import { Tenants } from './views/tenants/tenants';
 import { Usuarios } from './views/usuarios/usuarios';
+import { authGuard } from './core/guards/auth.guard';
 
 
 export const routes: Routes = [
     {
         path: '',
-        redirectTo: 'produtos',
+        redirectTo: 'login',
         pathMatch: 'full'
     },
     {
+        path: 'login',
+        component: LoginComponent
+    },
+    {
         path: 'produtos',
-        component: Produtos
+        component: Produtos,
+        canActivate: [authGuard]
     },
     {
         path: 'clientes',
-        component: Clientes
+        component: Clientes,
+        canActivate: [authGuard]
     },
     {
         path: 'entrada-de-estoque',
-        component: EntradaDeEstoque
+        component: EntradaDeEstoque,
+        canActivate: [authGuard]
     },
     {
         path: 'estoque',
-        component: Estoque
+        component: Estoque,
+        canActivate: [authGuard]
     },
     {
         path: 'nova-venda',
-        component: NovaVenda
+        component: NovaVenda,
+        canActivate: [authGuard]
     },
     {
         path: 'fiados',
-        component: Fiados
+        component: Fiados,
+        canActivate: [authGuard]
     },
     {
         path: 'historico-de-vendas',
-        component: HistoricoDeVendas
+        component: HistoricoDeVendas,
+        canActivate: [authGuard]
     },
     {
         path: 'dashboard',
-        component: Dashboard
+        component: Dashboard,
+        canActivate: [authGuard]
     },
     {
         path: 'promocoes',
-        component: Promocoes
+        component: Promocoes,
+        canActivate: [authGuard]
     },
     {
         path: 'relatorios',
-        component: Relatorios
+        component: Relatorios,
+        canActivate: [authGuard]
     },
     {
         path: 'marketing',
-        component: Marketing
+        component: Marketing,
+        canActivate: [authGuard]
     },
     {
         path: 'empresa',
-        component: EmpresaComponent
+        component: EmpresaComponent,
+        canActivate: [authGuard]
     },
     {
         path: 'tenants',
-        component: Tenants
+        component: Tenants,
+        canActivate: [authGuard]
     },
     {
         path: 'usuarios',
-        component: Usuarios
+        component: Usuarios,
+        canActivate: [authGuard]
     },
 
 

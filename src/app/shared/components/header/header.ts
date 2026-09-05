@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { TenantContextService }
-    from '../../../core/services/tenant-context.service';
-
-import { BRANDING_CONFIG }
-    from '../../../config/branding.config';
+import { TenantContextService } from '../../../core/services/tenant-context.service';
+import { BRANDING_CONFIG } from '../../../config/branding.config';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
     selector: 'app-header',
@@ -14,8 +13,9 @@ import { BRANDING_CONFIG }
 export class Header {
 
     constructor(
-        public tenantContextService:
-            TenantContextService
+        public tenantContextService: TenantContextService,
+        private authService: AuthService,
+        private router: Router
     ) { }
 
     branding =
@@ -26,6 +26,16 @@ export class Header {
         return this
             .tenantContextService
             .tenantAtual;
+
+    }
+
+    sair(): void {
+
+        this.authService.logout();
+
+        this.router.navigate([
+            '/login'
+        ]);
 
     }
 }
