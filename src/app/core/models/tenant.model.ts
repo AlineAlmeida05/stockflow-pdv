@@ -6,6 +6,8 @@ export interface Tenant {
 
     slug?: string;
 
+    codigoTenant?: string;
+
     email: string;
 
     telefone?: string;

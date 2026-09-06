@@ -40,6 +40,8 @@ export class Tenants implements OnInit {
 
     novoSlug = '';
 
+    novoCodigoTenant = '';
+
     novoLogoUrl = '';
 
     novoFaviconUrl = '';
@@ -128,6 +130,7 @@ export class Tenants implements OnInit {
             .salvar({
                 nome: this.novoNome,
                 slug: this.novoSlug,
+                codigoTenant: this.novoCodigoTenant,
                 logoUrl: this.novoLogoUrl,
                 faviconUrl: this.novoFaviconUrl,
                 corPrimaria: this.novaCorPrimaria,
@@ -290,6 +293,8 @@ export class Tenants implements OnInit {
 
         this.novoSlug = tenant.slug ?? '';
 
+        this.novoCodigoTenant = tenant.codigoTenant ?? '';
+
         this.novoLogoUrl = tenant.logoUrl ?? '';
 
         this.novoFaviconUrl = tenant.faviconUrl ?? '';
@@ -333,6 +338,7 @@ export class Tenants implements OnInit {
                     ...this.tenantEditando,
                     nome: this.novoNome,
                     slug: this.novoSlug,
+                    codigoTenant: this.novoCodigoTenant,
                     logoUrl: this.novoLogoUrl,
                     faviconUrl: this.novoFaviconUrl,
                     corPrimaria: this.novaCorPrimaria,
@@ -521,13 +527,45 @@ export class Tenants implements OnInit {
 
         return `/${tenant.slug}`;
 
-    }    
+    }
 
     get tenantAtual(): Tenant | null {
 
         return this
             .tenantContextService
             .tenantAtual;
+
+    }
+
+    gerarCodigoTenant(): void {
+
+        if (this.modoEdicao) {
+            return;
+        }
+
+        const palavras =
+            this.novoNome
+                .trim()
+                .split(' ')
+                .filter(p => p);
+
+        if (palavras.length >= 2) {
+
+            this.novoCodigoTenant =
+                (
+                    palavras[0][0] +
+                    palavras[1][0] +
+                    palavras[1][1]
+                )
+                    .toUpperCase();
+
+            return;
+        }
+
+        this.novoCodigoTenant =
+            this.novoNome
+                .substring(0, 3)
+                .toUpperCase();
 
     }
 }

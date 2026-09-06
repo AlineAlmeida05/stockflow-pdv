@@ -58,7 +58,7 @@
                         type="text"
                         placeholder="Nome"
                         [(ngModel)]="novoNome"
-                        (input)="gerarSlug()">
+                        (input)="gerarSlug(); gerarCodigoTenant()">
                 </div>
 
                 <div class="field">
@@ -69,6 +69,17 @@
                         type="text"
                         placeholder="adega-fulano"
                         [(ngModel)]="novoSlug">
+                </div>
+
+                <div class="field">
+                    <label>
+                        Código do Tenant
+                    </label>
+
+                    <input
+                        type="text"
+                        placeholder="SIN"
+                        [(ngModel)]="novoCodigoTenant">
                 </div>
 
                 <div class="field">
