@@ -17,30 +17,149 @@
   </div>
 
   <div class="header-actions">
-    @if (usuarioLogado) {
+    <div class="profile-menu">
+      <button
+        class="btn btn-secondary profile-button"
+        (click)="alternarMenuPerfil()">
 
-    <div class="header-user">
-      <div class="header-user__name">
-        {{ usuarioLogado.nome }}
+        <div class="profile-button__content">
+
+          <span class="profile-button__name">
+            👤 {{ usuarioLogado?.nome }}
+          </span>
+
+          <span class="profile-button__role">
+            {{ usuarioLogado?.perfil }}
+          </span>
+        </div>
+      </button>
+
+      @if (menuPerfilAberto) {
+      <div class="profile-dropdown">
+        <div class="profile-dropdown__info">
+
+          <strong>
+            {{ usuarioLogado?.nome }}
+          </strong>
+
+          <small>
+            {{ usuarioLogado?.email }}
+          </small>
+
+          <small>
+            Perfil:
+            {{ usuarioLogado?.perfil }}
+          </small>
+
+          <small>
+            Tenant:
+            {{ usuarioLogado?.tenantNome }}
+          </small>
+        </div>
+
+        <hr>
+
+        <button
+          class="profile-dropdown__action"
+          (click)="abrirModalAlterarSenha()">
+          Alterar Senha
+        </button>
+
+        <button
+          class="profile-dropdown__logout"
+          (click)="sair()">
+          Sair
+        </button>
+
       </div>
-      <div class="header-user__profile">
-        {{ usuarioLogado.perfil }}
-      </div>
-      <div class="header-user__tenant">
-        {{ usuarioLogado.tenantNome }}
-      </div>
+      }
     </div>
-
-    }
-    <button
-      class="btn btn-secondary">
-      👤 Perfil
-    </button>
-
-    <button
-      class="btn btn-danger"
-      (click)="sair()">
-      Sair
-    </button>
   </div>
 </header>
+
+@if (modalAlterarSenhaAberto) {
+
+<div class="modal-backdrop">
+
+  <div class="modal">
+
+    <h3>
+      Alterar Senha
+    </h3>
+
+    <form
+      [formGroup]="formAlterarSenha">
+
+      <div class="field">
+
+        <label>
+          Senha Atual
+        </label>
+
+        <input
+          type="password"
+          formControlName="senhaAtual">
+
+      </div>
+
+      <div class="field">
+
+        <label>
+          Nova Senha
+        </label>
+
+        <input
+          type="password"
+          formControlName="novaSenha">
+
+      </div>
+
+      <div class="field">
+
+        <label>
+          Confirmar Nova Senha
+        </label>
+
+        <input
+          type="password"
+          formControlName="confirmarSenha">
+        @if (
+        formAlterarSenha.value.novaSenha &&
+        formAlterarSenha.value.confirmarSenha &&
+        formAlterarSenha.value.novaSenha !==
+        formAlterarSenha.value.confirmarSenha
+        ) {
+
+        <span class="field-error">
+          As senhas não conferem.
+        </span>
+
+        }
+      </div>
+
+      <div class="modal-actions">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="fecharModalAlterarSenha()">
+          Cancelar
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="salvarSenha()"
+          [disabled]="salvandoSenha">
+
+          @if (salvandoSenha) {
+          Salvando...
+          } @else {
+          Salvar
+          }
+
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+}

@@ -94,4 +94,17 @@ export class AuthService {
                 return '/dashboard';
         }
     }
+
+    alterarSenha(request: {
+        senhaAtual: string;
+        novaSenha: string;
+        confirmarSenha: string;
+    }): Observable<void> {
+
+        return this.http.put<void>(
+            `${environment.apiUrl}/api/usuarios/alterar-senha`,
+            request
+        );
+
+    }
 }
