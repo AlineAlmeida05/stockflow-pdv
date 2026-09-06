@@ -52,8 +52,6 @@ export class ProductSelector implements OnInit {
         produto: Produto
     ): void {
 
-        console.log('Selecionado:', produto);
-
         this.barcodeSearch?.setProduto(produto);
 
         this.productSearch?.setProduto(produto);

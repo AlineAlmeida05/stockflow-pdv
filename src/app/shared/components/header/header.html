@@ -6,10 +6,7 @@
     <div>
 
       <h2>
-        {{
-        tenantAtual?.nome
-        || branding.nomeExibicao
-        }}
+        {{ tenantAtual?.nome || branding.nomeExibicao }}
       </h2>
 
       <p>
@@ -18,7 +15,23 @@
     </div>
 
   </div>
+
   <div class="header-actions">
+    @if (usuarioLogado) {
+
+    <div class="header-user">
+      <div class="header-user__name">
+        {{ usuarioLogado.nome }}
+      </div>
+      <div class="header-user__profile">
+        {{ usuarioLogado.perfil }}
+      </div>
+      <div class="header-user__tenant">
+        {{ usuarioLogado.tenantNome }}
+      </div>
+    </div>
+
+    }
     <button
       class="btn btn-secondary">
       👤 Perfil

@@ -1,0 +1,84 @@
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: var(--color-tertiary);
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+}
+
+.login-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+}
+
+.login-brand h1 {
+    margin: 0;
+    color: var(--login-primary, var(--color-primary));
+}
+
+.login-brand p {
+    margin: 0;
+    color: var(--color-gray-500);
+}
+
+.login-card .btn {
+    width: 100%;
+}
+
+.login-brand img {
+    width: 120px;
+    height: auto;
+}
+
+.field-invalid {
+    border-color: var(--color-danger) !important;
+}
+
+.field-invalid:focus {
+    border-color: var(--color-danger) !important;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 15%, transparent) !important;
+}
+
+.btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.login-card input {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.login-logo {
+    width: 120px;
+    height: auto;
+    margin-bottom: 1rem;
+    object-fit: contain;
+}
+
+.login-card .btn-primary {
+    background: var(--login-primary, var(--color-primary));
+}
+
+.tenant-error {
+    text-align: center;
+    padding: 1rem;
+}
+
+.tenant-error h2 {
+    color: var(--color-danger);
+}
+
+.tenant-error p {
+    color: var(--color-gray-500);
+}

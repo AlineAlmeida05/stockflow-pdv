@@ -12,7 +12,10 @@ import { TenantContextService } from '../../core/services/tenant-context.service
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../core/services/alert.service';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
-
+import { Tenant } from '../../core/models/tenant.model';
+import { TenantService } from '../../core/services/tenant.service';
+import { AuthService } from '../../core/services/auth.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
     selector: 'app-usuarios',
@@ -34,6 +37,12 @@ import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 export class Usuarios implements OnInit {
 
     usuarios: Usuario[] = [];
+
+    tenants: Tenant[] = [];
+
+    tenantSelecionadoId = '';
+
+    tenantCadastroId = '';
 
     usuarioEmEdicao: Usuario | null = null;
 
@@ -83,27 +92,75 @@ export class Usuarios implements OnInit {
     constructor(
         private usuarioService: UsuarioService,
         private tenantContextService: TenantContextService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private tenantService: TenantService,
+        private authService: AuthService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
 
-        this.carregarUsuarios();
-
         this.limparFormulario();
+
+        this.carregarTenants();
+
+        this.carregarUsuarios();
 
     }
 
     carregarUsuarios(): void {
 
+        const usuario =
+            this.authService
+                .usuarioLogado();
+
+        if (!usuario) {
+            return;
+        }
+
+        if (usuario.perfil === 'SUPER_ADMIN') {
+
+            this.usuarioService
+                .listar()
+                .subscribe({
+
+                    next: usuarios => {
+
+                        this.usuarios = usuarios;
+
+                        setTimeout(() => {
+
+                        }, 1000);
+
+                        this.cdr.detectChanges();
+
+                    },
+
+                    error: erro => {
+
+                        console.error(
+                            erro
+                        );
+
+                    }
+
+                });
+
+            return;
+
+        }
+
         this.usuarioService
-            .listar()
+            .listarPorTenant(
+                usuario.tenantId
+            )
             .subscribe({
 
                 next: usuarios => {
 
-                    this.usuarios =
-                        usuarios;
+                    this.usuarios = [...usuarios];
+
+                    this.cdr.detectChanges();
 
                 },
 
@@ -139,14 +196,36 @@ export class Usuarios implements OnInit {
     salvarUsuario(): void {
 
 
-        const tenant =
-            this.tenantContextService
-                .tenantAtual;
+        let tenant: Tenant | undefined;
+
+        if (this.ehSuperAdmin) {
+
+            tenant =
+                this.tenants.find(
+                    tenant =>
+                        tenant.id ===
+                        this.tenantCadastroId
+                );
+
+        } else {
+
+            const usuarioLogado =
+                this.authService
+                    .usuarioLogado();
+
+            tenant =
+                this.tenants.find(
+                    tenant =>
+                        tenant.id ===
+                        usuarioLogado?.tenantId
+                );
+
+        }
 
         if (!tenant) {
 
             this.alertService.error(
-                'Nenhum tenant selecionado.'
+                'Selecione um tenant.'
             );
 
             return;
@@ -465,6 +544,7 @@ export class Usuarios implements OnInit {
                 .trim();
 
         return this.usuariosTabela.filter(
+
             usuario =>
 
                 !filtro ||
@@ -476,7 +556,139 @@ export class Usuarios implements OnInit {
                     .includes(
                         filtro
                     )
+
         );
 
     }
+
+    carregarTenants(): void {
+
+        this.tenantService
+            .listar()
+            .subscribe({
+
+                next: tenants => {
+
+                    this.tenants = tenants;
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        erro
+                    );
+
+                }
+
+            });
+
+    }
+
+    filtrarPorTenant(
+        tenantId: string
+    ): void {
+
+        this.tenantSelecionadoId =
+            tenantId;
+
+        if (!tenantId) {
+
+            this.carregarUsuarios();
+
+            return;
+
+        }
+
+        this.usuarioService
+            .listarPorTenant(
+                tenantId
+            )
+            .subscribe({
+
+                next: usuarios => {
+
+                    this.usuarios = usuarios;
+
+                    this.cdr.detectChanges();
+
+                    setTimeout(() => {
+
+                    }, 1000);
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        erro
+                    );
+
+                }
+
+            });
+
+    }
+
+    get ehSuperAdmin(): boolean {
+
+        const usuario =
+            this.authService.usuarioLogado();
+
+        return usuario?.perfil ===
+            'SUPER_ADMIN';
+
+    }
+
+    get perfisDisponiveis(): string[] {
+
+        const perfil =
+            this.authService
+                .usuarioLogado()
+                ?.perfil;
+
+        switch (perfil) {
+
+            case 'SUPER_ADMIN':
+
+                return [
+                    'PROPRIETARIO',
+                    'SOCIO',
+                    'GERENTE',
+                    'OPERADOR_CAIXA',
+                    'ESTOQUISTA'
+                ];
+
+            case 'PROPRIETARIO':
+
+                return [
+                    'SOCIO',
+                    'GERENTE',
+                    'OPERADOR_CAIXA',
+                    'ESTOQUISTA'
+                ];
+
+            case 'SOCIO':
+
+                return [
+                    'GERENTE',
+                    'OPERADOR_CAIXA',
+                    'ESTOQUISTA'
+                ];
+
+            case 'GERENTE':
+
+                return [
+                    'OPERADOR_CAIXA',
+                    'ESTOQUISTA'
+                ];
+
+            default:
+
+                return [];
+
+        }
+
+    }
+
 }

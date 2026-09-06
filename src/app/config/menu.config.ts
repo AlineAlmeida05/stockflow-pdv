@@ -1,58 +1,149 @@
-export const MENU_CONFIG = [
+import { MenuItem } from '../core/models/menu-item.model';
+
+export const MENU_CONFIG: MenuItem[] = [
   {
     label: 'Dashboard',
-    route: '/dashboard'
+    route: '/dashboard',
+    perfis: [
+      'SUPER_ADMIN',
+      'PROPRIETARIO',
+      'SOCIO',
+      'GERENTE',
+      'OPERADOR_CAIXA',
+      'ESTOQUISTA'
+    ]
   },
   {
     label: 'Nova Venda',
-    route: '/nova-venda'
+    route: '/nova-venda',
+    perfis: [
+      'SUPER_ADMIN',
+      'PROPRIETARIO',
+      'SOCIO',
+      'GERENTE',
+      'OPERADOR_CAIXA'
+    ]
   },
   {
     label: 'Histórico de Vendas',
-    route: '/historico-de-vendas'
+    route: '/historico-de-vendas',
+    perfis: [
+      'SUPER_ADMIN',
+      'PROPRIETARIO',
+      'SOCIO',
+      'GERENTE',
+      'OPERADOR_CAIXA'
+    ]
   },
   {
     label: 'Estoque',
-    route: '/estoque'
+    route: '/estoque',
+    perfis: [
+      'SUPER_ADMIN',
+      'PROPRIETARIO',
+      'SOCIO',
+      'GERENTE',
+      'ESTOQUISTA'
+    ]
   },
   {
     label: 'Produtos',
-    route: '/produtos'
-  },
-  {
+    route: '/produtos',
+    perfis: [
+      'SUPER_ADMIN',
+      'PROPRIETARIO',
+      'SOCIO',
+      'GERENTE',
+      'ESTOQUISTA'
+    ]
+  }, {
     label: 'Entrada de Estoque',
-    route: '/entrada-de-estoque'
+    route: '/entrada-de-estoque',
+    perfis: [
+      'SUPER_ADMIN',
+      'PROPRIETARIO',
+      'SOCIO',
+      'GERENTE',
+      'ESTOQUISTA'
+    ]
   },
   {
     label: 'Clientes',
-    route: '/clientes'
+    route: '/clientes',
+    perfis: [
+      'SUPER_ADMIN',
+      'PROPRIETARIO',
+      'SOCIO',
+      'GERENTE',
+      'OPERADOR_CAIXA'
+    ]
   },
   {
     label: 'Fiados',
-    route: '/fiados'
+    route: '/fiados',
+    perfis: [
+      'SUPER_ADMIN',
+      'PROPRIETARIO',
+      'SOCIO',
+      'GERENTE',
+      'OPERADOR_CAIXA'
+    ]
   },
   {
     label: 'Promoções',
-    route: '/promocoes'
+    route: '/promocoes',
+    perfis: [
+      'SUPER_ADMIN',
+      'PROPRIETARIO',
+      'SOCIO',
+      'GERENTE'
+    ]
   },
   {
     label: 'Relatórios',
-    route: '/relatorios'
+    route: '/relatorios',
+    perfis: [
+      'SUPER_ADMIN',
+      'PROPRIETARIO',
+      'SOCIO',
+      'GERENTE'
+    ]
   },
   {
     label: 'Marketing IA',
-    route: '/marketing'
+    route: '/marketing',
+    perfis: [
+      'SUPER_ADMIN',
+      'PROPRIETARIO',
+      'SOCIO',
+      'GERENTE'
+    ]
   },
   {
     label: 'Empresa',
-    route: '/empresa'
+    route: '/empresa',
+    perfis: [
+      'SUPER_ADMIN',
+      'PROPRIETARIO',
+      'SOCIO',
+      'GERENTE'
+    ]
   },
   {
     label: 'Tenants',
-    route: '/tenants'
+    route: '/tenants',
+    perfis: [
+      'SUPER_ADMIN'
+    ]
   },
   {
     label: 'Usuários',
-    route: '/usuarios'
-  }
+    route: '/usuarios',
+    perfis: [
+      'SUPER_ADMIN',
+      'PROPRIETARIO',
+      'SOCIO',
+      'GERENTE'
+    ]
+  },
 ];

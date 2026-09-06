@@ -15,7 +15,8 @@ import { Marketing } from './views/marketing/marketing';
 import { Tenants } from './views/tenants/tenants';
 import { Usuarios } from './views/usuarios/usuarios';
 import { authGuard } from './core/guards/auth.guard';
-
+import { guestGuard } from './core/guards/guest.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
     {
@@ -25,42 +26,132 @@ export const routes: Routes = [
     },
     {
         path: 'login',
-        component: LoginComponent
+        redirectTo: 'stockflowpdv/login',
+        pathMatch: 'full'
+    },
+    {
+        path: ':slug/login',
+        component: LoginComponent,
+        canActivate: [guestGuard]
     },
     {
         path: 'produtos',
         component: Produtos,
-        canActivate: [authGuard]
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+        data: {
+            perfis: [
+                'SUPER_ADMIN',
+                'PROPRIETARIO',
+                'SOCIO',
+                'GERENTE',
+                'ESTOQUISTA'
+            ]
+        }
     },
     {
         path: 'clientes',
         component: Clientes,
-        canActivate: [authGuard]
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+        data: {
+            perfis: [
+                'SUPER_ADMIN',
+                'PROPRIETARIO',
+                'SOCIO',
+                'GERENTE',
+                'OPERADOR_CAIXA'
+            ]
+        }
     },
     {
         path: 'entrada-de-estoque',
         component: EntradaDeEstoque,
-        canActivate: [authGuard]
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+        data: {
+            perfis: [
+                'SUPER_ADMIN',
+                'PROPRIETARIO',
+                'SOCIO',
+                'GERENTE',
+                'ESTOQUISTA'
+            ]
+        }
     },
     {
         path: 'estoque',
         component: Estoque,
-        canActivate: [authGuard]
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+        data: {
+            perfis: [
+                'SUPER_ADMIN',
+                'PROPRIETARIO',
+                'SOCIO',
+                'GERENTE',
+                'ESTOQUISTA'
+            ]
+        }
     },
     {
         path: 'nova-venda',
         component: NovaVenda,
-        canActivate: [authGuard]
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+        data: {
+            perfis: [
+                'SUPER_ADMIN',
+                'PROPRIETARIO',
+                'SOCIO',
+                'GERENTE',
+                'OPERADOR_CAIXA'
+            ]
+        }
     },
     {
         path: 'fiados',
         component: Fiados,
-        canActivate: [authGuard]
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+        data: {
+            perfis: [
+                'SUPER_ADMIN',
+                'PROPRIETARIO',
+                'SOCIO',
+                'GERENTE',
+                'OPERADOR_CAIXA'
+            ]
+        }
     },
     {
         path: 'historico-de-vendas',
         component: HistoricoDeVendas,
-        canActivate: [authGuard]
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+        data: {
+            perfis: [
+                'SUPER_ADMIN',
+                'PROPRIETARIO',
+                'SOCIO',
+                'GERENTE',
+                'OPERADOR_CAIXA'
+            ]
+        }
     },
     {
         path: 'dashboard',
@@ -70,32 +161,94 @@ export const routes: Routes = [
     {
         path: 'promocoes',
         component: Promocoes,
-        canActivate: [authGuard]
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+        data: {
+            perfis: [
+                'SUPER_ADMIN',
+                'PROPRIETARIO',
+                'SOCIO',
+                'GERENTE'
+            ]
+        }
     },
     {
         path: 'relatorios',
         component: Relatorios,
-        canActivate: [authGuard]
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+        data: {
+            perfis: [
+                'SUPER_ADMIN',
+                'PROPRIETARIO',
+                'SOCIO',
+                'GERENTE']
+        }
     },
     {
         path: 'marketing',
         component: Marketing,
-        canActivate: [authGuard]
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+        data: {
+            perfis: [
+                'SUPER_ADMIN',
+                'PROPRIETARIO',
+                'SOCIO',
+                'GERENTE'
+            ]
+        }
     },
     {
         path: 'empresa',
         component: EmpresaComponent,
-        canActivate: [authGuard]
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+        data: {
+            perfis: [
+                'SUPER_ADMIN',
+                'PROPRIETARIO',
+                'SOCIO',
+                'GERENTE'
+            ]
+        }
     },
     {
         path: 'tenants',
         component: Tenants,
-        canActivate: [authGuard]
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+        data: {
+            perfis: [
+                'SUPER_ADMIN'
+            ]
+        }
     },
     {
         path: 'usuarios',
         component: Usuarios,
-        canActivate: [authGuard]
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+        data: {
+            perfis: [
+                'SUPER_ADMIN',
+                'PROPRIETARIO',
+                'SOCIO',
+                'GERENTE'
+            ]
+        }
     },
 
 

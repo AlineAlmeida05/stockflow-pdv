@@ -1,31 +1,113 @@
-<form
-    [formGroup]="form"
-    (ngSubmit)="submit()">
+<div class="login-page">
+    <div class="card login-card">
+        <div class="card-header">
+            <div class="login-brand">
 
-    <div>
-        <label for="email">
-            E-mail
-        </label>
+                @if (tenant?.logoUrl) {
+                <img
+                    class="login-logo"
+                    [src]="tenant.logoUrl"
+                    [alt]="tenant.nome">
+                }
 
-        <input
-            id="email"
-            type="email"
-            formControlName="email">
+                <h1>
+                    {{ tenant?.nome || titulo }}
+                </h1>
+                <p>
+                    {{ sloganExibicao }}
+                </p>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (tenantNaoEncontrado) {
+
+            <div class="tenant-error">
+                <h2>
+                    Tenant não encontrado
+                </h2>
+                <p>
+                    A empresa informada não existe
+                    ou está inativa.
+                </p>
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    (click)="voltar()">
+                    Voltar
+                </button>
+            </div>
+
+            } @else {
+
+            <form
+                class="formulario"
+                [formGroup]="form"
+                (ngSubmit)="submit()">
+
+                <div class="field field-full">
+                    <label for="email">
+                        E-mail
+                    </label>
+                    <input
+                        id="email"
+                        type="email"
+                        formControlName="email"
+                        [class.field-invalid]="
+                            form.get('email')?.touched &&
+                                form.get('email')?.invalid">
+
+                    @if (
+                    form.get('email')?.touched &&
+                    form.get('email')?.hasError('required')
+                    ) {
+                    <span class="field-error">
+                        E-mail é obrigatório.
+                    </span>
+                    }
+                    @if (
+                    form.get('email')?.touched &&
+                    form.get('email')?.hasError('email')
+                    ) {
+                    <span class="field-error">
+                        Informe um e-mail válido.
+                    </span>
+                    }
+                </div>
+                <div class="field field-full">
+                    <label for="senha">
+                        Senha
+                    </label>
+                    <input
+                        id="senha"
+                        type="password"
+                        formControlName="senha"
+                        [class.field-invalid]="
+                            form.get('senha')?.touched &&
+                            form.get('senha')?.invalid">
+                    @if (
+                    form.get('senha')?.touched &&
+                    form.get('senha')?.hasError('required')
+                    ) {
+                    <span class="field-error">
+                        Senha é obrigatória.
+                    </span>
+                    }
+                </div>
+
+                <div class="field field-full">
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        [disabled]="loading">
+                        @if (loading) {
+                        Entrando...
+                        } @else {
+                        Entrar
+                        }
+                    </button>
+                </div>
+            </form>
+            }
+        </div>
     </div>
-
-    <div>
-        <label for="senha">
-            Senha
-        </label>
-
-        <input
-            id="senha"
-            type="password"
-            formControlName="senha">
-    </div>
-
-    <button type="submit">
-        Entrar
-    </button>
-
-</form>
+</div>

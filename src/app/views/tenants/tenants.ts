@@ -257,17 +257,7 @@ export class Tenants implements OnInit {
 
                 next: (tenants) => {
 
-                    console.log(
-                        'Tenants recebidos:',
-                        tenants
-                    );
-
                     this.tenants = tenants;
-
-                    console.log(
-                        'this.tenants:',
-                        this.tenants
-                    );
 
                     this.cdr.detectChanges();
 
@@ -289,9 +279,6 @@ export class Tenants implements OnInit {
     editarTenant(
         tenant: Tenant
     ): void {
-        this.selecionarTenant(
-            tenant
-        );
 
         this.tenantEditando = tenant;
 
@@ -534,27 +521,7 @@ export class Tenants implements OnInit {
 
         return `/${tenant.slug}`;
 
-    }
-
-    selecionarTenant(
-        tenant: Tenant
-    ): void {
-
-        this.tenantContextService
-            .setTenant(
-                tenant
-            );
-
-        this.alertService.success(
-            `Tenant ${tenant.nome} selecionado.`
-        );
-
-        localStorage.setItem(
-            'tenantAtivo',
-            JSON.stringify(tenant)
-        );
-
-    }
+    }    
 
     get tenantAtual(): Tenant | null {
 

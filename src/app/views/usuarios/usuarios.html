@@ -56,6 +56,7 @@
                     </label>
                     <input
                         type="email"
+                        autocomplete="off"
                         placeholder="Email"
                         [(ngModel)]="novoEmail">
                 </div>
@@ -66,19 +67,60 @@
                     </label>
                     <input
                         type="password"
+                        autocomplete="off"
                         placeholder="Senha"
                         [(ngModel)]="novaSenha">
                 </div>
 
+                @if (ehSuperAdmin) {
+
+                <div class="field">
+
+                    <label>
+                        Tenant
+                    </label>
+
+                    <select
+                        [(ngModel)]="tenantCadastroId"
+                        (ngModelChange)="filtrarPorTenant($event)">
+
+                        <option value>
+                            Todos os Tenants
+                        </option>
+
+                        @for (
+                        tenant of tenants;
+                        track tenant.id
+                        ) {
+
+                        <option
+                            [value]="tenant.id">
+                            {{ tenant.nome }}
+                        </option>
+                        }
+                    </select>
+                </div>
+
+                }
                 <div class="field">
                     <label>
                         Selecione
                     </label>
                     <select
                         [(ngModel)]="novoPerfil">
-                        <option value="PROPRIETARIO">
-                            Proprietário
+                        @for (
+                        perfil of perfisDisponiveis;
+                        track perfil
+                        ) {
+
+                        <option
+                            [value]="perfil">
+
+                            {{ perfil }}
+
                         </option>
+
+                        }
 
                         <option value="SOCIO">
                             Sócio
@@ -98,7 +140,7 @@
                     </select>
                 </div>
                 <div class="formulario-acoes">
-                    
+
                     <button
                         class="btn btn-primary"
                         type="button"
@@ -109,7 +151,7 @@
                         ? 'Salvando...'
                         : 'Salvar Alterações'
                         }}
-                    </button>                  
+                    </button>
 
                     <button
                         class="btn btn-secondary"
@@ -131,6 +173,37 @@
                     Consulte, edite e exclua usuários cadastrados.
                 </p>
             </div>
+
+            @if (ehSuperAdmin) {
+
+            <div class="field">
+                <label>
+                    Tenant
+                </label>
+
+                <select
+                    [(ngModel)]="tenantSelecionadoId"
+                    (ngModelChange)="filtrarPorTenant($event)">
+
+                    <option value>
+                        Todos os Tenants
+                    </option>
+
+                    @for (
+                    tenant of tenants;
+                    track tenant.id
+                    ) {
+
+                    <option
+                        [value]="tenant.id">
+                        {{ tenant.nome }}
+                    </option>
+                    }
+
+                </select>
+
+            </div>
+            }
 
             @if (usuarios.length === 0) {
 

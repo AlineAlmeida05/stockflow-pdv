@@ -2,10 +2,14 @@ import { Component, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { BrandingService } from './core/services/branding.service';
 import { TenantContextService } from './core/services/tenant-context.service';
+import { ToastComponent } from './shared/components/toast/toast';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [
+    RouterOutlet,
+    ToastComponent
+  ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

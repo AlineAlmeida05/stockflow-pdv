@@ -1,6 +1,9 @@
 <nav class="sidebar-nav">
 
-  @for (item of menu; track item.route) {
+  @for (
+  item of menuFiltrado;
+  track item.route
+  ){
   <a
     [routerLink]="item.route"
     routerLinkActive="sidebar-link--active"

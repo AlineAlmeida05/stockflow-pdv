@@ -74,6 +74,7 @@ export class AuthService {
 
         switch (usuario.perfil) {
 
+            case 'SUPER_ADMIN':
             case 'PROPRIETARIO':
             case 'SOCIO':
             case 'GERENTE':

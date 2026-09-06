@@ -38,4 +38,11 @@ export class Header {
         ]);
 
     }
+
+    get usuarioLogado() {
+
+        return this.authService
+            .usuarioLogado();
+
+    }
 }
