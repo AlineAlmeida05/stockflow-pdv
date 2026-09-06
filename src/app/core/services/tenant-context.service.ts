@@ -64,6 +64,9 @@ export class TenantContextService {
             tenant
         );
 
+        document.title =
+            tenant.nome;
+
     }
 
     carregarTenantPorSlug(

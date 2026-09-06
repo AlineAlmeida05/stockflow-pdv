@@ -12,4 +12,6 @@ export interface UsuarioLogado {
 
     tenantNome: string;
 
+    token: string;
+
 }

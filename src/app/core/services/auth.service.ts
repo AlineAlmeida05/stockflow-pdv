@@ -33,6 +33,10 @@ export class AuthService {
                         STORAGE_KEYS.USUARIO_LOGADO,
                         JSON.stringify(usuario)
                     );
+                    localStorage.setItem(
+                        'token',
+                        usuario.token
+                    );
                 })
             );
     }
