@@ -23,6 +23,7 @@ import { ConfirmDialogService } from '../../core/services/confirm-dialog.service
 import { AlertService } from '../../core/services/alert.service';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 import { ExpandableCard } from '../../shared/components/expandable-card/expandable-card';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
     selector: 'app-historico-de-vendas',
@@ -93,7 +94,8 @@ export class HistoricoDeVendas
         private fiadoService: FiadoService,
         private movimentacaoService: MovimentacaoEstoqueService,
         private alertService: AlertService,
-        private confirmDialogService: ConfirmDialogService
+        private confirmDialogService: ConfirmDialogService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -212,47 +214,59 @@ export class HistoricoDeVendas
 
         for (const item of this.vendaSelecionada.itens) {
 
-            const produto =
-                this.produtoService.buscarPorId(
+            this.produtoService
+                .buscarPorId(
                     item.produtoId
-                );
+                )
+                .subscribe({
 
-            if (!produto) {
-                continue;
-            }
+                    next: produto => {
 
-            produto.estoqueAtual +=
-                item.quantidade;
+                        produto.estoqueAtual +=
+                            item.quantidade;
 
-            this.produtoService.atualizar(
-                produto
-            );
+                        this.produtoService
+                            .atualizar(
+                                produto
+                            )
+                            .subscribe();
 
-            const movimentacao: MovimentacaoEstoque = {
+                        const movimentacao: MovimentacaoEstoque = {
 
-                id: crypto.randomUUID(),
+                            id: crypto.randomUUID(),
 
-                produtoId: produto.id,
+                            produtoId: produto.id,
 
-                produtoNome: produto.nome,
+                            produtoNome: produto.nome,
 
-                tipo: 'ajuste',
+                            tipo: 'ajuste',
 
-                quantidade: item.quantidade,
+                            quantidade: item.quantidade,
 
-                observacao:
-                    'Estorno de venda cancelada',
+                            observacao:
+                                'Estorno de venda cancelada',
 
-                dataMovimentacao:
-                    new Date().toISOString()
+                            dataMovimentacao:
+                                new Date().toISOString()
 
-            };
+                        };
 
-            this.movimentacaoService
-                .registrarAjuste(
-                    movimentacao
-                );
+                        this.movimentacaoService
+                            .registrarAjuste(
+                                movimentacao
+                            );
 
+                    },
+
+                    error: erro => {
+
+                        console.error(
+                            erro
+                        );
+
+                    }
+
+                });
         }
 
         if (
@@ -429,5 +443,5 @@ export class HistoricoDeVendas
             : 'Finalizada';
 
     }
-    
+
 }

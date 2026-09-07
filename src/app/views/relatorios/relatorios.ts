@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 
 import { MainLayout } from '../../layout/main-layout/main-layout';
@@ -187,7 +187,8 @@ export class Relatorios
         private fiadoService: FiadoService,
         private pdfExportService: PdfExportService,
         private excelExportService: ExcelExportService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -195,8 +196,25 @@ export class Relatorios
         this.vendas =
             this.vendaService.listar();
 
-        this.produtos =
-            this.produtoService.listar();
+        this.produtoService
+            .listar()
+            .subscribe({
+
+                next: produtos => {
+
+                    this.produtos = produtos;
+
+                    this.cdr.detectChanges();
+
+                },
+
+                error: erro => {
+
+                    console.error(erro);
+
+                }
+
+            });
 
         this.movimentacoes =
             this.movimentacaoService.listar();

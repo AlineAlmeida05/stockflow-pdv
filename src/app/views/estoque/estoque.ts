@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
 import { MainLayout } from '../../layout/main-layout/main-layout';
 
@@ -100,7 +100,8 @@ export class Estoque implements OnInit {
     ];
 
     constructor(
-        private produtoService: ProdutoService
+        private produtoService: ProdutoService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -108,8 +109,25 @@ export class Estoque implements OnInit {
     }
 
     carregarProdutos(): void {
-        this.produtos =
-            this.produtoService.listar();
+        this.produtoService
+            .listar()
+            .subscribe({
+
+                next: produtos => {
+
+                    this.produtos = produtos;
+
+                    this.cdr.detectChanges();
+
+                },
+
+                error: erro => {
+
+                    console.error(erro);
+
+                }
+
+            });
     }
 
     get produtosEstoque(): unknown[] {

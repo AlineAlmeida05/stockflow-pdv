@@ -57,15 +57,33 @@ export class MarketingCampaignForm
 
     ngOnInit(): void {
 
-        this.promocoesAtivas =
-            this.produtoService
-                .listar()
-                .filter(
-                    produto =>
-                        produto.promocaoAtiva
-                );
+        this.produtoService
+            .listar()
+            .subscribe({
 
-        this.empresa = this.empresaService.obter();
+                next: produtos => {
+
+                    this.promocoesAtivas =
+                        produtos.filter(
+                            produto =>
+                                produto.promocaoAtiva
+                        );
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        'Erro ao carregar promoções',
+                        erro
+                    );
+
+                }
+
+            });
+
+        this.empresa =
+            this.empresaService.obter();
 
     }
 
@@ -106,7 +124,7 @@ export class MarketingCampaignForm
 
             this.elementoVisualSelecionado =
                 sugestao.elementoVisual;
-        }         
+        }
 
         const resultadoIa =
             this.marketingAiService

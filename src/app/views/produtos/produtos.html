@@ -44,6 +44,13 @@
                     placeholder="Categoria"
                     [(ngModel)]="categoria">
             </div>
+            <div class="field field-small">
+                <label>Código do Produto</label>
+                <input
+                    type="text"
+                    [value]="codigo"
+                    readonly>
+            </div>
 
             <div class="field field-large">
                 <label>Código de Barras</label>
@@ -68,7 +75,7 @@
                     [(ngModel)]="precoVenda">
             </div>
         </div>
-        
+
         <div class="form-actions">
             <button
                 type="button"
@@ -114,6 +121,7 @@
             [columns]="colunasProdutos"
             [data]="produtosFiltrados"
             [showActions]="true"
+            [deleteIcon]="''"
             (edit)="editarProdutoTabela($event)"
             (delete)="excluirProdutoTabela($event)">
         </app-data-table>

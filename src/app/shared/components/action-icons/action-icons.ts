@@ -16,11 +16,14 @@ export class ActionIcons {
     @Input()
     showEdit = true;
 
+    @Input()
+    deleteIcon = '🗑️';
+
     @Output()
     edit = new EventEmitter<void>();
 
     @Output()
-    delete = new EventEmitter<void>();   
+    delete = new EventEmitter<void>();
 
 
 }

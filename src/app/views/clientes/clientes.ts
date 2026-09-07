@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 
 import { Cliente } from '../../core/models/cliente.model';
@@ -71,7 +71,8 @@ export class Clientes implements OnInit {
     constructor(
         private clienteService: ClienteService,
         private alertService: AlertService,
-        private confirmDialogService: ConfirmDialogService
+        private confirmDialogService: ConfirmDialogService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -95,6 +96,8 @@ export class Clientes implements OnInit {
     carregarClientes(): void {
         this.clientes =
             this.clienteService.listar();
+
+        this.cdr.detectChanges();
     }
 
     salvarCliente(): void {

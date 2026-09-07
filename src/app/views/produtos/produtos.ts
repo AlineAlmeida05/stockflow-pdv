@@ -15,6 +15,7 @@ import { DataTable } from '../../shared/components/data-table/data-table';
 import { Toolbar } from '../../shared/components/toolbar/toolbar';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 import { AlertService } from '../../core/services/alert.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-produtos',
@@ -38,6 +39,8 @@ export class Produtos implements OnInit {
 
   nome = '';
 
+  codigo = '';
+
   categoria = '';
 
   precoVenda = 0;
@@ -56,6 +59,8 @@ export class Produtos implements OnInit {
 
   mostrarFormulario = false;
 
+  produtoAtivo = true;
+
   colunasProdutos: {
     field: string;
     header: string;
@@ -66,6 +71,10 @@ export class Produtos implements OnInit {
     | 'date';
     align?: 'left' | 'center' | 'right';
   }[] = [
+      {
+        field: 'codigo',
+        header: 'Código'
+      },
       {
         field: 'nome',
         header: 'Nome'
@@ -81,16 +90,28 @@ export class Produtos implements OnInit {
         align: 'right'
       },
       {
+        field: 'precoPromocional',
+        header: 'Preço Promo'
+      },
+      {
+        field: 'promocaoAtiva',
+        header: 'Promoção'
+      },
+      {
         field: 'estoqueAtual',
         header: 'Estoque',
         align: 'right'
+      }, {
+        field: 'ativo',
+        header: 'Status'
       }
     ];
 
   constructor(
     private produtoService: ProdutoService,
     private confirmDialogService: ConfirmDialogService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -99,8 +120,28 @@ export class Produtos implements OnInit {
 
   carregarProdutos(): void {
 
-    this.produtos =
-      this.produtoService.listar();
+    this.produtoService
+      .listar()
+      .subscribe({
+
+        next: produtos => {
+
+          this.produtos = [...produtos];
+
+          this.cdr.detectChanges();
+
+        },
+
+        error: erro => {
+
+          console.error(
+            'Erro ao carregar produtos',
+            erro
+          );
+
+        }
+
+      });
 
   }
 
@@ -118,58 +159,69 @@ export class Produtos implements OnInit {
 
     if (this.produtoEditandoId) {
 
-      this.produtoService.atualizar({
+      this.produtoService
+        .atualizar({
+          id: this.produtoEditandoId,
+          codigoBarras: this.codigoBarras,
+          nome: this.nome,
+          categoria: this.categoria,
+          precoVenda: this.precoVenda,
+          estoqueAtual: this.estoqueAtual,
+          estoqueMinimo: this.estoqueMinimo,
+          ativo: this.produtoAtivo,
+          dataCadastro: this.dataCadastro
+        } as Produto)
+        .subscribe({
 
-        id: this.produtoEditandoId,
+          next: () => {
 
-        codigoBarras: this.codigoBarras,
+            this.alertService.success(
+              'Produto atualizado com sucesso.'
+            );
 
-        nome: this.nome,
+            this.carregarProdutos();
 
-        categoria: this.categoria,
+          }
 
-        precoVenda: this.precoVenda,
-
-        estoqueAtual: this.estoqueAtual,
-
-        estoqueMinimo: this.estoqueMinimo,
-
-        ativo: true,
-
-        dataCadastro: this.dataCadastro
-
-      });
-
-      this.alertService.success(
-        'Produto atualizado com sucesso.'
-      );
-
+        });
 
     } else {
 
-      this.produtoService.salvar({
-        id: crypto.randomUUID(),
+      this.produtoService
+        .salvar({
 
-        codigoBarras: this.codigoBarras,
+          id: '',
 
-        nome: this.nome,
+          codigoBarras: this.codigoBarras,
 
-        categoria: this.categoria,
+          nome: this.nome,
 
-        precoVenda: this.precoVenda,
+          categoria: this.categoria,
 
-        estoqueAtual: 0,
+          precoVenda: this.precoVenda,
 
-        estoqueMinimo: this.estoqueMinimo,
+          estoqueAtual: 0,
 
-        ativo: true,
+          estoqueMinimo: this.estoqueMinimo,
 
-        dataCadastro: new Date().toISOString()
-      });
+          ativo: this.produtoAtivo,
 
-      this.alertService.success(
-        'Produto cadastrado com sucesso.'
-      );
+          dataCadastro: ''
+
+        } as Produto)
+        .subscribe({
+
+          next: () => {
+
+            this.alertService.success(
+              'Produto cadastrado com sucesso.'
+            );
+
+            this.carregarProdutos();
+
+          }
+
+        });
 
     }
 
@@ -201,6 +253,8 @@ export class Produtos implements OnInit {
 
     this.categoria = produto.categoria;
 
+    this.produtoAtivo = produto.ativo;
+
     this.codigoBarras = produto.codigoBarras;
 
     this.precoVenda = produto.precoVenda;
@@ -213,28 +267,56 @@ export class Produtos implements OnInit {
 
   }
 
-  excluirProduto(id: string): void {
+  excluirProduto(
+    produto: Produto
+  ): void {
+
+    if (!produto.ativo) {
+
+      this.reativarProduto(
+        produto.id
+      );
+
+      return;
+
+    }
 
     this.confirmDialogService.open({
 
-      title: 'Excluir Produto',
+      title: 'Inativar Produto',
 
       message:
-        'Deseja realmente excluir este produto?',
+        'Deseja realmente inativar este produto? O histórico será preservado.',
 
-      confirmText: 'Excluir',
+      confirmText: 'Inativar',
 
       cancelText: 'Cancelar',
 
       onConfirm: () => {
 
-        this.produtoService.excluir(id);
-
-        this.carregarProdutos();
-
-        this.alertService.success(
-          'Produto removido com sucesso.'
+        this.alertService.info(
+          'Inativando produto...'
         );
+
+        this.produtoService
+          .excluir(
+            produto.id,
+
+          )
+
+          .subscribe({
+
+            next: () => {
+
+              this.carregarProdutos();
+
+              this.alertService.success(
+                'Produto inativado com sucesso.'
+              );
+
+            }
+
+          });
 
       }
 
@@ -307,8 +389,51 @@ export class Produtos implements OnInit {
   ): void {
 
     this.excluirProduto(
-      (produto as Produto).id
+      produto as Produto
     );
+
+  }
+
+  reativarProduto(
+    id: string
+  ): void {
+
+    this.confirmDialogService.open({
+
+      title: 'Reativar Produto',
+
+      message:
+        'Deseja realmente reativar este produto?',
+
+      confirmText: 'Reativar',
+
+      cancelText: 'Cancelar',
+
+      onConfirm: () => {
+
+        this.alertService.info(
+          'Reativando produto...'
+        );
+
+        this.produtoService
+          .reativar(id)
+          .subscribe({
+
+            next: () => {
+
+              this.carregarProdutos();
+
+              this.alertService.success(
+                'Produto reativado com sucesso.'
+              );
+
+            }
+
+          });
+
+      }
+
+    });
 
   }
 }

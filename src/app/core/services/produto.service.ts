@@ -1,112 +1,79 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
 import { Produto } from '../models/produto.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProdutoService {
 
-  private readonly STORAGE_KEY =
-    'stockflow-produtos';
+  private readonly http =
+    inject(HttpClient);
 
-  private obterProdutos(): Produto[] {
+  private readonly apiUrl =
+    `${environment.apiUrl}/api/produtos`;
 
-    if (typeof window === 'undefined') {
-      return [];
-    }
+  listar(): Observable<Produto[]> {
 
-    const dados =
-      localStorage.getItem(this.STORAGE_KEY);
-
-    if (!dados) {
-      return [];
-    }
-
-    return JSON.parse(dados);
-
-  }
-
-  private salvarProdutos(
-    produtos: Produto[]
-  ): void {
-
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-    localStorage.setItem(
-      this.STORAGE_KEY,
-      JSON.stringify(produtos)
+    return this.http.get<Produto[]>(
+      this.apiUrl
     );
-
-  }
-
-  listar(): Produto[] {
-
-    return this.obterProdutos();
 
   }
 
   buscarPorId(
     id: string
-  ): Produto | undefined {
+  ): Observable<Produto> {
 
-    return this.obterProdutos()
-      .find(produto => produto.id === id);
+    return this.http.get<Produto>(
+      `${this.apiUrl}/${id}`
+    );
 
   }
 
   salvar(
     produto: Produto
-  ): void {
+  ): Observable<Produto> {
 
-    const produtos =
-      this.obterProdutos();
-
-    produtos.push(produto);
-
-    this.salvarProdutos(produtos);
-
-  }
-
-  atualizar(
-    produtoAtualizado: Produto
-  ): void {
-
-    const produtos =
-      this.obterProdutos();
-
-    const indice =
-      produtos.findIndex(
-        produto =>
-          produto.id === produtoAtualizado.id
-      );
-
-    if (indice === -1) {
-      return;
-    }
-
-    produtos[indice] =
-      produtoAtualizado;
-
-    this.salvarProdutos(produtos);
-
-  }
-
-  excluir(id: string): void {
-
-    const produtos =
-      this.obterProdutos();
-
-    const produtosAtualizados =
-      produtos.filter(
-        produto => produto.id !== id
-      );
-
-    this.salvarProdutos(
-      produtosAtualizados
+    return this.http.post<Produto>(
+      this.apiUrl,
+      produto
     );
 
   }
 
+  atualizar(
+    produto: Produto
+  ): Observable<Produto> {
+
+    return this.http.put<Produto>(
+      `${this.apiUrl}/${produto.id}`,
+      produto
+    );
+
+  }
+
+  excluir(
+    id: string
+  ): Observable<void> {
+
+    return this.http.delete<void>(
+      `${this.apiUrl}/${id}`
+    );
+
+  }
+
+  reativar(
+    id: string
+  ): Observable<void> {
+
+    return this.http.put<void>(
+      `${this.apiUrl}/${id}/reativar`,
+      {}
+    );
+
+  }
 }

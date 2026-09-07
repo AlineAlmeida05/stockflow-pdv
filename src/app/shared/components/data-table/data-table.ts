@@ -33,6 +33,9 @@ export class DataTable {
     @Input()
     showEditAction = true;
 
+    @Input()
+    deleteIcon = '🗑️';
+
     @Output()
     edit = new EventEmitter<unknown>();
 

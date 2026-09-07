@@ -55,8 +55,23 @@ export class Promocoes implements OnInit {
 
     ngOnInit(): void {
 
-        this.produtos =
-            this.produtoService.listar();
+        this.produtoService
+            .listar()
+            .subscribe({
+
+                next: produtos => {
+
+                    this.produtos = produtos;
+
+                },
+
+                error: erro => {
+
+                    console.error(erro);
+
+                }
+
+            });
 
         this.movimentacoes =
             this.movimentacaoService.listar();
@@ -205,6 +220,8 @@ export class Promocoes implements OnInit {
             .filter(
                 produto =>
                     produto.estoqueAtual > 0
+                    &&
+                    produto.ativo
             )
             .sort(
                 (
@@ -281,6 +298,16 @@ export class Promocoes implements OnInit {
     ativarPromocao(
         produto: Produto
     ): void {
+
+        if (!produto.ativo) {
+
+            this.alertService.warning(
+                'Não é possível aplicar promoção em um produto inativo.'
+            );
+
+            return;
+
+        }
 
         produto.promocaoAtiva = true;
 

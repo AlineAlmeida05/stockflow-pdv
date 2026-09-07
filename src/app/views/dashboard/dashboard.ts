@@ -73,8 +73,23 @@ export class Dashboard implements OnInit {
         this.fiados =
             this.fiadoService.listar();
 
-        this.produtos =
-            this.produtoService.listar();
+        this.produtoService
+            .listar()
+            .subscribe({
+
+                next: produtos => {
+
+                    this.produtos = produtos;
+
+                },
+
+                error: erro => {
+
+                    console.error(erro);
+
+                }
+
+            });
 
         this.movimentacoes =
             this.movimentacaoService.listar();

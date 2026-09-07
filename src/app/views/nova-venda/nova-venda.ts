@@ -211,8 +211,23 @@ export class NovaVenda implements OnInit {
 
     carregarProdutos(): void {
 
-        this.produtos =
-            this.produtoService.listar();
+        this.produtoService
+            .listar()
+            .subscribe({
+
+                next: produtos => {
+
+                    this.produtos = produtos;
+
+                },
+
+                error: erro => {
+
+                    console.error(erro);
+
+                }
+
+            });
 
     }
 
@@ -263,6 +278,15 @@ export class NovaVenda implements OnInit {
                 );
 
             if (!produto) {
+
+                return;
+
+            }
+            if (!produto.ativo) {
+
+                this.alertService.warning(
+                    'Produto inativo.'
+                );
 
                 return;
 
@@ -505,20 +529,14 @@ Total da venda: ${this.total.toLocaleString(
         for (const item of this.carrinho) {
 
             const produto =
-                this.produtoService.buscarPorId(
-                    item.produto.id
-                );
-
-            if (!produto) {
-                continue;
-            }
+                item.produto;
 
             produto.estoqueAtual -=
                 item.quantidade;
 
-            this.produtoService.atualizar(
-                produto
-            );
+            this.produtoService
+                .atualizar(produto)
+                .subscribe();
 
             const movimentacao: MovimentacaoEstoque = {
 
@@ -539,9 +557,10 @@ Total da venda: ${this.total.toLocaleString(
 
             };
 
-            this.movimentacaoService.registrarSaida(
-                movimentacao
-            );
+            this.movimentacaoService
+                .registrarSaida(
+                    movimentacao
+                );
 
         }
 
@@ -601,6 +620,15 @@ Total da venda: ${this.total.toLocaleString(
     selecionarProduto(
         produto: Produto
     ): void {
+        if (!produto.ativo) {
+
+            this.alertService.warning(
+                'Produto inativo.'
+            );
+
+            return;
+
+        }
         if (produto.estoqueAtual <= 0) {
 
             this.alertService.warning(
