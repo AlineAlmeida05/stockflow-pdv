@@ -61,6 +61,8 @@ export class Produtos implements OnInit {
 
   produtoAtivo = true;
 
+  salvandoProduto = false;
+
   colunasProdutos: {
     field: string;
     header: string;
@@ -77,33 +79,29 @@ export class Produtos implements OnInit {
       },
       {
         field: 'nome',
-        header: 'Nome'
+        header: 'Produto'
       },
       {
         field: 'categoria',
-        header: 'Categoria'
+        header: 'Categoria',
+        align: 'center'
       },
       {
         field: 'precoVenda',
         header: 'Preço Venda',
         type: 'currency',
-        align: 'right'
+        align: 'center'
       },
       {
         field: 'precoPromocional',
-        header: 'Preço Promo'
+        header: 'Preço Promo',
+        align: 'center'
       },
       {
-        field: 'promocaoAtiva',
-        header: 'Promoção'
-      },
-      {
-        field: 'estoqueAtual',
-        header: 'Estoque',
-        align: 'right'
-      }, {
-        field: 'ativo',
-        header: 'Status'
+        field: 'status',
+        header: 'Status',
+        type: 'badge',
+        align: 'center'
       }
     ];
 
@@ -147,6 +145,10 @@ export class Produtos implements OnInit {
 
   salvarProduto(): void {
 
+    if (this.salvandoProduto) {
+      return;
+    }
+
     if (!this.nome.trim()) {
 
       this.alertService.warning(
@@ -156,8 +158,38 @@ export class Produtos implements OnInit {
       return;
 
     }
+    if (
+      this.estoqueMinimo <= 0
+    ) {
+
+      this.alertService.warning(
+        'Informe um estoque mínimo válido.'
+      );
+
+      return;
+
+    }
+    if (
+      this.precoVenda <= 0
+    ) {
+
+      this.alertService.warning(
+        'Informe um preço de venda válido.'
+      );
+
+      return;
+
+    }
 
     if (this.produtoEditandoId) {
+
+      this.salvandoProduto = true;
+
+      this.alertService.info(
+        this.produtoEditandoId
+          ? 'Atualizando produto...'
+          : 'Cadastrando produto...'
+      );
 
       this.produtoService
         .atualizar({
@@ -171,21 +203,43 @@ export class Produtos implements OnInit {
           ativo: this.produtoAtivo,
           dataCadastro: this.dataCadastro
         } as Produto)
+
         .subscribe({
 
           next: () => {
+
+            this.salvandoProduto = false;
+
+            this.limparFormulario();
+
+            this.carregarProdutos();
 
             this.alertService.success(
               'Produto atualizado com sucesso.'
             );
 
-            this.carregarProdutos();
+          },
+          error: erro => {
+
+            this.salvandoProduto = false;
+
+            console.error(erro);
+
+            this.alertService.error(
+              'Erro ao atualizar produto.'
+            );
 
           }
 
         });
 
     } else {
+
+      this.salvandoProduto = true;
+
+      this.alertService.info(
+        'Cadastrando produto...'
+      );
 
       this.produtoService
         .salvar({
@@ -206,18 +260,33 @@ export class Produtos implements OnInit {
 
           ativo: this.produtoAtivo,
 
-          dataCadastro: ''
+          dataCadastro: '',
 
         } as Produto)
         .subscribe({
 
           next: () => {
 
+            this.salvandoProduto = false;
+
+            this.limparFormulario();
+
+            this.carregarProdutos();
+
             this.alertService.success(
               'Produto cadastrado com sucesso.'
             );
 
-            this.carregarProdutos();
+          },
+          error: erro => {
+
+            this.salvandoProduto = false;
+
+            console.error(erro);
+
+            this.alertService.error(
+              'Erro ao salvar produto.'
+            );
 
           }
 
@@ -338,6 +407,23 @@ export class Produtos implements OnInit {
 
   }
 
+  get produtosTabela(): unknown[] {
+
+    return this.produtosFiltrados.map(
+      produto => ({
+
+        ...produto,
+
+        status:
+          produto.ativo
+            ? 'Ativo'
+            : 'Inativo'
+
+      })
+    );
+
+  }
+
   novoProduto(): void {
 
     this.mostrarFormulario = true;
@@ -434,6 +520,24 @@ export class Produtos implements OnInit {
       }
 
     });
+
+  }
+
+  private limparFormulario(): void {
+
+    this.nome = '';
+    this.categoria = '';
+    this.codigoBarras = '';
+    this.precoVenda = 0;
+    this.estoqueMinimo = 0;
+
+    this.produtoEditandoId = null;
+
+    this.estoqueAtual = 0;
+
+    this.dataCadastro = '';
+
+    this.mostrarFormulario = false;
 
   }
 }

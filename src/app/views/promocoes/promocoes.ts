@@ -73,8 +73,24 @@ export class Promocoes implements OnInit {
 
             });
 
-        this.movimentacoes =
-            this.movimentacaoService.listar();
+        this.movimentacaoService
+            .listar()
+            .subscribe({
+
+                next: movimentacoes => {
+
+                    this.movimentacoes =
+                        movimentacoes;
+
+                },
+
+                error: erro => {
+
+                    console.error(erro);
+
+                }
+
+            });
 
     }
 

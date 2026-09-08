@@ -138,16 +138,21 @@ export class Estoque implements OnInit {
                 ...produto,
 
                 statusEstoque:
-                    produto.estoqueAtual <=
+                    produto.estoqueAtual === 0
 
-                        produto.estoqueMinimo
-                        ? 'Baixo'
+                        ? 'Sem Estoque'
 
                         : produto.estoqueAtual <=
-                            produto.estoqueMinimo * 2
+                            produto.estoqueMinimo
 
-                            ? 'Atenção'
-                            : 'Em Estoque',
+                            ? 'Crítico'
+
+                            : produto.estoqueAtual <=
+                                produto.estoqueMinimo * 2
+
+                                ? 'Atenção'
+
+                                : 'Em Estoque',
 
                 nivelEstoque:
                     produto.estoqueMinimo === 0

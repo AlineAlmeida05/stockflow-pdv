@@ -1,104 +1,73 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+import { Observable } from 'rxjs';
+
 import { MovimentacaoEstoque } from '../models/movimentacao-estoque.model';
+
+import { MovimentacaoEstoqueRequest }
+  from '../models/movimentacao-estoque-request.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MovimentacaoEstoqueService {
 
-  private readonly STORAGE_KEY =
-    'stockflow-movimentacoes-estoque';
+  private readonly http =
+    inject(HttpClient);
 
-  private obterMovimentacoes():
-    MovimentacaoEstoque[] {
+  private readonly apiUrl =
+  `${environment.apiUrl}/api/movimentacoes-estoque`;
 
-    if (typeof window === 'undefined') {
-      return [];
-    }
+  listar():
+    Observable<MovimentacaoEstoque[]> {
 
-    const dados =
-      localStorage.getItem(this.STORAGE_KEY);
-
-    if (!dados) {
-      return [];
-    }
-
-    return JSON.parse(dados);
-
-  }
-
-  private salvarMovimentacoes(
-    movimentacoes: MovimentacaoEstoque[]
-  ): void {
-
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-    localStorage.setItem(
-      this.STORAGE_KEY,
-      JSON.stringify(movimentacoes)
-    );
-
-  }
-
-  listar(): MovimentacaoEstoque[] {
-
-    return this.obterMovimentacoes();
-
-  }
-
-  buscarPorProduto(
-    produtoId: string
-  ): MovimentacaoEstoque[] {
-
-    return this.obterMovimentacoes()
-      .filter(
-        movimentacao =>
-          movimentacao.produtoId === produtoId
-      );
-
-  }
-
-  registrar(
-    movimentacao: MovimentacaoEstoque
-  ): void {
-
-    const movimentacoes =
-      this.obterMovimentacoes();
-
-    movimentacoes.push(
-      movimentacao
-    );
-
-    this.salvarMovimentacoes(
-      movimentacoes
-    );
+    return this.http.get<
+      MovimentacaoEstoque[]
+    >(this.apiUrl);
 
   }
 
   registrarEntrada(
-    movimentacao: MovimentacaoEstoque
-  ): void {
+    request: MovimentacaoEstoqueRequest
+  ): Observable<MovimentacaoEstoque> {
 
-    this.registrar(movimentacao);
+    return this.http.post<
+      MovimentacaoEstoque
+    >(
+      this.apiUrl,
+      request
+    );
 
   }
 
   registrarSaida(
-    movimentacao: MovimentacaoEstoque
-  ): void {
+    request: MovimentacaoEstoqueRequest
+  ): Observable<MovimentacaoEstoque> {
 
-    this.registrar(movimentacao);
+    return this.http.post<
+      MovimentacaoEstoque
+    >(
+      this.apiUrl,
+      request
+    );
 
   }
 
   registrarAjuste(
-    movimentacao: MovimentacaoEstoque
-  ): void {
+    request: MovimentacaoEstoqueRequest
+  ): Observable<MovimentacaoEstoque> {
 
-    this.registrar(movimentacao);
+    return this.http.post<
+      MovimentacaoEstoque
+    >(
+      this.apiUrl,
+      request
+    );
 
   }
 
 }
+
+

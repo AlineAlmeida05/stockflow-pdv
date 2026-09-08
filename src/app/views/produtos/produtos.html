@@ -7,9 +7,16 @@
     <app-toolbar>
         <button
             type="button"
-            class="btn btn-primary"
-            (click)="novoProduto()">
-            + Novo Produto
+            class="btn btn-primary"            
+            (click)="novoProduto()"
+            [disabled]="salvandoProduto">
+                {{
+                salvandoProduto
+                ? 'Cadastrando...'
+                : produtoEditandoId
+                ? 'Atualizar Produto'
+                : '+ Novo Produto'
+                }}            
         </button>
 
         <app-search-input
@@ -80,9 +87,12 @@
             <button
                 type="button"
                 class="btn btn-primary"
-                (click)="salvarProduto()">
+                (click)="salvarProduto()"
+                [disabled]="salvandoProduto">
                 {{
-                produtoEditandoId
+                salvandoProduto
+                ? 'Salvando...'
+                : produtoEditandoId
                 ? 'Atualizar Produto'
                 : 'Salvar Produto'
                 }}
@@ -119,7 +129,7 @@
     <div class="card">
         <app-data-table
             [columns]="colunasProdutos"
-            [data]="produtosFiltrados"
+            [data]="produtosTabela"
             [showActions]="true"
             [deleteIcon]="''"
             (edit)="editarProdutoTabela($event)"

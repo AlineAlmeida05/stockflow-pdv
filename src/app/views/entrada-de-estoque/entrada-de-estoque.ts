@@ -23,6 +23,9 @@ import { StatCard } from '../../shared/components/stat-card/stat-card';
 import { ExpandableCard } from '../../shared/components/expandable-card/expandable-card';
 import { ViewChild } from '@angular/core';
 import { ProductSearch } from '../../shared/components/product-search/product-search';
+import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
+
+import { MovimentacaoEstoqueRequest } from '../../core/models/movimentacao-estoque-request.model';
 
 @Component({
     selector: 'app-entrada-de-estoque',
@@ -33,10 +36,8 @@ import { ProductSearch } from '../../shared/components/product-search/product-se
         PageTitle,
         SplitPanel,
         SearchInput,
-        EmptyState,
         DataTable,
         CurrencyInput,
-        SelectInput,
         StatCard,
         ExpandableCard,
         ProductSearch
@@ -57,6 +58,10 @@ export class EntradaDeEstoque implements OnInit {
 
     textoBusca = '';
 
+    movimentacoes: MovimentacaoEstoque[] = [];
+
+    processandoEntrada = false;
+
     @ViewChild(ProductSearch)
     productSearch?: ProductSearch;
 
@@ -73,19 +78,20 @@ export class EntradaDeEstoque implements OnInit {
             },
             {
                 field: 'estoqueAtual',
-                header: 'Atual',
-                align: 'right'
+                header: 'Estoque Atual',
+                align: 'center'
+            },
+            {
+                field: 'custoMedio',
+                header: 'Custo Médio',
+                type: 'currency',
+                align: 'center'
             },
             {
 
                 field: 'estoqueMinimo',
-                header: 'Mínimo',
-                align: 'right'
-            },
-            {
-                field: 'nivelEstoque',
-                header: 'Nível',
-                align: 'right'
+                header: 'Estoque Mínimo',
+                align: 'center'
             },
             {
                 field: 'statusEstoque',
@@ -114,17 +120,22 @@ export class EntradaDeEstoque implements OnInit {
                 field: 'precoCompra',
                 header: 'Preço',
                 type: 'currency',
-                align: 'right'
+                align: 'center'
             },
             {
                 field: 'quantidade',
-                header: 'Qtde',
-                align: 'right'
+                header: 'Qtde em Estoque',
+                align: 'center'
             },
             {
                 field: 'dataMovimentacao',
                 header: 'Data',
                 type: 'date',
+                align: 'center'
+            },
+            {
+                field: 'usuarioNome',
+                header: 'Usuário',
                 align: 'left'
             }
         ];
@@ -133,11 +144,13 @@ export class EntradaDeEstoque implements OnInit {
         private produtoService: ProdutoService,
         private movimentacaoService: MovimentacaoEstoqueService,
         private alertService: AlertService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private confirmDialogService: ConfirmDialogService
     ) { }
 
     ngOnInit(): void {
         this.carregarProdutos();
+        this.carregarMovimentacoes();
     }
 
     carregarProdutos(): void {
@@ -165,6 +178,10 @@ export class EntradaDeEstoque implements OnInit {
     }
 
     adicionarEstoque(): void {
+
+        if (this.processandoEntrada) {
+            return;
+        }
 
         if (!this.produtoSelecionadoId) {
 
@@ -219,48 +236,49 @@ export class EntradaDeEstoque implements OnInit {
             return;
         }
 
-        produto.estoqueAtual += Number(
-            quantidade
+        if (!produto.ativo) {
+
+            this.alertService.warning(
+                'Não é possível movimentar estoque de um produto inativo.'
+            );
+
+            return;
+
+        }
+        if (quantidade >= 100) {
+
+            this.confirmDialogService.open({
+
+                title: 'Confirmar Entrada',
+
+                message:
+                    `Confirma a entrada de ${quantidade} unidades deste produto?`,
+
+                confirmText: 'Confirmar',
+
+                cancelText: 'Cancelar',
+
+                onConfirm: () => {
+
+                    this.processarEntrada(
+                        produto,
+                        quantidade,
+                        precoCompra
+                    );
+
+                }
+
+            });
+
+            return;
+
+        }
+
+        this.processarEntrada(
+            produto,
+            quantidade,
+            precoCompra
         );
-
-        this.produtoService.atualizar(
-            produto
-        );
-
-        const movimentacao: MovimentacaoEstoque = {
-            id: crypto.randomUUID(),
-
-            produtoId: produto.id,
-
-            produtoNome: produto.nome,
-
-            tipo: 'entrada',
-
-            quantidade: quantidade,
-
-            precoCompra: precoCompra ?? undefined,
-
-            dataMovimentacao:
-                new Date().toISOString()
-        };
-
-        this.movimentacaoService.registrarEntrada(
-            movimentacao
-        );
-
-        this.alertService.success(
-            'Entrada de estoque registrada com sucesso.'
-        );
-
-        this.produtoSelecionadoId = '';
-
-        this.productSearch?.limpar();
-
-        this.quantidade = null;
-
-        this.precoCompra = null;
-
-        this.carregarProdutos();
 
     }
 
@@ -286,27 +304,22 @@ export class EntradaDeEstoque implements OnInit {
                 ...produto,
 
                 statusEstoque:
-                    produto.estoqueAtual <=
-                        produto.estoqueMinimo
+                    produto.estoqueAtual === 0
 
-                        ? 'Baixo'
+                        ? 'Sem Estoque'
 
                         : produto.estoqueAtual <=
-                            produto.estoqueMinimo * 2
+                            produto.estoqueMinimo
 
-                            ? 'Atenção'
+                            ? 'Crítico'
 
-                            : 'Em Estoque',
+                            : produto.estoqueAtual <=
+                                produto.estoqueMinimo * 2
 
-                nivelEstoque:
-                    produto.estoqueMinimo === 0
-                        ? '100%'
-                        : Math.round(
-                            (
-                                produto.estoqueAtual /
-                                produto.estoqueMinimo
-                            ) * 100
-                        ) + '%',
+                                ? 'Atenção'
+
+                                : 'Em Estoque',
+
 
             })
 
@@ -384,6 +397,7 @@ export class EntradaDeEstoque implements OnInit {
 
         return this.produtosFiltrados.filter(
             produto =>
+                produto.estoqueAtual > 0 &&
                 produto.estoqueAtual <=
                 produto.estoqueMinimo
         ).length;
@@ -392,21 +406,131 @@ export class EntradaDeEstoque implements OnInit {
 
     get movimentacoesRecentes(): unknown[] {
 
-        return this.movimentacaoService
-            .listar()
+        return this.movimentacoes
             .filter(
                 mov => mov.tipo === 'entrada'
             )
             .slice()
             .reverse()
-            .slice(0, 10)
-            .map(
-                mov => ({
+            .slice(0, 10);
 
-                    ...mov,
+    }
 
-                })
-            );
+    get produtosAtivos(): Produto[] {
+
+        return this.produtos.filter(
+            produto => produto.ativo
+        );
+
+    }
+
+    get totalSemEstoque(): number {
+
+        return this.produtosFiltrados.filter(
+            produto =>
+                produto.estoqueAtual === 0
+        ).length;
+
+    }
+
+    private processarEntrada(
+        produto: Produto,
+        quantidade: number,
+        precoCompra: number
+    ): void {
+
+        this.processandoEntrada = true;
+
+        this.alertService.info(
+            'Registrando entrada de estoque...'
+        );
+
+        const request: MovimentacaoEstoqueRequest = {
+
+            produtoId: produto.id,
+
+            tipo: 'entrada',
+
+            quantidade,
+
+            precoCompra,
+
+        };
+
+        this.movimentacaoService
+            .registrarEntrada(request)
+            .subscribe({
+
+                next: () => {
+
+                    this.limparFormulario();
+
+                    this.carregarProdutos();
+
+                    this.carregarMovimentacoes();
+
+                    this.finalizarEntrada();
+
+                    this.alertService.success(
+                        'Entrada de estoque registrada com sucesso.'
+                    );
+
+                },
+
+                error: erro => {
+
+                    this.finalizarEntrada();
+
+                    console.error(erro);
+
+                    this.alertService.error(
+                        'Erro ao registrar movimentação.'
+                    );
+
+                }
+
+            });
+
+    }
+
+    carregarMovimentacoes(): void {
+
+        this.movimentacaoService
+            .listar()
+            .subscribe({
+
+                next: movimentacoes => {
+
+                    this.movimentacoes =
+                        movimentacoes;
+
+                },
+
+                error: erro => {
+
+                    console.error(erro);
+
+                }
+
+            });
+
+    }
+
+    private finalizarEntrada(): void {
+
+        this.processandoEntrada = false;
+
+    }
+
+    private limparFormulario(): void {
+
+        this.productSearch?.limpar();
+
+        this.produtoSelecionadoId = '';
+
+        this.quantidade = null;
+
+        this.precoCompra = null;
 
     }
 }

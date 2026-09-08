@@ -216,8 +216,24 @@ export class Relatorios
 
             });
 
-        this.movimentacoes =
-            this.movimentacaoService.listar();
+        this.movimentacaoService
+            .listar()
+            .subscribe({
+
+                next: movimentacoes => {
+
+                    this.movimentacoes =
+                        movimentacoes;
+
+                },
+
+                error: erro => {
+
+                    console.error(erro);
+
+                }
+
+            });
 
         this.fiados =
             this.fiadoService.listar();

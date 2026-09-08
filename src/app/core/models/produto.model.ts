@@ -30,6 +30,8 @@ export interface Produto {
 
   dataFimPromocao?: string;
 
+  custoMedio?: number;
+
   promocaoMotivo?:
   | 'giro-baixo'
   | 'estoque-parado'

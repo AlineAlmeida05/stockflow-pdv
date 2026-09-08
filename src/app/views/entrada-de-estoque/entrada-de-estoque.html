@@ -14,7 +14,7 @@
                 <div class="formulario">
                     <div class="field">
                         <app-product-search
-                            [produtos]="produtos"
+                            [produtos]="produtosAtivos"
                             (produtoSelecionado)="selecionarProduto($event)">
                         </app-product-search>
 
@@ -34,7 +34,8 @@
                             type="number"
                             min="1"
                             placeholder="0"
-                            [(ngModel)]="quantidade">
+                            [(ngModel)]="quantidade"
+                            [disabled]="processandoEntrada">
                     </div>
 
                     <div class="field">
@@ -47,8 +48,13 @@
                         <button
                             type="button"
                             class="btn btn-primary"
-                            (click)="adicionarEstoque()">
-                            Adicionar Estoque
+                            (click)="adicionarEstoque()"
+                            [disabled]="processandoEntrada">
+                            {{
+                            processandoEntrada
+                            ? 'Processando...'
+                            : 'Adicionar Estoque'
+                            }}
                         </button>
                     </div>
                 </div>
@@ -61,6 +67,11 @@
                 [expanded]="false">
 
                 <div class="estoque-resumo">
+                    <app-stat-card
+                        title="Sem Estoque"
+                        [value]="totalSemEstoque"
+                        variant="danger">
+                    </app-stat-card>
 
                     <app-stat-card
                         title="Produtos"

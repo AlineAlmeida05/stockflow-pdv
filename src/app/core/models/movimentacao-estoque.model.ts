@@ -14,6 +14,8 @@ export interface MovimentacaoEstoque {
 
   observacao?: string;
 
+  usuarioNome?: string;
+
   dataMovimentacao: string;
 
 }
