@@ -10,6 +10,10 @@ export interface Pagamento {
 
     dataPagamento: string;
 
+    usuarioNome: string;
+
+    formaPagamento?: string;
+
     observacao?: string;
 
 }

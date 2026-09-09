@@ -1,4 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+import { Observable } from 'rxjs';
+
+import { environment } from '../../../environments/environment';
+
 import { Pagamento } from '../models/pagamento.model';
 
 @Injectable({
@@ -6,72 +12,28 @@ import { Pagamento } from '../models/pagamento.model';
 })
 export class PagamentoService {
 
-  private readonly STORAGE_KEY =
-    'stockflow-pagamentos';
+  private readonly http =
+    inject(HttpClient);
 
-  private obterPagamentos(): Pagamento[] {
+  private readonly apiUrl =
+    `${environment.apiUrl}/api/pagamentos`;
 
-    if (typeof window === 'undefined') {
-      return [];
-    }
+  listar(): Observable<Pagamento[]> {
 
-    const dados =
-      localStorage.getItem(
-        this.STORAGE_KEY
-      );
-
-    if (!dados) {
-      return [];
-    }
-
-    return JSON.parse(dados);
-
-  }
-
-  private salvarPagamentos(
-    pagamentos: Pagamento[]
-  ): void {
-
-    if (typeof window === 'undefined') {
-      return;
-    }
-    localStorage.setItem(
-      this.STORAGE_KEY,
-      JSON.stringify(pagamentos)
+    return this.http.get<Pagamento[]>(
+      this.apiUrl
     );
-
-  }
-
-  listar(): Pagamento[] {
-
-    return this.obterPagamentos();
 
   }
 
   salvar(
     pagamento: Pagamento
-  ): void {
+  ): Observable<Pagamento> {
 
-    const pagamentos =
-      this.obterPagamentos();
-
-    pagamentos.push(pagamento);
-
-    this.salvarPagamentos(
-      pagamentos
+    return this.http.post<Pagamento>(
+      this.apiUrl,
+      pagamento
     );
-
-  }
-
-  buscarPorCliente(
-    clienteId: string
-  ): Pagamento[] {
-
-    return this.obterPagamentos()
-      .filter(
-        pagamento =>
-          pagamento.clienteId === clienteId
-      );
 
   }
 

@@ -54,6 +54,13 @@ export class Fiados implements OnInit {
 
     valorRecebido = 0;
 
+    formaPagamento:
+        | 'pix'
+        | 'dinheiro'
+        | 'debito'
+        | 'credito'
+        = 'pix';
+
     textoBusca = '';
 
     constructor(
@@ -117,8 +124,30 @@ export class Fiados implements OnInit {
 
             });
 
-        this.pagamentos =
-            this.pagamentoService.listar();
+        this.pagamentoService
+            .listar()
+            .subscribe({
+
+                next: pagamentos => {
+
+                    this.pagamentos =
+                        pagamentos;
+
+                    this.cdr.detectChanges();
+
+                }
+
+                ,
+
+                error: erro => {
+
+                    console.error(
+                        erro
+                    );
+
+                }
+
+            });
 
     }
 
@@ -233,39 +262,50 @@ export class Fiados implements OnInit {
 
         }
 
-        this.pagamentoService.salvar({
+        this.pagamentoService
+            .salvar({
 
-            id: crypto.randomUUID(),
+                clienteId:
+                    this.clienteSelecionado.id,
 
-            clienteId:
-                this.clienteSelecionado.id,
+                valorPago:
+                    this.valorRecebido,
 
-            clienteNome:
-                this.clienteSelecionado.nome,
+                formaPagamento:
+                    this.formaPagamento
 
-            valorPago:
-                this.valorRecebido,
+            } as any)
+            .subscribe({
 
-            dataPagamento:
-                new Date().toISOString()
+                next: () => {
 
-        });
+                    this.carregarDados();
 
-        this.pagamentos =
-            this.pagamentoService.listar();
+                    this.valorRecebido = 0;
 
-        this.valorRecebido = 0;
+                    this.formaPagamento = 'pix';
 
-        this.mostrarRecebimento = false;
+                    this.mostrarRecebimento = false;
 
-        this.alertService.success(
-            'Pagamento registrado com sucesso.'
-        );
+                    this.alertService.success(
+                        'Pagamento registrado com sucesso.'
+                    );
 
-        this.mostrarRecebimento = false;
+                },
 
-        this.valorRecebido = 0;
+                error: erro => {
 
+                    console.error(
+                        erro
+                    );
+
+                    this.alertService.error(
+                        'Erro ao registrar pagamento.'
+                    );
+
+                }
+
+            });
     }
 
     obterExtratoCliente(): any[] {
@@ -295,7 +335,9 @@ export class Fiados implements OnInit {
             .map(pagamento => ({
                 data: pagamento.dataPagamento,
                 valor: pagamento.valorPago,
-                tipo: 'pagamento'
+                tipo: 'pagamento',
+                usuarioNome: pagamento.usuarioNome,
+                formaPagamento: pagamento.formaPagamento
             }));
 
         return [...fiados, ...pagamentos]

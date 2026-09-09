@@ -32,9 +32,7 @@
                 ) {
 
                 <div class="cliente-card__limite">
-
                     ⚠️ Limite excedido
-
                 </div>
 
                 }
@@ -96,6 +94,35 @@
                     [(value)]="valorRecebido">
                 </app-currency-input>
 
+                <div class="field">
+
+                    <label>
+                        Forma de Pagamento
+                    </label>
+
+                    <select
+                        [(ngModel)]="formaPagamento">
+
+                        <option value="pix">
+                            PIX
+                        </option>
+
+                        <option value="dinheiro">
+                            Dinheiro
+                        </option>
+
+                        <option value="debito">
+                            Débito
+                        </option>
+
+                        <option value="credito">
+                            Crédito
+                        </option>
+
+                    </select>
+
+                </div>
+
                 <div class="recebimento-card__actions">
                     <button
                         class="btn btn-primary"
@@ -134,14 +161,26 @@
                 <div class="extrato-item__header">
 
                     <strong>
-
                         {{
-                        movimento.tipo === 'fiado'
-                        ? 'Venda Fiada'
-                        : 'Pagamento'
+                        movimento.tipo === 'pagamento'
+                        ? ('Pagamento ' +
+                        movimento.formaPagamento?.toUpperCase())
+                        : 'Venda Fiada'
                         }}
-
                     </strong>
+
+                    @if (
+                    movimento.tipo === 'pagamento'
+                    ) {
+
+                    <div class="pagamento-info">
+                        👤
+                        <strong>
+                            {{ movimento.usuarioNome }}
+                        </strong>
+                    </div>
+
+                    }
 
                     <span>
 
