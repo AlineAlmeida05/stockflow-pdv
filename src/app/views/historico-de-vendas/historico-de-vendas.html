@@ -31,8 +31,7 @@
             <div
                 class="card venda-card"
                 [class.venda-card--active]="
-        vendaSelecionada?.id === venda.id
-    "
+                    vendaSelecionada?.id === venda.id"
                 (click)="selecionarVenda(venda)">
 
                 <strong class="venda-card__valor">
@@ -52,6 +51,17 @@
                     }}
 
                 </span>
+                @if (venda.usuarioNome) {
+                <span class="venda-card__usuario">
+                    👤{{ venda.usuarioNome }}
+                </span>
+                }
+                @if (venda.clienteNome) {
+
+                <div class="venda-card__cliente">
+                    {{ venda.clienteNome }}
+                </div>
+                }
 
                 <div class="venda-card__footer">
 
@@ -112,6 +122,27 @@
                         variant="info">
                     </app-status-badge>
                 </div>
+                @if (vendaSelecionada.usuarioNome) {
+                <div class="vendedor-venda">
+                    <span>
+                        Vendedor
+                    </span>
+                    <strong>
+                        {{ vendaSelecionada.usuarioNome }}
+                    </strong>
+                </div>
+                }
+
+                @if (vendaSelecionada.clienteNome) {
+                <div class="cliente-venda">
+                    <span>
+                        Cliente
+                    </span>
+                    <strong>
+                        {{ vendaSelecionada.clienteNome }}
+                    </strong>
+                </div>
+                }
 
                 <div class="status-venda">
                     <span>
@@ -143,7 +174,37 @@
             </div>
 
             }
+            @if (vendaSelecionada.dataCancelamento) {
 
+            <div class="info-cancelamento">
+                <span>
+                    Data do Cancelamento
+                </span>
+                <strong>
+                    {{
+                    vendaSelecionada.dataCancelamento
+                    | date:'dd/MM/yyyy HH:mm'
+                    }}
+                </strong>
+            </div>
+            }
+            @if (vendaSelecionada.usuarioCancelamento) {
+
+            <div class="info-cancelamento">
+
+                <span>
+                    Cancelado por
+                </span>
+
+                <strong>
+
+                    {{ vendaSelecionada.usuarioCancelamento }}
+
+                </strong>
+
+            </div>
+
+            }
             @if (
             vendaSelecionada.status === 'finalizada'
             ) {

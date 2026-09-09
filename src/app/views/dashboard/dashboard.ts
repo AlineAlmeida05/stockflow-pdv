@@ -292,7 +292,7 @@ export class Dashboard implements OnInit {
                 continue;
             }
 
-            for (const item of venda.itens) {
+            for (const item of (venda.itens ?? [])) {
 
                 const atual =
                     ranking.get(

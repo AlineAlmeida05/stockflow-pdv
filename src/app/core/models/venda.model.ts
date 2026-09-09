@@ -7,12 +7,12 @@ export interface Venda {
   dataVenda: string;
 
   formaPagamento:
-    | 'Selecione...'
-    | 'pix'
-    | 'dinheiro'
-    | 'debito'
-    | 'credito'
-    | 'fiado';
+  | 'Selecione...'
+  | 'pix'
+  | 'dinheiro'
+  | 'debito'
+  | 'credito'
+  | 'fiado';
 
   valorTotal: number;
 
@@ -23,11 +23,17 @@ export interface Venda {
   clienteNome?: string;
 
   status:
-    | 'finalizada'
-    | 'cancelada';
+  | 'finalizada'
+  | 'cancelada';
 
   motivoCancelamento?: string;
 
-  itens: ItemVenda[];  
+  dataCancelamento?: string;
+
+  usuarioCancelamento?: string;
+
+  usuarioNome?: string;
+
+  itens: ItemVenda[];
 
 }

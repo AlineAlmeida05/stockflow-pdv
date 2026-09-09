@@ -48,4 +48,14 @@ export class VendaService {
         );
     }
 
+    buscarPorId(
+        id: string
+    ): Observable<Venda> {
+
+        return this.http.get<Venda>(
+            `${this.apiUrl}/${id}`
+        );
+
+    }
+
 }
