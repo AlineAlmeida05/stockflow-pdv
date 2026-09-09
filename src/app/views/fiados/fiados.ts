@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 
 import { MainLayout } from '../../layout/main-layout/main-layout';
@@ -60,7 +60,8 @@ export class Fiados implements OnInit {
         private clienteService: ClienteService,
         private fiadoService: FiadoService,
         private pagamentoService: PagamentoService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -70,15 +71,15 @@ export class Fiados implements OnInit {
     }
 
     carregarDados(): void {
-
         this.clienteService
             .listar()
             .subscribe({
 
                 next: clientes => {
 
-                    this.clientes =
-                        clientes;
+                    this.clientes = clientes;
+
+                    this.cdr.detectChanges();
 
                 },
 
@@ -92,8 +93,29 @@ export class Fiados implements OnInit {
 
             });
 
-        this.fiados =
-            this.fiadoService.listar();
+        this.fiadoService
+
+            .listar()
+
+            .subscribe({
+
+                next: fiados => {
+
+                    this.fiados = fiados;
+
+                    this.cdr.detectChanges();
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        erro
+                    );
+
+                }
+
+            });
 
         this.pagamentos =
             this.pagamentoService.listar();
@@ -309,13 +331,6 @@ export class Fiados implements OnInit {
                 cliente =>
                     cliente.id === clienteId
             );
-
-        console.log({
-            cliente,
-            saldo: this.obterSaldoCliente(
-                clienteId
-            )
-        });
 
         if (!cliente) {
             return false;

@@ -249,8 +249,26 @@ export class Relatorios
 
             });
 
-        this.fiados =
-            this.fiadoService.listar();
+        this.fiadoService
+            .listar()
+            .subscribe({
+
+                next: fiados => {
+
+                    this.fiados =
+                        fiados;
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        erro
+                    );
+
+                }
+
+            });
 
     }
 

@@ -84,8 +84,26 @@ export class Dashboard implements OnInit {
                 }
             });
 
-        this.fiados =
-            this.fiadoService.listar();
+        this.fiadoService
+            .listar()
+            .subscribe({
+
+                next: fiados => {
+
+                    this.fiados =
+                        fiados;
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        erro
+                    );
+
+                }
+
+            });
 
         this.produtoService
             .listar()
