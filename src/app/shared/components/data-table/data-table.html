@@ -100,15 +100,17 @@
                 <td class="table-actions-column">
                     <app-action-icons
                         [showEdit]="showEditAction"
-                        [deleteIcon]="$any(row).ativo
-                            ? '⏸️'
-                            : '▶️'"
+                        [deleteIcon]="
+                            $any(row).ativo === undefined
+                                ? deleteIcon
+                                : $any(row).ativo
+                                    ? '⏸️'
+                                    : '▶️'"
                         (edit)="edit.emit(row)"
                         (delete)="delete.emit(row)">
                     </app-action-icons>
                 </td>
                 }
-
             </tr>
             }
             }

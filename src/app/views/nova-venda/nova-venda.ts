@@ -1,33 +1,14 @@
-import {
-    Component,
-    OnInit,
-    ViewChild,
-    ElementRef
-} from '@angular/core';
-
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
 import { MainLayout } from '../../layout/main-layout/main-layout';
-
 import { Produto } from '../../core/models/produto.model';
 import { ProdutoService } from '../../core/services/produto.service';
 import { VendaService } from '../../core/services/venda.service';
-import { MovimentacaoEstoqueService } from '../../core/services/movimentacao-estoque.service';
-
-import { Venda } from '../../core/models/venda.model';
-import { ItemVenda } from '../../core/models/item-venda.model';
-import { MovimentacaoEstoque } from '../../core/models/movimentacao-estoque.model';
-
 import { Cliente } from '../../core/models/cliente.model';
-
 import { ClienteService } from '../../core/services/cliente.service';
-import { FiadoService } from '../../core/services/fiado.service';
-
 import { CurrencyPipe } from '@angular/common';
-
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
-
 import { AlertService } from '../../core/services/alert.service';
 import { ProductSelector } from '../../shared/components/product-selector/product-selector';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
@@ -85,6 +66,8 @@ export class NovaVenda implements OnInit {
 
     adicionandoItem = false;
 
+    finalizandoVenda = false;
+
     colunasCarrinho: {
         field: string;
         header: string;
@@ -98,13 +81,13 @@ export class NovaVenda implements OnInit {
             {
                 field: 'quantidade',
                 header: 'Qtde',
-                align: 'right'
+                align: 'center'
             },
             {
                 field: 'valorUnitario',
                 header: 'Unit.',
                 type: 'currency',
-                align: 'right'
+                align: 'center'
             },
             {
                 field: 'desconto',
@@ -116,7 +99,7 @@ export class NovaVenda implements OnInit {
                 field: 'subtotal',
                 header: 'Subtotal',
                 type: 'currency',
-                align: 'right'
+                align: 'center'
             },
             {
                 field: 'acoes',
@@ -137,9 +120,7 @@ export class NovaVenda implements OnInit {
     constructor(
         private produtoService: ProdutoService,
         private vendaService: VendaService,
-        private movimentacaoService: MovimentacaoEstoqueService,
         private clienteService: ClienteService,
-        private fiadoService: FiadoService,
         private alertService: AlertService
     ) { }
 
@@ -374,6 +355,12 @@ export class NovaVenda implements OnInit {
 
     finalizarVenda(): void {
 
+        if (this.finalizandoVenda) {
+            return;
+        }
+
+        this.finalizandoVenda = true;
+
         if (!this.formaPagamento) {
 
             this.alertService.warning(
@@ -381,7 +368,6 @@ export class NovaVenda implements OnInit {
             );
 
             return;
-
         }
         if (
             this.formaPagamento === 'dinheiro'
@@ -397,208 +383,82 @@ export class NovaVenda implements OnInit {
                 );
 
                 return;
-
             }
-
-        }
-        if (
-            this.formaPagamento === 'fiado' &&
-            !this.clienteSelecionadoId
-        ) {
-
-            this.alertService.warning(
-                'Selecione um cliente.'
-            );
-
-            return;
-
         }
 
         if (this.carrinho.length === 0) {
             return;
         }
 
-        const clienteSelecionado =
-            this.clientes.find(
-                cliente =>
-                    cliente.id === this.clienteSelecionadoId
-            );
-
-        const itensVenda: ItemVenda[] =
-            this.carrinho.map(item => ({
-                produtoId: item.produto.id,
-                produtoNome: item.produto.nome,
-                quantidade: item.quantidade,
-                valorUnitario: item.precoUnitario,
-                subtotal: item.subtotal,
-                promocaoAplicada:
-                    item.promocaoAplicada
-            }));
-
-        const venda: Venda = {
-
-            id: crypto.randomUUID(),
-
-            dataVenda: new Date().toISOString(),
+        const vendaRequest = {
 
             formaPagamento: this.formaPagamento,
 
-            valorTotal: this.total,
+            clienteId: this.clienteSelecionadoId || null,
 
-            quantidadeItens: this.quantidadeTotalItens,
+            valorRecebido: this.valorRecebido,
 
-            clienteId: clienteSelecionado?.id,
+            itens:
+                this.carrinho.map(
+                    item => ({
 
-            clienteNome: clienteSelecionado?.nome,
+                        produtoId:
+                            item.produto.id,
 
-            status: 'finalizada',
+                        quantidade:
+                            item.quantidade
 
-            itens: itensVenda
-
+                    })
+                )
         };
 
-        this.vendaService.salvar(venda);
+        this.vendaService
+            .salvar(vendaRequest)
+            .subscribe({
 
-        if (
-            this.formaPagamento === 'fiado' &&
-            clienteSelecionado
-        ) {
+                next: () => {
 
-            this.fiadoService.salvar({
+                    this.finalizandoVenda = false;
 
-                id: crypto.randomUUID(),
+                    this.alertService.success(
+                        'Venda concluída com sucesso.'
+                    );
 
-                clienteId:
-                    clienteSelecionado.id,
+                    this.carrinho = [];
 
-                clienteNome:
-                    clienteSelecionado.nome,
+                    this.formaPagamento = 'Selecione...';
 
-                vendaId:
-                    venda.id,
+                    this.produtoSelecionadoId = '';
 
-                valorTotal:
-                    this.total,
+                    this.quantidade = null;
 
-                dataLancamento:
-                    new Date().toISOString(),
+                    this.valorRecebido = null;
 
-                status: 'pendente'
+                    this.productSelector?.limpar();
+
+                    this.carregarProdutos();
+
+                },
+
+                error: erro => {
+
+                    this.finalizandoVenda = false;
+
+                    console.error(
+                        erro
+                    );
+
+                    this.alertService.error(
+
+                        erro?.error?.message ||
+
+                        'Erro ao finalizar venda.'
+
+                    );
+
+                }
 
             });
-
-        }
-
-        if (
-            this.formaPagamento === 'dinheiro' &&
-            this.valorRecebido !== null &&
-            this.valorRecebido < this.total
-        ) {
-
-            this.alertService.warning(
-                'O valor recebido é menor que o total da venda.'
-            );
-
-            return;
-
-        }
-
-        if (
-            this.formaPagamento === 'dinheiro' &&
-            this.valorRecebido !== null &&
-            this.valorRecebido < this.total
-        ) {
-
-            this.alertService.warning(
-
-                `Valor insuficiente.
-Total da venda: ${this.total.toLocaleString(
-                    'pt-BR',
-                    {
-                        style: 'currency',
-                        currency: 'BRL'
-                    }
-                )}`
-
-            );
-
-            return;
-
-        }
-
-        for (const item of this.carrinho) {
-
-            const produto =
-                item.produto;
-
-            produto.estoqueAtual -=
-                item.quantidade;
-
-            this.produtoService
-                .atualizar(produto)
-                .subscribe();
-
-            const movimentacao: MovimentacaoEstoque = {
-
-                id: crypto.randomUUID(),
-
-                produtoId: produto.id,
-
-                produtoNome: produto.nome,
-
-                tipo: 'saida',
-
-                quantidade: item.quantidade,
-
-                precoCompra: 0,
-
-                dataMovimentacao:
-                    new Date().toISOString()
-
-            };
-
-            this.movimentacaoService
-                .registrarSaida(
-                    movimentacao
-                );
-
-        }
-
-        this.alertService.success(
-
-            `Venda concluída com sucesso.
-
-                Total:
-                ${this.total.toLocaleString(
-                'pt-BR',
-                {
-                    style: 'currency',
-                    currency: 'BRL'
-                }
-            )}
-
-                Itens:
-                ${this.quantidadeItens}
-
-                Pagamento:
-                ${this.formaPagamento}`
-
-        );
-
-        this.carrinho = [];
-
-        this.formaPagamento = 'Selecione...';
-
-        this.produtoSelecionadoId = '';
-
-        this.quantidade = null;
-
-        this.valorRecebido = null;
-
-        this.productSelector?.limpar();
-
-
-        this.carregarProdutos();
 
     }
 
@@ -655,9 +515,9 @@ Total da venda: ${this.total.toLocaleString(
 
                 quantidade: item.quantidade,
 
-                valorUnitario: `R$ ${item.precoUnitario.toFixed(2)}`,
+                valorUnitario: item.precoUnitario,
 
-                subtotal: `R$ ${item.subtotal.toFixed(2)}`,
+                subtotal: item.subtotal,
 
                 promocao: item.promocaoAplicada ? 'Promoção' : '',
 

@@ -67,8 +67,22 @@ export class Dashboard implements OnInit {
 
     ngOnInit(): void {
 
-        this.vendas =
-            this.vendaService.listar();
+        this.vendaService
+            .listar()
+            .subscribe({
+                next: vendas => {
+
+                    this.vendas =
+                        vendas;
+
+                },
+
+                error: erro => {
+
+                    console.error(erro);
+
+                }
+            });
 
         this.fiados =
             this.fiadoService.listar();

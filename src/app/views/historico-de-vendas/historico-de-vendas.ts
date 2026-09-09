@@ -100,14 +100,31 @@ export class HistoricoDeVendas
 
     ngOnInit(): void {
 
-        this.vendas =
-            this.vendaService
-                .listar()
-                .sort(
-                    (a, b) =>
-                        new Date(b.dataVenda).getTime() -
-                        new Date(a.dataVenda).getTime()
-                );
+        this.vendaService
+            .listar()
+            .subscribe({
+                next: vendas => {
+
+                    this.vendas =
+                        vendas.sort(
+                            (a, b) =>
+                                new Date(
+                                    b.dataVenda
+                                ).getTime()
+                                -
+                                new Date(
+                                    a.dataVenda
+                                ).getTime()
+                        );
+
+                },
+
+                error: erro => {
+
+                    console.error(erro);
+
+                }
+            });
 
     }
 
@@ -284,24 +301,27 @@ export class HistoricoDeVendas
             'cancelada';
 
         this.vendaSelecionada.motivoCancelamento =
-            this.motivoCancelamento;
+            this.motivoCancelamento;        
 
-        this.vendaService.atualizar(
-            this.vendaSelecionada
-        );
+        this.vendaService
+            .listar()
+            .subscribe({
+                next: vendas => {
 
-        this.vendas =
-            this.vendaService
-                .listar()
-                .sort(
-                    (a, b) =>
-                        new Date(
-                            b.dataVenda
-                        ).getTime() -
-                        new Date(
-                            a.dataVenda
-                        ).getTime()
-                );
+                    this.vendas =
+                        vendas.sort(
+                            (a, b) =>
+                                new Date(
+                                    b.dataVenda
+                                ).getTime()
+                                -
+                                new Date(
+                                    a.dataVenda
+                                ).getTime()
+                        );
+
+                }
+            });
 
         this.alertService.success(
             'Venda cancelada com sucesso.'

@@ -1,102 +1,51 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+import { Observable } from 'rxjs';
+
+import { environment } from '../../../environments/environment';
+
 import { Venda } from '../models/venda.model';
 
 @Injectable({
     providedIn: 'root'
 })
-
 export class VendaService {
 
-    private readonly STORAGE_KEY =
-        'stockflow-vendas';
+    private readonly http =
+        inject(HttpClient);
 
-    private obterVendas(): Venda[] {
+    private readonly apiUrl =
+        `${environment.apiUrl}/api/vendas`;
 
-        if (typeof window === 'undefined') {
-            return [];
-        }
+    listar(): Observable<Venda[]> {
 
-        const dados =
-            localStorage.getItem(
-                this.STORAGE_KEY
-            );
-
-        if (!dados) {
-            return [];
-        }
-
-        return JSON.parse(dados);
-
-    }
-
-    private salvarVendas(
-        vendas: Venda[]
-    ): void {
-
-        if (typeof window === 'undefined') {
-            return;
-        }
-        localStorage.setItem(
-            this.STORAGE_KEY,
-            JSON.stringify(vendas)
+        return this.http.get<Venda[]>(
+            this.apiUrl
         );
-
-    }
-
-    listar(): Venda[] {
-
-        return this.obterVendas();
-
-    }
-
-    buscarPorId(
-        id: string
-    ): Venda | undefined {
-
-        return this.obterVendas()
-            .find(venda => venda.id === id);
-
     }
 
     salvar(
-        venda: Venda
-    ): void {
+        venda: unknown
+    ): Observable<Venda> {
 
-        const vendas =
-            this.obterVendas();
-
-        vendas.push(venda);
-
-        this.salvarVendas(
-            vendas
+        return this.http.post<Venda>(
+            this.apiUrl,
+            venda
         );
-
     }
 
-    atualizar(
-        vendaAtualizada: Venda
-    ): void {
+    cancelar(
+        vendaId: string,
+        motivo: string
+    ): Observable<void> {
 
-        const vendas =
-            this.obterVendas();
-
-        const indice =
-            vendas.findIndex(
-                venda =>
-                    venda.id === vendaAtualizada.id
-            );
-
-        if (indice === -1) {
-            return;
-        }
-
-        vendas[indice] =
-            vendaAtualizada;
-
-        this.salvarVendas(
-            vendas
+        return this.http.post<void>(
+            `${this.apiUrl}/${vendaId}/cancelar`,
+            {
+                motivo
+            }
         );
-
     }
 
 }

@@ -540,4 +540,14 @@ export class Produtos implements OnInit {
     this.mostrarFormulario = false;
 
   }
+
+  produtoDeleteIcon(
+    produto: Produto
+  ): string {
+
+    return produto.ativo
+      ? '⏸️'
+      : '▶️';
+
+  }
 }

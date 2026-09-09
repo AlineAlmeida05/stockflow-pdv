@@ -88,44 +88,30 @@
                 [data]="carrinhoTabela"
                 [showActions]="true"
                 [showEditAction]="false"
-                (delete)="removerItemCarrinho($event)">
+                (delete)="removerItemCarrinho($event)"
+                [deleteIcon]="'🗑️'">
             </app-data-table>
 
             }
             <div class="total-venda">
-
                 <div>
-
                     <span>
                         Total da Venda
                     </span>
-
                     <small>
-
                         {{ quantidadeItens }}
                         item(ns)
-
                     </small>
-
                     @if (totalDescontos > 0) {
-
                     <small class="desconto-total">
-
                         Economia:
                         {{ totalDescontos | currency:'BRL' }}
-
                     </small>
-
                     }
-
                 </div>
-
                 <strong>
-
                     {{ total | currency:'BRL' }}
-
                 </strong>
-
             </div>
         </div>
 
@@ -139,7 +125,7 @@
                     <select
                         #formaPagamentoSelect
                         [(ngModel)]="formaPagamento">
-                        <option value>
+                        <option value="">
                             Selecione...
                         </option>
                         <option value="dinheiro">
@@ -209,12 +195,11 @@
                 <button
                     type="button"
                     (click)="finalizarVenda()"
-                    [disabled]="carrinho.length === 0"
+                    [disabled]="carrinho.length === 0 || finalizandoVenda"
                     (keyup.enter)="finalizarVenda()">
                     Finalizar Venda (F2)
                 </button>
             </div>
         </div>
     </div>
-
 </app-main-layout>
