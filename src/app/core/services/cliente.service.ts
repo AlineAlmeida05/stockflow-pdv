@@ -1,4 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+import { Observable } from 'rxjs';
+
+import { environment } from '../../../environments/environment';
+
 import { Cliente } from '../models/cliente.model';
 
 @Injectable({
@@ -6,107 +12,48 @@ import { Cliente } from '../models/cliente.model';
 })
 export class ClienteService {
 
-  private readonly STORAGE_KEY =
-    'stockflow-clientes';
+  private readonly http =
+    inject(HttpClient);
 
-  private obterClientes(): Cliente[] {
+  private readonly apiUrl =
+    `${environment.apiUrl}/api/clientes`;
 
-    if (typeof window === 'undefined') {
-      return [];
-    }
+  listar(): Observable<Cliente[]> {
 
-    const dados =
-      localStorage.getItem(
-        this.STORAGE_KEY
-      );
-
-    if (!dados) {
-      return [];
-    }
-
-    return JSON.parse(dados);
-
-  }
-
-  private salvarClientes(
-    clientes: Cliente[]
-  ): void {
-
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-    localStorage.setItem(
-      this.STORAGE_KEY,
-      JSON.stringify(clientes)
+    return this.http.get<Cliente[]>(
+      this.apiUrl
     );
-
-  }
-
-  listar(): Cliente[] {
-
-    return this.obterClientes();
-
-  }
-
-  buscarPorId(
-    id: string
-  ): Cliente | undefined {
-
-    return this.obterClientes()
-      .find(cliente => cliente.id === id);
 
   }
 
   salvar(
     cliente: Cliente
-  ): void {
+  ): Observable<Cliente> {
 
-    const clientes =
-      this.obterClientes();
-
-    clientes.push(cliente);
-
-    this.salvarClientes(clientes);
+    return this.http.post<Cliente>(
+      this.apiUrl,
+      cliente
+    );
 
   }
 
   atualizar(
-    clienteAtualizado: Cliente
-  ): void {
+    cliente: Cliente
+  ): Observable<Cliente> {
 
-    const clientes =
-      this.obterClientes();
-
-    const indice =
-      clientes.findIndex(
-        cliente =>
-          cliente.id === clienteAtualizado.id
-      );
-
-    if (indice === -1) {
-      return;
-    }
-
-    clientes[indice] =
-      clienteAtualizado;
-
-    this.salvarClientes(clientes);
+    return this.http.put<Cliente>(
+      `${this.apiUrl}/${cliente.id}`,
+      cliente
+    );
 
   }
 
-  excluir(id: string): void {
+  excluir(
+    id: string
+  ): Observable<void> {
 
-    const clientes =
-      this.obterClientes();
-
-    const atualizados =
-      clientes.filter(
-        cliente => cliente.id !== id
-      );
-
-    this.salvarClientes(
-      atualizados
+    return this.http.delete<void>(
+      `${this.apiUrl}/${id}`
     );
 
   }

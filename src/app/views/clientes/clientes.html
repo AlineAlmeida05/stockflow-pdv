@@ -62,6 +62,15 @@
                         placeholder="Informe o telefone"
                         [(ngModel)]="telefone">
                 </div>
+                <div class="field">
+                    <label>
+                        Limite de Crédito
+                    </label>
+                    <input
+                        type="number"
+                        min="0"
+                        [(ngModel)]="limiteCredito">
+                </div>
 
                 <div class="formulario-acoes">
                     <button

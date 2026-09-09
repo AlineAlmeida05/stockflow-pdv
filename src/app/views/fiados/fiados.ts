@@ -71,8 +71,26 @@ export class Fiados implements OnInit {
 
     carregarDados(): void {
 
-        this.clientes =
-            this.clienteService.listar();
+        this.clienteService
+            .listar()
+            .subscribe({
+
+                next: clientes => {
+
+                    this.clientes =
+                        clientes;
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        erro
+                    );
+
+                }
+
+            });
 
         this.fiados =
             this.fiadoService.listar();
@@ -277,6 +295,36 @@ export class Fiados implements OnInit {
                         this.textoBusca
                             .toLowerCase()
                     )
+        );
+
+    }
+
+    clienteAcimaDoLimite(
+        clienteId: string
+    ): boolean {
+
+
+        const cliente =
+            this.clientes.find(
+                cliente =>
+                    cliente.id === clienteId
+            );
+
+        console.log({
+            cliente,
+            saldo: this.obterSaldoCliente(
+                clienteId
+            )
+        });
+
+        if (!cliente) {
+            return false;
+        }
+
+        return (
+            this.obterSaldoCliente(
+                clienteId
+            ) > cliente.limiteCredito
         );
 
     }

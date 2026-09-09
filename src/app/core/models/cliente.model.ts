@@ -10,6 +10,8 @@ export interface Cliente {
 
     dataCadastro: string;
 
+    limiteCredito: number;
+
     observacao?: string;
 
 }

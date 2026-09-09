@@ -214,8 +214,26 @@ export class NovaVenda implements OnInit {
 
     carregarClientes(): void {
 
-        this.clientes =
-            this.clienteService.listar();
+        this.clienteService
+            .listar()
+            .subscribe({
+
+                next: clientes => {
+
+                    this.clientes =
+                        clientes;
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        erro
+                    );
+
+                }
+
+            });
 
     }
 

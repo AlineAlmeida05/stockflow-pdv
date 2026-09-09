@@ -37,6 +37,8 @@ export class Clientes implements OnInit {
 
     telefone = '';
 
+    limiteCredito = 300;
+
     clientes: Cliente[] = [];
 
     clienteEditandoId: string | null = null;
@@ -58,6 +60,12 @@ export class Clientes implements OnInit {
             {
                 field: 'telefone',
                 header: 'Telefone'
+            },
+            {
+                field: 'limiteCredito',
+                header: 'Limite',
+                type: 'currency',
+                align: 'center'
             },
             {
                 field: 'dataCadastro',
@@ -94,10 +102,28 @@ export class Clientes implements OnInit {
     }
 
     carregarClientes(): void {
-        this.clientes =
-            this.clienteService.listar();
+        this.clienteService
+            .listar()
+            .subscribe({
 
-        this.cdr.detectChanges();
+                next: clientes => {
+
+                    this.clientes =
+                        clientes;
+
+                    this.cdr.detectChanges();
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        erro
+                    );
+
+                }
+
+            });
     }
 
     salvarCliente(): void {
@@ -112,56 +138,127 @@ export class Clientes implements OnInit {
 
         }
 
-        const editando =
-            !!this.clienteEditandoId;
-
         if (this.clienteEditandoId) {
 
-            this.clienteService.atualizar({
-                id: this.clienteEditandoId,
-                nome: this.nome,
-                telefone: this.telefone,
-                ativo: true,
-                dataCadastro: new Date().toISOString()
-            });
+            const clienteAtual =
+                this.clientes.find(
+                    cliente =>
+                        cliente.id === this.clienteEditandoId
+                );
+
+            this.clienteService
+                .atualizar({
+                    id: this.clienteEditandoId,
+                    nome: this.nome,
+                    telefone: this.telefone,
+                    ativo: true,
+                    dataCadastro:
+                        clienteAtual?.dataCadastro ??
+                        new Date().toISOString(),
+                    limiteCredito: this.limiteCredito
+                } as Cliente)
+                .subscribe({
+
+                    next: () => {
+
+                        this.carregarClientes();
+
+                        this.nome = '';
+                        this.telefone = '';
+                        this.limiteCredito = 300;
+                        this.clienteEditandoId = null;
+                        this.mostrarFormulario = false;
+
+                        this.alertService.success(
+                            'Cliente atualizado com sucesso.'
+                        );
+
+                    },
+
+                    error: erro => {
+
+                        console.error(erro);
+
+                        this.alertService.error(
+                            'Erro ao atualizar cliente.'
+                        );
+
+                    }
+
+                });
 
         } else {
 
-            this.clienteService.salvar({
-                id: crypto.randomUUID(),
-                nome: this.nome,
-                telefone: this.telefone,
-                ativo: true,
-                dataCadastro: new Date().toISOString()
-            });
+            this.clienteService
+                .salvar({
+                    id: crypto.randomUUID(),
+                    nome: this.nome,
+                    telefone: this.telefone,
+                    ativo: true,
+                    dataCadastro: new Date().toISOString(),
+                    limiteCredito: this.limiteCredito
+                } as Cliente)
+                .subscribe({
 
-        }
+                    next: () => {
 
-        this.nome = '';
-        this.telefone = '';
-        this.clienteEditandoId = null;
-        this.mostrarFormulario = false;
+                        this.carregarClientes();
 
-        this.carregarClientes();
+                        this.nome = '';
+                        this.telefone = '';
+                        this.limiteCredito = 300;
+                        this.clienteEditandoId = null;
+                        this.mostrarFormulario = false;
 
-        this.alertService.success(
-            this.clienteEditandoId
-                ? 'Cliente atualizado com sucesso.'
-                : 'Cliente cadastrado com sucesso.'
-        );
+                        this.alertService.success(
+                            'Cliente cadastrado com sucesso.'
+                        );
+
+                    },
+
+                    error: erro => {
+
+                        console.error(erro);
+
+                        this.alertService.error(
+                            'Erro ao cadastrar cliente.'
+                        );
+
+                    }
+
+                });
+
+        }      
 
     }
 
     excluirCliente(id: string): void {
 
-        this.clienteService.excluir(id);
+        this.clienteService
+            .excluir(id)
+            .subscribe({
 
-        this.carregarClientes();
+                next: () => {
 
-        this.alertService.success(
-            'Cliente excluído com sucesso.'
-        );
+                    this.carregarClientes();
 
+                    this.alertService.success(
+                        'Cliente excluído com sucesso.'
+                    );
+
+                },
+
+                error: erro => {
+
+                    console.error(erro);
+
+                    this.alertService.error(
+                        'Erro ao excluir cliente.'
+                    );
+
+                }
+
+            });
     }
 
     editarCliente(cliente: Cliente): void {
@@ -174,6 +271,7 @@ export class Clientes implements OnInit {
 
         this.telefone = cliente.telefone;
 
+        this.limiteCredito = cliente.limiteCredito;
     }
 
     editarClienteTabela(
@@ -206,6 +304,8 @@ export class Clientes implements OnInit {
 
         this.telefone = '';
 
+        this.limiteCredito = 300;
+
     }
 
     novoCliente(): void {
@@ -217,6 +317,8 @@ export class Clientes implements OnInit {
         this.nome = '';
 
         this.telefone = '';
+
+        this.limiteCredito = 300;
 
     }
 

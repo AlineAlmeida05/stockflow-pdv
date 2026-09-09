@@ -25,6 +25,19 @@
                 <h3>
                     {{ cliente.nome }}
                 </h3>
+                @if (
+                clienteAcimaDoLimite(
+                cliente.id
+                )
+                ) {
+
+                <div class="cliente-card__limite">
+
+                    ⚠️ Limite excedido
+
+                </div>
+
+                }
                 <div class="cliente-card__saldo">
                     <span>
                         Saldo Devedor
