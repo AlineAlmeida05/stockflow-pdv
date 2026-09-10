@@ -1,0 +1,57 @@
+.card {
+    padding: 1.5rem;
+}
+
+.timeline {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 1rem;
+}
+
+.movimentacao-card {
+    padding: 1rem;
+}
+
+.movimentacao-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 1rem;
+}
+
+.movimentacao-body {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0.5rem;
+}
+
+.movimentacao-valor {
+    margin-top: 1rem;
+
+    font-size: 1.1rem;
+
+    font-weight: 700;
+}
+
+.valor-positivo {
+    color: var(--color-success);
+}
+
+.valor-negativo {
+    color: #dc3545;
+}
+
+.movimentacao-card--pagamento {
+    border-left: 4px solid #198754;
+}
+
+.movimentacao-card--fiado {
+    border-left: 4px solid #dc3545;
+}

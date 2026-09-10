@@ -1,0 +1,159 @@
+<app-main-layout>
+
+    <app-page-title
+        title="Extrato Financeiro"
+        subtitle="Acompanhe todas as movimentações financeiras da empresa.">
+    </app-page-title>
+
+    <app-stat-card-carousel
+        [cards]="cards">
+    </app-stat-card-carousel>
+
+    <app-toolbar>
+
+        <app-select-input
+            label="Movimentação"
+            [(value)]="formaPagamentoSelecionada"
+            [options]="formasPagamento">
+        </app-select-input>
+
+        <app-select-input
+            label="Período"
+            [(value)]="periodoSelecionado"
+            [options]="periodos">
+        </app-select-input>
+
+        <app-search-input
+            placeholder="Buscar cliente..."
+            [(value)]="textoBusca">
+        </app-search-input>
+
+    </app-toolbar>
+
+    <div class="resumo-card">
+        <span>
+            Total de Movimentações
+        </span>
+        <strong>
+            {{ movimentacoes.length }}
+        </strong>
+    </div>
+
+    <div class="timeline">
+        @if (movimentacoes.length === 0) {
+
+        <app-empty-state
+            message="Nenhuma movimentação financeira encontrada.">
+        </app-empty-state>
+
+        } @else {
+
+        @for (
+        movimentacao of movimentacoesFiltradas;
+        track $index
+        ) {
+
+        <div
+            class="card movimentacao-card"
+            [class.movimentacao-card--fiado]="
+                movimentacao.tipo === 'fiado'
+            "
+            [class.movimentacao-card--pagamento]="
+                movimentacao.tipo === 'pagamento'
+            ">
+
+            <div class="movimentacao-header">
+
+                <strong>
+
+                    {{
+                    movimentacao.tipo === 'pagamento'
+                    ? 'Pagamento ' +
+                    (
+                    movimentacao.formaPagamento
+                    ?.toUpperCase() ?? ''
+                    )
+                    : 'Venda Fiada'
+                    }}
+
+                </strong>
+
+                <span>
+
+                    {{
+                    movimentacao.data
+                    | date:'dd/MM/yyyy HH:mm'
+                    }}
+
+                </span>
+
+            </div>
+
+            <div class="movimentacao-body">
+
+                <div>
+
+                    <strong>
+                        Cliente:
+                    </strong>
+
+                    {{ movimentacao.clienteNome }}
+
+                </div>
+
+                @if (
+                movimentacao.tipo === 'pagamento'
+                ) {
+
+                <div>
+
+                    <strong>
+                        Recebido por:
+                    </strong>
+
+                    {{ movimentacao.usuarioNome }}
+
+                </div>
+
+                }
+
+            </div>
+
+            <div
+                class="movimentacao-valor">
+
+                @if (
+                movimentacao.tipo === 'fiado'
+                ) {
+
+                <span class="valor-negativo">
+
+                    - {{
+                    movimentacao.valor
+                    | currency:'BRL'
+                    }}
+
+                </span>
+
+                } @else {
+
+                <span class="valor-positivo">
+
+                    + {{
+                    movimentacao.valor
+                    | currency:'BRL'
+                    }}
+
+                </span>
+
+                }
+
+            </div>
+
+        </div>
+        }
+        }
+
+    </div>
+
+</app-main-layout>

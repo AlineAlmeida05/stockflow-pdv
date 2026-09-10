@@ -17,6 +17,7 @@ import { Usuarios } from './views/usuarios/usuarios';
 import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
 import { roleGuard } from './core/guards/role.guard';
+import { ExtratoFinanceiro } from './views/extrato-financeiro/extrato-financeiro';
 
 export const routes: Routes = [
     {
@@ -250,6 +251,21 @@ export const routes: Routes = [
             ]
         }
     },
+    {
+        path: 'extrato-financeiro',
+        component: ExtratoFinanceiro,
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+        data: {
+            perfis: [
+                'SUPER_ADMIN',
+                'PROPRIETARIO',
+                'SOCIO',
+                'GERENTE']
+        }
+    }
 
 
 ];

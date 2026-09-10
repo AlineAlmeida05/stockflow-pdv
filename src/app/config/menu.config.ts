@@ -146,4 +146,14 @@ export const MENU_CONFIG: MenuItem[] = [
       'GERENTE'
     ]
   },
+  {
+    label: 'Extrato Financeiro',
+    route: '/extrato-financeiro',
+    perfis: [
+      'SUPER_ADMIN',
+      'PROPRIETARIO',
+      'SOCIO',
+      'GERENTE'
+    ]
+  }
 ];
