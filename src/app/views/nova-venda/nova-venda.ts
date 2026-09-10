@@ -15,6 +15,8 @@ import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { DataTable } from '../../shared/components/data-table/data-table';
 import { HostListener } from '@angular/core';
 import { CurrencyInput } from '../../shared/components/currency-input/currency-input';
+import { ClienteResumo } from '../../core/models/cliente-resumo.model';
+import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 
 @Component({
     selector: 'app-nova-venda',
@@ -40,6 +42,8 @@ export class NovaVenda implements OnInit {
     produtoSelecionadoId = '';
 
     quantidade: number | null = null;
+
+    resumoCliente?: ClienteResumo;
 
     carrinho: {
         produto: Produto;
@@ -121,7 +125,8 @@ export class NovaVenda implements OnInit {
         private produtoService: ProdutoService,
         private vendaService: VendaService,
         private clienteService: ClienteService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private confirmDialogService: ConfirmDialogService
     ) { }
 
     ngOnInit(): void {
@@ -379,7 +384,13 @@ export class NovaVenda implements OnInit {
 
         this.finalizandoVenda = true;
 
-        if (!this.formaPagamento) {
+        if (
+            !this.formaPagamento
+            ||
+            this.formaPagamento === 'Selecione...'
+        ) {
+
+            this.finalizandoVenda = false;
 
             this.alertService.warning(
                 'Selecione uma forma de pagamento.'
@@ -405,78 +416,50 @@ export class NovaVenda implements OnInit {
         }
 
         if (this.carrinho.length === 0) {
+
+            this.finalizandoVenda = false;
+
             return;
         }
+        if (
+            this.formaPagamento === 'fiado'
+            &&
+            this.resumoCliente
+        ) {
 
-        const vendaRequest = {
+            const saldoAtual =
+                this.resumoCliente.saldoDevedor;
 
-            formaPagamento: this.formaPagamento,
+            const limite =
+                this.resumoCliente.limiteCredito;
 
-            clienteId: this.clienteSelecionadoId || null,
+            const novaDivida =
+                saldoAtual + this.total;
 
-            valorRecebido: this.valorRecebido,
+            if (saldoAtual > limite) {
 
-            itens:
-                this.carrinho.map(
-                    item => ({
+                this.finalizandoVenda = false;
 
-                        produtoId:
-                            item.produto.id,
+                this.confirmarLimiteJaExcedido(
+                    novaDivida
+                );
 
-                        quantidade:
-                            item.quantidade
+                return;
+            }
 
-                    })
-                )
-        };
+            if (novaDivida > limite) {
 
-        this.vendaService
-            .salvar(vendaRequest)
-            .subscribe({
+                this.finalizandoVenda = false;
 
-                next: () => {
+                this.confirmarLimiteExcedido(
+                    novaDivida
+                );
 
-                    this.finalizandoVenda = false;
+                return;
+            }
+        }
+        this.salvarVenda();
 
-                    this.alertService.success(
-                        'Venda concluída com sucesso.'
-                    );
-
-                    this.carrinho = [];
-
-                    this.formaPagamento = 'Selecione...';
-
-                    this.produtoSelecionadoId = '';
-
-                    this.quantidade = null;
-
-                    this.valorRecebido = null;
-
-                    this.productSelector?.limpar();
-
-                    this.carregarProdutos();
-
-                },
-
-                error: erro => {
-
-                    this.finalizandoVenda = false;
-
-                    console.error(
-                        erro
-                    );
-
-                    this.alertService.error(
-
-                        erro?.error?.message ||
-
-                        'Erro ao finalizar venda.'
-
-                    );
-
-                }
-
-            });
 
     }
 
@@ -679,6 +662,8 @@ export class NovaVenda implements OnInit {
 
             if (this.carrinho.length === 0) {
 
+                this.finalizandoVenda = false;
+
                 return;
 
             }
@@ -707,4 +692,180 @@ export class NovaVenda implements OnInit {
 
     }
 
+    carregarResumoCliente(): void {
+
+        if (!this.clienteSelecionadoId) {
+
+            this.resumoCliente = undefined;
+
+            return;
+        }
+
+        this.clienteService
+            .obterResumo(
+                this.clienteSelecionadoId
+            )
+            .subscribe({
+
+                next: resumo => {
+
+                    this.resumoCliente =
+                        resumo;
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        erro
+                    );
+                }
+
+            });
+    }
+
+    private confirmarLimiteExcedido(
+        novaDivida: number
+    ): void {
+
+        this.confirmDialogService.open({
+
+            title: 'Limite de Crédito',
+
+            message:
+
+                `O cliente ultrapassará o limite de crédito após esta venda.
+
+                Limite: R$ ${this.resumoCliente?.limiteCredito.toFixed(2)}
+
+                Dívida Atual: R$ ${this.resumoCliente?.saldoDevedor.toFixed(2)}
+
+                Nova Dívida: R$ ${novaDivida.toFixed(2)}
+
+                Deseja continuar a venda?`,
+
+            type: 'warning',
+
+            confirmText: 'Continuar',
+
+            cancelText: 'Cancelar',
+
+
+
+            onConfirm: () => {
+
+                this.salvarVenda();
+            }
+        });
+    }
+
+    private confirmarLimiteJaExcedido(
+        novaDivida: number
+    ): void {
+
+        this.confirmDialogService.open({
+
+            title: 'Limite já excedido',
+
+            message:
+
+                `O cliente já está acima do limite de crédito.
+
+                Limite: R$ ${this.resumoCliente?.limiteCredito.toFixed(2)}
+
+                Saldo Atual: R$ ${this.resumoCliente?.saldoDevedor.toFixed(2)}
+
+                Nova Dívida: R$ ${novaDivida.toFixed(2)}
+
+                Deseja continuar a venda?`,
+
+            type: 'warning',
+
+            confirmText: 'Continuar',
+
+            cancelText: 'Cancelar',
+
+            onConfirm: () => {
+
+                this.salvarVenda();
+            }
+        });
+    }
+
+    private salvarVenda(): void {
+        const vendaRequest = {
+
+            formaPagamento: this.formaPagamento,
+
+            clienteId: this.clienteSelecionadoId || null,
+
+            valorRecebido: this.valorRecebido,
+
+            itens:
+                this.carrinho.map(
+                    item => ({
+
+                        produtoId:
+                            item.produto.id,
+
+                        quantidade:
+                            item.quantidade
+
+                    })
+                )
+        };
+
+        this.vendaService
+            .salvar(vendaRequest)
+            .subscribe({
+
+                next: () => {
+
+                    this.finalizandoVenda = false;
+
+                    this.alertService.success(
+                        'Venda concluída com sucesso.'
+                    );
+
+                    this.carrinho = [];
+
+                    this.formaPagamento = 'Selecione...';
+
+                    this.produtoSelecionadoId = '';
+
+                    this.quantidade = null;
+
+                    this.valorRecebido = null;
+
+                    this.productSelector?.limpar();
+
+                    this.carregarProdutos();
+
+                    this.resumoCliente = undefined;
+                    this.clienteSelecionadoId = '';
+
+                },
+
+
+
+                error: erro => {
+
+                    this.finalizandoVenda = false;
+
+                    console.error(
+                        erro
+                    );
+
+                    this.alertService.error(
+
+                        erro?.error?.message ||
+
+                        'Erro ao finalizar venda.'
+
+                    );
+
+                }
+
+            });
+    }
 }

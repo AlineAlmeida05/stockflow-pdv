@@ -125,7 +125,7 @@
                     <select
                         #formaPagamentoSelect
                         [(ngModel)]="formaPagamento">
-                        <option value="">
+                        <option value>
                             Selecione...
                         </option>
                         <option value="dinheiro">
@@ -149,7 +149,8 @@
                     <div class="field">
                         <label>Cliente</label>
                         <select
-                            [(ngModel)]="clienteSelecionadoId">
+                            [(ngModel)]="clienteSelecionadoId"
+                            (change)="carregarResumoCliente()">
                             <option value>
                                 Selecione um cliente
                             </option>
@@ -160,6 +161,37 @@
                             </option>
                             }
                         </select>
+                        @if (resumoCliente) {
+
+                        <div class="cliente-credito-info">
+
+                            <small>
+                                Limite do Cliente:
+                                {{ resumoCliente.limiteCredito | currency:'BRL'
+                                }}
+                            </small>
+
+                            <small>
+                                Saldo:
+                                {{ resumoCliente.saldoDevedor | currency:'BRL'
+                                }}
+                            </small>
+
+                            <small>
+                                Limite Disponível:
+                                {{ resumoCliente.creditoDisponivel |
+                                currency:'BRL' }}
+                            </small>
+
+                            <small>
+                                Status:
+                                {{ resumoCliente.status }}
+                            </small>
+
+                        </div>
+
+                        }
+
                     </div>
                     }
                 </div>

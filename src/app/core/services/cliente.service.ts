@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 import { Cliente } from '../models/cliente.model';
+import { ClienteResumo } from '../models/cliente-resumo.model';
 
 @Injectable({
   providedIn: 'root'
@@ -56,6 +57,15 @@ export class ClienteService {
       `${this.apiUrl}/${id}`
     );
 
+  }
+
+  obterResumo(
+    clienteId: string
+  ): Observable<ClienteResumo> {
+
+    return this.http.get<ClienteResumo>(
+      `${this.apiUrl}/${clienteId}/resumo`
+    );
   }
 
 }

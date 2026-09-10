@@ -14,4 +14,11 @@ export interface Cliente {
 
     observacao?: string;
 
+    saldoDevedor?: number;
+
+    creditoDisponivel?: number;
+
+    status?: string;
+
+    diasSemPagamento?: number;
 }

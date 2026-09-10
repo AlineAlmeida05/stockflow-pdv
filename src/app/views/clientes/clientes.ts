@@ -13,6 +13,7 @@ import { Toolbar } from '../../shared/components/toolbar/toolbar';
 import { AlertService } from '../../core/services/alert.service';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
+import { ClienteResumo } from '../../core/models/cliente-resumo.model';
 
 @Component({
     selector: 'app-clientes',
@@ -39,6 +40,8 @@ export class Clientes implements OnInit {
 
     limiteCredito = 300;
 
+    observacao = '';
+
     clientes: Cliente[] = [];
 
     clienteEditandoId: string | null = null;
@@ -46,6 +49,9 @@ export class Clientes implements OnInit {
     textoBusca = '';
 
     mostrarFormulario = false;
+
+    resumosClientes:
+        Record<string, ClienteResumo> = {};
 
     colunasClientes: {
         field: string;
@@ -65,6 +71,23 @@ export class Clientes implements OnInit {
                 field: 'limiteCredito',
                 header: 'Limite',
                 type: 'currency',
+                align: 'center'
+            },
+            {
+                field: 'saldoDevedor',
+                header: 'Saldo',
+                type: 'currency',
+                align: 'center'
+            },
+            {
+                field: 'creditoDisponivel',
+                header: 'Disponível',
+                type: 'currency',
+                align: 'center'
+            },
+            {
+                field: 'status',
+                header: 'Status',
                 align: 'center'
             },
             {
@@ -89,16 +112,23 @@ export class Clientes implements OnInit {
 
     get clientesFiltrados(): Cliente[] {
 
+        const busca =
+            this.textoBusca
+                .toLowerCase();
+
         return this.clientes.filter(
             cliente =>
+
                 cliente.nome
                     .toLowerCase()
-                    .includes(
-                        this.textoBusca
-                            .toLowerCase()
-                    )
-        );
+                    .includes(busca)
 
+                ||
+
+                cliente.telefone
+                    .toLowerCase()
+                    .includes(busca)
+        );
     }
 
     carregarClientes(): void {
@@ -111,8 +141,14 @@ export class Clientes implements OnInit {
                     this.clientes =
                         clientes;
 
-                    this.cdr.detectChanges();
+                    clientes.forEach(
+                        cliente =>
+                            this.carregarResumoCliente(
+                                cliente.id
+                            )
+                    );
 
+                    this.cdr.detectChanges();
                 },
 
                 error: erro => {
@@ -151,12 +187,10 @@ export class Clientes implements OnInit {
                     id: this.clienteEditandoId,
                     nome: this.nome,
                     telefone: this.telefone,
-                    ativo: true,
-                    dataCadastro:
-                        clienteAtual?.dataCadastro ??
-                        new Date().toISOString(),
-                    limiteCredito: this.limiteCredito
+                    limiteCredito: this.limiteCredito,
+                    observacao: this.observacao
                 } as Cliente)
+
                 .subscribe({
 
                     next: () => {
@@ -166,6 +200,7 @@ export class Clientes implements OnInit {
                         this.nome = '';
                         this.telefone = '';
                         this.limiteCredito = 300;
+                        this.observacao = '';
                         this.clienteEditandoId = null;
                         this.mostrarFormulario = false;
 
@@ -191,12 +226,10 @@ export class Clientes implements OnInit {
 
             this.clienteService
                 .salvar({
-                    id: crypto.randomUUID(),
                     nome: this.nome,
                     telefone: this.telefone,
-                    ativo: true,
-                    dataCadastro: new Date().toISOString(),
-                    limiteCredito: this.limiteCredito
+                    limiteCredito: this.limiteCredito,
+                    observacao: this.observacao
                 } as Cliente)
                 .subscribe({
 
@@ -207,6 +240,7 @@ export class Clientes implements OnInit {
                         this.nome = '';
                         this.telefone = '';
                         this.limiteCredito = 300;
+                        this.observacao = '';
                         this.clienteEditandoId = null;
                         this.mostrarFormulario = false;
 
@@ -228,7 +262,7 @@ export class Clientes implements OnInit {
 
                 });
 
-        }      
+        }
 
     }
 
@@ -272,6 +306,8 @@ export class Clientes implements OnInit {
         this.telefone = cliente.telefone;
 
         this.limiteCredito = cliente.limiteCredito;
+
+        this.observacao = cliente.observacao ?? '';
     }
 
     editarClienteTabela(
@@ -306,6 +342,8 @@ export class Clientes implements OnInit {
 
         this.limiteCredito = 300;
 
+        this.observacao = '';
+
     }
 
     novoCliente(): void {
@@ -319,6 +357,8 @@ export class Clientes implements OnInit {
         this.telefone = '';
 
         this.limiteCredito = 300;
+
+        this.observacao = '';
 
     }
 
@@ -345,5 +385,85 @@ export class Clientes implements OnInit {
 
         });
 
+    }
+
+    private carregarResumoCliente(
+        clienteId: string
+    ): void {
+
+        this.clienteService
+            .obterResumo(clienteId)
+            .subscribe({
+
+                next: resumo => {
+
+                    console.log(
+                        'Resumo carregado',
+                        resumo
+                    );
+
+                    if (!resumo) {
+                        return;
+                    }
+
+                    const cliente =
+                        this.clientes.find(
+                            c => c.id === clienteId
+                        );
+
+                    if (cliente) {
+
+                        cliente.saldoDevedor =
+                            resumo.saldoDevedor;
+
+                        cliente.creditoDisponivel =
+                            resumo.creditoDisponivel;
+
+                        cliente.status =
+                            this.formatarStatus(
+                                resumo.status
+                            );
+
+                        cliente.diasSemPagamento =
+                            resumo.diasSemPagamento;
+
+                        this.clientes = [
+                            ...this.clientes
+                        ];
+
+                        this.cdr.detectChanges();
+                    }
+                },
+
+                error: erro => {
+
+                    console.error(
+                        erro
+                    );
+                }
+            });
+    }
+
+    private formatarStatus(
+        status: string
+    ): string {
+
+        switch (status) {
+
+            case 'EM_DIA':
+                return '🟢 Em Dia';
+
+            case 'DEVEDOR':
+                return '🟠 Devedor';
+
+            case 'INADIMPLENTE':
+                return '🔴 Inadimplente';
+
+            case 'LIMITE_EXCEDIDO':
+                return '🚨 Limite Excedido';
+
+            default:
+                return status;
+        }
     }
 }

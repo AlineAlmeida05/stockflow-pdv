@@ -71,7 +71,17 @@
                         min="0"
                         [(ngModel)]="limiteCredito">
                 </div>
+                <div class="field">
+                    <label>
+                        Observação
+                    </label>
 
+                    <textarea
+                        rows="4"
+                        placeholder="Informações adicionais sobre o cliente"
+                        [(ngModel)]="observacao">
+                    </textarea>
+                </div>
                 <div class="formulario-acoes">
                     <button
                         class="btn btn-primary"
