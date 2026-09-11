@@ -20,22 +20,12 @@
             ) {
             <div
                 class="card cliente-card"
-                [class.cliente-card--active]="clienteSelecionado?.id === cliente.id"
+                [class.cliente-card--active]="cliente?.id === cliente.id"
                 (click)="selecionarCliente(cliente)">
                 <h3>
                     {{ cliente.nome }}
                 </h3>
-                @if (
-                clienteAcimaDoLimite(
-                cliente.id
-                )
-                ) {
 
-                <div class="cliente-card__limite">
-                    ⚠️ Limite excedido
-                </div>
-
-                }
                 <div class="cliente-card__saldo">
                     <span>
                         Saldo Devedor
@@ -49,12 +39,48 @@
                         }}
                     </strong>
                 </div>
+
+                <div class="cliente-card__info">
+
+                    <small>
+                        {{ obterDiasEmAberto(cliente.id) }}
+                        dias em aberto
+                    </small>
+
+                </div>
+
+                @if (
+                formatarStatus(
+                cliente.id
+                )
+                ) {
+
+                <div class="cliente-card__status">
+                    {{
+                    formatarStatus(
+                    cliente.id
+                    )
+                    }}
+                </div>
+                }
+                @if (
+                deveExibirAlertaFinanceiro(
+                cliente.id
+                )
+                ) {
+                <button
+                    type="button"
+                    class="btn btn-secondary btn-whatsapp"
+                    (click)="cobrarViaWhatsapp(cliente)">
+                    Cobrar Cliente
+                </button>
+                }
             </div>
             }
         </div>
 
         <div right class="extrato">
-            @if (clienteSelecionado) {
+            @if (cliente) {
             <p class="cliente-subtitle">
                 Histórico financeiro e pagamentos.
             </p>
@@ -67,7 +93,7 @@
                 <strong>
                     - {{
                     obterSaldoCliente(
-                    clienteSelecionado.id
+                    cliente.id
                     ) | currency:'BRL'
                     }}
                 </strong>
@@ -81,7 +107,7 @@
             </button>
             @if (
             mostrarRecebimento &&
-            clienteSelecionado
+            cliente
             ) {
 
             <div class="recebimento-card">
@@ -226,4 +252,4 @@
             }
         </div>
     </app-split-panel>
-</app-main-layout>
+</app-main-layout>💬

@@ -128,6 +128,8 @@ export class ExtratoFinanceiro
                         fiados
                     );
 
+                    this.cdr.detectChanges();
+
                 },
 
                 error: erro => {
@@ -156,6 +158,8 @@ export class ExtratoFinanceiro
                         fiados,
                         pagamentos
                     );
+
+                    this.cdr.detectChanges();
 
                 },
 

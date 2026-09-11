@@ -46,7 +46,7 @@ export class Fiados implements OnInit {
 
     fiados: Fiado[] = [];
 
-    clienteSelecionado?: Cliente;
+    cliente?: Cliente;
 
     pagamentos: Pagamento[] = [];
 
@@ -155,7 +155,7 @@ export class Fiados implements OnInit {
         cliente: Cliente
     ): void {
 
-        this.clienteSelecionado = cliente;
+        this.cliente = cliente;
 
         this.mostrarRecebimento = false;
 
@@ -217,7 +217,7 @@ export class Fiados implements OnInit {
 
     obterFiadosCliente(): Fiado[] {
 
-        if (!this.clienteSelecionado) {
+        if (!this.cliente) {
             return [];
         }
 
@@ -225,7 +225,7 @@ export class Fiados implements OnInit {
             .filter(
                 fiado =>
                     fiado.clienteId ===
-                    this.clienteSelecionado?.id
+                    this.cliente?.id
             )
             .sort(
                 (a, b) =>
@@ -238,7 +238,7 @@ export class Fiados implements OnInit {
     confirmarRecebimento(): void {
 
         if (
-            !this.clienteSelecionado ||
+            !this.cliente ||
             this.valorRecebido <= 0
         ) {
             return;
@@ -247,7 +247,7 @@ export class Fiados implements OnInit {
 
         const saldoAtual =
             this.obterSaldoCliente(
-                this.clienteSelecionado.id
+                this.cliente.id
             );
 
         if (
@@ -266,7 +266,7 @@ export class Fiados implements OnInit {
             .salvar({
 
                 clienteId:
-                    this.clienteSelecionado.id,
+                    this.cliente.id,
 
                 valorPago:
                     this.valorRecebido,
@@ -310,7 +310,7 @@ export class Fiados implements OnInit {
 
     obterExtratoCliente(): any[] {
 
-        if (!this.clienteSelecionado) {
+        if (!this.cliente) {
             return [];
         }
 
@@ -318,7 +318,7 @@ export class Fiados implements OnInit {
             .filter(
                 fiado =>
                     fiado.clienteId ===
-                    this.clienteSelecionado?.id
+                    this.cliente?.id
             )
             .map(fiado => ({
                 data: fiado.dataLancamento,
@@ -330,7 +330,7 @@ export class Fiados implements OnInit {
             .filter(
                 pagamento =>
                     pagamento.clienteId ===
-                    this.clienteSelecionado?.id
+                    this.cliente?.id
             )
             .map(pagamento => ({
                 data: pagamento.dataPagamento,
@@ -385,5 +385,191 @@ export class Fiados implements OnInit {
         );
 
     }
+
+    obterDiasEmAberto(
+        clienteId: string
+    ): number {
+
+        const fiadosCliente =
+            this.fiados.filter(
+                fiado =>
+                    fiado.clienteId === clienteId
+            );
+
+        if (fiadosCliente.length === 0) {
+
+            return 0;
+        }
+
+        const dataMaisAntiga =
+            fiadosCliente
+                .map(
+                    fiado =>
+                        new Date(
+                            fiado.dataLancamento
+                        )
+                )
+                .sort(
+                    (a, b) =>
+                        a.getTime() -
+                        b.getTime()
+                )[0];
+
+        const hoje =
+            new Date();
+
+        const diferencaMs =
+            hoje.getTime() -
+            dataMaisAntiga.getTime();
+
+        return Math.floor(
+            diferencaMs /
+            (
+                1000 *
+                60 *
+                60 *
+                24
+            )
+        );
+    }
+
+    obterStatusCliente(
+        clienteId: string
+    ): string {
+
+        const saldo =
+            this.obterSaldoCliente(
+                clienteId
+            );
+
+        const cliente =
+            this.clientes.find(
+                c =>
+                    c.id === clienteId
+            );
+
+        if (
+            !cliente
+        ) {
+
+            return 'EM_DIA';
+        }
+
+        if (
+            saldo <= 0
+        ) {
+
+            return 'EM_DIA';
+        }
+
+        if (
+            saldo >
+            cliente.limiteCredito
+        ) {
+
+            return 'LIMITE_EXCEDIDO';
+        }
+
+        if (
+            this.obterDiasEmAberto(
+                clienteId
+            ) >= 30
+        ) {
+
+            return 'INADIMPLENTE';
+        }
+
+        return 'DEVEDOR';
+    }
+
+    cobrarViaWhatsapp(
+        cliente: Cliente
+    ): void {
+
+        if (
+            !this.cliente
+        ) {
+            return;
+        }
+
+        const saldo =
+            this.obterSaldoCliente(
+                this.cliente.id
+            );
+
+        const dias =
+            this.obterDiasEmAberto(
+                this.cliente.id
+            );
+
+        const mensagem =
+
+            `Oi ${this.cliente.nome}, tudo bem? 
+
+                Tem um débito seu pendente aqui de R$ ${saldo.toFixed(2)} há ${dias} dias.
+
+                Preciso saber quando voce pretende quitar esse débito.
+
+                Obrigado.`;
+
+        const telefone =
+            this.cliente
+                .telefone
+                .replace(/\D/g, '');
+
+        const url =
+
+            `https://wa.me/55${telefone}?text=${encodeURIComponent(
+                mensagem
+            )}`;
+
+        window.open(
+            url,
+            '_blank'
+        );
+    }
+
+    deveExibirAlertaFinanceiro(
+        clienteId: string
+    ): boolean {
+
+        const status =
+            this.obterStatusCliente(
+                clienteId
+            );
+
+        return (
+            status === 'INADIMPLENTE'
+            ||
+            status === 'LIMITE_EXCEDIDO'
+        );
+    }
+
+    formatarStatus(
+        clienteId: string
+    ): string {
+
+        const status =
+            this.obterStatusCliente(
+                clienteId
+            );
+
+        switch (status) {
+
+            case 'LIMITE_EXCEDIDO':
+                return '⚠️ Limite excedido';
+
+            case 'INADIMPLENTE':
+                return '🔴 Inadimplente';
+
+            case 'DEVEDOR':
+                return '🟠 Devedor';
+
+            default:
+                return '';
+        }
+    }
+
+
 
 }
