@@ -1,5 +1,5 @@
 
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 
 import { MainLayout } from '../../layout/main-layout/main-layout';
@@ -18,6 +18,8 @@ import { SearchInput } from '../../shared/components/search-input/search-input';
 import { AlertService } from '../../core/services/alert.service';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 import { StatCard } from '../../shared/components/stat-card/stat-card';
+import { PromocaoService } from '../../core/services/promocao.service';
+import { Promocao } from '../../core/models/promocao.model';
 
 
 @Component({
@@ -46,11 +48,14 @@ export class Promocoes implements OnInit {
 
     textoBusca = '';
 
+    promocoes: Promocao[] = [];
 
     constructor(
         private produtoService: ProdutoService,
         private movimentacaoService: MovimentacaoEstoqueService,
-        private alertService: AlertService
+        private promocaoService: PromocaoService,
+        private alertService: AlertService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -58,10 +63,32 @@ export class Promocoes implements OnInit {
         this.produtoService
             .listar()
             .subscribe({
-
                 next: produtos => {
 
                     this.produtos = produtos;
+
+                    this.cdr.detectChanges();
+
+                },
+
+                error: erro => {
+
+                    console.error(erro);
+
+                }
+
+            });
+
+        this.promocaoService
+            .listar()
+            .subscribe({
+
+                next: promocoes => {
+
+                    this.promocoes =
+                        promocoes;
+
+                    this.cdr.detectChanges();
 
                 },
 
@@ -82,6 +109,8 @@ export class Promocoes implements OnInit {
                     this.movimentacoes =
                         movimentacoes;
 
+                    this.cdr.detectChanges();
+
                 },
 
                 error: erro => {
@@ -91,6 +120,18 @@ export class Promocoes implements OnInit {
                 }
 
             });
+
+    }
+
+    obterPromocaoAtiva(
+        produtoId: string
+    ): Promocao | undefined {
+
+        return this.promocoes.find(
+            promocao =>
+                promocao.produto.id === produtoId &&
+                promocao.ativa
+        );
 
     }
 
@@ -176,12 +217,19 @@ export class Promocoes implements OnInit {
     }
 
     obterPrecoPromocional(
-        precoVenda: number
+        produto: Produto
     ): number {
 
+        const desconto =
+            this.obterPercentualDesconto(
+                produto.id
+            );
+
         return Number(
-            (precoVenda * 0.9)
-                .toFixed(2)
+            (
+                produto.precoVenda *
+                (1 - desconto / 100)
+            ).toFixed(2)
         );
 
     }
@@ -233,25 +281,78 @@ export class Promocoes implements OnInit {
     get produtosPromocao(): Produto[] {
 
         return [...this.produtos]
-            .filter(
-                produto =>
-                    produto.estoqueAtual > 0
-                    &&
-                    produto.ativo
-            )
-            .sort(
-                (
-                    a,
-                    b
-                ) =>
+
+            .filter(produto => {
+
+                const giro =
+                    this.obterPercentualGiro(
+                        produto.id
+                    );
+
+                const dias =
+                    this.obterDiasEmEstoque(
+                        produto.id
+                    );
+
+                return (
+
+                    produto.ativo &&
+
+                    produto.estoqueAtual > 0 &&
+
+                    !(
+                        produto.promocaoAtiva === false &&
+                        produto.promocaoMotivo === 'Meta atingida'
+                    ) &&
+
+                    (
+
+                        dias >= 30 ||
+
+                        giro < 40
+
+                    )
+
+                );
+
+            })
+
+            .sort((a, b) => {
+
+                if (
+                    a.promocaoAtiva !==
+                    b.promocaoAtiva
+                ) {
+
+                    return a.promocaoAtiva
+                        ? 1
+                        : -1;
+                }
+
+                if (!a.promocaoAtiva) {
+
+                    return (
+                        this.obterPesoPrioridade(
+                            b.id
+                        ) -
+
+                        this.obterPesoPrioridade(
+                            a.id
+                        )
+                    );
+                }
+
+                return (
                     this.obterDiasEmEstoque(
                         b.id
                     ) -
+
                     this.obterDiasEmEstoque(
                         a.id
                     )
-            );
+                );
 
+            });
     }
 
     obterStatusEstoque(
@@ -322,52 +423,123 @@ export class Promocoes implements OnInit {
             );
 
             return;
-
         }
 
-        produto.promocaoAtiva = true;
-
-        produto.precoPromocional =
+        const precoPromocional =
             this.obterPrecoPromocional(
-                produto.precoVenda
+                produto
             );
 
-        produto.dataInicioPromocao =
-            new Date().toISOString();
+        const percentualDesconto =
+            this.obterPercentualDesconto(
+                produto.id
+            );
 
-        produto.promocaoMotivo =
-            'giro-baixo';
+        const motivo =
+            this.obterMotivoPersistencia(
+                produto.id
+            );
 
-        this.produtoService.atualizar(
-            produto
-        );
+        this.promocaoService
+            .criar({
 
-        this.alertService.success(
-            'Promoção ativada com sucesso.'
-        );
+                produtoId: produto.id,
 
+                precoPromocional,
+
+                percentualDesconto,
+
+                motivo
+
+            })
+            .subscribe({
+
+                next: () => {
+
+                    produto.promocaoAtiva =
+                        true;
+
+                    produto.precoPromocional =
+                        precoPromocional;
+
+                    produto.promocaoMotivo =
+                        motivo;
+
+                    this.cdr.detectChanges();
+
+                    this.alertService.success(
+                        'Promoção ativada com sucesso.'
+                    );
+                },
+
+                error: erro => {
+
+                    console.error(
+                        erro
+                    );
+
+                    this.alertService.error(
+                        'Erro ao ativar promoção.'
+                    );
+                }
+
+            });
     }
 
     desativarPromocao(
         produto: Produto
     ): void {
 
-        produto.promocaoAtiva = false;
+        const promocao =
+            this.obterPromocaoAtiva(
+                produto.id
+            );
 
-        produto.precoPromocional = undefined;
+        if (!promocao) {
 
-        produto.dataInicioPromocao = undefined;
+            this.alertService.warning(
+                'Promoção não encontrada.'
+            );
 
-        produto.dataFimPromocao = undefined;
+            return;
+        }
 
-        this.produtoService.atualizar(
-            produto
-        );
+        this.promocaoService
+            .encerrar(
+                promocao.id
+            )
+            .subscribe({
 
-        this.alertService.success(
-            'Promoção desativada com sucesso.'
-        );
+                next: () => {
 
+                    produto.promocaoAtiva =
+                        false;
+
+                    produto.precoPromocional =
+                        undefined;
+
+                    produto.promocaoMotivo =
+                        undefined;
+
+                    this.cdr.detectChanges();
+
+                    this.alertService.success(
+                        'Promoção encerrada com sucesso.'
+                    );
+                },
+
+                error: erro => {
+
+                    console.error(
+                        erro
+                    );
+
+                    this.alertService.error(
+                        'Erro ao encerrar promoção.'
+                    );
+                }
+
+            });
     }
 
     promocaoAtingiuObjetivo(
@@ -468,4 +640,244 @@ export class Promocoes implements OnInit {
         return 'success';
 
     }
-}
+
+    obterMotivoPromocao(
+        produtoId: string
+    ): string {
+
+        const giro =
+            this.obterPercentualGiro(
+                produtoId
+            );
+
+        const dias =
+            this.obterDiasEmEstoque(
+                produtoId
+            );
+
+        if (
+            dias >= 30 &&
+            giro < 40
+        ) {
+            return 'Crítico';
+        }
+
+        if (dias >= 30) {
+            return 'Estoque Parado';
+        }
+
+        return 'Baixo Giro';
+    }
+
+    obterVariantMotivo(
+        produtoId: string
+    ): 'danger' | 'warning' {
+
+        const motivo =
+            this.obterMotivoPromocao(
+                produtoId
+            );
+
+        if (motivo === 'Crítico') {
+            return 'danger';
+        }
+
+        return 'warning';
+    }
+
+    obterDescricaoPromocao(
+        produtoId: string
+    ): string {
+
+        const giro =
+            this.obterPercentualGiro(produtoId);
+
+        const dias =
+            this.obterDiasEmEstoque(produtoId);
+
+        if (
+            dias >= 30 &&
+            giro < 40
+        ) {
+            return `Produto com baixo giro (${giro}%) e ${dias} dias em estoque.`;
+        }
+
+        if (dias >= 30) {
+            return `Produto parado há ${dias} dias.`;
+        }
+
+        return `Giro baixo (${giro}% das unidades vendidas).`;
+    }
+
+    obterEconomia(
+        produto: Produto
+    ): number {
+
+        return Number(
+            (
+                produto.precoVenda -
+                this.obterPrecoPromocional(
+                    produto
+                )
+            ).toFixed(2)
+        );
+
+    }
+
+    obterPercentualDesconto(
+        produtoId: string
+    ): number {
+
+        const motivo =
+            this.obterMotivoPromocao(
+                produtoId
+            );
+
+        if (motivo === 'Crítico') {
+            return 20;
+        }
+
+        if (motivo === 'Estoque Parado') {
+            return 15;
+        }
+
+        return 10;
+    }
+
+    obterPerdaPorUnidade(
+        produto: Produto
+    ): number {
+
+        return Number(
+            (
+                produto.precoVenda -
+                this.obterPrecoPromocional(
+                    produto
+                )
+            ).toFixed(2)
+        );
+    }
+
+    obterImpactoFinanceiro(
+        produto: Produto
+    ): number {
+
+        return Number(
+            (
+                this.obterPerdaPorUnidade(
+                    produto
+                ) *
+                produto.estoqueAtual
+            ).toFixed(2)
+        );
+    }
+
+    obterMetaSugestao(
+        produto: Produto
+    ): number {
+
+        return Math.ceil(
+            produto.estoqueAtual * 0.5
+        );
+    }
+
+    obterReceitaPotencial(
+        produto: Produto
+    ): number {
+
+        return Number(
+            (
+                this.obterMetaSugestao(
+                    produto
+                ) *
+
+                this.obterPrecoPromocional(
+                    produto
+                )
+
+            ).toFixed(2)
+        );
+    }
+
+    obterPercentualMeta(
+        promocao: Promocao
+    ): number {
+
+        if (
+            !promocao.metaUnidades ||
+            promocao.metaUnidades === 0
+        ) {
+            return 0;
+        }
+
+        return Math.round(
+            (
+                promocao.unidadesVendidas /
+                promocao.metaUnidades
+            ) * 100
+        );
+
+    }
+
+    obterIndicadorPromocao(
+        produto: Produto
+    ): string {
+
+        return produto.promocaoAtiva
+            ? '✅'
+            : '⚠️';
+    }
+
+    obterPesoPrioridade(
+        produtoId: string
+    ): number {
+
+        const prioridade =
+            this.obterPrioridade(
+                produtoId
+            );
+
+        if (prioridade === 'Alta') {
+            return 3;
+        }
+
+        if (prioridade === 'Média') {
+            return 2;
+        }
+
+        return 1;
+    }
+
+    obterStatusMeta(
+        promocao: Promocao
+    ): string {
+
+        if (
+            !promocao.metaUnidades
+        ) {
+
+            return 'Meta não definida';
+        }
+
+        return `${promocao.unidadesVendidas} de ${promocao.metaUnidades} unidades`;
+
+    }
+
+    obterMotivoPersistencia(
+        produtoId: string
+    ): 'giro-baixo' | 'estoque-parado' {
+
+        const motivo =
+            this.obterMotivoPromocao(
+                produtoId
+            );
+
+        if (
+            motivo === 'Estoque Parado'
+        ) {
+            return 'estoque-parado';
+        }
+
+        return 'giro-baixo';
+    }
+}   

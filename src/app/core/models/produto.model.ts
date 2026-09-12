@@ -33,8 +33,9 @@ export interface Produto {
   custoMedio?: number;
 
   promocaoMotivo?:
-  | 'giro-baixo'
-  | 'estoque-parado'
-  | 'manual';
+    | 'giro-baixo'
+    | 'estoque-parado'
+    | 'manual'
+    | 'Meta atingida';
 
 }

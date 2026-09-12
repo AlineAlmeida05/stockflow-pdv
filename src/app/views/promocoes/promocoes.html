@@ -35,13 +35,68 @@
                     [class.produto-card--active]="produtoSelecionado?.id === produto.id"
                     (click)="selecionarProduto(produto)">
                     <h3>
+
+                        {{ obterIndicadorPromocao(produto) }}
+
                         {{ produto.nome }}
+
                     </h3>
+                    @if (!produto.promocaoAtiva) {
+
+                    <app-status-badge
+                        text="Promoção Pendente"
+                        variant="warning">
+                    </app-status-badge>
+
+                    } @else {
+
+                    <app-status-badge
+                        text="Promoção Ativa"
+                        variant="success">
+                    </app-status-badge>
+
+                    }
 
                     <app-status-badge
                         [text]="obterPrioridade(produto.id)"
                         [variant]="obterVariantPrioridade(produto.id)">
                     </app-status-badge>
+                    @if (produto.promocaoAtiva) {
+
+                    @if (
+                    obterPromocaoAtiva(
+                    produto.id
+                    );
+                    as promocao
+                    ) {
+
+                    <div class="promo-progress">
+                        <div class="promo-progress__text">
+                            {{
+                            obterStatusMeta(
+                            promocao
+                            )
+                            }}
+                        </div>
+
+                        <div class="promo-progress__bar">
+                            <div
+                                class="promo-progress__fill"
+                                [style.width.%]="
+                                    obterPercentualMeta(
+                                        promocao)">
+                            </div>
+                        </div>
+                        <small>
+                            {{
+                            obterPercentualMeta(
+                            promocao
+                            )
+                            }}%
+
+                        </small>
+                    </div>
+                    }}
                 </div>
                 }
             </div>
@@ -64,6 +119,99 @@
                 </h2>
 
                 <div class="produto-detalhes__grid">
+                    <app-status-badge
+                        [text]="obterMotivoPromocao(produtoSelecionado.id)"
+                        [variant]="obterVariantMotivo(produtoSelecionado.id)">
+                    </app-status-badge>
+                    <div class="analise-promocao">
+
+                        <h3>
+                            Sugestão Comercial
+                        </h3>
+
+                        <div>
+
+                            <strong>Motivo:</strong>
+
+                            {{
+                            obterMotivoPromocao(
+                            produtoSelecionado.id
+                            )
+                            }}
+
+                        </div>
+
+                        <div>
+
+                            <strong>Desconto:</strong>
+
+                            {{
+                            obterPercentualDesconto(
+                            produtoSelecionado.id
+                            )
+                            }}%
+
+                        </div>
+
+                        <div>
+
+                            <strong>Preço Atual:</strong>
+
+                            {{
+                            produtoSelecionado.precoVenda
+                            | currency:'BRL'
+                            }}
+
+                        </div>
+
+                        <div>
+
+                            <strong>Preço Promocional:</strong>
+
+                            {{
+                            obterPrecoPromocional(
+                            produtoSelecionado
+                            )
+                            | currency:'BRL'
+                            }}
+
+                        </div>
+
+                        <div>
+
+                            <strong>Perda por Unidade:</strong>
+
+                            {{
+                            obterPerdaPorUnidade(
+                            produtoSelecionado
+                            )
+                            | currency:'BRL'
+                            }}
+
+                        </div>
+
+                        <div>
+
+                            <strong>Impacto Máximo:</strong>
+
+                            {{
+                            obterImpactoFinanceiro(
+                            produtoSelecionado
+                            )
+                            | currency:'BRL'
+                            }}
+
+                        </div>
+
+                    </div>
+
+                    <p>
+                        {{
+                        obterDescricaoPromocao(
+                        produtoSelecionado.id
+                        )
+                        }}
+                    </p>
 
                     <div>
                         <strong>Dias em Estoque</strong>
@@ -123,6 +271,70 @@
                         [text]="obterPrioridade(produtoSelecionado.id)"
                         [variant]="obterVariantPrioridade(produtoSelecionado.id)">
                     </app-status-badge>
+
+                </div>
+                <div class="analise-promocao">
+                    <h3>
+                        Sugestão de Promoção
+                    </h3>
+
+                    <div>
+                        <strong>Preço Atual:</strong>
+                        {{
+                        produtoSelecionado.precoVenda
+                        | currency:'BRL'
+                        }}
+                    </div>
+
+                    <div>
+                        <strong>Preço Promocional:</strong>
+                        {{
+                        obterPrecoPromocional(
+                        produtoSelecionado
+                        )
+                        | currency:'BRL'
+                        }}
+                    </div>
+
+                    <div>
+                        <strong>Economia:</strong>
+                        {{
+                        obterEconomia(
+                        produtoSelecionado
+                        )
+                        | currency:'BRL'
+                        }}
+                    </div>
+                    <div>
+
+                        <strong>
+                            Meta Sugerida:
+                        </strong>
+
+                        {{
+                        obterMetaSugestao(
+                        produtoSelecionado
+                        )
+                        }}
+
+                        unidades
+
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Receita Potencial:
+                        </strong>
+
+                        {{
+                        obterReceitaPotencial(
+                        produtoSelecionado
+                        )
+                        | currency:'BRL'
+                        }}
+
+                    </div>
 
                 </div>
 
