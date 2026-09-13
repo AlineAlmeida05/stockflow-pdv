@@ -1,9 +1,11 @@
 export interface MenuItem {
 
-    label: string;
+  label: string;
 
-    route: string;
+  route: string;
 
-    perfis: string[];
+  perfis: string[];
+
+  modulo?: string;
 
 }

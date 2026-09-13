@@ -6,6 +6,8 @@ import { Observable } from 'rxjs';
 
 import { Promocao } from '../models/promocao.model';
 import { environment } from '../../../environments/environment';
+import { ProdutoPromocao } from '../models/produto-promocao.model';
+
 
 @Injectable({
     providedIn: 'root'
@@ -69,5 +71,15 @@ export class PromocaoService {
         return this.http.get<Promocao[]>(
             `${this.apiUrl}/promocoes/ativas`
         );
+    }
+
+    listarCandidatos() {
+
+        return this.http.get<
+            ProdutoPromocao[]
+        >(
+            `${this.apiUrl}/candidatos`
+        );
+
     }
 }

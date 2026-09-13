@@ -11,6 +11,16 @@
     class="sidebar-link"
     (click)="fecharMenu()">
     {{ item.label }}
+
+    @if (
+    obterBadge(item.modulo) > 0
+    ) {
+
+    <span class="menu-badge">
+      ⚠ {{ obterBadge(item.modulo) }}
+    </span>
+
+    }
   </a>
   }
 </nav>

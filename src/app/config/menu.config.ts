@@ -92,6 +92,7 @@ export const MENU_CONFIG: MenuItem[] = [
   {
     label: 'Promoções',
     route: '/promocoes',
+    modulo: 'PROMOCOES',
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',

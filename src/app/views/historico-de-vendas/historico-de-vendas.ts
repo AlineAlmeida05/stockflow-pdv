@@ -174,8 +174,6 @@ export class HistoricoDeVendas
 
                 next: vendaDetalhada => {
 
-                    console.log(vendaDetalhada);
-
                     this.vendaSelecionada =
                         vendaDetalhada;
 

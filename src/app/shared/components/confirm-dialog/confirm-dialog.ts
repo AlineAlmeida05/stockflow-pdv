@@ -31,8 +31,6 @@ export class ConfirmDialog {
 
     confirmar(): void {
 
-        console.log('ENTROU NO CONFIRMAR');
-
         console.log(
             this.confirmDialogService.currentDialog
         );

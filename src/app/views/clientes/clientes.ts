@@ -397,11 +397,6 @@ export class Clientes implements OnInit {
 
                 next: resumo => {
 
-                    console.log(
-                        'Resumo carregado',
-                        resumo
-                    );
-
                     if (!resumo) {
                         return;
                     }

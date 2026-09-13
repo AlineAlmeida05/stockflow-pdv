@@ -20,6 +20,7 @@ import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 import { StatCard } from '../../shared/components/stat-card/stat-card';
 import { PromocaoService } from '../../core/services/promocao.service';
 import { Promocao } from '../../core/models/promocao.model';
+import { ProdutoPromocao } from '../../core/models/produto-promocao.model';
 
 
 @Component({
@@ -49,6 +50,8 @@ export class Promocoes implements OnInit {
     textoBusca = '';
 
     promocoes: Promocao[] = [];
+
+    candidatos: ProdutoPromocao[] = [];
 
     constructor(
         private produtoService: ProdutoService,
@@ -116,6 +119,28 @@ export class Promocoes implements OnInit {
                 error: erro => {
 
                     console.error(erro);
+
+                }
+
+            });
+        this.promocaoService
+            .listarCandidatos()
+            .subscribe({
+
+                next: candidatos => {
+
+                    this.candidatos =
+                        candidatos;
+
+                    this.cdr.detectChanges();
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        erro
+                    );
 
                 }
 
