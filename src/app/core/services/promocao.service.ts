@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { Promocao } from '../models/promocao.model';
 import { environment } from '../../../environments/environment';
 import { ProdutoPromocao } from '../models/produto-promocao.model';
-
+import { PromocaoPainel } from '../models/promocao-painel.model';
 
 @Injectable({
     providedIn: 'root'
@@ -71,14 +71,14 @@ export class PromocaoService {
         return this.http.get<Promocao[]>(
             `${this.apiUrl}/promocoes/ativas`
         );
-    }
+    }    
 
-    listarCandidatos() {
+    listarPainel() {
 
         return this.http.get<
-            ProdutoPromocao[]
+            PromocaoPainel
         >(
-            `${this.apiUrl}/candidatos`
+            `${this.apiUrl}/painel`
         );
 
     }

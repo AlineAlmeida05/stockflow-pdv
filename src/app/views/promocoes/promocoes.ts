@@ -5,10 +5,8 @@ import { CurrencyPipe } from '@angular/common';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 
 import { Produto } from '../../core/models/produto.model';
-import { MovimentacaoEstoque } from '../../core/models/movimentacao-estoque.model';
 
 import { ProdutoService } from '../../core/services/produto.service';
-import { MovimentacaoEstoqueService } from '../../core/services/movimentacao-estoque.service';
 
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
@@ -43,19 +41,215 @@ export class Promocoes implements OnInit {
 
     produtos: Produto[] = [];
 
-    movimentacoes: MovimentacaoEstoque[] = [];
-
     produtoSelecionado?: Produto;
 
     textoBusca = '';
 
     promocoes: Promocao[] = [];
 
-    candidatos: ProdutoPromocao[] = [];
+    pendentes: ProdutoPromocao[] = [];
+
+    ativas: ProdutoPromocao[] = [];
+
+
+    obterMotivoBackend(
+        produtoId: string
+    ): string {
+
+        return (
+            this.obterDadosPromocao(
+                produtoId
+            )?.motivo
+            ??
+            ''
+        );
+
+    }
+
+    obterPrioridadeBackend(
+        produtoId: string
+    ): string {
+
+        return (
+            this.obterDadosPromocao(
+                produtoId
+            )?.prioridade
+            ??
+            ''
+        );
+
+    }
+
+    obterDiasEstoqueBackend(
+        produtoId: string
+    ): number {
+
+        return (
+            this.obterDadosPromocao(
+                produtoId
+            )?.diasEstoque
+            ??
+            -1
+        );
+
+    }
+
+    obterPercentualGiroBackend(
+        produtoId: string
+    ): number {
+
+        return (
+            this.obterDadosPromocao(
+                produtoId
+            )?.percentualGiro
+            ??
+            -1
+        );
+
+    }
+
+    obterPercentualDescontoBackend(
+        produtoId: string
+    ): number {
+
+        return (
+            this.obterDadosPromocao(
+                produtoId
+            )?.percentualDesconto
+            ??
+            -1
+        );
+
+    }
+
+    obterMetaSugestaoBackend(
+        produtoId: string
+    ): number {
+
+        return (
+            this.obterDadosPromocao(
+                produtoId
+            )?.metaSugestao
+            ??
+            -1
+        );
+
+    }
+
+    obterPrecoPromocionalBackend(
+        produtoId: string
+    ): number {
+
+        return (
+            this.obterDadosPromocao(
+                produtoId
+            )?.precoPromocional
+            ??
+            -1
+        );
+
+    }
+
+    obterReceitaPotencialBackend(
+        produtoId: string
+    ): number {
+
+        return (
+            this.obterDadosPromocao(
+                produtoId
+            )?.receitaPotencial
+            ??
+            -1
+        );
+
+    }
+    
+    obterEconomiaBackend(
+        produtoId: string
+    ): number {
+
+        return (
+            this.obterDadosPromocao(
+                produtoId
+            )?.economiaUnitaria
+            ??
+            0
+        );
+
+    }
+
+    obterImpactoFinanceiroBackend(
+        produtoId: string
+    ): number {
+
+        return (
+            this.obterDadosPromocao(
+                produtoId
+            )?.impactoFinanceiro
+            ??
+            0
+        );
+
+    }
+
+    obterQuantidadeCompradaBackend(
+        produtoId: string
+    ): number {
+
+        return (
+            this.obterDadosPromocao(
+                produtoId
+            )?.quantidadeComprada
+            ??
+            0
+        );
+
+    }
+
+    obterQuantidadeVendidaBackend(
+        produtoId: string
+    ): number {
+
+        return (
+            this.obterDadosPromocao(
+                produtoId
+            )?.quantidadeVendida
+            ??
+            0
+        );
+
+    }
+
+    obterPromocaoEficienteBackend(
+        produtoId: string
+    ): boolean {
+
+        return (
+            this.obterDadosPromocao(
+                produtoId
+            )?.promocaoEficiente
+            ??
+            false
+        );
+
+    }
+
+    obterDescricaoPromocaoBackend(
+        produtoId: string
+    ): string {
+
+        return (
+            this.obterDadosPromocao(
+                produtoId
+            )?.descricaoPromocao
+            ??
+            ''
+        );
+
+    }
 
     constructor(
         private produtoService: ProdutoService,
-        private movimentacaoService: MovimentacaoEstoqueService,
         private promocaoService: PromocaoService,
         private alertService: AlertService,
         private cdr: ChangeDetectorRef
@@ -103,34 +297,17 @@ export class Promocoes implements OnInit {
 
             });
 
-        this.movimentacaoService
-            .listar()
-            .subscribe({
-
-                next: movimentacoes => {
-
-                    this.movimentacoes =
-                        movimentacoes;
-
-                    this.cdr.detectChanges();
-
-                },
-
-                error: erro => {
-
-                    console.error(erro);
-
-                }
-
-            });
         this.promocaoService
-            .listarCandidatos()
+            .listarPainel()
             .subscribe({
 
-                next: candidatos => {
+                next: painel => {
 
-                    this.candidatos =
-                        candidatos;
+                    this.pendentes =
+                        painel.pendentes;
+
+                    this.ativas =
+                        painel.ativas;
 
                     this.cdr.detectChanges();
 
@@ -164,17 +341,9 @@ export class Promocoes implements OnInit {
         produtoId: string
     ): number {
 
-        return this.movimentacoes
-            .filter(
-                mov =>
-                    mov.produtoId === produtoId &&
-                    mov.tipo === 'entrada'
-            )
-            .reduce(
-                (total, mov) =>
-                    total + mov.quantidade,
-                0
-            );
+        return this.obterQuantidadeCompradaBackend(
+            produtoId
+        );
 
     }
 
@@ -182,17 +351,9 @@ export class Promocoes implements OnInit {
         produtoId: string
     ): number {
 
-        return this.movimentacoes
-            .filter(
-                mov =>
-                    mov.produtoId === produtoId &&
-                    mov.tipo === 'saida'
-            )
-            .reduce(
-                (total, mov) =>
-                    total + mov.quantidade,
-                0
-            );
+        return this.obterQuantidadeVendidaBackend(
+            produtoId
+        );
 
     }
 
@@ -200,22 +361,11 @@ export class Promocoes implements OnInit {
         produtoId: string
     ): number {
 
-        const comprado =
-            this.obterQuantidadeComprada(
+        return Math.max(
+            0,
+            this.obterPercentualGiroBackend(
                 produtoId
-            );
-
-        const vendido =
-            this.obterQuantidadeVendida(
-                produtoId
-            );
-
-        if (comprado === 0) {
-            return 0;
-        }
-
-        return Math.round(
-            (vendido / comprado) * 100
+            )
         );
 
     }
@@ -245,16 +395,11 @@ export class Promocoes implements OnInit {
         produto: Produto
     ): number {
 
-        const desconto =
-            this.obterPercentualDesconto(
+        return Math.max(
+            0,
+            this.obterPrecoPromocionalBackend(
                 produto.id
-            );
-
-        return Number(
-            (
-                produto.precoVenda *
-                (1 - desconto / 100)
-            ).toFixed(2)
+            )
         );
 
     }
@@ -263,121 +408,13 @@ export class Promocoes implements OnInit {
         produtoId: string
     ): number {
 
-        const entradas =
-            this.movimentacoes
-                .filter(
-                    mov =>
-                        mov.produtoId === produtoId &&
-                        mov.tipo === 'entrada'
-                )
-                .sort(
-                    (a, b) =>
-                        new Date(
-                            b.dataMovimentacao
-                        ).getTime() -
-                        new Date(
-                            a.dataMovimentacao
-                        ).getTime()
-                );
-
-        if (entradas.length === 0) {
-            return 0;
-        }
-
-        const ultimaEntrada =
-            new Date(
-                entradas[0].dataMovimentacao
-            );
-
-        const hoje =
-            new Date();
-
-        const diferenca =
-            hoje.getTime() -
-            ultimaEntrada.getTime();
-
-        return Math.floor(
-            diferenca /
-            (1000 * 60 * 60 * 24)
+        return Math.max(
+            0,
+            this.obterDiasEstoqueBackend(
+                produtoId
+            )
         );
 
-    }
-
-    get produtosPromocao(): Produto[] {
-
-        return [...this.produtos]
-
-            .filter(produto => {
-
-                const giro =
-                    this.obterPercentualGiro(
-                        produto.id
-                    );
-
-                const dias =
-                    this.obterDiasEmEstoque(
-                        produto.id
-                    );
-
-                return (
-
-                    produto.ativo &&
-
-                    produto.estoqueAtual > 0 &&
-
-                    !(
-                        produto.promocaoAtiva === false &&
-                        produto.promocaoMotivo === 'Meta atingida'
-                    ) &&
-
-                    (
-
-                        dias >= 30 ||
-
-                        giro < 40
-
-                    )
-
-                );
-
-            })
-
-            .sort((a, b) => {
-
-                if (
-                    a.promocaoAtiva !==
-                    b.promocaoAtiva
-                ) {
-
-                    return a.promocaoAtiva
-                        ? 1
-                        : -1;
-                }
-
-                if (!a.promocaoAtiva) {
-
-                    return (
-                        this.obterPesoPrioridade(
-                            b.id
-                        ) -
-
-                        this.obterPesoPrioridade(
-                            a.id
-                        )
-                    );
-                }
-
-                return (
-                    this.obterDiasEmEstoque(
-                        b.id
-                    ) -
-
-                    this.obterDiasEmEstoque(
-                        a.id
-                    )
-                );
-
-            });
     }
 
     obterStatusEstoque(
@@ -405,35 +442,24 @@ export class Promocoes implements OnInit {
         produtoId: string
     ): string {
 
-        const giro =
-            this.obterPercentualGiro(
-                produtoId
-            );
-
-        const dias =
-            this.obterDiasEmEstoque(
+        const prioridadeBackend =
+            this.obterPrioridadeBackend(
                 produtoId
             );
 
         if (
-            giro < 40 &&
-            dias >= 30
+            prioridadeBackend === 'ALTA'
         ) {
-
             return 'Alta';
-
         }
 
         if (
-            giro < 70 ||
-            dias >= 15
+            prioridadeBackend === 'MEDIA'
         ) {
-
             return 'Média';
-
         }
 
-        return 'Baixa';
+        return prioridadeBackend;
 
     }
 
@@ -571,10 +597,8 @@ export class Promocoes implements OnInit {
         produtoId: string
     ): boolean {
 
-        return (
-            this.obterPercentualGiro(
-                produtoId
-            ) >= 70
+        return this.obterPromocaoEficienteBackend(
+            produtoId
         );
 
     }
@@ -584,20 +608,6 @@ export class Promocoes implements OnInit {
     ): void {
 
         this.produtoSelecionado = produto;
-
-    }
-
-    get produtosPromocaoFiltrados(): Produto[] {
-
-        return this.produtosPromocao.filter(
-            produto =>
-                produto.nome
-                    .toLowerCase()
-                    .includes(
-                        this.textoBusca
-                            .toLowerCase()
-                    )
-        );
 
     }
 
@@ -670,28 +680,12 @@ export class Promocoes implements OnInit {
         produtoId: string
     ): string {
 
-        const giro =
-            this.obterPercentualGiro(
+        return (
+            this.obterMotivoBackend(
                 produtoId
-            );
+            ) || 'Baixo Giro'
+        );
 
-        const dias =
-            this.obterDiasEmEstoque(
-                produtoId
-            );
-
-        if (
-            dias >= 30 &&
-            giro < 40
-        ) {
-            return 'Crítico';
-        }
-
-        if (dias >= 30) {
-            return 'Estoque Parado';
-        }
-
-        return 'Baixo Giro';
     }
 
     obterVariantMotivo(
@@ -714,37 +708,21 @@ export class Promocoes implements OnInit {
         produtoId: string
     ): string {
 
-        const giro =
-            this.obterPercentualGiro(produtoId);
+        return this.obterDescricaoPromocaoBackend(
+            produtoId
+        );
 
-        const dias =
-            this.obterDiasEmEstoque(produtoId);
-
-        if (
-            dias >= 30 &&
-            giro < 40
-        ) {
-            return `Produto com baixo giro (${giro}%) e ${dias} dias em estoque.`;
-        }
-
-        if (dias >= 30) {
-            return `Produto parado há ${dias} dias.`;
-        }
-
-        return `Giro baixo (${giro}% das unidades vendidas).`;
     }
 
     obterEconomia(
         produto: Produto
     ): number {
 
-        return Number(
-            (
-                produto.precoVenda -
-                this.obterPrecoPromocional(
-                    produto
-                )
-            ).toFixed(2)
+        return Math.max(
+            0,
+            this.obterEconomiaBackend(
+                produto.id
+            )
         );
 
     }
@@ -753,75 +731,52 @@ export class Promocoes implements OnInit {
         produtoId: string
     ): number {
 
-        const motivo =
-            this.obterMotivoPromocao(
+        return Math.max(
+            0,
+            this.obterPercentualDescontoBackend(
                 produtoId
-            );
-
-        if (motivo === 'Crítico') {
-            return 20;
-        }
-
-        if (motivo === 'Estoque Parado') {
-            return 15;
-        }
-
-        return 10;
-    }
-
-    obterPerdaPorUnidade(
-        produto: Produto
-    ): number {
-
-        return Number(
-            (
-                produto.precoVenda -
-                this.obterPrecoPromocional(
-                    produto
-                )
-            ).toFixed(2)
+            )
         );
+
     }
 
     obterImpactoFinanceiro(
         produto: Produto
     ): number {
 
-        return Number(
-            (
-                this.obterPerdaPorUnidade(
-                    produto
-                ) *
-                produto.estoqueAtual
-            ).toFixed(2)
+        return Math.max(
+            0,
+            this.obterImpactoFinanceiroBackend(
+                produto.id
+            )
         );
+
     }
 
     obterMetaSugestao(
         produto: Produto
     ): number {
 
-        return Math.ceil(
-            produto.estoqueAtual * 0.5
+        return Math.max(
+            0,
+            this.obterMetaSugestaoBackend(
+                produto.id
+            )
         );
+
     }
 
     obterReceitaPotencial(
         produto: Produto
     ): number {
 
-        return Number(
-            (
-                this.obterMetaSugestao(
-                    produto
-                ) *
-
-                this.obterPrecoPromocional(
-                    produto
-                )
-
-            ).toFixed(2)
+        return Math.max(
+            0,
+            this.obterReceitaPotencialBackend(
+                produto.id
+            )
         );
+
     }
 
     obterPercentualMeta(
@@ -851,26 +806,6 @@ export class Promocoes implements OnInit {
         return produto.promocaoAtiva
             ? '✅'
             : '⚠️';
-    }
-
-    obterPesoPrioridade(
-        produtoId: string
-    ): number {
-
-        const prioridade =
-            this.obterPrioridade(
-                produtoId
-            );
-
-        if (prioridade === 'Alta') {
-            return 3;
-        }
-
-        if (prioridade === 'Média') {
-            return 2;
-        }
-
-        return 1;
     }
 
     obterStatusMeta(
@@ -905,4 +840,59 @@ export class Promocoes implements OnInit {
 
         return 'giro-baixo';
     }
+
+    get promocoesPainel(): ProdutoPromocao[] {
+
+        return [
+
+            ...this.pendentes,
+
+            ...this.ativas
+
+        ];
+
+    }
+
+    get produtosPainel(): Produto[] {
+
+        return this.promocoesPainel
+            .map(item =>
+                this.produtos.find(
+                    produto =>
+                        produto.id === item.id
+                )
+            )
+            .filter(
+                (produto): produto is Produto =>
+                    !!produto
+            );
+
+    }
+
+    get produtosPainelFiltrados(): Produto[] {
+
+        return this.produtosPainel.filter(
+            produto =>
+                produto.nome
+                    .toLowerCase()
+                    .includes(
+                        this.textoBusca
+                            .toLowerCase()
+                    )
+        );
+
+    }
+
+    obterDadosPromocao(
+        produtoId: string
+    ): ProdutoPromocao | undefined {
+
+        return this.promocoesPainel.find(
+            item =>
+                item.id === produtoId
+        );
+
+    }
+
+    
 }   

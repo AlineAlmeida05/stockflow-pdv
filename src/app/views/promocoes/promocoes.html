@@ -16,7 +16,7 @@
             </app-search-input>
 
             @if (
-            produtosPromocaoFiltrados.length === 0
+            produtosPainelFiltrados.length === 0
             ) {
 
             <app-empty-state
@@ -26,7 +26,7 @@
             } @else {
             <div class="produtos-lista">
                 @for (
-                produto of produtosPromocaoFiltrados;
+                produto of produtosPainelFiltrados;
                 track produto.id
                 ) {
 
@@ -178,16 +178,8 @@
                         </div>
 
                         <div>
-
                             <strong>Perda por Unidade:</strong>
-
-                            {{
-                            obterPerdaPorUnidade(
-                            produtoSelecionado
-                            )
-                            | currency:'BRL'
-                            }}
-
+                            {{ obterEconomia(produtoSelecionado)| currency:'BRL' }}
                         </div>
 
                         <div>
