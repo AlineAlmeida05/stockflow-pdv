@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { Produto } from '../../core/models/produto.model';
@@ -126,7 +126,8 @@ export class NovaVenda implements OnInit {
         private vendaService: VendaService,
         private clienteService: ClienteService,
         private alertService: AlertService,
-        private confirmDialogService: ConfirmDialogService
+        private confirmDialogService: ConfirmDialogService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -205,6 +206,8 @@ export class NovaVenda implements OnInit {
 
                     this.produtos = produtos;
 
+                    this.cdr.detectChanges();
+
                 },
 
                 error: erro => {
@@ -227,6 +230,8 @@ export class NovaVenda implements OnInit {
 
                     this.clientes =
                         clientes;
+
+                        this.cdr.detectChanges();
 
                 },
 
@@ -712,6 +717,8 @@ export class NovaVenda implements OnInit {
                     this.resumoCliente =
                         resumo;
 
+                        this.cdr.detectChanges();
+
                 },
 
                 error: erro => {
@@ -843,6 +850,8 @@ export class NovaVenda implements OnInit {
 
                     this.resumoCliente = undefined;
                     this.clienteSelecionadoId = '';
+
+                    this.cdr.detectChanges();
 
                 },
 

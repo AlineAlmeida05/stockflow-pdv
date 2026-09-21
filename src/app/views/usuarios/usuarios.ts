@@ -304,6 +304,8 @@ export class Usuarios implements OnInit {
                             'Usuário atualizado com sucesso.'
                         );
 
+                        this.cdr.detectChanges();
+
                     },
 
                     error: erro => {
@@ -377,6 +379,8 @@ export class Usuarios implements OnInit {
                         'Usuário criado com sucesso.'
                     );
 
+                    this.cdr.detectChanges();
+
                 },
 
                 error: erro => {
@@ -447,6 +451,8 @@ export class Usuarios implements OnInit {
                     this.alertService.success(
                         'Usuário excluído com sucesso.'
                     );
+
+                    this.cdr.detectChanges();
 
                 },
 
@@ -570,6 +576,8 @@ export class Usuarios implements OnInit {
                 next: tenants => {
 
                     this.tenants = tenants;
+
+                    this.cdr.detectChanges();
 
                 },
 

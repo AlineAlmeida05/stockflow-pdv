@@ -475,6 +475,8 @@ export class EntradaDeEstoque implements OnInit {
                         'Entrada de estoque registrada com sucesso.'
                     );
 
+                    this.cdr.detectChanges();
+
                 },
 
                 error: erro => {
@@ -503,6 +505,8 @@ export class EntradaDeEstoque implements OnInit {
 
                     this.movimentacoes =
                         movimentacoes;
+
+                        this.cdr.detectChanges();
 
                 },
 

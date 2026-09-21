@@ -218,6 +218,8 @@ export class Produtos implements OnInit {
               'Produto atualizado com sucesso.'
             );
 
+            this.cdr.detectChanges();
+
           },
           error: erro => {
 
@@ -276,6 +278,8 @@ export class Produtos implements OnInit {
             this.alertService.success(
               'Produto cadastrado com sucesso.'
             );
+
+            this.cdr.detectChanges();
 
           },
           error: erro => {
@@ -382,6 +386,8 @@ export class Produtos implements OnInit {
               this.alertService.success(
                 'Produto inativado com sucesso.'
               );
+
+              this.cdr.detectChanges();
 
             }
 
@@ -512,6 +518,8 @@ export class Produtos implements OnInit {
               this.alertService.success(
                 'Produto reativado com sucesso.'
               );
+
+              this.cdr.detectChanges();
 
             }
 

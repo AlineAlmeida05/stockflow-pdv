@@ -1,16 +1,16 @@
 <header class="header">
   <div class="header-company">
     <img
-      [src]="tenantAtual?.logoUrl || branding.logo"
-      [alt]="tenantAtual?.nome || branding.nomeExibicao">
+      [src]="logoExibicao"
+      [alt]="nomeExibicao">
     <div>
 
       <h2>
-        {{ tenantAtual?.nome || branding.nomeExibicao }}
+        {{ nomeExibicao}}
       </h2>
 
       <p>
-        {{ branding.slogan }}
+        {{ tenantAtual?.nome }}
       </p>
     </div>
 

@@ -201,6 +201,8 @@ export class Relatorios
                     this.vendas =
                         vendas;
 
+                        this.cdr.detectChanges();
+
                 },
 
                 error: erro => {
@@ -239,6 +241,8 @@ export class Relatorios
                     this.movimentacoes =
                         movimentacoes;
 
+                        this.cdr.detectChanges();
+
                 },
 
                 error: erro => {
@@ -257,6 +261,8 @@ export class Relatorios
 
                     this.fiados =
                         fiados;
+
+                        this.cdr.detectChanges();
 
                 },
 

@@ -2,10 +2,10 @@
     <div
         class="company-profile-card__logo">
 
-        @if (tenantAtual?.logoUrl) {
+        @if (false) {
         <img
-            [src]="tenantAtual?.logoUrl"
-            [alt]="tenantAtual?.nome">
+            [src]="empresa.logoUrl"
+            [alt]="empresa.nomeFantasia">
         } @else {
 
         🏢
@@ -19,7 +19,8 @@
         </span>
 
         <h2>
-            {{ tenantAtual?.nome || empresa.nomeFantasia }}
+            {{ empresa.nomeFantasia }}
+
         </h2>
         <p class="company-slogan">
             {{ empresa.slogan }}
@@ -30,7 +31,8 @@
                 Dados Fiscais
             </strong>
             <p>
-                Razão Social: {{ tenantAtual?.nome || empresa.nomeFantasia }}
+                Razão Social:
+                {{ empresa.razaoSocial }}
             </p>
             <p>
                 CNPJ: {{ empresa.cnpj || '-' }}
@@ -42,8 +44,7 @@
                 Responsável
             </strong>
             <p>
-                Responsável: {{ tenantAtual?.responsavel || empresa.proprietario
-                || '-' }}
+                Responsável: {{ empresa.proprietario || '-' }}
             </p>
         </div>
 
@@ -56,20 +57,19 @@
             </p>
 
             <p>
-                ✉️ {{ tenantAtual?.email || empresa.email || '-' }}
+                ✉️ {{ empresa.email || '-' }}
             </p>
 
             <p>
-                📍{{ tenantAtual?.cidade || empresa.cidade || '-'}}
+                📍{{ empresa.cidade || '-' }}
             </p>
         </div>
         <div class="company-info-group">
-        <strong>
-            Status
-        </strong>
-        <p>
-            {{ tenantAtual?.ativo ? 'Ativo' : 'Inativo' }}
-        </p>
+            <strong>
+                Status
+            </strong>
+            <p>
+                {{ 'ativo' }}
+            </p>
+        </div>
     </div>
-    </div>
-    

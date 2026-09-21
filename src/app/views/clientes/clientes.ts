@@ -208,6 +208,8 @@ export class Clientes implements OnInit {
                             'Cliente atualizado com sucesso.'
                         );
 
+                        this.cdr.detectChanges();
+
                     },
 
                     error: erro => {
@@ -248,6 +250,8 @@ export class Clientes implements OnInit {
                             'Cliente cadastrado com sucesso.'
                         );
 
+                        this.cdr.detectChanges();
+
                     },
 
                     error: erro => {
@@ -279,6 +283,8 @@ export class Clientes implements OnInit {
                     this.alertService.success(
                         'Cliente excluído com sucesso.'
                     );
+
+                    this.cdr.detectChanges();
 
                 },
 

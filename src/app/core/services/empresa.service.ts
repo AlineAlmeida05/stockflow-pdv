@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 
 import { Empresa } from '../models/empresa.model';
-import { COMPANY_CONFIG } from '../../config/company.config';
-import { BRANDING_CONFIG } from '../../config/branding.config';
-import { SYSTEM_CONFIG } from '../../config/system.config';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+
 
 @Injectable({
     providedIn: 'root'
@@ -11,72 +12,31 @@ import { SYSTEM_CONFIG } from '../../config/system.config';
 
 export class EmpresaService {
 
-    private readonly STORAGE_KEY =
-        'empresa';
+    constructor(
+    private http: HttpClient
+) {}
 
-    obter(): Empresa {
+    private readonly apiUrl =
+    `${environment.apiUrl}/api/empresa`;
 
-        const dados =
-            localStorage.getItem(
-                this.STORAGE_KEY
-            );
 
-        if (dados) {
+    obter(): Observable<Empresa> {
 
-            return JSON.parse(dados);
+    return this.http.get<Empresa>(
+        this.apiUrl,
+    );
 
-        }
-
-        return {
-
-            nomeFantasia: COMPANY_CONFIG.nomeFantasia,
-
-            razaoSocial: COMPANY_CONFIG.razaoSocial,
-
-            proprietario: COMPANY_CONFIG.proprietario,
-
-            cnpj: COMPANY_CONFIG.cnpj,
-
-            telefone: COMPANY_CONFIG.telefone,
-
-            email: COMPANY_CONFIG.email,
-
-            endereco: COMPANY_CONFIG.endereco,
-
-            cidade: COMPANY_CONFIG.cidade,
-
-            uf: COMPANY_CONFIG.uf,
-
-            logoUrl: BRANDING_CONFIG.logo,
-
-            slogan: BRANDING_CONFIG.slogan,
-
-            versaoSistema: SYSTEM_CONFIG.versaoSistema,
-
-            corPrimaria: BRANDING_CONFIG.cores.primaria,
-
-            corSecundaria: BRANDING_CONFIG.cores.secundaria,
-
-            dataImplantacao: new Date().toISOString()
-
-        };
-
-    }
+}
 
     salvar(
-        empresa: Empresa
-    ): void {
+    empresa: Empresa
+): Observable<Empresa> {
 
-        localStorage.setItem(
+    return this.http.put<Empresa>(
+        this.apiUrl,
+        empresa
+    );
 
-            this.STORAGE_KEY,
-
-            JSON.stringify(
-                empresa
-            )
-
-        );
-
-    }
+}
 
 }

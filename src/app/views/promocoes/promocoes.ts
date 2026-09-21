@@ -521,6 +521,8 @@ export class Promocoes implements OnInit {
                     this.alertService.success(
                         'Promoção ativada com sucesso.'
                     );
+
+                    this.cdr.detectChanges();
                 },
 
                 error: erro => {
@@ -577,6 +579,8 @@ export class Promocoes implements OnInit {
                     this.alertService.success(
                         'Promoção encerrada com sucesso.'
                     );
+
+                    this.cdr.detectChanges();
                 },
 
                 error: erro => {

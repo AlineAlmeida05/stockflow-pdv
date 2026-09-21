@@ -291,6 +291,8 @@ export class Fiados implements OnInit {
                         'Pagamento registrado com sucesso.'
                     );
 
+                    this.cdr.detectChanges();
+
                 },
 
                 error: erro => {

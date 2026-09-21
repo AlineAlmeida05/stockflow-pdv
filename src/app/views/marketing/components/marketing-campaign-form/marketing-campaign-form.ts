@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 
 import { Produto } from '../../../../core/models/produto.model';
 
@@ -52,6 +52,7 @@ export class MarketingCampaignForm
         private empresaService: EmpresaService,
         private marketingAiService: MarketingAiService,
         private marketingPromptBuilder: MarketingPromptBuilder,
+        private cdr: ChangeDetectorRef
 
     ) { }
 
@@ -69,6 +70,8 @@ export class MarketingCampaignForm
                                 produto.promocaoAtiva
                         );
 
+                        this.cdr.detectChanges();
+
                 },
 
                 error: erro => {
@@ -82,8 +85,13 @@ export class MarketingCampaignForm
 
             });
 
-        this.empresa =
-            this.empresaService.obter();
+        this.empresaService
+            .obter()
+            .subscribe(empresa => {
+
+                this.empresa = empresa;
+
+            });
 
     }
 

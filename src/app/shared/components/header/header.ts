@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { TenantContextService } from '../../../core/services/tenant-context.service';
-import { BRANDING_CONFIG } from '../../../config/branding.config';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -8,6 +7,7 @@ import { FormBuilder } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { AlertService } from '../../../core/services/alert.service';
+import { BrandingService } from '../../../core/services/branding.service';
 
 @Component({
     selector: 'app-header',
@@ -33,7 +33,9 @@ export class Header {
         private authService: AuthService,
         private router: Router,
         private fb: FormBuilder,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private cdr: ChangeDetectorRef,
+        private brandingService: BrandingService,
     ) {
         this.formAlterarSenha =
             this.fb.group({
@@ -56,9 +58,6 @@ export class Header {
             });
 
     }
-
-    branding =
-        BRANDING_CONFIG;
 
     get tenantAtual() {
 
@@ -141,6 +140,8 @@ export class Header {
                         `/${slug}/login`
                     ]);
 
+                    this.cdr.detectChanges();
+
                 },
 
                 error: (erro) => {
@@ -158,6 +159,20 @@ export class Header {
                 }
 
             });
+
+    }
+
+    get logoExibicao(): string {
+
+        return this.brandingService
+            .obterLogo();
+
+    }
+
+    get nomeExibicao(): string {
+
+        return this.brandingService
+            .obterNomeEmpresa();
 
     }
 }

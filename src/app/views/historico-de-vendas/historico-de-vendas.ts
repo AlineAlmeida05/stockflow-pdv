@@ -183,6 +183,8 @@ export class HistoricoDeVendas
                     this.motivoCancelamento =
                         '';
 
+                        this.cdr.detectChanges();
+
                 },
 
                 error: erro => {
@@ -236,6 +238,8 @@ export class HistoricoDeVendas
                     this.mostrarCancelamento = false;
 
                     this.motivoCancelamento = '';
+
+                    this.cdr.detectChanges();
 
                 },
 

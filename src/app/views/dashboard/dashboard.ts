@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -63,6 +63,8 @@ export class Dashboard implements OnInit {
         private fiadoService: FiadoService,
         private produtoService: ProdutoService,
         private movimentacaoService: MovimentacaoEstoqueService,
+        private cdr: ChangeDetectorRef
+        
     ) { }
 
     ngOnInit(): void {
@@ -74,6 +76,8 @@ export class Dashboard implements OnInit {
 
                     this.vendas =
                         vendas;
+
+                        this.cdr.detectChanges();
 
                 },
 
@@ -92,6 +96,8 @@ export class Dashboard implements OnInit {
 
                     this.fiados =
                         fiados;
+
+                        this.cdr.detectChanges();
 
                 },
 
@@ -113,6 +119,8 @@ export class Dashboard implements OnInit {
 
                     this.produtos = produtos;
 
+                    this.cdr.detectChanges();
+
                 },
 
                 error: erro => {
@@ -131,6 +139,8 @@ export class Dashboard implements OnInit {
 
                     this.movimentacoes =
                         movimentacoes;
+
+                        this.cdr.detectChanges();
 
                 },
 

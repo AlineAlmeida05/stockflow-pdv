@@ -7,6 +7,8 @@ import { Empresa } from '../../core/models/empresa.model';
 
 import { EmpresaService } from '../../core/services/empresa.service';
 import { CompanyBrandCard } from './components/company-brand-card/company-brand-card';
+import { JsonPipe } from '@angular/common';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
     selector: 'app-empresa',
@@ -16,7 +18,8 @@ import { CompanyBrandCard } from './components/company-brand-card/company-brand-
         PageTitle,
         CompanyProfileCard,
         CompanySupportCard,
-        CompanyBrandCard
+        CompanyBrandCard,
+        JsonPipe
     ],
     templateUrl: './empresa.html',
     styleUrl: './empresa.scss'
@@ -25,16 +28,36 @@ import { CompanyBrandCard } from './components/company-brand-card/company-brand-
 export class EmpresaComponent implements OnInit {
 
     constructor(
-        private empresaService: EmpresaService
+        private empresaService: EmpresaService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     empresa!: Empresa;
 
     ngOnInit(): void {
 
-        this.empresa =
-            this.empresaService
-                .obter();
+        this.empresaService
+            .obter()
+            .subscribe({
+
+                next: empresa => {
+
+                    this.empresa = empresa;
+
+                    this.cdr.detectChanges();
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        'Erro ao carregar empresa',
+                        erro
+                    );
+
+                }
+
+            });
 
     }
 

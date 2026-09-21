@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import { Tenant } from '../models/tenant.model';
 import { TenantService } from './tenant.service';
+import { BRANDING_CONFIG } from '../../config/branding.config';
 
 @Injectable({
     providedIn: 'root'
@@ -122,31 +123,52 @@ export class TenantContextService {
             null
         );
 
+        document.documentElement.style
+            .setProperty(
+                '--color-primary',
+                BRANDING_CONFIG.cores.primaria
+            );
+
+        document.documentElement.style
+            .setProperty(
+                '--color-secondary',
+                BRANDING_CONFIG.cores.secundaria
+            );
+
+        let favicon =
+            document.querySelector(
+                "link[rel='icon']"
+            ) as HTMLLinkElement;
+
+        if (favicon) {
+
+            favicon.href =
+                BRANDING_CONFIG.favicon;
+
+        }
+
+        document.title =
+            BRANDING_CONFIG.nomeExibicao;
+
     }
 
     aplicarTema(
         tenant: Tenant
     ): void {
 
-        if (tenant.corPrimaria) {
+        document.documentElement.style
+            .setProperty(
+                '--color-primary',
+                tenant.corPrimaria
+                || BRANDING_CONFIG.cores.primaria
+            );
 
-            document.documentElement.style
-                .setProperty(
-                    '--color-primary',
-                    tenant.corPrimaria
-                );
-
-        }
-
-        if (tenant.corSecundaria) {
-
-            document.documentElement.style
-                .setProperty(
-                    '--color-secondary',
-                    tenant.corSecundaria
-                );
-
-        }
+        document.documentElement.style
+            .setProperty(
+                '--color-secondary',
+                tenant.corSecundaria
+                || BRANDING_CONFIG.cores.secundaria
+            );
 
     }
 
@@ -154,9 +176,9 @@ export class TenantContextService {
         tenant: Tenant
     ): void {
 
-        if (!tenant.faviconUrl) {
-            return;
-        }
+        const faviconUrl =
+            tenant.faviconUrl
+            || BRANDING_CONFIG.favicon;
 
         let favicon =
             document.querySelector(
@@ -179,7 +201,7 @@ export class TenantContextService {
         }
 
         favicon.href =
-            tenant.faviconUrl;
+            faviconUrl;
 
     }
 

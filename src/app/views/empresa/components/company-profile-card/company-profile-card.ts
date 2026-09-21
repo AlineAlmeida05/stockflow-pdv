@@ -1,7 +1,5 @@
 import { Component, Input } from '@angular/core';
-
 import { Empresa } from '../../../../core/models/empresa.model';
-import { TenantContextService } from '../../../../core/services/tenant-context.service';
 
 
 @Component({
@@ -12,19 +10,8 @@ import { TenantContextService } from '../../../../core/services/tenant-context.s
     styleUrl: './company-profile-card.scss'
 })
 export class CompanyProfileCard {
+
     @Input()
     empresa!: Empresa;
 
-    constructor(
-        public tenantContextService:
-            TenantContextService
-    ) { }
-
-    get tenantAtual() {
-
-        return this
-            .tenantContextService
-            .tenantAtual;
-
-    }
 }

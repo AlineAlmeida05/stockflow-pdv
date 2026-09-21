@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TenantService } from '../../../core/services/tenant.service';
 import { OnInit } from '@angular/core';
 import { TenantContextService } from '../../../core/services/tenant-context.service';
+import { BRANDING_CONFIG } from '../../../config/branding.config';
 
 @Component({
     selector: 'app-login',
@@ -30,9 +31,9 @@ export class LoginComponent implements OnInit {
 
     mostrarSenha = false;
 
-    titulo = 'StockFlow PDV';
+    titulo = BRANDING_CONFIG.nomeExibicao;
 
-    slogan = 'Controle total do seu negócio';
+    slogan = BRANDING_CONFIG.slogan;
 
     tenant: any = null;
 
@@ -136,6 +137,8 @@ export class LoginComponent implements OnInit {
                         this.authService.rotaInicial()
                     ]);
 
+                    this.cdr.detectChanges();
+
                 },
 
                 error: () => {
@@ -216,6 +219,8 @@ export class LoginComponent implements OnInit {
 
                     this.aplicarTemaTenant();
 
+                    this.cdr.detectChanges();
+
                 },
 
                 error: erro => {
@@ -235,6 +240,20 @@ export class LoginComponent implements OnInit {
 
                 }
             });
+
+    }
+
+    get logoExibicao(): string {
+
+        return this.tenant?.logoUrl
+            || BRANDING_CONFIG.logo;
+
+    }
+
+    get nomeExibicao(): string {
+
+        return this.tenant?.nome
+            || BRANDING_CONFIG.nomeExibicao;
 
     }
 }
