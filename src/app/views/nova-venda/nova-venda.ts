@@ -16,7 +16,6 @@ import { DataTable } from '../../shared/components/data-table/data-table';
 import { HostListener } from '@angular/core';
 import { CurrencyInput } from '../../shared/components/currency-input/currency-input';
 import { ClienteResumo } from '../../core/models/cliente-resumo.model';
-import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 
 @Component({
     selector: 'app-nova-venda',
@@ -125,8 +124,7 @@ export class NovaVenda implements OnInit {
         private produtoService: ProdutoService,
         private vendaService: VendaService,
         private clienteService: ClienteService,
-        private alertService: AlertService,
-        private confirmDialogService: ConfirmDialogService
+        private alertService: AlertService
     ) { }
 
     ngOnInit(): void {
@@ -421,43 +419,7 @@ export class NovaVenda implements OnInit {
 
             return;
         }
-        if (
-            this.formaPagamento === 'fiado'
-            &&
-            this.resumoCliente
-        ) {
-
-            const saldoAtual =
-                this.resumoCliente.saldoDevedor;
-
-            const limite =
-                this.resumoCliente.limiteCredito;
-
-            const novaDivida =
-                saldoAtual + this.total;
-
-            if (saldoAtual > limite) {
-
-                this.finalizandoVenda = false;
-
-                this.confirmarLimiteJaExcedido(
-                    novaDivida
-                );
-
-                return;
-            }
-
-            if (novaDivida > limite) {
-
-                this.finalizandoVenda = false;
-
-                this.confirmarLimiteExcedido(
-                    novaDivida
-                );
-
-                return;
-            }
-        }
+        
         this.salvarVenda();
 
 
@@ -722,74 +684,6 @@ export class NovaVenda implements OnInit {
                 }
 
             });
-    }
-
-    private confirmarLimiteExcedido(
-        novaDivida: number
-    ): void {
-
-        this.confirmDialogService.open({
-
-            title: 'Limite de Crédito',
-
-            message:
-
-                `O cliente ultrapassará o limite de crédito após esta venda.
-
-                Limite: R$ ${this.resumoCliente?.limiteCredito.toFixed(2)}
-
-                Dívida Atual: R$ ${this.resumoCliente?.saldoDevedor.toFixed(2)}
-
-                Nova Dívida: R$ ${novaDivida.toFixed(2)}
-
-                Deseja continuar a venda?`,
-
-            type: 'warning',
-
-            confirmText: 'Continuar',
-
-            cancelText: 'Cancelar',
-
-
-
-            onConfirm: () => {
-
-                this.salvarVenda();
-            }
-        });
-    }
-
-    private confirmarLimiteJaExcedido(
-        novaDivida: number
-    ): void {
-
-        this.confirmDialogService.open({
-
-            title: 'Limite já excedido',
-
-            message:
-
-                `O cliente já está acima do limite de crédito.
-
-                Limite: R$ ${this.resumoCliente?.limiteCredito.toFixed(2)}
-
-                Saldo Atual: R$ ${this.resumoCliente?.saldoDevedor.toFixed(2)}
-
-                Nova Dívida: R$ ${novaDivida.toFixed(2)}
-
-                Deseja continuar a venda?`,
-
-            type: 'warning',
-
-            confirmText: 'Continuar',
-
-            cancelText: 'Cancelar',
-
-            onConfirm: () => {
-
-                this.salvarVenda();
-            }
-        });
     }
 
     private salvarVenda(): void {
