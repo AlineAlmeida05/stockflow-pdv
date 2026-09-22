@@ -33,17 +33,19 @@
 
                     <strong class="danger">
                         {{
-                        obterSaldoCliente(
+                        obterResumoCliente(
                         cliente.id
-                        ) | currency:'BRL'
+                        )?.saldoDevedor
+                        | currency:'BRL'
                         }}
+
                     </strong>
                 </div>
 
                 <div class="cliente-card__info">
 
                     <small>
-                        {{ obterDiasEmAberto(cliente.id) }}
+                        {{ obterDiasSemPagamento(cliente.id) }}
                         dias em aberto
                     </small>
 
@@ -92,9 +94,8 @@
 
                 <strong>
                     - {{
-                    obterSaldoCliente(
-                    cliente.id
-                    ) | currency:'BRL'
+                    saldoDevedorAtual
+                    | currency:'BRL'
                     }}
                 </strong>
             </div>

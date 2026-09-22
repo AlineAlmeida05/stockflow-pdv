@@ -1,27 +1,20 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-
 import { MainLayout } from '../../layout/main-layout/main-layout';
-
 import { Cliente } from '../../core/models/cliente.model';
 import { Fiado } from '../../core/models/fiado.model';
-
 import { ClienteService } from '../../core/services/cliente.service';
 import { FiadoService } from '../../core/services/fiado.service';
-
 import { Pagamento } from '../../core/models/pagamento.model';
 import { PagamentoService } from '../../core/services/pagamento.service';
 import { FormsModule } from '@angular/forms';
-
-import { PageTitle }
-    from '../../shared/components/page-title/page-title';
+import { PageTitle } from '../../shared/components/page-title/page-title';
 import { SearchInput } from '../../shared/components/search-input/search-input';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
-
-import { SplitPanel }
-    from '../../shared/components/split-panel/split-panel';
+import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { AlertService } from '../../core/services/alert.service';
 import { CurrencyInput } from '../../shared/components/currency-input/currency-input';
+import { ClienteResumo } from '../../core/models/cliente-resumo.model';
 
 @Component({
     selector: 'app-fiados',
@@ -63,6 +56,8 @@ export class Fiados implements OnInit {
 
     textoBusca = '';
 
+    clienteResumo?: ClienteResumo;
+
     constructor(
         private clienteService: ClienteService,
         private fiadoService: FiadoService,
@@ -77,6 +72,87 @@ export class Fiados implements OnInit {
 
     }
 
+    get saldoDevedorAtual(): number {
+
+        return this.clienteResumo
+            ?.saldoDevedor ?? 0;
+
+    }
+
+    get diasSemPagamento(): number {
+
+        return this.clienteResumo
+            ?.diasSemPagamento ?? 0;
+
+    }
+
+    get statusFinanceiro(): string {
+
+        return this.clienteResumo
+            ?.status ?? 'EM_DIA';
+
+    }
+
+    formatarStatusResumo(): string {
+
+        switch (
+        this.statusFinanceiro
+        ) {
+
+            case 'LIMITE_EXCEDIDO':
+                return '⚠️ Limite excedido';
+
+            case 'INADIMPLENTE':
+                return '🔴 Inadimplente';
+
+            case 'DEVEDOR':
+                return '🟠 Devedor';
+
+            default:
+                return '';
+        }
+
+    }
+
+    deveExibirAlertaFinanceiroResumo(): boolean {
+
+        const status =
+            this.statusFinanceiro;
+
+        return (
+            status === 'INADIMPLENTE'
+            ||
+            status === 'LIMITE_EXCEDIDO'
+        );
+
+    }
+
+    obterResumoCliente(
+        clienteId: string
+    ): ClienteResumo | undefined {
+
+        return this.resumosClientes[
+            clienteId
+        ];
+
+    }
+
+    resumosClientes:
+        Record<string, ClienteResumo> = {};
+
+    obterDiasSemPagamento(
+        clienteId: string
+    ): number {
+
+        return this
+            .obterResumoCliente(
+                clienteId
+            )
+            ?.diasSemPagamento ?? 0;
+
+    }
+
+
     carregarDados(): void {
         this.clienteService
             .listar()
@@ -85,6 +161,32 @@ export class Fiados implements OnInit {
                 next: clientes => {
 
                     this.clientes = clientes;
+
+                    clientes.forEach(cliente => {
+
+                        this.clienteService
+                            .obterResumo(cliente.id)
+                            .subscribe({
+
+                                next: resumo => {
+
+                                    this.resumosClientes[
+                                        cliente.id
+                                    ] = resumo;
+
+                                },
+
+                                error: erro => {
+
+                                    console.error(
+                                        erro
+                                    );
+
+                                }
+
+                            });
+
+                    });
 
                     this.cdr.detectChanges();
 
@@ -161,57 +263,57 @@ export class Fiados implements OnInit {
 
         this.valorRecebido = 0;
 
-    }
+        this.clienteService
+            .obterResumo(cliente.id)
+            .subscribe({
 
-    obterSaldoCliente(
-        clienteId: string
-    ): number {
+                next: resumo => {
 
-        const totalFiados =
-            this.fiados
-                .filter(
-                    fiado =>
-                        fiado.clienteId === clienteId
-                )
-                .reduce(
-                    (total, fiado) =>
-                        total + fiado.valorTotal,
-                    0
-                );
+                    this.clienteResumo =
+                        resumo;
 
-        const totalPagamentos =
-            this.pagamentos
-                .filter(
-                    pagamento =>
-                        pagamento.clienteId === clienteId
-                )
-                .reduce(
-                    (total, pagamento) =>
-                        total + pagamento.valorPago,
-                    0
-                );
+                },
 
-        return Number(
-            (totalFiados - totalPagamentos)
-                .toFixed(2)
-        );
+                error: erro => {
+
+                    console.error(
+                        erro
+                    );
+
+                }
+
+            });
 
     }
 
     get clientesDevedores(): Cliente[] {
 
         return this.clientes
-            .filter(
-                cliente =>
-                    this.obterSaldoCliente(
+            .filter(cliente => {
+
+                const saldo =
+                    this.obterResumoCliente(
                         cliente.id
-                    ) > 0
-            )
-            .sort(
-                (a, b) =>
-                    this.obterSaldoCliente(b.id) -
-                    this.obterSaldoCliente(a.id)
-            );
+                    )?.saldoDevedor ?? 0;
+
+                return saldo > 0;
+
+            })
+            .sort((a, b) => {
+
+                const saldoA =
+                    this.obterResumoCliente(
+                        a.id
+                    )?.saldoDevedor ?? 0;
+
+                const saldoB =
+                    this.obterResumoCliente(
+                        b.id
+                    )?.saldoDevedor ?? 0;
+
+                return saldoB - saldoA;
+
+            });
 
     }
 
@@ -244,11 +346,9 @@ export class Fiados implements OnInit {
             return;
         }
 
-
         const saldoAtual =
-            this.obterSaldoCliente(
-                this.cliente.id
-            );
+            this.clienteResumo
+                ?.saldoDevedor ?? 0;
 
         if (
             this.valorRecebido > saldoAtual
@@ -363,125 +463,6 @@ export class Fiados implements OnInit {
 
     }
 
-    clienteAcimaDoLimite(
-        clienteId: string
-    ): boolean {
-
-
-        const cliente =
-            this.clientes.find(
-                cliente =>
-                    cliente.id === clienteId
-            );
-
-        if (!cliente) {
-            return false;
-        }
-
-        return (
-            this.obterSaldoCliente(
-                clienteId
-            ) > cliente.limiteCredito
-        );
-
-    }
-
-    obterDiasEmAberto(
-        clienteId: string
-    ): number {
-
-        const fiadosCliente =
-            this.fiados.filter(
-                fiado =>
-                    fiado.clienteId === clienteId
-            );
-
-        if (fiadosCliente.length === 0) {
-
-            return 0;
-        }
-
-        const dataMaisAntiga =
-            fiadosCliente
-                .map(
-                    fiado =>
-                        new Date(
-                            fiado.dataLancamento
-                        )
-                )
-                .sort(
-                    (a, b) =>
-                        a.getTime() -
-                        b.getTime()
-                )[0];
-
-        const hoje =
-            new Date();
-
-        const diferencaMs =
-            hoje.getTime() -
-            dataMaisAntiga.getTime();
-
-        return Math.floor(
-            diferencaMs /
-            (
-                1000 *
-                60 *
-                60 *
-                24
-            )
-        );
-    }
-
-    obterStatusCliente(
-        clienteId: string
-    ): string {
-
-        const saldo =
-            this.obterSaldoCliente(
-                clienteId
-            );
-
-        const cliente =
-            this.clientes.find(
-                c =>
-                    c.id === clienteId
-            );
-
-        if (
-            !cliente
-        ) {
-
-            return 'EM_DIA';
-        }
-
-        if (
-            saldo <= 0
-        ) {
-
-            return 'EM_DIA';
-        }
-
-        if (
-            saldo >
-            cliente.limiteCredito
-        ) {
-
-            return 'LIMITE_EXCEDIDO';
-        }
-
-        if (
-            this.obterDiasEmAberto(
-                clienteId
-            ) >= 30
-        ) {
-
-            return 'INADIMPLENTE';
-        }
-
-        return 'DEVEDOR';
-    }
-
     cobrarViaWhatsapp(
         cliente: Cliente
     ): void {
@@ -493,14 +474,12 @@ export class Fiados implements OnInit {
         }
 
         const saldo =
-            this.obterSaldoCliente(
-                this.cliente.id
-            );
+            this.clienteResumo
+                ?.saldoDevedor ?? 0;
 
         const dias =
-            this.obterDiasEmAberto(
-                this.cliente.id
-            );
+            this.clienteResumo
+                ?.diasSemPagamento ?? 0;
 
         const mensagem =
 
@@ -534,15 +513,16 @@ export class Fiados implements OnInit {
     ): boolean {
 
         const status =
-            this.obterStatusCliente(
+            this.obterResumoCliente(
                 clienteId
-            );
+            )?.status;
 
         return (
             status === 'INADIMPLENTE'
             ||
             status === 'LIMITE_EXCEDIDO'
         );
+
     }
 
     formatarStatus(
@@ -550,9 +530,9 @@ export class Fiados implements OnInit {
     ): string {
 
         const status =
-            this.obterStatusCliente(
+            this.obterResumoCliente(
                 clienteId
-            );
+            )?.status;
 
         switch (status) {
 
@@ -567,7 +547,9 @@ export class Fiados implements OnInit {
 
             default:
                 return '';
+
         }
+
     }
 
 
