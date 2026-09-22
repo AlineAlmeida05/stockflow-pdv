@@ -124,6 +124,10 @@ export class HistoricoDeVendas
 
         return Number(
             this.vendasFiltradas
+    .filter(
+        venda =>
+            venda.status === 'finalizada'
+    )
                 .reduce(
                     (total, venda) =>
                         total + venda.valorTotal,
