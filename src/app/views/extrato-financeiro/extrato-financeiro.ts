@@ -2,16 +2,14 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { PageTitle } from '../../shared/components/page-title/page-title';
-import { FiadoService } from '../../core/services/fiado.service';
-import { PagamentoService } from '../../core/services/pagamento.service';
-import { Fiado } from '../../core/models/fiado.model';
-import { Pagamento } from '../../core/models/pagamento.model';
 import { MovimentacaoFinanceira } from '../../core/models/movimentacao-financeira.model';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { SearchInput } from '../../shared/components/search-input/search-input';
 import { Toolbar } from '../../shared/components/toolbar/toolbar';
 import { SelectInput } from '../../shared/components/select-input/select-input';
 import { StatCardCarousel } from '../../shared/components/stat-card-carousel/stat-card-carousel';
+import { ExtratoFinanceiroService } from '../../core/services/extrato-financeiro.service';
+import { IndicadoresExtrato } from '../../core/models/indicadores-extrato.model';
 
 @Component({
     selector: 'app-extrato-financeiro',
@@ -32,16 +30,16 @@ import { StatCardCarousel } from '../../shared/components/stat-card-carousel/sta
 })
 export class ExtratoFinanceiro
 
-
-
     implements OnInit {
 
-    movimentacoes:
-        MovimentacaoFinanceira[] = [];
+    movimentacoes: MovimentacaoFinanceira[] = [];
 
     textoBusca = '';
 
     formaPagamentoSelecionada = 'todos';
+
+    indicadores?: IndicadoresExtrato;
+
 
     formasPagamento = [
 
@@ -104,8 +102,7 @@ export class ExtratoFinanceiro
     ];
 
     constructor(
-        private fiadoService: FiadoService,
-        private pagamentoService: PagamentoService,
+        private extratoFinanceiroService: ExtratoFinanceiroService,
         private cdr: ChangeDetectorRef
     ) {
     }
@@ -114,19 +111,51 @@ export class ExtratoFinanceiro
 
         this.carregarMovimentacoes();
 
+        this.carregarIndicadores();
+
+    }
+
+    private carregarIndicadores(): void {
+
+        this.extratoFinanceiroService
+            .obterIndicadores()
+            .subscribe({
+
+                next: indicadores => {
+
+                    this.indicadores =
+                        indicadores;
+
+                    this.atualizarIndicadores();
+
+                    this.cdr.detectChanges();
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        erro
+                    );
+
+                }
+
+            });
+
     }
 
     carregarMovimentacoes(): void {
 
-        this.fiadoService
+        this.extratoFinanceiroService
             .listar()
             .subscribe({
 
-                next: fiados => {
+                next: movimentacoes => {
 
-                    this.carregarPagamentos(
-                        fiados
-                    );
+                    this.movimentacoes =
+                        movimentacoes;
+
+                    this.atualizarIndicadores();
 
                     this.cdr.detectChanges();
 
@@ -141,107 +170,6 @@ export class ExtratoFinanceiro
                 }
 
             });
-
-    }
-
-    private carregarPagamentos(
-        fiados: Fiado[]
-    ): void {
-
-        this.pagamentoService
-            .listar()
-            .subscribe({
-
-                next: pagamentos => {
-
-                    this.montarTimeline(
-                        fiados,
-                        pagamentos
-                    );
-
-                    this.cdr.detectChanges();
-
-                },
-
-                error: erro => {
-
-                    console.error(
-                        erro
-                    );
-
-                }
-
-            });
-
-    }
-
-    private montarTimeline(
-        fiados: Fiado[],
-        pagamentos: Pagamento[]
-    ): void {
-
-        const movimentacoesFiado =
-            fiados.map(
-                fiado => ({
-
-                    tipo: 'fiado' as const,
-
-                    clienteNome:
-                        fiado.clienteNome,
-
-                    valor:
-                        fiado.valorTotal,
-
-                    data:
-                        fiado.dataLancamento
-
-                })
-            );
-
-        const movimentacoesPagamento =
-            pagamentos.map(
-                pagamento => ({
-
-                    tipo: 'pagamento' as const,
-
-                    clienteNome:
-                        pagamento.clienteNome,
-
-                    valor:
-                        pagamento.valorPago,
-
-                    data:
-                        pagamento.dataPagamento,
-
-                    usuarioNome:
-                        pagamento.usuarioNome,
-
-                    formaPagamento:
-                        pagamento.formaPagamento
-
-                })
-            );
-
-        this.movimentacoes = [
-            ...movimentacoesFiado,
-            ...movimentacoesPagamento
-        ]
-            .sort(
-                (a, b) =>
-                    new Date(
-                        b.data
-                    ).getTime()
-
-                    -
-
-                    new Date(
-                        a.data
-                    ).getTime()
-            );
-
-        this.atualizarIndicadores();
-
-        this.cdr.detectChanges();
 
     }
 
@@ -292,7 +220,7 @@ export class ExtratoFinanceiro
                     this.movimentacaoDentroPeriodo(
                         movimentacao.data
                     );
-                    
+
                 return (
                     atendeBusca
                     &&
@@ -308,105 +236,13 @@ export class ExtratoFinanceiro
 
     private atualizarIndicadores(): void {
 
-        const totalRecebido =
-            this.movimentacoes
-                .filter(
-                    movimentacao =>
-                        movimentacao.tipo ===
-                        'pagamento'
-                )
-                .reduce(
-                    (total, movimentacao) =>
-                        total +
-                        movimentacao.valor,
-                    0
-                );
+        const totalRecebido = this.indicadores?.totalRecebido ?? 0;
 
-        const totalFiado =
-            this.movimentacoes
-                .filter(
-                    movimentacao =>
-                        movimentacao.tipo ===
-                        'fiado'
-                )
-                .reduce(
-                    (total, movimentacao) =>
-                        total +
-                        movimentacao.valor,
-                    0
-                );
+        const saldoAberto = this.indicadores?.saldoAberto ?? 0;
 
-        const saldoAberto =
-            totalFiado -
-            totalRecebido;
+        const recebimentosHoje = this.indicadores?.recebimentosHoje ?? 0;
 
-        const quantidadePagamentos =
-            this.movimentacoes
-                .filter(
-                    movimentacao =>
-                        movimentacao.tipo ===
-                        'pagamento'
-                )
-                .length;
-
-        const clientesDevedores =
-
-            new Set(
-
-                this.movimentacoes
-
-                    .filter(
-                        movimentacao =>
-                            movimentacao.tipo ===
-                            'fiado'
-                    )
-
-                    .map(
-                        movimentacao =>
-                            movimentacao.clienteNome
-                    )
-
-            ).size;
-
-        const hoje = new Date();
-
-        const recebimentosHoje =
-            this.movimentacoes
-
-                .filter(
-                    movimentacao =>
-                        movimentacao.tipo ===
-                        'pagamento'
-                )
-
-                .filter(
-                    movimentacao => {
-
-                        const dataMovimentacao =
-                            new Date(
-                                movimentacao.data
-                            );
-
-                        return (
-
-                            dataMovimentacao
-                                .toDateString()
-
-                            ===
-
-                            hoje.toDateString()
-
-                        );
-
-                    }
-                )
-
-                .reduce(
-                    (total, movimentacao) =>
-                        total +
-                        movimentacao.valor,
-                    0
-                );
+        const clientesDevedores = this.indicadores?.clientesDevedores ?? 0;
 
         this.cards = [
 
@@ -458,8 +294,6 @@ export class ExtratoFinanceiro
             }
 
         ];
-
-
 
     }
 
