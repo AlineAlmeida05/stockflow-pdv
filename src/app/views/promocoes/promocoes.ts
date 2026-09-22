@@ -163,7 +163,7 @@ export class Promocoes implements OnInit {
         );
 
     }
-    
+
     obterEconomiaBackend(
         produtoId: string
     ): number {
@@ -476,65 +476,41 @@ export class Promocoes implements OnInit {
             return;
         }
 
-        const precoPromocional =
-            this.obterPrecoPromocional(
-                produto
-            );
-
-        const percentualDesconto =
-            this.obterPercentualDesconto(
-                produto.id
-            );
-
-        const motivo =
-            this.obterMotivoPersistencia(
-                produto.id
-            );
-
         this.promocaoService
-            .criar({
+    .criar({
 
-                produtoId: produto.id,
+        produtoId: produto.id
 
-                precoPromocional,
+    })
+    .subscribe({
 
-                percentualDesconto,
+        next: () => {
 
-                motivo
+            produto.promocaoAtiva =
+                true;
 
-            })
-            .subscribe({
+            this.cdr.detectChanges();
 
-                next: () => {
+            this.alertService.success(
+                'Promoção ativada com sucesso.'
+            );
 
-                    produto.promocaoAtiva =
-                        true;
+        },
 
-                    produto.precoPromocional =
-                        precoPromocional;
+        error: erro => {
 
-                    produto.promocaoMotivo =
-                        motivo;
+            console.error(
+                erro
+            );
 
-                    this.cdr.detectChanges();
+            this.alertService.error(
+                'Erro ao ativar promoção.'
+            );
 
-                    this.alertService.success(
-                        'Promoção ativada com sucesso.'
-                    );
-                },
+        }
 
-                error: erro => {
+    });
 
-                    console.error(
-                        erro
-                    );
-
-                    this.alertService.error(
-                        'Erro ao ativar promoção.'
-                    );
-                }
-
-            });
     }
 
     desativarPromocao(
@@ -894,5 +870,5 @@ export class Promocoes implements OnInit {
 
     }
 
-    
+
 }   
