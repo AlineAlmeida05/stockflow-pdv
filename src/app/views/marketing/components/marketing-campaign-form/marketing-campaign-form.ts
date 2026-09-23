@@ -1,17 +1,12 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-
-import { Produto } from '../../../../core/models/produto.model';
-
 import { ProdutoService } from '../../../../core/services/produto.service';
-import { MarketingCampaign } from '../../../../core/models/marketing-campaign.model';
+import { MarketingCampaignResponse } from '../../../../core/models/marketing-campaign-response.model';
 import { EmpresaService } from '../../../../core/services/empresa.service';
-
 import { Empresa } from '../../../../core/models/empresa.model';
 import { FormsModule } from '@angular/forms';
-import { MarketingAiService } from '../../../../core/services/marketing-ai/marketing-ai.service';
-
-import { MarketingPromptBuilder } from '../../../../core/builders/marketing-prompt.builder';
-import { MarketingAiMapper } from '../../../../core/mappers/marketing-ai.mapper';
+import { MarketingApiService } from '../../../../core/services/marketing-api.service';
+import { PromocaoService } from '../../../../core/services/promocao.service';
+import { ProdutoPromocao } from '../../../../core/models/produto-promocao.model';
 
 @Component({
     selector: 'app-marketing-campaign-form',
@@ -29,7 +24,7 @@ export class MarketingCampaignForm
 
     empresa!: Empresa;
 
-    promocoesAtivas: Produto[] = [];
+    promocoesAtivas: ProdutoPromocao[] = [];
 
     promocaoSelecionada = '';
 
@@ -45,29 +40,30 @@ export class MarketingCampaignForm
 
     @Output()
     campanhaGerada =
-        new EventEmitter<MarketingCampaign>();
+        new EventEmitter<MarketingCampaignResponse>();
 
     constructor(
-        private produtoService: ProdutoService,
         private empresaService: EmpresaService,
-        private marketingAiService: MarketingAiService,
-        private marketingPromptBuilder: MarketingPromptBuilder,
+        private marketingApiService: MarketingApiService,
+        private promocaoService: PromocaoService,
 
     ) { }
 
     ngOnInit(): void {
 
-        this.produtoService
-            .listar()
+        this.promocaoService
+            .listarPainel()
             .subscribe({
 
-                next: produtos => {
+                next: painel => {
 
                     this.promocoesAtivas =
-                        produtos.filter(
-                            produto =>
-                                produto.promocaoAtiva
-                        );
+                        painel.ativas;
+
+                    console.log(
+                        'Promocoes Ativas',
+                        this.promocoesAtivas
+                    );
 
                 },
 
@@ -118,95 +114,44 @@ export class MarketingCampaignForm
             return;
         }
 
-        const sugestao =
-            this.marketingAiService
-                .sugerirConfiguracao(
-                    produto.nome
-                );
+        this.marketingApiService
+            .gerarCampanha({
 
-        console.log(
-            'Sugestão IA',
-            sugestao
-        );
+                produtoId: produto.id,
 
-        if (
-            this.modoIaSelecionado ===
-            'Automático'
-        ) {
+                tom:
+                    this.tomSelecionado,
 
-            this.tomSelecionado =
-                sugestao.tom;
-
-            this.tipoPromocaoSelecionado =
-                sugestao.tipoPromocao;
-
-            this.elementoVisualSelecionado =
-                sugestao.elementoVisual;
-        }
-
-        const resultadoIa =
-            this.marketingAiService
-                .gerarResultado(
-                    produto.nome,
-                    produto.precoPromocional ?? 0,
+                tipoPromocao:
                     this.tipoPromocaoSelecionado,
-                    this.tomSelecionado
-                );
 
-        const contextoProduto =
-            this.marketingAiService
-                .obterContextoProduto(
-                    produto.nome
-                );
+                elementoVisual:
+                    this.elementoVisualSelecionado,
 
-        const campanha: MarketingCampaign = {
+                observacoes:
+                    this.observacoes
 
-            produtoNome: produto.nome,
+            })
+            .subscribe({
 
-            nomeEmpresa: this.empresa.nomeFantasia,
+                next: campanha => {
 
-            sloganEmpresa: this.empresa.slogan,
+                    this.campanhaGerada.emit(
+                        campanha
+                    );
 
-            precoOriginal: produto.precoVenda,
+                },
 
-            precoPromocional: produto.precoPromocional ?? 0,
+                error: erro => {
 
-            tipoPromocao: this.tipoPromocaoSelecionado,
+                    console.error(
+                        'Erro ao gerar campanha',
+                        erro
+                    );
 
-            elementoVisual: this.elementoVisualSelecionado,
+                }
 
-            contextoProduto: contextoProduto,
-
-            tom: this.tomSelecionado,
-
-            sugestaoIa: sugestao,
-
-            observacoes: this.observacoes,
-
-            resultadoIa: resultadoIa,
-
-            prompt: '',
-
-            dataCriacao: new Date().toISOString(),
-
-        };
-
-        campanha.prompt =
-            this.marketingPromptBuilder
-                .build(campanha);
-
-        const request =
-            MarketingAiMapper
-                .toRequest(campanha);
-
-        console.log(
-            'Marketing AI Request',
-            request
-        );
-
-        this.campanhaGerada.emit(
-            campanha
-        );
+            });
 
     }
 

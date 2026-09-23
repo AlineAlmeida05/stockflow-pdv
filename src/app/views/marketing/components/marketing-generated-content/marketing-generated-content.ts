@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { MarketingCampaign } from '../../../../core/models/marketing-campaign.model';
+import { MarketingCampaignResponse } from '../../../../core/models/marketing-campaign-response.model';
 
 @Component({
     selector: 'app-marketing-generated-content',
@@ -11,12 +11,12 @@ import { MarketingCampaign } from '../../../../core/models/marketing-campaign.mo
 export class MarketingGeneratedContent {
 
     constructor(
-        
+
     ) { }
 
     @Input()
-    campanha?: MarketingCampaign;
-    
+    campanha?: MarketingCampaignResponse;
+
     // salvarCampanha(): void {
 
     //     if (!this.campanha) {
@@ -32,5 +32,5 @@ export class MarketingGeneratedContent {
 
     // }
 
-    
+
 }

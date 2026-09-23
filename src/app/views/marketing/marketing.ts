@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { MarketingCampaignForm } from './components/marketing-campaign-form/marketing-campaign-form';
 import { MarketingGeneratedContent } from './components/marketing-generated-content/marketing-generated-content';
-
+import { OnInit } from '@angular/core';
+import { MarketingApiService } from '../../core/services/marketing-api.service';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
-import { MarketingCampaign } from '../../core/models/marketing-campaign.model';
+import { MarketingCampaignResponse } from '../../core/models/marketing-campaign-response.model';
 
 @Component({
     selector: 'app-marketing',
@@ -21,17 +21,53 @@ import { MarketingCampaign } from '../../core/models/marketing-campaign.model';
     templateUrl: './marketing.html',
     styleUrl: './marketing.scss'
 })
+export class Marketing implements OnInit {
 
-export class Marketing {
+    constructor(
+        private marketingApiService:
+            MarketingApiService
+    ) { }
 
-    campanhaAtual?: MarketingCampaign;
+    campanhas: MarketingCampaignResponse[] = [];
 
-    atualizarCampanha(
-        campanha: MarketingCampaign
-    ): void {
+    campanhaAtual?: MarketingCampaignResponse;
 
-        this.campanhaAtual =
-            campanha;
+    ngOnInit(): void {
+
+        this.marketingApiService
+            .listar()
+            .subscribe({
+
+                next: campanhas => {
+
+                    this.campanhas =
+                        campanhas;
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        'Erro ao carregar campanhas',
+                        erro
+                    );
+
+                }
+
+            });
 
     }
+
+    atualizarCampanha(
+        campanha: MarketingCampaignResponse
+    ): void {
+
+        this.campanhaAtual = campanha;
+
+        this.campanhas.unshift(
+            campanha
+        );
+
+    }
+
 }
