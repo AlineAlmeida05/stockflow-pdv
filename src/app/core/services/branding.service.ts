@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { COMPANY_CONFIG } from '../../config/company.config';
 import { BRANDING_CONFIG } from '../../config/branding.config';
 
 @Injectable({

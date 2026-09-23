@@ -32,9 +32,27 @@ export class EmpresaComponent implements OnInit {
 
     ngOnInit(): void {
 
-        this.empresa =
-            this.empresaService
-                .obter();
+        this.empresaService
+            .obter()
+            .subscribe({
+
+                next: empresa => {
+
+                    this.empresa =
+                        empresa;
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        'Erro ao carregar empresa:',
+                        erro
+                    );
+
+                }
+
+            });
 
     }
 

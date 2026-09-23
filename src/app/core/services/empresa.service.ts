@@ -1,80 +1,37 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+import { Observable } from 'rxjs';
 
 import { Empresa } from '../models/empresa.model';
-import { COMPANY_CONFIG } from '../../config/company.config';
-import { BRANDING_CONFIG } from '../../config/branding.config';
-import { SYSTEM_CONFIG } from '../../config/system.config';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
-
 export class EmpresaService {
 
-    private readonly STORAGE_KEY =
-        'empresa';
+    private readonly http =
+        inject(HttpClient);
 
-    obter(): Empresa {
+    private readonly apiUrl =
+        `${environment.apiUrl}/api/empresa`;
 
-        const dados =
-            localStorage.getItem(
-                this.STORAGE_KEY
-            );
+    obter(): Observable<Empresa> {
 
-        if (dados) {
-
-            return JSON.parse(dados);
-
-        }
-
-        return {
-
-            nomeFantasia: COMPANY_CONFIG.nomeFantasia,
-
-            razaoSocial: COMPANY_CONFIG.razaoSocial,
-
-            proprietario: COMPANY_CONFIG.proprietario,
-
-            cnpj: COMPANY_CONFIG.cnpj,
-
-            telefone: COMPANY_CONFIG.telefone,
-
-            email: COMPANY_CONFIG.email,
-
-            endereco: COMPANY_CONFIG.endereco,
-
-            cidade: COMPANY_CONFIG.cidade,
-
-            uf: COMPANY_CONFIG.uf,
-
-            logoUrl: BRANDING_CONFIG.logo,
-
-            slogan: BRANDING_CONFIG.slogan,
-
-            versaoSistema: SYSTEM_CONFIG.versaoSistema,
-
-            corPrimaria: BRANDING_CONFIG.cores.primaria,
-
-            corSecundaria: BRANDING_CONFIG.cores.secundaria,
-
-            dataImplantacao: new Date().toISOString()
-
-        };
+        return this.http.get<Empresa>(
+            this.apiUrl
+        );
 
     }
 
-    salvar(
+    atualizar(
         empresa: Empresa
-    ): void {
+    ): Observable<Empresa> {
 
-        localStorage.setItem(
-
-            this.STORAGE_KEY,
-
-            JSON.stringify(
-                empresa
-            )
-
+        return this.http.put<Empresa>(
+            this.apiUrl,
+            empresa
         );
 
     }
