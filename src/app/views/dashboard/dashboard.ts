@@ -56,7 +56,15 @@ export class Dashboard implements OnInit {
         | 'todos'
         = 'hoje';
 
-
+    abaSelecionada:
+        'geral'
+        | 'vendas'
+        | 'estoque'
+        | 'financeiro'
+        | 'promocoes'
+        | 'produtos'
+        | 'usuarios'
+        = 'geral';
 
     constructor(
         private vendaService: VendaService,
@@ -377,7 +385,7 @@ export class Dashboard implements OnInit {
         return this.vendas.filter(
             venda =>
                 venda.status !== 'cancelada' &&
-                venda.itens.some(
+                (venda.itens ?? []).some(
                     item =>
                         item.promocaoAplicada
                 )
@@ -400,7 +408,7 @@ export class Dashboard implements OnInit {
                         venda.status !== 'cancelada'
                 )
                 .flatMap(
-                    venda => venda.itens
+                    venda => venda.itens ?? []
                 )
                 .filter(
                     item =>
@@ -435,7 +443,7 @@ export class Dashboard implements OnInit {
             )
             .forEach(venda => {
 
-                venda.itens
+                (venda.itens ?? [])
                     .filter(
                         item =>
                             item.promocaoAplicada
@@ -705,6 +713,237 @@ export class Dashboard implements OnInit {
             maintainAspectRatio: false
 
         };
+
+    }
+
+    get cardsGeral() {
+
+        return this.cardsDashboard;
+
+    }
+
+    get cardsVendas() {
+
+        return [
+
+            {
+                title: `Vendas (${this.descricaoPeriodo})`,
+                value: this.totalVendasPeriodo,
+                variant: 'info' as const
+            },
+
+            {
+                title: 'Faturamento',
+                value:
+                    this.faturamentoPeriodo
+                        .toLocaleString(
+                            'pt-BR',
+                            {
+                                style: 'currency',
+                                currency: 'BRL'
+                            }
+                        ),
+                variant: 'success' as const
+            },
+
+            {
+                title: 'Vendas Hoje',
+                value: this.totalVendasHoje,
+                variant: 'info' as const
+            }
+
+        ];
+
+    }
+
+    get cardsEstoque() {
+
+        return [
+
+            {
+                title: 'Produtos',
+                value: this.produtos.length,
+                variant: 'info' as const
+            },
+
+            {
+                title: 'Estoque Baixo',
+                value: this.produtosComEstoqueBaixo,
+                variant: 'warning' as const
+            },
+
+            {
+                title: 'Sem Estoque',
+                value: this.produtosSemEstoque.length,
+                variant: 'danger' as const
+            }
+
+        ];
+
+    }
+
+    get cardsFinanceiro() {
+
+        return [
+
+            {
+                title: 'Fiados em Aberto',
+                value: this.fiadosEmAberto.toLocaleString(
+                    'pt-BR',
+                    {
+                        style: 'currency',
+                        currency: 'BRL'
+                    }
+                ),
+                variant: 'warning' as const
+            },
+
+            {
+                title: 'Clientes Devedores',
+                value: this.clientesDevedores,
+                variant: 'danger' as const
+            },
+
+            {
+                title: 'Faturamento',
+                value: this.faturamentoPeriodo.toLocaleString(
+                    'pt-BR',
+                    {
+                        style: 'currency',
+                        currency: 'BRL'
+                    }
+                ),
+                variant: 'success' as const
+            }
+
+        ];
+
+    }
+
+    get cardsPromocoes() {
+
+        return [
+
+            {
+                title: 'Promoções Ativas',
+                value: this.totalPromocoesAtivas,
+                variant: 'info' as const
+            },
+
+            {
+                title: 'Vendas Promocionais',
+                value: this.totalVendasPromocionais,
+                variant: 'success' as const
+            },
+
+            {
+                title: 'Promoções Eficientes',
+                value: this.totalPromocoesEficientes,
+                variant: 'success' as const
+            }
+
+        ];
+
+    }
+
+    get cardsProdutos() {
+
+        const produtosAtivos =
+            this.produtos.filter(
+                produto => produto.ativo
+            ).length;
+
+        const produtosInativos =
+            this.produtos.filter(
+                produto => !produto.ativo
+            ).length;
+
+        return [
+
+            {
+                title: 'Produtos',
+                value: this.produtos.length,
+                variant: 'info' as const
+            },
+
+            {
+                title: 'Ativos',
+                value: produtosAtivos,
+                variant: 'success' as const
+            },
+
+            {
+                title: 'Inativos',
+                value: produtosInativos,
+                variant: 'warning' as const
+            }
+
+        ];
+
+    }
+
+
+    get cardsUsuarios() {
+
+        return [
+
+            {
+                title: 'Usuários',
+                value: 0,
+                variant: 'info' as const
+            },
+
+            {
+                title: 'Acessos Hoje',
+                value: 0,
+                variant: 'success' as const
+            },
+
+            {
+                title: 'Vendas por Usuário',
+                value: '-',
+                variant: 'warning' as const
+            }
+
+        ];
+
+    }
+
+    get cardsAtuais() {
+
+        switch (
+        this.abaSelecionada
+        ) {
+
+            case 'vendas':
+
+                return this.cardsVendas;
+
+            case 'estoque':
+
+                return this.cardsEstoque;
+
+            case 'financeiro':
+
+                return this.cardsFinanceiro;
+
+            case 'promocoes':
+
+                return this.cardsPromocoes;
+
+            case 'produtos':
+
+                return this.cardsProdutos;
+
+            case 'usuarios':
+
+                return this.cardsUsuarios;
+
+            default:
+
+                return this.cardsGeral;
+
+        }
 
     }
 
