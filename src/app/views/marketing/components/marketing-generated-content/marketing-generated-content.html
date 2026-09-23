@@ -14,24 +14,44 @@
 
 <div class="marketing-card">
 
-    @if (campanha?.sugestaoIa) {
-    <div class="ai-suggestion">
-        <h3>
-            🤖 Sugestão da IA
-        </h3>
-        <div>
-            <strong>Tom:</strong>
-            {{ campanha.sugestaoIa.tom }}
-        </div>
-        <div>
-            <strong>Tipo da Promoção:</strong>
-            {{ campanha.sugestaoIa.tipoPromocao }}
-        </div>
-        <div>
-            <strong>Elemento Visual:</strong>
-            {{ campanha.sugestaoIa.elementoVisual }}
-        </div>
-    </div>
+    @if (campanha) {
+
+    <h3>🤖 Sugestão da IA</h3>
+
+    <p>
+        <strong>Tom:</strong>
+        {{ campanha.tom }}
+    </p>
+
+    <p>
+        <strong>Tipo da Promoção:</strong>
+        {{ campanha.tipoPromocao }}
+    </p>
+
+    <p>
+        <strong>Elemento Visual:</strong>
+        {{ campanha.elementoVisual }}
+    </p>
+
+    <hr>
+
+    <h3>📝 Legenda</h3>
+
+    <pre>
+{{ campanha.legenda }}
+    </pre>
+
+    <h3>📱 Texto WhatsApp</h3>
+
+    <pre>
+{{ campanha.textoWhatsapp }}
+    </pre>
+
+    <h3>🎨 Prompt</h3>
+
+    <pre>
+{{ campanha.prompt }}
+    </pre>
 
     } @else {
 
