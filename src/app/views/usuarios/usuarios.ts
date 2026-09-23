@@ -16,6 +16,8 @@ import { Tenant } from '../../core/models/tenant.model';
 import { TenantService } from '../../core/services/tenant.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { UsuarioCreateRequest } from '../../core/requests/usuario-create-request';
+import { UsuarioUpdateRequest } from '../../core/requests/usuario-update-request';
 
 @Component({
     selector: 'app-usuarios',
@@ -232,6 +234,16 @@ export class Usuarios implements OnInit {
 
         }
 
+        if (!tenant.id) {
+
+            this.alertService.error(
+                'Tenant inválido.'
+            );
+
+            return;
+
+        }
+
         if (!this.novoNome.trim()) {
 
             this.alertService.error(
@@ -273,19 +285,28 @@ export class Usuarios implements OnInit {
                     'Atualizando usuário...'
                 );
 
+            const request: UsuarioUpdateRequest = {
+
+                nome: this.novoNome,
+
+                email: this.novoEmail,
+
+                senha: this.novaSenha,
+
+                perfil: this.novoPerfil,
+
+                ativo: this.novoAtivo,
+
+                tenantId: tenant.id
+
+            };
+
             this.usuarioService
                 .atualizar(
                     this.usuarioEmEdicao.id,
-                    {
-                        ...this.usuarioEmEdicao,
-
-                        nome: this.novoNome,
-                        email: this.novoEmail,
-                        senha: this.novaSenha,
-                        perfil: this.novoPerfil,
-                        ativo: this.novoAtivo
-                    }
+                    request
                 )
+
                 .subscribe({
 
                     next: () => {
@@ -337,24 +358,18 @@ export class Usuarios implements OnInit {
                 'Criando usuário...'
             );
 
+        const request: UsuarioCreateRequest = {
+
+            nome: this.novoNome,
+            email: this.novoEmail,
+            senha: this.novaSenha,
+            perfil: this.novoPerfil,
+            tenantId: tenant.id
+
+        };
+
         this.usuarioService
-            .salvar({
-
-                nome: this.novoNome,
-
-                email: this.novoEmail,
-
-                senha: this.novaSenha,
-
-                perfil: this.novoPerfil,
-
-                ativo: this.novoAtivo,
-
-                tenant
-
-
-            })
-
+            .salvar(request)
             .subscribe({
 
                 next: () => {
@@ -417,7 +432,7 @@ export class Usuarios implements OnInit {
 
         if (
             !confirm(
-                `Deseja realmente excluir o usuário ${usuarioSelecionado.nome}?`
+                `Deseja realmente desativar o usuário ${usuarioSelecionado.nome}?`
             )
         ) {
 
@@ -427,7 +442,7 @@ export class Usuarios implements OnInit {
 
         const loadingToast =
             this.alertService.loading(
-                'Excluindo usuário...'
+                'Desativando usuário...'
             );
 
         this.usuarioService
@@ -445,7 +460,7 @@ export class Usuarios implements OnInit {
                     );
 
                     this.alertService.success(
-                        'Usuário excluído com sucesso.'
+                        'Usuário desativado com sucesso.'
                     );
 
                 },

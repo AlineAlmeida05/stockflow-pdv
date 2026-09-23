@@ -14,6 +14,8 @@ import { SearchInput } from '../../shared/components/search-input/search-input';
 import { Toolbar } from '../../shared/components/toolbar/toolbar';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { TenantContextService } from '../../core/services/tenant-context.service';
+import { TenantCreateRequest } from '../../core/requests/tenant-create-request';
+import { TenantUpdateRequest } from '../../core/requests/tenant-update-request';
 
 @Component({
     selector: 'app-tenants',
@@ -102,11 +104,6 @@ export class Tenants implements OnInit {
 
         this.carregarTenants();
 
-        this.tenantContextService
-            .carregarTenantPorSlug(
-                'adega-sintonia'
-            );
-
     }
 
     salvarTenant(): void {
@@ -126,22 +123,34 @@ export class Tenants implements OnInit {
                 'Criando tenant...'
             );
 
+        const request: TenantCreateRequest = {
+
+            nome: this.novoNome,
+
+            slug: this.novoSlug,
+
+            codigoTenant: this.novoCodigoTenant,
+
+            logoUrl: this.novoLogoUrl,
+
+            faviconUrl: this.novoFaviconUrl,
+
+            corPrimaria: this.novaCorPrimaria,
+
+            corSecundaria: this.novaCorSecundaria,
+
+            responsavel: this.novoResponsavel,
+
+            email: this.novoEmail,
+
+            cidade: this.novaCidade,
+
+            ativo: this.novoAtivo
+
+        };
+
         this.tenantService
-            .salvar({
-                nome: this.novoNome,
-                slug: this.novoSlug,
-                codigoTenant: this.novoCodigoTenant,
-                logoUrl: this.novoLogoUrl,
-                faviconUrl: this.novoFaviconUrl,
-                corPrimaria: this.novaCorPrimaria,
-                corSecundaria: this.novaCorSecundaria,
-                responsavel: this.novoResponsavel,
-                email: this.novoEmail,
-                cidade: this.novaCidade,
-                ativo: this.novoAtivo,
-                marketingIaHabilitado: false,
-                deliveryHabilitado: false
-            })
+            .salvar(request)
             .subscribe({
 
                 next: (tenantCriado) => {
@@ -331,24 +340,36 @@ export class Tenants implements OnInit {
                 'Atualizando tenant...'
             );
 
+        const request: TenantUpdateRequest = {
+
+            nome: this.novoNome,
+
+            slug: this.novoSlug,
+
+            codigoTenant: this.novoCodigoTenant,
+
+            logoUrl: this.novoLogoUrl,
+
+            faviconUrl: this.novoFaviconUrl,
+
+            corPrimaria: this.novaCorPrimaria,
+
+            corSecundaria: this.novaCorSecundaria,
+
+            responsavel: this.novoResponsavel,
+
+            email: this.novoEmail,
+
+            cidade: this.novaCidade,
+
+            ativo: this.novoAtivo
+
+        };
+
         this.tenantService
             .atualizar(
                 this.tenantEditando.id,
-                {
-                    ...this.tenantEditando,
-                    nome: this.novoNome,
-                    slug: this.novoSlug,
-                    codigoTenant: this.novoCodigoTenant,
-                    logoUrl: this.novoLogoUrl,
-                    faviconUrl: this.novoFaviconUrl,
-                    corPrimaria: this.novaCorPrimaria,
-                    corSecundaria: this.novaCorSecundaria,
-                    responsavel: this.novoResponsavel,
-                    email: this.novoEmail,
-                    cidade: this.novaCidade,
-                    ativo: this.novoAtivo,
-                }
-
+                request
             )
             .subscribe({
 

@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
 import { Tenant } from '../models/tenant.model';
 import { environment } from '../../../environments/environment';
+import { TenantCreateRequest } from '../requests/tenant-create-request';
+import { TenantUpdateRequest } from '../requests/tenant-update-request';
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +15,7 @@ export class TenantService {
         inject(HttpClient);
 
     private readonly apiUrl =
-    `${environment.apiUrl}/api/tenants`;
+        `${environment.apiUrl}/api/tenants`;
 
     listar(): Observable<Tenant[]> {
 
@@ -25,7 +26,7 @@ export class TenantService {
     }
 
     salvar(
-        tenant: Tenant
+        tenant: TenantCreateRequest
     ): Observable<Tenant> {
 
         return this.http.post<Tenant>(
@@ -47,7 +48,7 @@ export class TenantService {
 
     atualizar(
         id: string,
-        tenant: Tenant
+        tenant: TenantUpdateRequest
     ): Observable<Tenant> {
 
         return this.http.put<Tenant>(
