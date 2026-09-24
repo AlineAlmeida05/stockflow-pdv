@@ -4,12 +4,58 @@
         subtitle="Visão geral das vendas, estoque, fiados e promoções.">
     </app-page-title>
 
+    <div class="dashboard-tabs">
+
+        <button
+            type="button"
+            (click)="abaSelecionada = 'geral'">
+            Geral
+        </button>
+
+        <button
+            type="button"
+            (click)="abaSelecionada = 'vendas'">
+            Vendas
+        </button>
+
+        <button
+            type="button"
+            (click)="abaSelecionada = 'estoque'">
+            Estoque
+        </button>
+
+        <button
+            type="button"
+            (click)="abaSelecionada = 'financeiro'">
+            Financeiro
+        </button>
+
+        <button
+            type="button"
+            (click)="abaSelecionada = 'promocoes'">
+            Promoções
+        </button>
+
+        <button
+            type="button"
+            (click)="abaSelecionada = 'produtos'">
+            Produtos
+        </button>
+
+        <button
+            type="button"
+            (click)="abaSelecionada = 'usuarios'">
+            Usuários
+        </button>
+
+    </div>
+
     <div class="dashboard-filters">
         <button
             class="btn btn-primary"
             type="button"
             [class.active]="periodoSelecionado === 'hoje'"
-            (click)="periodoSelecionado = 'hoje'">
+            (click)="alterarPeriodo('hoje')">
             Hoje
         </button>
 
@@ -17,7 +63,7 @@
             class="btn btn-primary"
             type="button"
             [class.active]="periodoSelecionado === '7dias'"
-            (click)="periodoSelecionado = '7dias'">
+            (click)="alterarPeriodo('7dias')">
             7 dias
         </button>
 
@@ -25,7 +71,7 @@
             class="btn btn-primary"
             type="button"
             [class.active]="periodoSelecionado === '30dias'"
-            (click)="periodoSelecionado = '30dias'">
+            (click)="alterarPeriodo('30dias')">
             30 dias
         </button>
 
@@ -33,7 +79,7 @@
             class="btn btn-primary"
             type="button"
             [class.active]="periodoSelecionado === 'mes'"
-            (click)="periodoSelecionado = 'mes'">
+            (click)="alterarPeriodo('mes')">
             Mês Atual
         </button>
 
@@ -41,14 +87,16 @@
             class="btn btn-primary"
             type="button"
             [class.active]="periodoSelecionado === 'todos'"
-            (click)="periodoSelecionado = 'todos'">
+            (click)="alterarPeriodo('todos')">
             Todos
         </button>
     </div>
 
     <app-stat-card-carousel
-        [cards]="cardsDashboard">
+        [cards]="cardsAtuais">
     </app-stat-card-carousel>
+
+    @if (abaSelecionada === 'geral') {
 
     <app-dashboard-layout>
         <div summary>
@@ -62,7 +110,7 @@
                             Vendas {{ descricaoPeriodo }}
                         </span>
                         <strong>
-                            {{ totalVendasPeriodo }}
+                            {{ dashboard?.totalVendas ?? 0 }}
                         </strong>
                     </div>
 
@@ -71,30 +119,30 @@
                             Faturamento {{ descricaoPeriodo }}
                         </span>
                         <strong>
-                            {{ faturamentoPeriodo | currency:'BRL' }}
+                            {{ (dashboard?.faturamento ?? 0) | currency:'BRL' }}
                         </strong>
                     </div>
 
                     <div class="summary-item">
                         <span>Clientes Devedores</span>
                         <strong>
-                            {{ clientesDevedores }}
+                            {{ dashboard?.clientesDevedores ?? 0 }}
                         </strong>
                     </div>
 
                     <div class="summary-item">
                         <span>Baixo</span>
                         <strong>
-                            {{ produtosComEstoqueBaixo }}
+                            {{ dashboard?.produtosComEstoqueBaixo ?? 0 }}
                         </strong>
                     </div>
 
-                    @if (topProdutosVendidos.length > 0) {
+                    @if ((dashboard?.topProdutosVendidos?.length ?? 0) > 0) {
 
                     <div class="summary-item">
                         <span>Produto Top</span>
                         <strong>
-                            {{ topProdutosVendidos[0].nome }}
+                            {{ dashboard?.topProdutosVendidos?.[0]?.nome }}
                         </strong>
                     </div>
                     }
@@ -102,23 +150,26 @@
             </div>
         </div>
 
-        <div main>
-            <div class="dashboard-panel">
-                <h2>
-                    📈 Evolução das Vendas
-                </h2>
-
-                <app-dashboard-chart
-                    [chartData]="vendasChartData"
-                    [chartOptions]="vendasChartOptions">
-                </app-dashboard-chart>
-            </div>
-        </div>
     </app-dashboard-layout>
+    }
 
+    @if (abaSelecionada === 'vendas') {
     <app-dashboard-layout>
         <div summary>
             <div class="dashboard-panel">
+
+                <div main>
+                    <div class="dashboard-panel">
+                        <h2>
+                            📈 Evolução das Vendas
+                        </h2>
+
+                        <app-dashboard-chart
+                            [chartData]="vendasChartData"
+                            [chartOptions]="vendasChartOptions">
+                        </app-dashboard-chart>
+                    </div>
+                </div>
                 <h2>
                     💳 Receita por Forma de Pagamento
                 </h2>
@@ -145,7 +196,9 @@
             </div>
         </div>
     </app-dashboard-layout>
+    }
 
+    @if (abaSelecionada === 'estoque') {
     <app-dashboard-layout>
         <div summary>
             <div class="dashboard-panel">
@@ -161,18 +214,142 @@
             </div>
         </div>
 
-        <div main>
-            <div class="dashboard-panel">
-                <h2>
-                    📒 Evolução dos Fiados
-                </h2>
-
-                <app-dashboard-chart
-                    type="line"
-                    [chartData]="fiadosChartData"
-                    [chartOptions]="fiadosChartOptions">
-                </app-dashboard-chart>
-            </div>
-        </div>
     </app-dashboard-layout>
+    }
+
+    @if (abaSelecionada === 'financeiro') {
+
+    <div main>
+        <div class="dashboard-panel">
+            <h2>
+                📒 Evolução dos Fiados
+            </h2>
+
+            <app-dashboard-chart
+                type="line"
+                [chartData]="fiadosChartData"
+                [chartOptions]="fiadosChartOptions">
+            </app-dashboard-chart>
+        </div>
+    </div>
+    }
+
+    @if (abaSelecionada === 'promocoes') {
+
+    <div class="dashboard-panel">
+
+        <h2>
+            🎯 Resumo de Promoções
+        </h2>
+
+        <div class="executive-summary">
+
+            <div class="summary-item">
+                <span>Promoções Ativas</span>
+                <strong>
+                    {{ totalPromocoesAtivas }}
+                </strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Vendas Promocionais</span>
+                <strong>
+                    {{ totalVendasPromocionais }}
+                </strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Faturamento Promocional</span>
+                <strong>
+                    {{ faturamentoPromocional | currency:'BRL' }}
+                </strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Promoções Eficientes</span>
+                <strong>
+                    {{ totalPromocoesEficientes }}
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    }
+
+    @if (abaSelecionada === 'produtos') {
+
+    <div class="dashboard-panel">
+
+        <h2>
+            📦 Resumo de Produtos
+        </h2>
+
+        <div class="executive-summary">
+
+            <div class="summary-item">
+                <span>Total Produtos</span>
+                <strong>
+                    {{ produtos.length }}
+                </strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Sem Estoque</span>
+                <strong>
+                    {{ produtosSemEstoque.length }}
+                </strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Estoque Baixo</span>
+                <strong>
+                    {{ produtosEstoqueBaixo.length }}
+                </strong>
+            </div>
+
+            @if ((dashboard?.topProdutosVendidos?.length ?? 0) > 0) {
+
+            <div class="summary-item">
+                <span>Mais Vendido</span>
+                <strong>
+                    {{ dashboard?.topProdutosVendidos?.[0]?.nome }}
+                </strong>
+            </div>
+
+            }
+
+        </div>
+
+    </div>
+
+    }
+
+    @if (abaSelecionada === 'usuarios') {
+
+    <div class="dashboard-panel">
+
+        <h2>
+            👤 Indicadores de Usuários
+        </h2>
+
+        <div class="executive-summary">
+
+            <div class="summary-item">
+                <span>
+                    Módulo em preparação
+                </span>
+
+                <strong>
+                    Backend pendente
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    }
+
 </app-main-layout>
