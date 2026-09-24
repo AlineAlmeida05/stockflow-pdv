@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -22,6 +22,9 @@ import { StatCardCarousel } from '../../shared/components/stat-card-carousel/sta
 import { DashboardLayout } from '../../shared/components/dashboard-layout/dashboard-layout';
 import { DashboardChart } from '../../shared/components/dashboard-chart/dashboard-chart';
 import { ChartConfiguration } from 'chart.js';
+import { DashboardService } from '../../core/services/dashboard.service';
+import { DashboardResponse } from '../../core/models/dashboard-response.model';
+import { JsonPipe } from '@angular/common';
 
 @Component({
     selector: 'app-dashboard',
@@ -33,7 +36,8 @@ import { ChartConfiguration } from 'chart.js';
         StatCardCarousel,
         DashboardLayout,
         DashboardChart,
-        FormsModule
+        FormsModule,
+        JsonPipe
     ],
     templateUrl: './dashboard.html',
     styleUrl: './dashboard.scss'
@@ -47,6 +51,8 @@ export class Dashboard implements OnInit {
     produtos: Produto[] = [];
 
     movimentacoes: MovimentacaoEstoque[] = [];
+
+    dashboard?: DashboardResponse;
 
     periodoSelecionado:
         'hoje'
@@ -71,6 +77,8 @@ export class Dashboard implements OnInit {
         private fiadoService: FiadoService,
         private produtoService: ProdutoService,
         private movimentacaoService: MovimentacaoEstoqueService,
+        private dashboardService: DashboardService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -80,8 +88,9 @@ export class Dashboard implements OnInit {
             .subscribe({
                 next: vendas => {
 
-                    this.vendas =
-                        vendas;
+                    this.vendas = vendas;
+
+                    this.cdr.detectChanges();
 
                 },
 
@@ -98,8 +107,9 @@ export class Dashboard implements OnInit {
 
                 next: fiados => {
 
-                    this.fiados =
-                        fiados;
+                    this.fiados = fiados;
+
+                    this.cdr.detectChanges();
 
                 },
 
@@ -121,6 +131,8 @@ export class Dashboard implements OnInit {
 
                     this.produtos = produtos;
 
+                    this.cdr.detectChanges();
+
                 },
 
                 error: erro => {
@@ -137,8 +149,9 @@ export class Dashboard implements OnInit {
 
                 next: movimentacoes => {
 
-                    this.movimentacoes =
-                        movimentacoes;
+                    this.movimentacoes = movimentacoes;
+
+                    this.cdr.detectChanges();
 
                 },
 
@@ -150,7 +163,7 @@ export class Dashboard implements OnInit {
 
             });
 
-
+        this.carregarDashboard();                
 
     }
 
@@ -166,6 +179,22 @@ export class Dashboard implements OnInit {
                     venda.dataVenda
                 ).toDateString() === hoje
         );
+
+    }
+
+    alterarPeriodo(
+        periodo:
+            'hoje'
+            | '7dias'
+            | '30dias'
+            | 'mes'
+            | 'todos'
+    ) {
+
+        this.periodoSelecionado =
+            periodo;
+
+        this.carregarDashboard();
 
     }
 
@@ -237,127 +266,6 @@ export class Dashboard implements OnInit {
 
     }
 
-    get vendasOntem(): Venda[] {
-
-        const ontem = new Date();
-
-        ontem.setDate(
-            ontem.getDate() - 1
-        );
-
-        return this.vendas.filter(
-            venda =>
-                new Date(
-                    venda.dataVenda
-                ).toDateString() ===
-                ontem.toDateString()
-        );
-
-    }
-
-    get faturamentoOntem(): number {
-
-        return this.vendasOntem.reduce(
-            (total, venda) =>
-                total + venda.valorTotal,
-            0
-        );
-
-    }
-
-    get totalVendasOntem(): number {
-
-        return this.vendasOntem.length;
-
-    }
-
-    get ultimasVendas(): Venda[] {
-
-        return [...this.vendas]
-            .sort(
-                (a, b) =>
-                    new Date(b.dataVenda).getTime() -
-                    new Date(a.dataVenda).getTime()
-            )
-            .slice(0, 5);
-
-    }
-
-    get ultimosFiados(): Fiado[] {
-
-        return [...this.fiados]
-            .sort(
-                (a, b) =>
-                    new Date(
-                        b.dataLancamento
-                    ).getTime() -
-                    new Date(
-                        a.dataLancamento
-                    ).getTime()
-            )
-            .slice(0, 5);
-
-    }
-
-    get topProdutosVendidos() {
-
-        const ranking = new Map<
-            string,
-            {
-                nome: string;
-                quantidade: number;
-            }
-        >();
-
-        for (
-            const venda of this.vendasFiltradas) {
-
-            if (
-                venda.status === 'cancelada'
-            ) {
-                continue;
-            }
-
-            for (const item of (venda.itens ?? [])) {
-
-                const atual =
-                    ranking.get(
-                        item.produtoId
-                    );
-
-                if (atual) {
-
-                    atual.quantidade +=
-                        item.quantidade;
-
-                } else {
-
-                    ranking.set(
-                        item.produtoId,
-                        {
-                            nome:
-                                item.produtoNome,
-                            quantidade:
-                                item.quantidade
-                        }
-                    );
-
-                }
-
-            }
-
-        }
-
-        return [...ranking.values()]
-            .sort(
-                (a, b) =>
-                    b.quantidade -
-                    a.quantidade
-            )
-            .slice(0, 5);
-
-    }
-
     get produtosSemEstoque() {
 
         return this.produtos
@@ -393,108 +301,35 @@ export class Dashboard implements OnInit {
 
     }
 
-    get totalVendasPromocionais(): number {
+    get totalVendasPromocionais() {
 
-        return this.vendasPromocionais.length;
+        return this.dashboard
+            ?.totalVendasPromocionais
+            ?? 0;
 
     }
 
     get faturamentoPromocional(): number {
 
-        const total =
-            this.vendas
-                .filter(
-                    venda =>
-                        venda.status !== 'cancelada'
-                )
-                .flatMap(
-                    venda => venda.itens ?? []
-                )
-                .filter(
-                    item =>
-                        item.promocaoAplicada
-                )
-                .reduce(
-                    (total, item) =>
-                        total + item.subtotal,
-                    0
-                );
-
-        return Number(
-            total.toFixed(2)
-        );
+        return this.dashboard
+            ?.faturamentoPromocional
+            ?? 0;
 
     }
 
     get produtosPromocionaisMaisVendidos() {
 
-        const ranking = new Map<
-            string,
-            {
-                nome: string;
-                quantidade: number;
-            }
-        >();
-
-        this.vendas
-            .filter(
-                venda =>
-                    venda.status !== 'cancelada'
-            )
-            .forEach(venda => {
-
-                (venda.itens ?? [])
-                    .filter(
-                        item =>
-                            item.promocaoAplicada
-                    )
-                    .forEach(item => {
-
-                        const atual =
-                            ranking.get(
-                                item.produtoId
-                            );
-
-                        if (atual) {
-
-                            atual.quantidade +=
-                                item.quantidade;
-
-                        } else {
-
-                            ranking.set(
-                                item.produtoId,
-                                {
-                                    nome:
-                                        item.produtoNome,
-                                    quantidade:
-                                        item.quantidade
-                                }
-                            );
-
-                        }
-
-                    });
-
-            });
-
-        return [...ranking.values()]
-            .sort(
-                (a, b) =>
-                    b.quantidade -
-                    a.quantidade
-            )
-            .slice(0, 5);
+        return this.dashboard
+            ?.produtosPromocionaisMaisVendidos
+            ?? [];
 
     }
 
     get totalPromocoesAtivas(): number {
 
-        return this.produtos.filter(
-            produto =>
-                produto.promocaoAtiva
-        ).length;
-
+        return this.dashboard
+            ?.promocoesAtivas
+            ?? 0;
     }
 
     get possuiIndicadoresPromocionais(): boolean {
@@ -506,172 +341,39 @@ export class Dashboard implements OnInit {
 
     }
 
-    obterQuantidadeComprada(
-        produtoId: string
-    ): number {
+    get totalPromocoesEficientes() {
 
-        return this.movimentacoes
-            .filter(
-                mov =>
-                    mov.produtoId === produtoId &&
-                    mov.tipo === 'entrada'
-            )
-            .reduce(
-                (total, mov) =>
-                    total + mov.quantidade,
-                0
-            );
-
-    }
-
-    obterQuantidadeVendida(
-        produtoId: string
-    ): number {
-
-        return this.movimentacoes
-            .filter(
-                mov =>
-                    mov.produtoId === produtoId &&
-                    mov.tipo === 'saida'
-            )
-            .reduce(
-                (total, mov) =>
-                    total + mov.quantidade,
-                0
-            );
-
-    }
-
-    obterPercentualGiro(
-        produtoId: string
-    ): number {
-
-        const comprado =
-            this.obterQuantidadeComprada(
-                produtoId
-            );
-
-        const vendido =
-            this.obterQuantidadeVendida(
-                produtoId
-            );
-
-        if (comprado === 0) {
-            return 0;
-        }
-
-        return Math.round(
-            (vendido / comprado) * 100
-        );
-
-    }
-
-    get totalPromocoesEficientes(): number {
-
-        return this.produtos.filter(
-            produto =>
-                produto.promocaoAtiva &&
-                this.obterPercentualGiro(
-                    produto.id
-                ) >= 70
-        ).length;
+        return this.dashboard
+            ?.totalPromocoesEficientes
+            ?? 0;
 
     }
 
     get promocoesEficientes() {
 
-        return this.produtos
-            .filter(
-                produto =>
-                    produto.promocaoAtiva &&
-                    this.obterPercentualGiro(
-                        produto.id
-                    ) >= 70
-            )
-            .map(produto => ({
-                nome: produto.nome,
-                giro: this.obterPercentualGiro(
-                    produto.id
-                )
-            }))
-            .sort(
-                (a, b) =>
-                    b.giro - a.giro
-            );
+        return this.dashboard
+            ?.promocoesEficientes
+            ?? [];
 
     }
 
     get promocoesBaixaEfetividade() {
 
-        return this.produtos
-            .filter(
-                produto =>
-                    produto.promocaoAtiva &&
-                    this.obterPercentualGiro(
-                        produto.id
-                    ) < 40
-            )
-            .map(produto => ({
-                nome: produto.nome,
-                giro: this.obterPercentualGiro(
-                    produto.id
-                )
-            }))
-            .sort(
-                (a, b) =>
-                    a.giro - b.giro
-            );
+        return this.dashboard
+            ?.promocoesBaixaEfetividade
+            ?? [];
 
-    }
-
-    get evolucaoVendasPorDia() {
-
-        const agrupado = new Map<
-            string,
-            number
-        >();
-
-        for (
-            const venda of this.vendasFiltradas) {
-
-            if (
-                venda.status === 'cancelada'
-            ) {
-                continue;
-            }
-
-            const data =
-                new Date(
-                    venda.dataVenda
-                ).toLocaleDateString(
-                    'pt-BR'
-                );
-
-            const atual =
-                agrupado.get(data) ?? 0;
-
-            agrupado.set(
-                data,
-                atual + venda.valorTotal
-            );
-
-        }
-
-        return [...agrupado.entries()]
-            .map(
-                ([data, total]) => ({
-                    data,
-                    total
-                })
-            );
     }
 
     get vendasChartData() {
 
+        const evolucao =
+            this.dashboard?.evolucaoVendas ?? [];
+
         return {
 
             labels:
-                this.evolucaoVendasPorDia.map(
+                evolucao.map(
                     item => item.data
                 ),
 
@@ -682,7 +384,7 @@ export class Dashboard implements OnInit {
                     label: 'Faturamento',
 
                     data:
-                        this.evolucaoVendasPorDia.map(
+                        evolucao.map(
                             item => item.total
                         ),
 
@@ -728,14 +430,14 @@ export class Dashboard implements OnInit {
 
             {
                 title: `Vendas (${this.descricaoPeriodo})`,
-                value: this.totalVendasPeriodo,
+                value: this.dashboard?.totalVendas ?? 0,
                 variant: 'info' as const
             },
 
             {
                 title: 'Faturamento',
                 value:
-                    this.faturamentoPeriodo
+                    (this.dashboard?.faturamento ?? 0)
                         .toLocaleString(
                             'pt-BR',
                             {
@@ -762,19 +464,19 @@ export class Dashboard implements OnInit {
 
             {
                 title: 'Produtos',
-                value: this.produtos.length,
+                value: this.dashboard?.totalProdutos ?? 0,
                 variant: 'info' as const
             },
 
             {
                 title: 'Estoque Baixo',
-                value: this.produtosComEstoqueBaixo,
+                value: this.dashboard?.produtosComEstoqueBaixo ?? 0,
                 variant: 'warning' as const
             },
 
             {
                 title: 'Sem Estoque',
-                value: this.produtosSemEstoque.length,
+                value: this.dashboard?.produtosSemEstoque ?? 0,
                 variant: 'danger' as const
             }
 
@@ -788,31 +490,33 @@ export class Dashboard implements OnInit {
 
             {
                 title: 'Fiados em Aberto',
-                value: this.fiadosEmAberto.toLocaleString(
-                    'pt-BR',
-                    {
-                        style: 'currency',
-                        currency: 'BRL'
-                    }
-                ),
+                value: (this.dashboard?.fiadosEmAberto ?? 0)
+                    .toLocaleString(
+                        'pt-BR',
+                        {
+                            style: 'currency',
+                            currency: 'BRL'
+                        }
+                    ),
                 variant: 'warning' as const
             },
 
             {
                 title: 'Clientes Devedores',
-                value: this.clientesDevedores,
+                value: this.dashboard?.clientesDevedores ?? 0,
                 variant: 'danger' as const
             },
 
             {
                 title: 'Faturamento',
-                value: this.faturamentoPeriodo.toLocaleString(
-                    'pt-BR',
-                    {
-                        style: 'currency',
-                        currency: 'BRL'
-                    }
-                ),
+                value: (this.dashboard?.faturamento ?? 0)
+                    .toLocaleString(
+                        'pt-BR',
+                        {
+                            style: 'currency',
+                            currency: 'BRL'
+                        }
+                    ),
                 variant: 'success' as const
             }
 
@@ -826,7 +530,7 @@ export class Dashboard implements OnInit {
 
             {
                 title: 'Promoções Ativas',
-                value: this.totalPromocoesAtivas,
+                value: this.dashboard?.promocoesAtivas ?? 0,
                 variant: 'info' as const
             },
 
@@ -881,7 +585,6 @@ export class Dashboard implements OnInit {
         ];
 
     }
-
 
     get cardsUsuarios() {
 
@@ -961,49 +664,51 @@ export class Dashboard implements OnInit {
 
             {
                 title: `Vendas (${this.descricaoPeriodo})`,
-                value: this.totalVendasPeriodo,
+                value: this.dashboard?.totalVendas ?? 0,
                 variant: 'info'
             },
 
             {
                 title: 'Faturamento',
-                value: this.faturamentoPeriodo.toLocaleString(
-                    'pt-BR',
-                    {
-                        style: 'currency',
-                        currency: 'BRL'
-                    }
-                ),
+                value: (this.dashboard?.faturamento ?? 0)
+                    .toLocaleString(
+                        'pt-BR',
+                        {
+                            style: 'currency',
+                            currency: 'BRL'
+                        }
+                    ),
                 variant: 'success'
             },
 
             {
                 title: 'Fiados em Aberto',
-                value: this.fiadosEmAberto.toLocaleString(
-                    'pt-BR',
-                    {
-                        style: 'currency',
-                        currency: 'BRL'
-                    }
-                ),
+                value: (this.dashboard?.fiadosEmAberto ?? 0)
+                    .toLocaleString(
+                        'pt-BR',
+                        {
+                            style: 'currency',
+                            currency: 'BRL'
+                        }
+                    ),
                 variant: 'warning'
             },
 
             {
                 title: 'Produtos',
-                value: this.produtos.length,
+                value: this.dashboard?.totalProdutos ?? 0,
                 variant: 'info'
             },
 
             {
                 title: 'Clientes Devedores',
-                value: this.clientesDevedores,
+                value: this.dashboard?.clientesDevedores ?? 0,
                 variant: 'danger'
             },
 
             {
                 title: 'Baixo',
-                value: this.produtosComEstoqueBaixo,
+                value: this.dashboard?.produtosComEstoqueBaixo ?? 0,
                 variant: 'warning'
             }
 
@@ -1011,55 +716,16 @@ export class Dashboard implements OnInit {
 
     }
 
-    get faturamentoPorPagamento() {
-
-        const ranking = new Map<
-            string,
-            number
-        >();
-
-        for (
-            const venda of this.vendasFiltradas) {
-
-            if (
-                venda.status === 'cancelada'
-            ) {
-                continue;
-            }
-
-            const atual =
-                ranking.get(
-                    venda.formaPagamento
-                ) ?? 0;
-
-            ranking.set(
-                venda.formaPagamento,
-                atual + venda.valorTotal
-            );
-
-        }
-
-        return [...ranking.entries()]
-            .map(
-                ([formaPagamento, valor]) => ({
-
-                    formaPagamento,
-
-                    valor
-
-                })
-            );
-
-    }
-
     get pagamentoChartData() {
+
+        const pagamentos =
+            this.dashboard?.faturamentoPorPagamento ?? [];
 
         return {
 
             labels:
-                this.faturamentoPorPagamento.map(
-                    item =>
-                        item.formaPagamento
+                pagamentos.map(
+                    item => item.formaPagamento
                 ),
 
             datasets: [
@@ -1067,9 +733,8 @@ export class Dashboard implements OnInit {
                 {
 
                     data:
-                        this.faturamentoPorPagamento.map(
-                            item =>
-                                item.valor
+                        pagamentos.map(
+                            item => item.valor
                         ),
 
                     backgroundColor: [
@@ -1110,10 +775,13 @@ export class Dashboard implements OnInit {
 
     get topProdutosChartData() {
 
+        const produtos =
+            this.dashboard?.topProdutosVendidos ?? [];
+
         return {
 
             labels:
-                this.topProdutosVendidos.map(
+                produtos.map(
                     produto => produto.nome
                 ),
 
@@ -1121,10 +789,11 @@ export class Dashboard implements OnInit {
 
                 {
 
-                    label: 'Quantidade Vendida',
+                    label:
+                        'Quantidade Vendida',
 
                     data:
-                        this.topProdutosVendidos.map(
+                        produtos.map(
                             produto =>
                                 produto.quantidade
                         ),
@@ -1150,48 +819,15 @@ export class Dashboard implements OnInit {
 
     };
 
-    get evolucaoFiadosPorDia() {
-
-        const agrupado = new Map<
-            string,
-            number
-        >();
-
-        for (const fiado of this.fiados) {
-
-            const data =
-                new Date(
-                    fiado.dataLancamento
-                ).toLocaleDateString(
-                    'pt-BR'
-                );
-
-            const atual =
-                agrupado.get(data) ?? 0;
-
-            agrupado.set(
-                data,
-                atual + fiado.valorTotal
-            );
-
-        }
-
-        return [...agrupado.entries()]
-            .map(
-                ([data, total]) => ({
-                    data,
-                    total
-                })
-            );
-
-    }
-
     get fiadosChartData() {
+
+        const evolucao =
+            this.dashboard?.evolucaoFiados ?? [];
 
         return {
 
             labels:
-                this.evolucaoFiadosPorDia.map(
+                evolucao.map(
                     item => item.data
                 ),
 
@@ -1202,7 +838,7 @@ export class Dashboard implements OnInit {
                     label: 'Fiados',
 
                     data:
-                        this.evolucaoFiadosPorDia.map(
+                        evolucao.map(
                             item => item.total
                         ),
 
@@ -1236,43 +872,16 @@ export class Dashboard implements OnInit {
 
     }
 
-    get produtosMaiorGiro() {
-
-        return this.produtos
-
-            .map(produto => ({
-
-                nome: produto.nome,
-
-                giro:
-                    this.obterPercentualGiro(
-                        produto.id
-                    )
-
-            }))
-
-            .filter(
-                produto =>
-                    produto.giro > 0
-            )
-
-            .sort(
-                (a, b) =>
-                    b.giro - a.giro
-            )
-
-            .slice(0, 5);
-
-    }
-
     get giroChartData() {
+
+        const produtos =
+            this.dashboard?.giroEstoque ?? [];
 
         return {
 
             labels:
-                this.produtosMaiorGiro.map(
-                    produto =>
-                        produto.nome
+                produtos.map(
+                    produto => produto.nome
                 ),
 
             datasets: [
@@ -1282,9 +891,8 @@ export class Dashboard implements OnInit {
                     label: 'Giro (%)',
 
                     data:
-                        this.produtosMaiorGiro.map(
-                            produto =>
-                                produto.giro
+                        produtos.map(
+                            produto => produto.giro
                         ),
 
                     backgroundColor:
@@ -1407,5 +1015,23 @@ export class Dashboard implements OnInit {
         }
     }
 
+    private carregarDashboard() {
+
+        this.dashboardService
+            .obterDashboard(
+                this.periodoSelecionado
+            )
+            .subscribe({
+
+                next: dashboard => {
+
+                    this.dashboard =
+                        dashboard;
+
+                }
+
+            });
+
+    }
 
 }

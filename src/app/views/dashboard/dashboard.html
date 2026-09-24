@@ -55,7 +55,7 @@
             class="btn btn-primary"
             type="button"
             [class.active]="periodoSelecionado === 'hoje'"
-            (click)="periodoSelecionado = 'hoje'">
+            (click)="alterarPeriodo('hoje')">
             Hoje
         </button>
 
@@ -63,7 +63,7 @@
             class="btn btn-primary"
             type="button"
             [class.active]="periodoSelecionado === '7dias'"
-            (click)="periodoSelecionado = '7dias'">
+            (click)="alterarPeriodo('7dias')">
             7 dias
         </button>
 
@@ -71,7 +71,7 @@
             class="btn btn-primary"
             type="button"
             [class.active]="periodoSelecionado === '30dias'"
-            (click)="periodoSelecionado = '30dias'">
+            (click)="alterarPeriodo('30dias')">
             30 dias
         </button>
 
@@ -79,7 +79,7 @@
             class="btn btn-primary"
             type="button"
             [class.active]="periodoSelecionado === 'mes'"
-            (click)="periodoSelecionado = 'mes'">
+            (click)="alterarPeriodo('mes')">
             Mês Atual
         </button>
 
@@ -87,7 +87,7 @@
             class="btn btn-primary"
             type="button"
             [class.active]="periodoSelecionado === 'todos'"
-            (click)="periodoSelecionado = 'todos'">
+            (click)="alterarPeriodo('todos')">
             Todos
         </button>
     </div>
@@ -110,7 +110,7 @@
                             Vendas {{ descricaoPeriodo }}
                         </span>
                         <strong>
-                            {{ totalVendasPeriodo }}
+                            {{ dashboard?.totalVendas ?? 0 }}
                         </strong>
                     </div>
 
@@ -119,30 +119,30 @@
                             Faturamento {{ descricaoPeriodo }}
                         </span>
                         <strong>
-                            {{ faturamentoPeriodo | currency:'BRL' }}
+                            {{ (dashboard?.faturamento ?? 0) | currency:'BRL' }}
                         </strong>
                     </div>
 
                     <div class="summary-item">
                         <span>Clientes Devedores</span>
                         <strong>
-                            {{ clientesDevedores }}
+                            {{ dashboard?.clientesDevedores ?? 0 }}
                         </strong>
                     </div>
 
                     <div class="summary-item">
                         <span>Baixo</span>
                         <strong>
-                            {{ produtosComEstoqueBaixo }}
+                            {{ dashboard?.produtosComEstoqueBaixo ?? 0 }}
                         </strong>
                     </div>
 
-                    @if (topProdutosVendidos.length > 0) {
+                    @if ((dashboard?.topProdutosVendidos?.length ?? 0) > 0) {
 
                     <div class="summary-item">
                         <span>Produto Top</span>
                         <strong>
-                            {{ topProdutosVendidos[0].nome }}
+                            {{ dashboard?.topProdutosVendidos?.[0]?.nome }}
                         </strong>
                     </div>
                     }
@@ -309,12 +309,12 @@
                 </strong>
             </div>
 
-            @if (topProdutosVendidos.length > 0) {
+            @if ((dashboard?.topProdutosVendidos?.length ?? 0) > 0) {
 
             <div class="summary-item">
                 <span>Mais Vendido</span>
                 <strong>
-                    {{ topProdutosVendidos[0].nome }}
+                    {{ dashboard?.topProdutosVendidos?.[0]?.nome }}
                 </strong>
             </div>
 
