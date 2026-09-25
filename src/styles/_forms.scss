@@ -68,3 +68,26 @@
     font-size: 0.75rem;
     color: var(--color-danger);
 }
+
+.form-view-mode {
+    .field input,
+    .field select,
+    .field textarea {
+        background-color: var(--color-gray-100);
+        border-color: var(--color-gray-300);
+        color: var(--color-gray-500);
+        cursor: default;
+    }
+
+    .field label {
+        color: var(--color-gray-500);
+    }
+}
+
+.field input[readonly],
+.field textarea[readonly],
+.field select[disabled] {
+    background-color: var(--color-gray-100);
+    border-color: var(--color-gray-300);
+    color: var(--color-gray-500);
+}

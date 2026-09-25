@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { EventEmitter, Output } from '@angular/core';
 import { ActionIcons } from '../action-icons/action-icons';
 import { StatusBadge } from '../status-badge/status-badge';
+// import { ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-data-table',
@@ -11,17 +12,19 @@ import { StatusBadge } from '../status-badge/status-badge';
         StatusBadge
     ],
     templateUrl: './data-table.html',
-    styleUrl: './data-table.scss'
+    styleUrl: './data-table.scss',
+    // changeDetection:
+    //     ChangeDetectionStrategy.OnPush
 })
 export class DataTable {
 
     @Input()
-
     columns: {
         field: string;
         header: string;
-        type?: | 'text' | 'badge' | 'currency' | 'date';
+        type?: 'text' | 'badge' | 'currency' | 'date';
         align?: 'left' | 'center' | 'right';
+        badgeVariantField?: string;
     }[] = [];
 
     @Input()
@@ -45,6 +48,12 @@ export class DataTable {
     @Output()
     rowClick =
         new EventEmitter<unknown>();
+
+    @Input()
+    actionsHeader = 'Ações';
+
+    @Input()
+    clickableRows = false;
 
     obterVariantStatus(
         status: string

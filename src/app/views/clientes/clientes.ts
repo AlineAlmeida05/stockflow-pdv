@@ -1,10 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MainLayout } from '../../layout/main-layout/main-layout';
-
 import { Cliente } from '../../core/models/cliente.model';
 import { ClienteService } from '../../core/services/cliente.service';
 import { FormsModule } from '@angular/forms';
-
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { SearchInput } from '../../shared/components/search-input/search-input';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
@@ -50,8 +48,11 @@ export class Clientes implements OnInit {
 
     mostrarFormulario = false;
 
-    resumosClientes:
-        Record<string, ClienteResumo> = {};
+    resumosClientes: Record<string, ClienteResumo> = {};
+
+    modoVisualizacao = false;
+
+    clienteSelecionado: Cliente | null = null;
 
     colunasClientes: {
         field: string;
@@ -64,36 +65,14 @@ export class Clientes implements OnInit {
                 header: 'Nome'
             },
             {
-                field: 'telefone',
-                header: 'Telefone'
-            },
-            {
-                field: 'limiteCredito',
-                header: 'Limite',
-                type: 'currency',
-                align: 'center'
-            },
-            {
                 field: 'saldoDevedor',
                 header: 'Saldo',
                 type: 'currency',
                 align: 'center'
             },
             {
-                field: 'creditoDisponivel',
-                header: 'Disponível',
-                type: 'currency',
-                align: 'center'
-            },
-            {
                 field: 'status',
                 header: 'Status',
-                align: 'center'
-            },
-            {
-                field: 'dataCadastro',
-                header: 'Cadastro',
-                type: 'date',
                 align: 'center'
             }
         ];
@@ -175,12 +154,6 @@ export class Clientes implements OnInit {
         }
 
         if (this.clienteEditandoId) {
-
-            const clienteAtual =
-                this.clientes.find(
-                    cliente =>
-                        cliente.id === this.clienteEditandoId
-                );
 
             this.clienteService
                 .atualizar({
@@ -297,6 +270,8 @@ export class Clientes implements OnInit {
 
     editarCliente(cliente: Cliente): void {
 
+        this.modoVisualizacao = false;
+
         this.mostrarFormulario = true;
 
         this.clienteEditandoId = cliente.id;
@@ -332,9 +307,13 @@ export class Clientes implements OnInit {
 
     cancelarEdicao(): void {
 
+        this.modoVisualizacao = false;
+
         this.mostrarFormulario = false;
 
         this.clienteEditandoId = null;
+
+        this.clienteSelecionado = null;
 
         this.nome = '';
 
@@ -348,7 +327,11 @@ export class Clientes implements OnInit {
 
     novoCliente(): void {
 
+        this.modoVisualizacao = false;
+
         this.mostrarFormulario = true;
+
+        this.clienteSelecionado = null;
 
         this.clienteEditandoId = null;
 
@@ -446,19 +429,85 @@ export class Clientes implements OnInit {
         switch (status) {
 
             case 'EM_DIA':
-                return '🟢 Em Dia';
+                return 'Em Dia';
 
             case 'DEVEDOR':
-                return '🟠 Devedor';
+                return 'Devedor';
 
             case 'INADIMPLENTE':
-                return '🔴 Inadimplente';
+                return 'Inadimplente';
 
             case 'LIMITE_EXCEDIDO':
-                return '🚨 Limite Excedido';
+                return 'Limite Excedido';
 
             default:
                 return status;
+
         }
+
     }
+
+    visualizarCliente(
+        cliente: unknown
+    ): void {
+
+        const clienteSelecionado =
+            cliente as Cliente;
+
+        this.clienteSelecionado = clienteSelecionado;
+
+        this.clienteEditandoId = clienteSelecionado.id;
+
+        this.nome = clienteSelecionado.nome;
+
+        this.telefone = clienteSelecionado.telefone;
+
+        this.limiteCredito = clienteSelecionado.limiteCredito;
+
+        this.observacao = clienteSelecionado.observacao ?? '';
+
+        this.mostrarFormulario = true;
+
+        this.modoVisualizacao = true;
+    }
+
+    habilitarEdicao(): void {
+
+        this.modoVisualizacao = false;
+
+    }
+
+    formatarData(
+        data?: string
+    ): string {
+
+        if (!data) {
+            return '';
+        }
+
+        return new Date(data)
+            .toLocaleDateString(
+                'pt-BR'
+            );
+
+    }
+
+    formatarMoeda(
+        valor?: number
+    ): string {
+
+        if (valor === null || valor === undefined) {
+            return '';
+        }
+
+        return valor.toLocaleString(
+            'pt-BR',
+            {
+                style: 'currency',
+                currency: 'BRL'
+            }
+        );
+
+    }
+
 }

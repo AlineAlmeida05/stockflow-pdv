@@ -7,6 +7,7 @@
                 track column.field
                 ) {
                 <th
+                    scope="col"
                     [class.text-center]="column.align === 'center'"
                     [class.text-right]="column.align === 'right'">
                     {{ column.header }}
@@ -14,8 +15,8 @@
                 }
 
                 @if (showActions) {
-                <th>
-                    Ações
+                <th scope="col">
+                    {{ actionsHeader }}
                 </th>
                 }
             </tr>
@@ -25,18 +26,11 @@
             @if (!data.length) {
 
             <tr>
-
                 <td
                     class="table-empty"
-                    [attr.colspan]="
-            showActions
-                ? columns.length + 1
-                : columns.length">
-
+                    [attr.colspan]="showActions ? columns.length + 1 : columns.length">
                     Nenhum registro encontrado.
-
                 </td>
-
             </tr>
 
             } @else {
@@ -44,10 +38,10 @@
             @for (
             row of data;
             track $index;
-            let rowIndex = $index
             ) {
-            <tr>
-
+            <tr
+                [class.table-row-clickable]="clickableRows"
+                (click)="rowClick.emit(row)">
                 @for (
                 column of columns;
                 track column.field
@@ -56,24 +50,34 @@
                 <td
                     [class.text-center]="column.align === 'center'"
                     [class.text-right]="column.align === 'right'">
-
                     @if (column.type === 'badge') {
 
                     <app-status-badge
                         [text]="$any(row)[column.field]"
-                        [variant]="
-                obterVariantStatus(
-                    $any(row)[column.field]
-                )">
+                        [variant]="column.badgeVariantField 
+                            ? $any(row)[column.badgeVariantField]
+                            : 'success'">
                     </app-status-badge>
 
                     } @else if (column.type === 'currency') {
 
-                    {{
-                    formatCurrency(
-                    $any(row)[column.field]
-                    )
-                    }}
+                    <span
+                        [class.preco-original-riscado]="
+                            column.field === 'precoVenda' &&
+                            $any(row).precoPromocional > 0
+                        "
+                                            [class.preco-promocional]="
+                            column.field === 'precoPromocional' &&
+                            $any(row).precoPromocional > 0
+                        ">
+
+                        {{
+                        formatCurrency(
+                        $any(row)[column.field]
+                        )
+                        }}
+
+                    </span>
 
                     } @else if (column.type === 'date') {
 

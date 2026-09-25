@@ -27,119 +27,159 @@
             }
             @if (mostrarFormulario) {
             <div class="card formulario-usuario">
-                <h3>
-                    {{ modoEdicao
-                    ? 'Editar Usuário'
-                    : 'Cadastrar Usuário'
-                    }}
-                </h3>
-
-                @if (usuarioEmEdicao) {
-                <p class="formulario-usuario__subtitle">
-                    {{ usuarioEmEdicao.nome }}
-                </p>
-
-                }
-
-                <div class="field">
-                    <label>
-                        Nome
-                    </label>
-                    <input
-                        type="text"
-                        placeholder="Nome"
-                        [(ngModel)]="novoNome">
-                </div>
-                <div class="field">
-                    <label>
-                        Email
-                    </label>
-                    <input
-                        type="email"
-                        autocomplete="off"
-                        placeholder="Email"
-                        [(ngModel)]="novoEmail">
-                </div>
-
-                <div class="field">
-                    <label>
-                        Senha
-                    </label>
-                    <input
-                        type="password"
-                        autocomplete="off"
-                        placeholder="Senha"
-                        [(ngModel)]="novaSenha">
-                </div>
-
-                @if (ehSuperAdmin) {
-
-                <div class="field">
-
-                    <label>
-                        Tenant
-                    </label>
-
-                    <select
-                        [(ngModel)]="tenantCadastroId"
-                        (ngModelChange)="filtrarPorTenant($event)">
-
-                        <option value>
-                            Todos os Tenants
-                        </option>
-
-                        @for (
-                        tenant of tenants;
-                        track tenant.id
-                        ) {
-
-                        <option
-                            [value]="tenant.id">
-                            {{ tenant.nome }}
-                        </option>
-                        }
-                    </select>
-                </div>
-
-                }
-                <div class="field">
-                    <label>
-                        Selecione
-                    </label>
-                    <select
-                        [(ngModel)]="novoPerfil">
-                        @for (
-                        perfil of perfisDisponiveis;
-                        track perfil
-                        ) {
-
-                        <option
-                            [value]="perfil">
-                            {{ perfil }}
-                        </option>
-
-                        }                        
-                    </select>
-                </div>
-                <div class="formulario-acoes">
-                    <button
-                        class="btn btn-primary"
-                        type="button"
-                        [disabled]="salvando"
-                        (click)="salvarUsuario()">
+                <div class="formulario">
+                    <h3>
                         {{
-                        salvando
-                        ? 'Salvando...'
-                        : 'Salvar Alterações'
+                        !usuarioEmEdicao
+                        ? 'Cadastrar Usuário'
+                        : modoVisualizacao
+                        ? 'Usuário'
+                        : 'Editar Usuário'
                         }}
-                    </button>
+                    </h3>
 
-                    <button
-                        class="btn btn-secondary"
-                        type="button"
-                        (click)="cancelarEdicao()">
-                        Cancelar
-                    </button>
+                    <div class="field">
+                        <label>
+                            Nome
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="Nome"
+                            [(ngModel)]="novoNome"
+                            [readonly]="modoVisualizacao">
+                    </div>
+                    <div class="field">
+                        <label>
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            autocomplete="off"
+                            placeholder="Email"
+                            [(ngModel)]="novoEmail"
+                            [readonly]="modoVisualizacao">
+                    </div>
+
+                    @if (!modoVisualizacao && !modoEdicao) {
+
+                    <div class="field">
+                        <label>
+                            Senha
+                        </label>
+
+                        <input
+                            type="password"
+                            autocomplete="off"
+                            placeholder="Senha"
+                            [(ngModel)]="novaSenha">
+                    </div>
+
+                    }
+
+                    @if (ehSuperAdmin) {
+
+                    <div class="field">
+
+                        <label>
+                            Tenant
+                        </label>
+
+                        <select
+                            [(ngModel)]="tenantCadastroId"
+                            (ngModelChange)="filtrarPorTenant($event)"
+                            [disabled]="modoVisualizacao || modoEdicao">
+
+                            <option value>
+                                Todos os Tenants
+                            </option>
+
+                            @for (
+                            tenant of tenants;
+                            track tenant.id
+                            ) {
+
+                            <option
+                                [value]="tenant.id">
+                                {{ tenant.nome }}
+                            </option>
+                            }
+                        </select>
+                    </div>
+
+                    }
+                    <div class="field">
+                        <label>
+                            Perfil
+                        </label>
+                        <select
+                            [(ngModel)]="novoPerfil"
+                            [disabled]="modoVisualizacao">
+                            @for (
+                            perfil of perfisDisponiveis;
+                            track perfil
+                            ) {
+
+                            <option
+                                [value]="perfil">
+                                {{ perfil }}
+                            </option>
+
+                            }
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>
+                            Status
+                        </label>
+
+                        <input
+                            type="text"
+                            [value]="novoAtivo ? 'Ativo' : 'Inativo'"
+                            readonly>
+                    </div>
+                    <div class="formulario-acoes">
+
+                        @if (modoVisualizacao) {
+
+                        <button
+                            class="btn btn-primary"
+                            type="button"
+                            (click)="habilitarEdicao()">
+                            Editar
+                        </button>
+
+                        <button
+                            class="btn btn-secondary"
+                            type="button"
+                            (click)="cancelarEdicao()">
+                            Fechar
+                        </button>
+
+                        } @else {
+
+                        <button
+                            class="btn btn-primary"
+                            type="button"
+                            [disabled]="salvando"
+                            (click)="salvarUsuario()">
+                            {{
+                            salvando
+                            ? 'Salvando...'
+                            : 'Salvar Alterações'
+                            }}
+                        </button>
+
+                        <button
+                            class="btn btn-secondary"
+                            type="button"
+                            (click)="cancelarEdicao()">
+                            Cancelar
+                        </button>
+
+                        }
+
+                    </div>
                 </div>
             </div>
             }
@@ -199,7 +239,10 @@
                     [columns]="colunasUsuarios"
                     [data]="usuariosFiltrados"
                     [showActions]="true"
-                    (edit)="editarUsuario($event)"
+                    [showEditAction]="false"
+                    actionsHeader="Acesso"
+                    [clickableRows]="true"
+                    (rowClick)="visualizarUsuario($event)"
                     (delete)="excluirUsuario($event)">
                 </app-data-table>
             </div>

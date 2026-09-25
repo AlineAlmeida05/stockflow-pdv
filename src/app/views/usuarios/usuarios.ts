@@ -8,7 +8,6 @@ import { DataTable } from '../../shared/components/data-table/data-table';
 import { Toolbar } from '../../shared/components/toolbar/toolbar';
 import { SearchInput } from '../../shared/components/search-input/search-input';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
-import { TenantContextService } from '../../core/services/tenant-context.service';
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../core/services/alert.service';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
@@ -52,6 +51,8 @@ export class Usuarios implements OnInit {
 
     modoEdicao = false;
 
+    modoVisualizacao = false;
+
     novoNome = '';
 
     novoEmail = '';
@@ -66,6 +67,7 @@ export class Usuarios implements OnInit {
 
     textoBusca = '';
 
+
     colunasUsuarios: {
         field: string;
         header: string;
@@ -74,10 +76,6 @@ export class Usuarios implements OnInit {
             {
                 field: 'nome',
                 header: 'Nome'
-            },
-            {
-                field: 'email',
-                header: 'Email'
             },
             {
                 field: 'perfil',
@@ -93,7 +91,6 @@ export class Usuarios implements OnInit {
 
     constructor(
         private usuarioService: UsuarioService,
-        private tenantContextService: TenantContextService,
         private alertService: AlertService,
         private tenantService: TenantService,
         private authService: AuthService,
@@ -129,10 +126,6 @@ export class Usuarios implements OnInit {
                     next: usuarios => {
 
                         this.usuarios = usuarios;
-
-                        setTimeout(() => {
-
-                        }, 1000);
 
                         this.cdr.detectChanges();
 
@@ -510,6 +503,8 @@ export class Usuarios implements OnInit {
         const usuarioSelecionado =
             usuario as Usuario;
 
+        this.modoVisualizacao = false;
+
         this.usuarioEmEdicao = usuarioSelecionado;
 
         this.novoNome = usuarioSelecionado.nome;
@@ -526,9 +521,13 @@ export class Usuarios implements OnInit {
 
         this.modoEdicao = true;
 
+        this.tenantCadastroId = usuarioSelecionado.tenantId ?? '';
+
     }
 
     novoUsuario(): void {
+
+        this.modoVisualizacao = false;
 
         this.limparFormulario();
 
@@ -540,6 +539,8 @@ export class Usuarios implements OnInit {
     }
 
     cancelarEdicao(): void {
+
+        this.modoVisualizacao = false;
 
         this.mostrarFormulario = false;
 
@@ -627,10 +628,6 @@ export class Usuarios implements OnInit {
 
                     this.cdr.detectChanges();
 
-                    setTimeout(() => {
-
-                    }, 1000);
-
                 },
 
                 error: erro => {
@@ -703,6 +700,59 @@ export class Usuarios implements OnInit {
                 return [];
 
         }
+
+    }
+
+    visualizarUsuario(
+        usuario: unknown
+    ): void {
+
+        const usuarioSelecionado =
+            usuario as Usuario;
+
+        this.usuarioEmEdicao = usuarioSelecionado;
+
+        this.novoNome = usuarioSelecionado.nome;
+
+        this.novoEmail =usuarioSelecionado.email;
+
+        this.novaSenha = '';
+
+        this.novoPerfil = usuarioSelecionado.perfil;
+
+        this.novoAtivo = usuarioSelecionado.ativo;
+
+        this.mostrarFormulario = true;
+
+        this.modoVisualizacao = true;
+
+        this.tenantCadastroId = usuarioSelecionado.tenantId ?? '';
+
+
+    }
+
+    obterNomeTenant(
+        tenantId?: string
+    ): string {
+
+        if (!tenantId) {
+            return '';
+        }
+
+        const tenant =
+            this.tenants.find(
+                tenant => tenant.id === tenantId
+            );
+
+        return tenant?.nome ?? '';
+
+    }
+
+    habilitarEdicao(): void {
+
+        this.modoVisualizacao = false;
+
+        this.modoEdicao = true;
 
     }
 

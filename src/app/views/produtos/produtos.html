@@ -10,13 +10,7 @@
             class="btn btn-primary"
             (click)="novoProduto()"
             [disabled]="salvandoProduto">
-            {{
-            salvandoProduto
-            ? 'Cadastrando...'
-            : produtoEditandoId
-            ? 'Atualizar Produto'
-            : '+ Novo Produto'
-            }}
+            + Novo Produto
         </button>
 
         <app-search-input
@@ -30,9 +24,11 @@
     <div class="card produto-form-card">
         <h3>
             {{
-            produtoEditandoId
-            ? 'Editar Produto'
-            : 'Novo Produto'
+            !produtoEditandoId
+            ? 'Novo Produto'
+            : modoVisualizacao
+            ? 'Produto'
+            : 'Editar Produto'
             }}
         </h3>
         <div class="formulario">
@@ -41,7 +37,8 @@
                 <input
                     type="text"
                     placeholder="Nome"
-                    [(ngModel)]="nome">
+                    [(ngModel)]="nome"
+                    [readonly]="modoVisualizacao">
             </div>
 
             <div class="field field-large">
@@ -49,7 +46,8 @@
                 <input
                     type="text"
                     placeholder="Categoria"
-                    [(ngModel)]="categoria">
+                    [(ngModel)]="categoria"
+                    [readonly]="modoVisualizacao">
             </div>
             <div class="field field-small">
                 <label>Código do Produto</label>
@@ -64,26 +62,71 @@
                 <input
                     type="text"
                     placeholder="Código de Barras"
-                    [(ngModel)]="codigoBarras">
+                    [(ngModel)]="codigoBarras"
+                    [readonly]="modoVisualizacao">
             </div>
 
             <div class="field field-small">
                 <label>Estoque Mínimo</label>
                 <input
                     type="number"
-                    [(ngModel)]="estoqueMinimo">
+                    [(ngModel)]="estoqueMinimo"
+                    [readonly]="modoVisualizacao">
             </div>
 
             <div class="field field-small">
                 <label>Preço de Venda</label>
+                @if (modoVisualizacao) {
+
+                <input
+                    type="text"
+                    [value]="formatarMoeda(precoVenda)"
+                    readonly>
+
+                } @else {
+
                 <input
                     type="number"
-                    placeholder="Preço Venda"
                     [(ngModel)]="precoVenda">
+
+                }
+            </div>
+
+            <div class="field field-small">
+                <label>Estoque Atual</label>
+
+                <input
+                    type="number"
+                    [value]="estoqueAtual"
+                    readonly>
+            </div>
+
+            <div class="field field-small">
+                <label>Status</label>
+
+                <input
+                    type="text"
+                    [value]="produtoAtivo ? 'Ativo' : 'Inativo'"
+                    readonly>
             </div>
         </div>
 
         <div class="form-actions">
+
+            @if (modoVisualizacao) {
+            <button
+                type="button"
+                class="btn btn-primary"
+                (click)="habilitarEdicao()">
+                Editar
+            </button>
+            <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="cancelarEdicao()">
+                Fechar
+            </button>
+            } @else {
             <button
                 type="button"
                 class="btn btn-primary"
@@ -104,6 +147,7 @@
                 (click)="cancelarEdicao()">
                 Cancelar
             </button>
+            }
         </div>
     </div>
     }
@@ -131,7 +175,10 @@
             [columns]="colunasProdutos"
             [data]="produtosTabela"
             [showActions]="true"
-            (edit)="editarProdutoTabela($event)"
+            [showEditAction]="false"
+            actionsHeader="Controle"
+            [clickableRows]="true"
+            (rowClick)="visualizarProduto($event)"
             (delete)="excluirProdutoTabela($event)">
         </app-data-table>
     </div>

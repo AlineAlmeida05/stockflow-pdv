@@ -14,6 +14,10 @@ export interface Usuario {
 
     perfil: string;
 
-    tenant?: Tenant;
+    tenantId?: string;
+
+    tenantNome?: string;
+
+    status?: string;
 
 }

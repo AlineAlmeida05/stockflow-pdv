@@ -3,16 +3,14 @@
 }
 
 .formulario-cliente {
-  padding: 20px;
-  margin-bottom: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
 }
 
 .formulario-acoes {
   display: flex;
   gap: 12px;
+  margin-top: 12px;
 }
 
 input,
@@ -44,4 +42,20 @@ label {
 .secao-clientes p {
   margin-top: 4px;
   color: var(--color-gray-500);
+}
+
+.formulario-cliente.visualizacao {
+  input,
+  textarea {
+    background-color: var(--color-tertiary);
+    border-color: var(--color-gray-300);
+    color: var(--color-gray-700);
+    cursor: default;
+  }
+
+  label {
+    color: var(--color-gray-500);
+  }
+
+  
 }

@@ -1,16 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
 import { MainLayout } from '../../layout/main-layout/main-layout';
-
 import { Produto } from '../../core/models/produto.model';
 import { ProdutoService } from '../../core/services/produto.service';
-
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { SearchInput } from '../../shared/components/search-input/search-input';
-
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
-
 import { DataTable } from '../../shared/components/data-table/data-table';
 import { Toolbar } from '../../shared/components/toolbar/toolbar';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
@@ -59,9 +54,13 @@ export class Produtos implements OnInit {
 
   mostrarFormulario = false;
 
+  modoVisualizacao = false;
+
   produtoAtivo = true;
 
   salvandoProduto = false;
+
+  produtoSelecionado: Produto | null = null;
 
   colunasProdutos: {
     field: string;
@@ -74,17 +73,8 @@ export class Produtos implements OnInit {
     align?: 'left' | 'center' | 'right';
   }[] = [
       {
-        field: 'codigo',
-        header: 'Código'
-      },
-      {
         field: 'nome',
         header: 'Produto'
-      },
-      {
-        field: 'categoria',
-        header: 'Categoria',
-        align: 'center'
       },
       {
         field: 'precoVenda',
@@ -95,6 +85,7 @@ export class Produtos implements OnInit {
       {
         field: 'precoPromocional',
         header: 'Preço Promo',
+        type: 'currency',
         align: 'center'
       },
       {
@@ -123,6 +114,8 @@ export class Produtos implements OnInit {
       .subscribe({
 
         next: produtos => {
+
+          console.log(produtos);
 
           this.produtos = [...produtos];
 
@@ -312,30 +305,6 @@ export class Produtos implements OnInit {
 
   }
 
-  editarProduto(produto: Produto): void {
-
-    this.mostrarFormulario = true;
-
-    this.produtoEditandoId = produto.id;
-
-    this.nome = produto.nome;
-
-    this.categoria = produto.categoria;
-
-    this.produtoAtivo = produto.ativo;
-
-    this.codigoBarras = produto.codigoBarras;
-
-    this.precoVenda = produto.precoVenda;
-
-    this.estoqueMinimo = produto.estoqueMinimo;
-
-    this.estoqueAtual = produto.estoqueAtual;
-
-    this.dataCadastro = produto.dataCadastro;
-
-  }
-
   excluirProduto(
     produto: Produto
   ): void {
@@ -414,6 +383,12 @@ export class Produtos implements OnInit {
 
         ...produto,
 
+        precoPromocional:
+          produto.precoPromocional &&
+            produto.precoPromocional > 0
+            ? produto.precoPromocional
+            : '-',
+
         status:
           produto.ativo
             ? 'Ativo'
@@ -425,6 +400,8 @@ export class Produtos implements OnInit {
   }
 
   novoProduto(): void {
+
+    this.modoVisualizacao = false;
 
     this.mostrarFormulario = true;
 
@@ -444,6 +421,8 @@ export class Produtos implements OnInit {
 
   cancelarEdicao(): void {
 
+    this.modoVisualizacao = false;
+
     this.mostrarFormulario = false;
 
     this.produtoEditandoId = null;
@@ -457,16 +436,6 @@ export class Produtos implements OnInit {
     this.precoVenda = 0;
 
     this.estoqueMinimo = 0;
-
-  }
-
-  editarProdutoTabela(
-    produto: unknown
-  ): void {
-
-    this.editarProduto(
-      produto as Produto
-    );
 
   }
 
@@ -548,6 +517,73 @@ export class Produtos implements OnInit {
     return produto.ativo
       ? '⏸️'
       : '▶️';
+
+  }
+
+  visualizarProduto(
+    produto: unknown
+  ): void {
+
+    const produtoSelecionado =
+      produto as Produto;
+
+    this.produtoEditandoId =
+      produtoSelecionado.id;
+
+    this.nome =
+      produtoSelecionado.nome;
+
+    this.categoria =
+      produtoSelecionado.categoria;
+
+    this.codigo =
+      produtoSelecionado.codigo ?? '';
+
+    this.codigoBarras =
+      produtoSelecionado.codigoBarras;
+
+    this.precoVenda =
+      produtoSelecionado.precoVenda;
+
+    this.estoqueAtual =
+      produtoSelecionado.estoqueAtual;
+
+    this.estoqueMinimo =
+      produtoSelecionado.estoqueMinimo;
+
+    this.produtoAtivo =
+      produtoSelecionado.ativo;
+
+    this.dataCadastro =
+      produtoSelecionado.dataCadastro;
+
+    this.mostrarFormulario = true;
+
+    this.modoVisualizacao = true;
+
+  }
+
+  habilitarEdicao(): void {
+
+    this.modoVisualizacao = false;
+
+  }
+
+  formatarMoeda(
+    valor?: number
+  ): string {
+
+    if (valor === null || valor === undefined) {
+      return '';
+    }
+
+    return valor.toLocaleString(
+      'pt-BR',
+      {
+        style: 'currency',
+        currency: 'BRL'
+      }
+    );
 
   }
 }
