@@ -18,6 +18,7 @@ export class ClienteService {
 
   private readonly apiUrl =
     `${environment.apiUrl}/api/clientes`;
+    
 
   listar(): Observable<Cliente[]> {
 
@@ -67,5 +68,17 @@ export class ClienteService {
       `${this.apiUrl}/${clienteId}/resumo`
     );
   }
+
+  reativar(
+    id: string
+  ) {
+
+    return this.http.patch(
+      `${this.apiUrl}/${id}/reativar`,
+      {}
+    );
+
+  }
+
 
 }

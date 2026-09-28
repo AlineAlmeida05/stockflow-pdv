@@ -238,12 +238,10 @@
                 <app-data-table
                     [columns]="colunasUsuarios"
                     [data]="usuariosFiltrados"
-                    [showActions]="true"
-                    [showEditAction]="false"
-                    actionsHeader="Acesso"
+                    [showActions]="false"
                     [clickableRows]="true"
-                    (rowClick)="visualizarUsuario($event)"
-                    (delete)="excluirUsuario($event)">
+                    (toggle)="alternarStatusUsuario($event)"
+                    (rowClick)="visualizarUsuario($event)">
                 </app-data-table>
             </div>
 

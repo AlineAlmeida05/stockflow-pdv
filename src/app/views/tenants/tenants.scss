@@ -5,23 +5,11 @@
 .formulario-tenant {
   padding: 20px;
   margin-bottom: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
 }
 
 .formulario-acoes {
   display: flex;
   gap: 12px;
-}
-
-input,
-select {
-  border: 1px solid var(--color-gray-300);
-}
-
-label {
-  color: var(--color-gray-700);
 }
 
 .secao-tenants {

@@ -2,12 +2,6 @@
   display: block;
 }
 
-.formulario {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
 .estoque-form-card h3 {
   margin-top: 0;
   margin-bottom: 1rem;
@@ -38,9 +32,57 @@
 }
 
 .produto-selecionado {
-  margin-top: 8px;
-  padding: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
   border-radius: 8px;
   background: rgba(59, 130, 246, 0.08);
   border: 1px solid rgba(59, 130, 246, 0.15);
+  margin-bottom: 12px;
+}
+
+.produto-selecionado strong {
+  color: var(--color-primary);
+}
+
+.produtos-resumo {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  padding: 8px 0 12px;
+}
+
+.produtos-resumo span {
+  font-weight: 600;
+}
+
+.resumo-info {
+  color: var(--color-info);
+  font-weight: 600;
+}
+
+.resumo-normal {
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.resumo-atencao {
+  color: #d97706;
+  font-weight: 600;
+}
+
+.resumo-critico {
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+.resumo-sem-estoque {
+  color: #7f1d1d;
+  font-weight: 600;
 }

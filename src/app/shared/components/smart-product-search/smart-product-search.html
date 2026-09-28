@@ -1,13 +1,16 @@
 <div class="field">
+
     <label>
         Produto
     </label>
 
     <input
-    type="text"
-    [(ngModel)]="textoBusca"
-    (input)="mostrarResultados = true"
-    (keyup.enter)="selecionarPrimeiroResultado()">
+        #produtoInput
+        type="text"
+        placeholder="Código, código de barras ou nome"
+        [(ngModel)]="textoBusca"
+        (input)="buscar()"
+        (keyup.enter)="selecionarPrimeiroResultado()">
 
     @if (
     mostrarResultados &&
@@ -24,34 +27,31 @@
         <button
             type="button"
             (click)="selecionarProduto(produto)">
+
             <strong>
                 {{ produto.nome }}
             </strong>
 
-            <small
-                [class.estoque-baixo]="
-        produto.estoqueAtual > 0 &&
-        produto.estoqueAtual <= 5
-    "
-                [class.sem-estoque]="
-        produto.estoqueAtual <= 0
-    ">
+            <small>
 
-                @if (produto.estoqueAtual <= 0) {
+                Código:
+                {{ produto.codigo }}
 
-                Sem estoque
+                @if (produto.codigoBarras) {
 
-                } @else {
-
-                Estoque:
-                {{ produto.estoqueAtual }}
+                •
+                {{ produto.codigoBarras }}
 
                 }
 
             </small>
 
         </button>
+
         }
+
     </div>
+
     }
+
 </div>

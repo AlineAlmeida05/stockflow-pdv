@@ -83,7 +83,7 @@
 
                         <input
                             type="text"
-                            [value]="formatarMoeda(clienteSelecionado?.saldoDevedor) ?? ''"
+                            [value]="formatarSaldoDevedor(clienteSelecionado?.saldoDevedor)"
                             readonly>
                     </div>
 
@@ -199,11 +199,12 @@
             <div class="card">
                 <app-data-table
                     [columns]="colunasClientes"
-                    [data]="clientesFiltrados"
-                    [showActions]="true"
+                    [data]="clientesTabela"
+                    [showActions]="false"
                     [showEditAction]="false"
                     actionsHeader="Excluir"
                     [clickableRows]="true"
+                    (toggle)="alternarStatusCliente($event)"
                     (rowClick)="visualizarCliente($event)"
                     (delete)="excluirClienteTabela($event)">
                 </app-data-table>

@@ -7,30 +7,93 @@
     <app-split-panel>
         <div left>
             <div class="card estoque-form-card">
-                <h3>
-                    Cadastro de Entrada de Estoque
-                </h3>
 
                 <div class="formulario">
-                    <div class="field">
-                        <app-product-search
-                            [produtos]="produtosAtivos"
-                            (produtoSelecionado)="selecionarProduto($event)">
-                        </app-product-search>
 
-                        @if (produtoSelecionadoId) {
-                        <div class="produto-selecionado">
-                            Produto selecionado:
+                    <h3>
+                        Incluir Entrada de Estoque
+                    </h3>
+
+                    @if (!produtoSelecionado) {
+                        <app-empty-state message="Selecione um produto na tabela ao lado
+                        ou utilize a busca para localizar um produto.">                            
+                        </app-empty-state>              
+
+                    }
+
+                    @if (produtoSelecionado) {
+
+                    <div class="produto-selecionado">
+
+                        <div>
+                            Produto:
                             <strong>
-                                {{ obterNomeProdutoSelecionado() }}
+                                {{ produtoSelecionado.nome }}
                             </strong>
                         </div>
+
+                        <div>
+                            Estoque Atual:
+                            <strong>
+                                {{ produtoSelecionado.estoqueAtual }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            Estoque Mínimo:
+                            <strong>
+                                {{ produtoSelecionado.estoqueMinimo }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            Custo Médio:
+                            <strong>
+                                {{
+                                formatarMoeda(
+                                produtoSelecionado.custoMedio
+                                )
+                                }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            Status:
+                            <strong>
+                                {{
+                                produtoSelecionado.estoqueAtual === 0
+                                ? 'Sem Estoque'
+                                : produtoSelecionado.estoqueAtual <=
+                                produtoSelecionado.estoqueMinimo
+                                ? 'Crítico'
+                                : produtoSelecionado.estoqueAtual <=
+                                produtoSelecionado.estoqueMinimo * 2
+                                ? 'Atenção'
+                                : 'Em Estoque'
+                                }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+                    
+
+                    <div class="field">
+                        @if (!produtoSelecionadoId) {
+
+                        <app-smart-product-search
+                            [produtos]="produtosAtivos"
+                            (produtoSelecionado)="selecionarProduto($event)">
+                        </app-smart-product-search>
+
                         }
+
                     </div>
 
                     <div class="field">
                         <label>Quantidade</label>
                         <input
+                            #quantidadeInput
                             type="number"
                             min="1"
                             placeholder="0"
@@ -45,6 +108,7 @@
                         </app-currency-input>
                     </div>
                     <div class="form-actions">
+
                         <button
                             type="button"
                             class="btn btn-primary"
@@ -56,7 +120,15 @@
                             : 'Adicionar Estoque'
                             }}
                         </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            (click)="cancelar()">
+                            Cancelar
+                        </button>
                     </div>
+                    }
                 </div>
             </div>
         </div>
@@ -64,38 +136,29 @@
         <div right>
             <app-expandable-card
                 title="Produtos"
-                [expanded]="false">
+                [expanded]="true">
+                <div class="produtos-resumo">
 
-                <div class="estoque-resumo">
-                    <app-stat-card
-                        title="Sem Estoque"
-                        [value]="totalSemEstoque"
-                        variant="danger">
-                    </app-stat-card>
+                    <span class="resumo-info">
+                        Produtos: {{ totalProdutos }}
+                    </span>
 
-                    <app-stat-card
-                        title="Produtos"
-                        [value]="totalProdutos"
-                        variant="info">
-                    </app-stat-card>
+                    <span class="resumo-normal">
+                        Normal: {{ totalNormal }}
+                    </span>
 
-                    <app-stat-card
-                        title="Normal"
-                        [value]="totalNormal"
-                        variant="success">
-                    </app-stat-card>
+                    <span class="resumo-atencao">
+                        Atenção: {{ totalAtencao }}
+                    </span>
 
-                    <app-stat-card
-                        title="Atenção"
-                        [value]="totalAtencao"
-                        variant="warning">
-                    </app-stat-card>
+                    <span class="resumo-critico">
+                        Crítico: {{ totalCritico }}
+                    </span>
 
-                    <app-stat-card
-                        title="Crítico"
-                        [value]="totalCritico"
-                        variant="danger">
-                    </app-stat-card>
+                    <span class="resumo-sem-estoque">
+                        Sem Estoque: {{ totalSemEstoque }}
+                    </span>
+
                 </div>
 
                 <app-search-input
@@ -105,13 +168,15 @@
 
                 <app-data-table
                     [columns]="colunasProdutos"
-                    [data]="produtosTabela">
+                    [data]="produtosTabela"
+                    [clickableRows]="true"
+                    (rowClick)="selecionarProdutoDaTabela($event)">
                 </app-data-table>
             </app-expandable-card>
 
             <app-expandable-card
                 title="Últimas Entradas"
-                [expanded]="true">
+                [expanded]="false">
                 <app-data-table
                     [columns]="colunasMovimentacoes"
                     [data]="movimentacoesRecentes">

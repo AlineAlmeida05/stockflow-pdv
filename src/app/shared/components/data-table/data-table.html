@@ -41,7 +41,11 @@
             ) {
             <tr
                 [class.table-row-clickable]="clickableRows"
-                (click)="rowClick.emit(row)">
+                [class.table-row-inativo]="$any(row).ativo === false"
+                (click)="rowClick.emit(row)" [class.table-row-critico]="
+                    $any(row).statusEstoque === 'Crítico' ||
+                    $any(row).statusEstoque === 'Sem Estoque'
+                ">
                 @for (
                 column of columns;
                 track column.field
@@ -52,12 +56,49 @@
                     [class.text-right]="column.align === 'right'">
                     @if (column.type === 'badge') {
 
-                    <app-status-badge
-                        [text]="$any(row)[column.field]"
-                        [variant]="column.badgeVariantField 
-                            ? $any(row)[column.badgeVariantField]
-                            : 'success'">
-                    </app-status-badge>
+                    <span
+                        [class.status-ativo]="
+        $any(row)[column.field] === 'Ativo'"
+                        [class.status-inativo]="
+        $any(row)[column.field] === 'Inativo'"
+                        [class.status-em-dia]="
+        $any(row)[column.field] === 'Em Dia'"
+                        [class.status-devedor]="
+        $any(row)[column.field] === 'Devedor'
+    "
+                        [class.status-inadimplente]="
+        $any(row)[column.field] === 'Inadimplente'
+    "
+                        [class.status-limite-excedido]="
+        $any(row)[column.field] === 'Limite Excedido'
+    "
+                        [class.status-em-dia]="
+    $any(row)[column.field] === 'Em Dia'
+"
+                        [class.status-devedor]="
+    $any(row)[column.field] === 'Devedor'
+"
+                        [class.status-inadimplente]="
+    $any(row)[column.field] === 'Inadimplente'
+"
+                        [class.status-limite-excedido]="
+    $any(row)[column.field] === 'Limite Excedido'
+" [class.status-em-estoque]="
+    $any(row)[column.field] === 'Em Estoque'
+"
+                        [class.status-atencao]="
+    $any(row)[column.field] === 'Atenção'
+"
+                        [class.status-critico]="
+    $any(row)[column.field] === 'Crítico'
+"
+                        [class.status-sem-estoque]="
+    $any(row)[column.field] === 'Sem Estoque'
+">
+
+                        {{ $any(row)[column.field] }}
+
+                    </span>
 
                     } @else if (column.type === 'currency') {
 
@@ -66,16 +107,26 @@
                             column.field === 'precoVenda' &&
                             $any(row).precoPromocional > 0
                         "
-                                            [class.preco-promocional]="
+                        [class.preco-promocional]="
                             column.field === 'precoPromocional' &&
                             $any(row).precoPromocional > 0
                         ">
 
-                        {{
-                        formatCurrency(
-                        $any(row)[column.field]
-                        )
-                        }}
+                        <span
+                            [class.saldo-positivo]="
+        column.field === 'saldoDevedor' &&
+        $any(row)[column.field] <= 0
+    "
+                            [class.saldo-negativo]="
+        column.field === 'saldoDevedor' &&
+        $any(row)[column.field] > 0
+    ">
+                            {{
+                            formatCurrency(
+                            $any(row)[column.field]
+                            )
+                            }}
+                        </span>
 
                     </span>
 
@@ -86,6 +137,30 @@
                     $any(row)[column.field]
                     )
                     }}
+
+                    } @else if (column.type === 'toggle') {
+
+                    <div
+                        class="toggle-container"
+                        (click)="$event.stopPropagation();
+                            toggle.emit(row)">
+
+                        <div
+                            class="toggle-switch"
+                            [class.toggle-ativo]="
+                                $any(row)[column.field] === 'Ativo'
+                            ">
+
+                            <span
+                                class="toggle-slider"
+                                [attr.data-text]="
+                                $any(row)[column.field] === 'Ativo'
+                                    ? 'Ativo'
+                                    : 'Inativo'">
+                            </span>
+
+                        </div>
+                    </div>
 
                     } @else {
 

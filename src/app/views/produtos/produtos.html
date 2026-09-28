@@ -174,10 +174,11 @@
         <app-data-table
             [columns]="colunasProdutos"
             [data]="produtosTabela"
-            [showActions]="true"
+            [showActions]="false"
             [showEditAction]="false"
             actionsHeader="Controle"
             [clickableRows]="true"
+            (toggle)="alternarStatusProduto($event)"
             (rowClick)="visualizarProduto($event)"
             (delete)="excluirProdutoTabela($event)">
         </app-data-table>

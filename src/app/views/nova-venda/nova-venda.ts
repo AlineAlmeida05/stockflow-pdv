@@ -10,12 +10,12 @@ import { CurrencyPipe } from '@angular/common';
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { AlertService } from '../../core/services/alert.service';
-import { ProductSelector } from '../../shared/components/product-selector/product-selector';
-import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { DataTable } from '../../shared/components/data-table/data-table';
 import { HostListener } from '@angular/core';
 import { CurrencyInput } from '../../shared/components/currency-input/currency-input';
 import { ClienteResumo } from '../../core/models/cliente-resumo.model';
+import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
+import { SmartProductSearch } from '../../shared/components/smart-product-search/smart-product-search';
 
 @Component({
     selector: 'app-nova-venda',
@@ -26,10 +26,9 @@ import { ClienteResumo } from '../../core/models/cliente-resumo.model';
         CurrencyPipe,
         PageTitle,
         EmptyState,
-        ProductSelector,
-        SplitPanel,
         DataTable,
-        CurrencyInput
+        CurrencyInput,
+        SmartProductSearch
     ],
     templateUrl: './nova-venda.html',
     styleUrl: './nova-venda.scss'
@@ -87,13 +86,13 @@ export class NovaVenda implements OnInit {
                 align: 'center'
             },
             {
-                field: 'valorUnitario',
+                field: 'precoVenda',
                 header: 'Unit.',
                 type: 'currency',
                 align: 'center'
             },
             {
-                field: 'desconto',
+                field: 'precoPromocional',
                 header: 'Promoção',
                 type: 'currency',
                 align: 'center'
@@ -111,8 +110,8 @@ export class NovaVenda implements OnInit {
             },
         ];
 
-    @ViewChild(ProductSelector)
-    productSelector?: ProductSelector;
+    @ViewChild(SmartProductSearch)
+    smartProductSearch?: SmartProductSearch;
 
     @ViewChild('quantidadeInput')
     quantidadeInput?: ElementRef<HTMLInputElement>;
@@ -124,7 +123,8 @@ export class NovaVenda implements OnInit {
         private produtoService: ProdutoService,
         private vendaService: VendaService,
         private clienteService: ClienteService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private confirmDialogService: ConfirmDialogService
     ) { }
 
     ngOnInit(): void {
@@ -327,26 +327,18 @@ export class NovaVenda implements OnInit {
             if (itemExistente) {
 
                 itemExistente.quantidade = quantidadeTotal;
-
                 itemExistente.precoUnitario = precoAplicado;
-
                 itemExistente.promocaoAplicada = produto.promocaoAtiva;
-
-                itemExistente.subtotal = quantidadeTotal *
-                    precoAplicado;
+                itemExistente.subtotal = quantidadeTotal * precoAplicado;
 
             } else {
 
                 this.carrinho.push({
 
                     produto,
-
                     precoUnitario: precoAplicado,
-
                     quantidade: this.quantidade,
-
                     subtotal: this.quantidade * precoAplicado,
-
                     promocaoAplicada: produto.promocaoAtiva
 
                 });
@@ -354,15 +346,21 @@ export class NovaVenda implements OnInit {
             }
 
             this.quantidade = null;
-
             this.produtoSelecionadoId = '';
+            this.smartProductSearch?.limpar();
 
-            this.productSelector?.limpar();
+            setTimeout(() => {
+
+                this.smartProductSearch?.focar();
+
+            });
 
         } finally {
 
             this.adicionandoItem = false;
         }
+
+        console.log(this.carrinho);
     }
 
     removerItem(produtoId: string): void {
@@ -394,8 +392,10 @@ export class NovaVenda implements OnInit {
                 'Selecione uma forma de pagamento.'
             );
 
+
             return;
         }
+
         if (
             this.formaPagamento === 'dinheiro'
         ) {
@@ -405,9 +405,12 @@ export class NovaVenda implements OnInit {
                 this.valorRecebido < this.total
             ) {
 
+                this.finalizandoVenda = false;
+
                 this.alertService.warning(
                     'Valor recebido insuficiente.'
                 );
+
 
                 return;
             }
@@ -419,9 +422,97 @@ export class NovaVenda implements OnInit {
 
             return;
         }
-        
+
+
+        if (
+            this.formaPagamento === 'fiado' &&
+            !this.clienteSelecionadoId
+        ) {
+
+            this.finalizandoVenda = false;
+
+            this.alertService.warning(
+                'Selecione um cliente para venda fiado.'
+            );
+
+            return;
+
+        }
+
+        if (
+            this.formaPagamento === 'fiado' &&
+            this.resumoCliente?.status === 'Inadimplente'
+        ) {
+
+            this.finalizandoVenda = false;
+
+            this.alertService.error(
+                'Cliente inadimplente. Venda fiado não permitida.'
+            );
+
+            return;
+
+        }
+
+        if (
+            this.formaPagamento === 'fiado' &&
+            this.resumoCliente &&
+            this.total >
+            this.resumoCliente.creditoDisponivel
+        ) {
+
+            this.finalizandoVenda = false;
+
+            this.alertService.error(
+                `Limite de crédito insuficiente.
+        Disponível: ${this.resumoCliente.creditoDisponivel
+                    .toLocaleString(
+                        'pt-BR',
+                        {
+                            style: 'currency',
+                            currency: 'BRL'
+                        }
+                    )
+                }`
+            );
+
+            return;
+
+        }
+
+        console.log('Passou nas validações');
+
         this.salvarVenda();
 
+
+    }
+
+    get clienteBloqueadoFiado(): boolean {
+
+        return (
+            this.formaPagamento === 'fiado'
+            &&
+            !!this.resumoCliente
+            &&
+            (
+                this.resumoCliente.status === 'Inadimplente'
+                ||
+                this.resumoCliente.status === 'Limite Excedido'
+            )
+        );
+
+    }
+
+    get creditoInsuficiente(): boolean {
+
+        return (
+            this.formaPagamento === 'fiado'
+            &&
+            !!this.resumoCliente
+            &&
+            this.total >
+            this.resumoCliente.creditoDisponivel
+        );
 
     }
 
@@ -478,27 +569,14 @@ export class NovaVenda implements OnInit {
 
                 quantidade: item.quantidade,
 
-                valorUnitario: item.precoUnitario,
+                precoVenda: item.produto.precoVenda,
 
-                subtotal: item.subtotal,
-
-                promocao: item.promocaoAplicada ? 'Promoção' : '',
-
-                desconto:
+                precoPromocional:
                     item.promocaoAplicada
-                        ? `${Math.round(
-                            (
-                                (item.produto.precoVenda -
-                                    item.precoUnitario)
-                                /
-                                item.produto.precoVenda
-                            ) * 100
-                        )}% (R$ ${(
-                            (item.produto.precoVenda -
-                                item.precoUnitario)
-                            * item.quantidade
-                        ).toFixed(2)})`
-                        : '-'
+                        ? item.precoUnitario
+                        : 0,
+
+                subtotal: item.subtotal
 
             })
         );
@@ -509,34 +587,52 @@ export class NovaVenda implements OnInit {
         row: unknown
     ): void {
 
-        const confirmar = confirm(
-            'Deseja remover este item do carrinho?'
-        );
-
-        if (!confirmar) {
-
-            return;
-
-        }
-
         const item =
             row as {
                 produtoId: string;
+                produtoNome: string;
             };
 
-        this.removerItem(
-            item.produtoId
-        );
+        this.confirmDialogService.open({
+
+            title: 'Remover Item',
+
+            message:
+                `Deseja remover "${item.produtoNome}" do carrinho?`,
+
+            type: 'danger',
+
+            confirmText: 'Remover',
+
+            cancelText: 'Cancelar',
+
+            onConfirm: () => {
+
+                this.removerItem(
+                    item.produtoId
+                );
+
+                this.alertService.success(
+                    `"${item.produtoNome}" removido do carrinho.`
+                );
+
+            }
+
+        });
 
     }
 
     focarQuantidade(): void {
 
-        queueMicrotask(() => {
+        setTimeout(() => {
 
             this.quantidadeInput
                 ?.nativeElement
                 .focus();
+
+            this.quantidadeInput
+                ?.nativeElement
+                .select();
 
         });
 
@@ -610,7 +706,7 @@ export class NovaVenda implements OnInit {
 
         if (event.key === 'Escape') {
 
-            this.productSelector?.limpar();
+            this.smartProductSearch?.limpar();
 
             this.produtoSelecionadoId = '';
 
@@ -632,6 +728,15 @@ export class NovaVenda implements OnInit {
 
             this.finalizarVenda();
 
+        }
+
+        if (event.key === 'F3') {
+
+            event.preventDefault();
+
+            this.smartProductSearch?.focar();
+
+            return;
         }
 
     }
@@ -731,12 +836,14 @@ export class NovaVenda implements OnInit {
 
                     this.valorRecebido = null;
 
-                    this.productSelector?.limpar();
+                    this.smartProductSearch?.limpar();
 
                     this.carregarProdutos();
 
                     this.resumoCliente = undefined;
                     this.clienteSelecionadoId = '';
+
+                    this.smartProductSearch?.focar();
 
                 },
 

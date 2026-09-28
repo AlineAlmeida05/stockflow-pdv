@@ -17,6 +17,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { UsuarioCreateRequest } from '../../core/requests/usuario-create-request';
 import { UsuarioUpdateRequest } from '../../core/requests/usuario-update-request';
+import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 
 @Component({
     selector: 'app-usuarios',
@@ -71,7 +72,7 @@ export class Usuarios implements OnInit {
     colunasUsuarios: {
         field: string;
         header: string;
-        type?: 'text' | 'badge' | 'currency' | 'date';
+        type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle';
     }[] = [
             {
                 field: 'nome',
@@ -84,8 +85,8 @@ export class Usuarios implements OnInit {
             },
             {
                 field: 'status',
-                header: 'Status',
-                type: 'badge'
+                header: 'Controle',
+                type: 'toggle'
             }
         ];
 
@@ -94,7 +95,8 @@ export class Usuarios implements OnInit {
         private alertService: AlertService,
         private tenantService: TenantService,
         private authService: AuthService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private confirmDialogService: ConfirmDialogService
     ) { }
 
     ngOnInit(): void {
@@ -714,7 +716,7 @@ export class Usuarios implements OnInit {
 
         this.novoNome = usuarioSelecionado.nome;
 
-        this.novoEmail =usuarioSelecionado.email;
+        this.novoEmail = usuarioSelecionado.email;
 
         this.novaSenha = '';
 
@@ -753,6 +755,108 @@ export class Usuarios implements OnInit {
         this.modoVisualizacao = false;
 
         this.modoEdicao = true;
+
+    }
+
+    alternarStatusUsuario(
+        usuario: Usuario
+    ): void {
+
+        if (!usuario.id) {
+            return;
+        }
+
+        const acao =
+            usuario.ativo
+                ? 'desativar'
+                : 'ativar';
+
+        this.confirmDialogService.open({
+
+            title:
+                usuario.ativo
+                    ? 'Desativar Usuário'
+                    : 'Ativar Usuário',
+
+            message:
+                usuario.ativo
+                    ? `Deseja realmente desativar o usuário ${usuario.nome}?`
+                    : `Deseja realmente ativar o usuário ${usuario.nome}?`,
+
+            confirmText: 'Confirmar',
+
+            cancelText: 'Cancelar',
+
+            onConfirm: () => {
+
+                const loadingToast =
+                    this.alertService.loading(
+                        `${acao === 'ativar'
+                            ? 'Ativando'
+                            : 'Desativando'} usuário...`
+                    );
+
+                const request: UsuarioUpdateRequest = {
+
+                    nome: usuario.nome,
+
+                    email: usuario.email,
+
+                    senha: '',
+
+                    perfil: usuario.perfil,
+
+                    ativo: !usuario.ativo,
+
+                    tenantId: usuario.tenantId!
+
+                };
+
+                this.usuarioService
+                    .atualizar(
+                        usuario.id!,
+                        request
+                    )
+                    .subscribe({
+
+                        next: () => {
+
+                            this.carregarUsuarios();
+
+                            this.alertService.removeToast(
+                                loadingToast.id
+                            );
+
+                            this.alertService.success(
+                                `Usuário ${acao === 'ativar'
+                                    ? 'ativado'
+                                    : 'desativado'
+                                } com sucesso.`
+                            );
+
+                        },
+
+                        error: erro => {
+
+                            this.alertService.removeToast(
+                                loadingToast.id
+                            );
+
+                            this.alertService.error(
+                                'Erro ao atualizar usuário.'
+                            );
+
+                            console.error(erro);
+
+                        }
+
+                    });
+
+            }
+
+        });
+
+
 
     }
 

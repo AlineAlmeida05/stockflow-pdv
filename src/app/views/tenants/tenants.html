@@ -29,180 +29,209 @@
 
             @if (mostrarFormulario) {
             <div class="card formulario-tenant">
-                <h3>
-                    {{ modoEdicao
-                    ? 'Editar Tenant'
-                    : 'Cadastrar Tenant'
-                    }}
-                </h3>
-
-                @if (tenantEditando) {
-                <p class="formulario-tenant__subtitle">
-                    {{ tenantEditando.nome }}
-                </p>
-
-                }
-
-                @if (tenantAtual) {
-                <div class="tenant-atual">
-                    Tenant ativo:
-                    {{ tenantAtual.nome }}
-                </div>
-
-                }
-                <div class="field">
-                    <label>
-                        Nome
-                    </label>
-                    <input
-                        type="text"
-                        placeholder="Nome"
-                        [(ngModel)]="novoNome"
-                        (input)="gerarSlug(); gerarCodigoTenant()">
-                </div>
-
-                <div class="field">
-                    <label>
-                        Slug
-                    </label>
-                    <input
-                        type="text"
-                        placeholder="adega-fulano"
-                        [(ngModel)]="novoSlug">
-                </div>
-
-                <div class="field">
-                    <label>
-                        Código do Tenant
-                    </label>
-
-                    <input
-                        type="text"
-                        placeholder="SIN"
-                        [(ngModel)]="novoCodigoTenant">
-                </div>
-
-                <div class="field">
-                    <label>
-                        Responsável
-                    </label>
-                    <input
-                        type="text"
-                        placeholder="Responsável"
-                        [(ngModel)]="novoResponsavel">
-                </div>
-
-                <div class="field">
-                    <label>
-                        Email
-                    </label>
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        [(ngModel)]="novoEmail">
-                </div>
-
-                <div class="field">
-                    <label>
-                        Cidade
-                    </label>
-                    <input
-                        type="text"
-                        placeholder="Cidade"
-                        [(ngModel)]="novaCidade">
-                </div>
-
-                <div class="field">
-                    <label>
-                        Logo URL
-                    </label>
-
-                    <input
-                        type="text"
-                        [(ngModel)]="novoLogoUrl">
-                </div>
-
-                <div class="field">
-                    <label>
-                        Favicon URL
-                    </label>
-
-                    <input
-                        type="text"
-                        [(ngModel)]="novoFaviconUrl">
-                </div>
-                <div class="field">
-                    <label>
-                        Cor Primária
-                    </label>
-
-                    <input
-                        type="text"
-                        placeholder="#AAAAAA"
-                        [(ngModel)]="novaCorPrimaria">
-                </div>
-
-                <div class="field">
-                    <label>
-                        Cor Secundária
-                    </label>
-
-                    <input
-                        type="text"
-                        placeholder="#000000"
-                        [(ngModel)]="novaCorSecundaria">
-                </div>
-                <div class="field">
-
-                    <label>
-                        Status
-                    </label>
-
-                    <select
-                        [(ngModel)]="novoAtivo">
-                        <option [ngValue]="true">
-                            Ativo
-                        </option>
-
-                        <option [ngValue]="false">
-                            Inativo
-                        </option>
-                    </select>
-                </div>
-
-                <div class="formulario-acoes">
-                    @if (modoEdicao) {
-                    <button
-                        class="btn btn-primary"
-                        type="button"
-                        [disabled]="salvando"
-                        (click)="atualizarTenant()">
+                <div class="formulario">
+                    <h3>
                         {{
-                        salvando
-                        ? 'Salvando...'
-                        : 'Salvar Alterações'
+                        !tenantEditando
+                        ? 'Cadastrar Tenant'
+                        : modoVisualizacao
+                        ? 'Tenant'
+                        : 'Editar Tenant'
                         }}
-                    </button>
-                    } @else {
-                    <button
-                        class="btn btn-primary"
-                        type="button"
-                        [disabled]="salvando"
-                        (click)="salvarTenant()">
-                        {{
-                        salvando
-                        ? 'Salvando...'
-                        : 'Cadastrar Tenant'
-                        }}
-                    </button>
+                    </h3>
+
+                    @if (tenantEditando) {
+                    <p class="formulario-tenant__subtitle">
+                        {{ tenantEditando.nome }}
+                    </p>
+
                     }
+                    <div class="field">
+                        <label>
+                            Nome
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="Nome"
+                            [(ngModel)]="novoNome"
+                            [readonly]="modoVisualizacao"
+                            (input)="gerarSlug(); gerarCodigoTenant()">
+                    </div>
 
-                    <button
-                        class="btn btn-secondary"
-                        type="button"
-                        (click)="cancelarEdicao()">
-                        Cancelar
-                    </button>
+                    <div class="field">
+                        <label>
+                            Slug
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="adega-fulano"
+                            [(ngModel)]="novoSlug"
+                            readonly>
+                    </div>
+
+                    <div class="field">
+                        <label>
+                            Código do Tenant
+                        </label>
+
+                        <input
+                            type="text"
+                            placeholder="SIN"
+                            [(ngModel)]="novoCodigoTenant"
+                            readonly>
+                    </div>
+
+                    <div class="field">
+                        <label>
+                            Responsável
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="Responsável"
+                            [readonly]="modoVisualizacao"
+                            [(ngModel)]="novoResponsavel">
+                    </div>
+
+                    <div class="field">
+                        <label>
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            [readonly]="modoVisualizacao"
+                            placeholder="Email"
+                            [(ngModel)]="novoEmail">
+                    </div>
+
+                    <div class="field">
+                        <label>
+                            Cidade
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="Cidade"
+                            [readonly]="modoVisualizacao"
+                            [(ngModel)]="novaCidade">
+                    </div>
+
+                    <div class="field">
+                        <label>
+                            Logo URL
+                        </label>
+
+                        <input
+                            type="text"
+                            [(ngModel)]="novoLogoUrl">
+                    </div>
+
+                    <div class="field">
+                        <label>
+                            Favicon URL
+                        </label>
+
+                        <input
+                            type="text"
+                            [(ngModel)]="novoFaviconUrl">
+                    </div>
+                    <div class="field">
+                        <label>
+                            Cor Primária
+                        </label>
+
+                        <input
+                            type="text"
+                            placeholder="#AAAAAA"
+                            [(ngModel)]="novaCorPrimaria">
+                    </div>
+
+                    <div class="field">
+                        <label>
+                            Cor Secundária
+                        </label>
+
+                        <input
+                            type="text"
+                            placeholder="#000000"
+                            [(ngModel)]="novaCorSecundaria">
+                    </div>
+                    <div class="field">
+
+                        <label>
+                            Status
+                        </label>
+
+                        <select
+                            [(ngModel)]="novoAtivo">
+                            <option [ngValue]="true">
+                                Ativo
+                            </option>
+
+                            <option [ngValue]="false">
+                                Inativo
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="formulario-acoes">
+
+                        @if (modoVisualizacao) {
+
+                        <button
+                            class="btn btn-primary"
+                            type="button"
+                            (click)="habilitarEdicao()">
+                            Editar
+                        </button>
+
+                        <button
+                            class="btn btn-secondary"
+                            type="button"
+                            (click)="cancelarEdicao()">
+                            Fechar
+                        </button>
+
+                        } @else {
+
+                        @if (modoEdicao) {
+
+                        <button
+                            class="btn btn-primary"
+                            type="button"
+                            [disabled]="salvando"
+                            (click)="atualizarTenant()">
+                            {{
+                            salvando
+                            ? 'Salvando...'
+                            : 'Salvar Alterações'
+                            }}
+                        </button>
+
+                        } @else {
+
+                        <button
+                            class="btn btn-primary"
+                            type="button"
+                            [disabled]="salvando"
+                            (click)="salvarTenant()">
+                            {{
+                            salvando
+                            ? 'Salvando...'
+                            : 'Cadastrar Tenant'
+                            }}
+                        </button>
+
+                        }
+
+                        <button
+                            class="btn btn-secondary"
+                            type="button"
+                            (click)="cancelarEdicao()">
+                            Cancelar
+                        </button>
+
+                        }
+
+                    </div>
                 </div>
             </div>
             }
@@ -230,9 +259,10 @@
                 <app-data-table
                     [columns]="colunasTenants"
                     [data]="tenantsFiltrados"
-                    [showActions]="true"
-                    (edit)="editarTenant($any($event))"
-                    (delete)="excluirTenant($any($event).id)">
+                    [showActions]="false"
+                    [clickableRows]="true"
+                    (toggle)="alternarStatusTenant($any($event))"
+                    (rowClick)="visualizarTenant($any($event))">
                 </app-data-table>
             </div>
             }
