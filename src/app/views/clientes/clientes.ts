@@ -57,7 +57,7 @@ export class Clientes implements OnInit {
     colunasClientes: {
         field: string;
         header: string;
-        type?: 'text' | 'badge' | 'currency' | 'date';
+        type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle';
         align?: 'left' | 'center' | 'right';
     }[] = [
             {
@@ -73,8 +73,16 @@ export class Clientes implements OnInit {
             {
                 field: 'status',
                 header: 'Status',
+                type: 'badge',
+                align: 'center'
+            },
+            {
+                field: 'controle',
+                header: 'Controle',
+                type: 'toggle',
                 align: 'center'
             }
+
         ];
 
 
@@ -117,8 +125,9 @@ export class Clientes implements OnInit {
 
                 next: clientes => {
 
-                    this.clientes =
-                        clientes;
+                    this.clientes = clientes;
+
+                    console.log('Clientes retornados:', clientes);
 
                     clientes.forEach(
                         cliente =>
@@ -394,6 +403,11 @@ export class Clientes implements OnInit {
                         cliente.saldoDevedor =
                             resumo.saldoDevedor;
 
+                        console.log(
+                            cliente.nome,
+                            cliente.saldoDevedor
+                        );
+
                         cliente.creditoDisponivel =
                             resumo.creditoDisponivel;
 
@@ -507,6 +521,146 @@ export class Clientes implements OnInit {
                 currency: 'BRL'
             }
         );
+
+    }
+
+    get clientesTabela(): unknown[] {
+
+        return this.clientesFiltrados.map(
+            cliente => ({
+
+                ...cliente,
+
+                controle:
+                    cliente.ativo
+                        ? 'Ativo'
+                        : 'Inativo'
+
+            })
+        );
+
+    }
+
+    alternarStatusCliente(
+        cliente: Cliente
+    ): void {
+
+        if (!cliente.id) {
+            return;
+        }
+
+        if (cliente.ativo) {
+
+            this.confirmDialogService.open({
+
+                title: 'Inativar Cliente',
+
+                message:
+                    `Deseja realmente inativar o cliente ${cliente.nome}?`,
+
+                confirmText: 'Inativar',
+
+                cancelText: 'Cancelar',
+
+                onConfirm: () => {
+
+                    this.alertService.info(
+                        'Inativando cliente...'
+                    );
+
+                    this.clienteService
+                        .excluir(cliente.id)
+                        .subscribe({
+
+                            next: () => {
+
+                                this.carregarClientes();
+
+                                this.alertService.success(
+                                    'Cliente inativado com sucesso.'
+                                );
+
+                            },
+
+                            error: erro => {
+
+                                console.error(erro);
+
+                                this.alertService.error(
+                                    'Erro ao inativar cliente.'
+                                );
+
+                            }
+
+                        });
+
+                }
+
+            });
+
+        } else {
+
+            this.confirmDialogService.open({
+
+                title: 'Reativar Cliente',
+
+                message:
+                    `Deseja realmente reativar o cliente ${cliente.nome}?`,
+
+                confirmText: 'Reativar',
+
+                cancelText: 'Cancelar',
+
+                onConfirm: () => {
+
+                    this.clienteService
+                        .reativar(cliente.id)
+                        .subscribe({
+
+                            next: () => {
+
+                                this.carregarClientes();
+
+                                this.alertService.success(
+                                    'Cliente reativado com sucesso.'
+                                );
+
+                            },
+
+                            error: erro => {
+
+                                console.error(erro);
+
+                                this.alertService.error(
+                                    'Erro ao reativar cliente.'
+                                );
+
+                            }
+
+                        });
+
+                }
+
+            });
+
+        }
+
+
+    }
+
+    formatarSaldoDevedor(
+        valor?: number
+    ): string {
+
+        if (valor === null || valor === undefined) {
+            return '';
+        }
+
+        if (valor > 0) {
+            return `- ${this.formatarMoeda(valor)}`;
+        }
+
+        return this.formatarMoeda(valor);
 
     }
 

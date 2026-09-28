@@ -65,11 +65,7 @@ export class Produtos implements OnInit {
   colunasProdutos: {
     field: string;
     header: string;
-    type?:
-    | 'text'
-    | 'badge'
-    | 'currency'
-    | 'date';
+    type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle';
     align?: 'left' | 'center' | 'right';
   }[] = [
       {
@@ -90,9 +86,8 @@ export class Produtos implements OnInit {
       },
       {
         field: 'status',
-        header: 'Status',
-        type: 'badge',
-        align: 'center'
+        header: 'Controle',
+        type: 'toggle'
       }
     ];
 
@@ -584,6 +579,92 @@ export class Produtos implements OnInit {
         currency: 'BRL'
       }
     );
+
+  }
+
+  alternarStatusProduto(
+    produto: Produto
+  ): void {
+
+    if (!produto.id) {
+      return;
+    }
+
+    const acao =
+      produto.ativo
+        ? 'desativar'
+        : 'ativar';
+
+    this.confirmDialogService.open({
+
+      title:
+        produto.ativo
+          ? 'Desativar Produto'
+          : 'Ativar Produto',
+
+      message:
+        produto.ativo
+          ? `Deseja realmente desativar o produto ${produto.nome}?`
+          : `Deseja realmente ativar o produto ${produto.nome}?`,
+
+      confirmText: 'Confirmar',
+
+      cancelText: 'Cancelar',
+
+      onConfirm: () => {
+
+        const loadingToast =
+          this.alertService.loading(
+            `${acao === 'ativar'
+              ? 'Ativando'
+              : 'Desativando'} produto...`
+          );
+
+        this.produtoService
+          .atualizar({
+            ...produto,
+
+            ativo: !produto.ativo
+
+          } as Produto)
+          .subscribe({
+
+            next: () => {
+
+              this.carregarProdutos();
+
+              this.alertService.removeToast(
+                loadingToast.id
+              );
+
+              this.alertService.success(
+                `Produto ${acao === 'ativar'
+                  ? 'ativado'
+                  : 'desativado'
+                } com sucesso.`
+              );
+
+            },
+
+            error: erro => {
+
+              this.alertService.removeToast(
+                loadingToast.id
+              );
+
+              this.alertService.error(
+                'Erro ao atualizar produto.'
+              );
+
+              console.error(erro);
+
+            }
+
+          });
+
+      }
+
+    });
 
   }
 }

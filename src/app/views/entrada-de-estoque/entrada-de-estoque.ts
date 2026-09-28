@@ -1,30 +1,22 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
 import { MainLayout } from '../../layout/main-layout/main-layout';
-
 import { Produto } from '../../core/models/produto.model';
 import { ProdutoService } from '../../core/services/produto.service';
-
 import { MovimentacaoEstoque } from '../../core/models/movimentacao-estoque.model';
 import { MovimentacaoEstoqueService } from '../../core/services/movimentacao-estoque.service';
-
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { SearchInput } from '../../shared/components/search-input/search-input';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { DataTable } from '../../shared/components/data-table/data-table';
 import { CurrencyInput } from '../../shared/components/currency-input/currency-input';
-
 import { SelectInput } from '../../shared/components/select-input/select-input';
 import { AlertService } from '../../core/services/alert.service';
-
 import { StatCard } from '../../shared/components/stat-card/stat-card';
 import { ExpandableCard } from '../../shared/components/expandable-card/expandable-card';
-import { ViewChild } from '@angular/core';
-import { ProductSearch } from '../../shared/components/product-search/product-search';
+import { SmartProductSearch } from '../../shared/components/smart-product-search/smart-product-search';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
-
 import { MovimentacaoEstoqueRequest } from '../../core/models/movimentacao-estoque-request.model';
 
 @Component({
@@ -40,7 +32,8 @@ import { MovimentacaoEstoqueRequest } from '../../core/models/movimentacao-estoq
         CurrencyInput,
         StatCard,
         ExpandableCard,
-        ProductSearch
+        EmptyState,
+        SmartProductSearch
     ],
     templateUrl: './entrada-de-estoque.html',
     styleUrl: './entrada-de-estoque.scss'
@@ -62,8 +55,13 @@ export class EntradaDeEstoque implements OnInit {
 
     processandoEntrada = false;
 
-    @ViewChild(ProductSearch)
-    productSearch?: ProductSearch;
+    @ViewChild(SmartProductSearch)
+    smartProductSearch?: SmartProductSearch;
+
+    @ViewChild('quantidadeInput')
+    quantidadeInput?: ElementRef<HTMLInputElement>;
+
+    produtoSelecionado: Produto | null = null;
 
     colunasProdutos: {
         field: string;
@@ -79,12 +77,6 @@ export class EntradaDeEstoque implements OnInit {
             {
                 field: 'estoqueAtual',
                 header: 'Estoque Atual',
-                align: 'center'
-            },
-            {
-                field: 'custoMedio',
-                header: 'Custo Médio',
-                type: 'currency',
                 align: 'center'
             },
             {
@@ -239,7 +231,7 @@ export class EntradaDeEstoque implements OnInit {
         if (!produto.ativo) {
 
             this.alertService.warning(
-                'Não é possível movimentar estoque de um produto inativo.'
+                'Este produto está inativo, voce deve ativá-lo antes movimentar estoque!.'
             );
 
             return;
@@ -354,6 +346,9 @@ export class EntradaDeEstoque implements OnInit {
 
         this.produtoSelecionadoId =
             produto.id;
+
+        this.produtoSelecionado =
+            produto;
 
     }
 
@@ -471,6 +466,8 @@ export class EntradaDeEstoque implements OnInit {
 
                     this.finalizarEntrada();
 
+                    this.cdr.detectChanges();
+
                     this.alertService.success(
                         'Entrada de estoque registrada com sucesso.'
                     );
@@ -501,8 +498,9 @@ export class EntradaDeEstoque implements OnInit {
 
                 next: movimentacoes => {
 
-                    this.movimentacoes =
-                        movimentacoes;
+                    this.movimentacoes = movimentacoes;
+
+                    this.cdr.detectChanges();
 
                 },
 
@@ -524,13 +522,66 @@ export class EntradaDeEstoque implements OnInit {
 
     private limparFormulario(): void {
 
-        this.productSearch?.limpar();
+        this.smartProductSearch?.limpar();
+
+        this.produtoSelecionado = null;
 
         this.produtoSelecionadoId = '';
 
         this.quantidade = null;
 
         this.precoCompra = null;
+
+    }
+
+    selecionarProdutoDaTabela(
+        produto: unknown
+    ): void {
+
+        const produtoSelecionado =
+            produto as Produto;
+
+        this.produtoSelecionadoId =
+            produtoSelecionado.id;
+
+        this.produtoSelecionado =
+            produtoSelecionado;
+
+        setTimeout(() => {
+
+            this.quantidadeInput
+                ?.nativeElement
+                .focus();
+
+            this.quantidadeInput
+                ?.nativeElement
+                .select();
+
+        });
+
+    }
+
+    formatarMoeda(
+        valor?: number
+    ): string {
+
+        if (valor === null || valor === undefined) {
+            return '';
+        }
+
+        return valor.toLocaleString(
+            'pt-BR',
+            {
+                style: 'currency',
+                currency: 'BRL'
+            }
+        );
+
+    }
+
+    cancelar(): void {
+
+        this.limparFormulario();
 
     }
 }

@@ -1,10 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
 import { Tenant } from '../../core/models/tenant.model';
 import { TenantService } from '../../core/services/tenant.service';
-
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { DataTable } from '../../shared/components/data-table/data-table';
@@ -16,6 +14,7 @@ import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { TenantContextService } from '../../core/services/tenant-context.service';
 import { TenantCreateRequest } from '../../core/requests/tenant-create-request';
 import { TenantUpdateRequest } from '../../core/requests/tenant-update-request';
+import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 
 @Component({
     selector: 'app-tenants',
@@ -64,40 +63,40 @@ export class Tenants implements OnInit {
 
     modoEdicao = false;
 
+    modoVisualizacao = false;
+
     mostrarFormulario = false;
 
     textoBusca = '';
 
     novoAtivo = true;
 
-    colunasTenants = [
-        {
-            field: 'nome',
-            header: 'Nome'
-        },
-        {
-            field: 'responsavel',
-            header: 'Responsável'
-        },
-        {
-            field: 'email',
-            header: 'Email'
-        },
-        {
-            field: 'cidade',
-            header: 'Cidade'
-        },
-        {
-            field: 'status',
-            header: 'Status'
-        }
-    ];
+    colunasTenants: {
+        field: string;
+        header: string;
+        type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle';
+    }[] = [
+            {
+                field: 'nome',
+                header: 'Nome'
+            },
+            {
+                field: 'responsavel',
+                header: 'Responsável'
+            },
+            {
+                field: 'status',
+                header: 'Controle',
+                type: 'toggle'
+            }
+        ];
 
     constructor(
         private tenantService: TenantService,
         private alertService: AlertService,
         private cdr: ChangeDetectorRef,
-        private tenantContextService: TenantContextService
+        private tenantContextService: TenantContextService,
+        private confirmDialogService: ConfirmDialogService
     ) { }
 
     ngOnInit(): void {
@@ -285,40 +284,6 @@ export class Tenants implements OnInit {
                 }
 
             });
-
-    }
-
-    editarTenant(
-        tenant: Tenant
-    ): void {
-
-        this.tenantEditando = tenant;
-
-        this.mostrarFormulario = true;
-
-        this.modoEdicao = true;
-
-        this.novoNome = tenant.nome ?? '';
-
-        this.novoSlug = tenant.slug ?? '';
-
-        this.novoCodigoTenant = tenant.codigoTenant ?? '';
-
-        this.novoLogoUrl = tenant.logoUrl ?? '';
-
-        this.novoFaviconUrl = tenant.faviconUrl ?? '';
-
-        this.novaCorPrimaria = tenant.corPrimaria ?? '';
-
-        this.novaCorSecundaria = tenant.corSecundaria ?? '';
-
-        this.novoResponsavel = tenant.responsavel ?? '';
-
-        this.novoEmail = tenant.email ?? '';
-
-        this.novaCidade = tenant.cidade ?? '';
-
-        this.novoAtivo = tenant.ativo ?? true;
 
     }
 
@@ -589,4 +554,106 @@ export class Tenants implements OnInit {
                 .toUpperCase();
 
     }
+
+    visualizarTenant(
+        tenant: Tenant
+    ): void {
+
+        this.tenantEditando = tenant;
+
+        this.mostrarFormulario = true;
+
+        this.modoVisualizacao = true;
+
+        this.modoEdicao = false;
+
+        this.novoNome = tenant.nome ?? '';
+        this.novoSlug = tenant.slug ?? '';
+        this.novoCodigoTenant = tenant.codigoTenant ?? '';
+        this.novoLogoUrl = tenant.logoUrl ?? '';
+        this.novoFaviconUrl = tenant.faviconUrl ?? '';
+        this.novaCorPrimaria = tenant.corPrimaria ?? '';
+        this.novaCorSecundaria = tenant.corSecundaria ?? '';
+        this.novoResponsavel = tenant.responsavel ?? '';
+        this.novoEmail = tenant.email ?? '';
+        this.novaCidade = tenant.cidade ?? '';
+        this.novoAtivo = tenant.ativo ?? true;
+
+    }
+
+    habilitarEdicao(): void {
+
+        this.modoVisualizacao = false;
+
+        this.modoEdicao = true;
+
+    }
+
+    alternarStatusTenant(
+        tenant: Tenant
+    ): void {
+
+        console.log(
+            'Status atual:',
+            tenant.ativo
+        );
+
+        console.log(
+            'Novo status:',
+            !tenant.ativo
+        );
+
+        const atualizado = {
+            ...tenant,
+            ativo: !tenant.ativo
+        };
+
+        this.confirmDialogService.open({
+            title:
+                tenant.ativo
+                    ? 'Desativar Tenant'
+                    : 'Ativar Tenant',
+
+            message:
+                tenant.ativo
+                    ? 'Deseja realmente desativar este tenant?'
+                    : 'Deseja realmente ativar este tenant?',
+
+            confirmText: 'Confirmar',
+            cancelText: 'Cancelar',
+
+            onConfirm: () => {
+
+                // atualizar
+
+            }
+        });
+
+        this.tenantService
+            .atualizar(
+                tenant.id!,
+                atualizado
+            )
+            .subscribe({
+
+                next: () => {
+
+                    
+
+                    this.carregarTenants();
+
+                },
+                error: erro => {
+
+                    console.error(
+                        'Erro ao atualizar tenant',
+                        erro
+                    );
+
+                }
+
+            });
+
+    }
+
 }

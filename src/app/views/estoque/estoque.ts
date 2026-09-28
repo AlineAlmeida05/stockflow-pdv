@@ -157,12 +157,16 @@ export class Estoque implements OnInit {
                 nivelEstoque:
                     produto.estoqueMinimo === 0
                         ? '-'
-                        : Math.round(
-                            (
-                                produto.estoqueAtual /
-                                produto.estoqueMinimo
-                            ) * 100
+                        : Math.min(
+                            100,
+                            Math.round(
+                                (
+                                    produto.estoqueAtual /
+                                    produto.estoqueMinimo
+                                ) * 100
+                            )
                         ) + '%',
+
 
             })
         );
