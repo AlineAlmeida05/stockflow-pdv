@@ -135,8 +135,10 @@
 
         <div right>
             <app-expandable-card
+                icon="📦"
                 title="Produtos"
-                [expanded]="true">
+                [expanded]="true"
+                [collapsible]="false">
                 <div class="produtos-resumo">
 
                     <span class="resumo-info">
@@ -175,6 +177,7 @@
             </app-expandable-card>
 
             <app-expandable-card
+                icon="📥"
                 title="Últimas Entradas"
                 [expanded]="false">
                 <app-data-table

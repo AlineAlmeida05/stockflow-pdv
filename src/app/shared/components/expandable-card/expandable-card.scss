@@ -31,3 +31,8 @@
 .expandable-card__icon.expanded {
     transform: rotate(90deg);
 }
+
+.expandable-card__header:focus-visible {
+    outline: 2px solid var(--color-secondary);
+    outline-offset: 2px;
+}

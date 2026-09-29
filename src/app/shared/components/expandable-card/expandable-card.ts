@@ -1,7 +1,4 @@
-import {
-    Component,
-    Input
-} from '@angular/core';
+import { Component, Input, EventEmitter, Output } from '@angular/core';
 
 @Component({
     selector: 'app-expandable-card',
@@ -17,10 +14,27 @@ export class ExpandableCard {
     @Input()
     expanded = false;
 
+    @Output()
+    expandedChange =
+        new EventEmitter<boolean>();
+
+    @Input()
+    collapsible = true;
+
+    @Input()
+    icon = '';
+
     toggle(): void {
 
-        this.expanded =
-            !this.expanded;
+        if (!this.collapsible) {
+            return;
+        }
+
+        this.expanded = !this.expanded;
+
+        this.expandedChange.emit(
+            this.expanded
+        );
 
     }
 
