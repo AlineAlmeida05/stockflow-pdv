@@ -40,10 +40,12 @@
     </div>
 
     <div class="timeline">
-        @if (movimentacoes.length === 0) {
+       @if (movimentacoesFiltradas.length === 0) {
 
         <app-empty-state
-            message="Nenhuma movimentação financeira encontrada.">
+            icon="💰"
+            title="Nenhuma movimentação encontrada"
+            message="Tente alterar os filtros para visualizar resultados.">
         </app-empty-state>
 
         } @else {

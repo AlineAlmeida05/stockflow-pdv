@@ -20,7 +20,9 @@
             ) {
 
             <app-empty-state
-                message="Nenhum produto encontrado.">
+                icon="🎯"
+                title="Nenhum produto encontrado"
+                message="Nenhum produto corresponde aos filtros informados.">
             </app-empty-state>
 
             } @else {
@@ -108,7 +110,9 @@
             @if (!produtoSelecionado) {
 
             <app-empty-state
-                message="Selecione um produto para analisar a promoção.">
+                icon="📈"
+                title="Nenhum produto selecionado"
+                message="Selecione um produto para visualizar a análise e as sugestões de promoção.">
             </app-empty-state>
 
             } @else {
@@ -179,7 +183,8 @@
 
                         <div>
                             <strong>Perda por Unidade:</strong>
-                            {{ obterEconomia(produtoSelecionado)| currency:'BRL' }}
+                            {{ obterEconomia(produtoSelecionado)| currency:'BRL'
+                            }}
                         </div>
 
                         <div>

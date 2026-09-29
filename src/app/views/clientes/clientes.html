@@ -23,7 +23,9 @@
             @if (!mostrarFormulario) {
 
             <app-empty-state
-                message="Clique em '+ Novo Cliente' para iniciar um cadastro.">
+                icon="👤"
+                title="Nenhum cliente em edição"
+                message="Clique em '+ Novo Cliente' para iniciar um cadastro ou selecione um cliente para visualizar os detalhes.">
             </app-empty-state>
             }
 
@@ -192,7 +194,9 @@
             @if (clientes.length === 0) {
 
             <app-empty-state
-                message="Nenhum cliente cadastrado.">
+                icon="🧑‍🤝‍🧑"
+                title="Nenhum cliente cadastrado"
+                message="Cadastre o primeiro cliente para utilizar vendas fiadas e acompanhar limites de crédito.">
             </app-empty-state>
             } @else {
 
