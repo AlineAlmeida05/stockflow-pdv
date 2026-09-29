@@ -10,6 +10,7 @@
         placeholder="Código, código de barras ou nome"
         [(ngModel)]="textoBusca"
         (input)="buscar()"
+        (blur)="fecharResultados()"
         (keyup.enter)="selecionarPrimeiroResultado()">
 
     @if (
@@ -33,17 +34,11 @@
             </strong>
 
             <small>
-
-                Código:
                 {{ produto.codigo }}
-
-                @if (produto.codigoBarras) {
-
                 •
-                {{ produto.codigoBarras }}
-
-                }
-
+                <span class="estoque-info">
+                    Estoque: {{ produto.estoqueAtual }}
+                </span>
             </small>
 
         </button>

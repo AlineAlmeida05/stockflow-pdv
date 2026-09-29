@@ -127,4 +127,31 @@ export class DataTable {
         );
 
     }
+
+    getBadgeClass(
+        value: string
+    ): string {
+
+        switch (value) {
+
+            case 'Ativo':
+            case 'Em Dia':
+            case 'Em Estoque':
+                return 'status-success';
+
+            case 'Atenção':
+            case 'Devedor':
+                return 'status-warning';
+
+            case 'Inativo':
+            case 'Inadimplente':
+            case 'Crítico':
+                return 'status-danger';
+
+            default:
+                return '';
+
+        }
+
+    }
 }

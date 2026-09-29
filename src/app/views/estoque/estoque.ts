@@ -52,28 +52,28 @@ export class Estoque implements OnInit {
             {
                 field: 'categoria',
                 header: 'Categoria',
-                align: 'left'
+                align: 'center'
             },
             {
                 field: 'estoqueAtual',
                 header: 'Qtde Atual',
-                align: 'right'
+                align: 'center'
             },
             {
                 field: 'estoqueMinimo',
                 header: 'Qtde Mínima',
-                align: 'right'
+                align: 'center'
             },
             {
                 field: 'nivelEstoque',
                 header: 'Nível',
-                align: 'right'
+                align: 'center'
             },
             {
                 field: 'statusEstoque',
                 header: 'Status',
                 type: 'badge',
-                align: 'center'
+                align: 'right'
             }
         ];
 
