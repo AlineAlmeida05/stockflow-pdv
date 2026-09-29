@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { PageTitle } from '../../shared/components/page-title/page-title';
@@ -10,6 +10,7 @@ import { SelectInput } from '../../shared/components/select-input/select-input';
 import { StatCardCarousel } from '../../shared/components/stat-card-carousel/stat-card-carousel';
 import { ExtratoFinanceiroService } from '../../core/services/extrato-financeiro.service';
 import { IndicadoresExtrato } from '../../core/models/indicadores-extrato.model';
+
 
 @Component({
     selector: 'app-extrato-financeiro',
@@ -101,6 +102,9 @@ export class ExtratoFinanceiro
         }
     ];
 
+    @ViewChild(SearchInput)
+    searchInput?: SearchInput;
+
     constructor(
         private extratoFinanceiroService: ExtratoFinanceiroService,
         private cdr: ChangeDetectorRef
@@ -152,12 +156,17 @@ export class ExtratoFinanceiro
 
                 next: movimentacoes => {
 
-                    this.movimentacoes =
-                        movimentacoes;
+                    this.movimentacoes = movimentacoes;
 
                     this.atualizarIndicadores();
 
                     this.cdr.detectChanges();
+
+                    setTimeout(() => {
+
+                        this.searchInput?.focar();
+
+                    });
 
                 },
 

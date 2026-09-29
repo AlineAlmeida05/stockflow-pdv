@@ -73,7 +73,8 @@
                     @if (venda.status === 'cancelada') {
 
                     <app-status-badge
-                        text="cancelada"
+                        text="Cancelada"
+                        icon="⛔"
                         variant="danger">
                     </app-status-badge>
 
@@ -90,11 +91,6 @@
             <h2>
                 Detalhes da Venda
             </h2>
-
-            <p>
-                Status bruto:
-                {{ vendaSelecionada.status }}
-            </p>
 
             <div class="total-venda-card">
                 <span>
@@ -118,7 +114,10 @@
                     </span>
 
                     <app-status-badge
-                        [text]="vendaSelecionada.formaPagamento| uppercase"
+                        [text]="vendaSelecionada.formaPagamento | uppercase"
+                        [icon]="obterIconePagamento(
+                            vendaSelecionada.formaPagamento
+                        )"
                         variant="info">
                     </app-status-badge>
                 </div>
@@ -266,7 +265,8 @@
                     @if (item.promocaoAplicada) {
 
                     <app-status-badge
-                        text="🔥 Promoção"
+                        text="Promoção"
+                        icon="🔥"
                         variant="warning">
                     </app-status-badge>
                     }

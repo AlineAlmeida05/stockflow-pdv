@@ -40,6 +40,22 @@
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-secondary) 15%, transparent);
 }
 
+.clear-button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--color-gray-500);
+    font-size: 1rem;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clear-button:hover {
+    color: var(--color-danger);
+}
+
 @media (max-width: 768px) {
     .search-input {
         min-width: 240px;

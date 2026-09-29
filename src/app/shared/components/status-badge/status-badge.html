@@ -1,5 +1,15 @@
 <span
     [class]="
-        'badge badge-' + variant">
+        'badge badge-' + resolvedVariant">
+
+    @if (icon) {
+
+    <span>
+        {{ icon }}
+    </span>
+
+    }
+
     {{ text }}
+
 </span>

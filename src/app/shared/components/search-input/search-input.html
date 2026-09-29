@@ -3,8 +3,19 @@
         🔍
     </span>
     <input
+        #searchInput
         type="text"
         [placeholder]="placeholder"
         [ngModel]="value"
         (ngModelChange)="valueChange.emit($event)">
+
+    @if (value) {
+
+    <button
+        type="button"
+        class="clear-button"
+        (click)="limpar()">
+        ✕
+    </button>
+    }
 </div>
