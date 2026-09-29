@@ -29,3 +29,21 @@
     border-color: var(--color-secondary);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-secondary) 15%, transparent);
 }
+
+.select-input select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: var(--color-gray-100);
+}
+
+.select-input--sm select {
+    height: 38px;
+}
+
+.select-input--md select {
+    height: 45px;
+}
+
+.select-input--lg select {
+    height: 52px;
+}

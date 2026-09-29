@@ -61,3 +61,13 @@
 .resultados button small {
     color: var(--color-gray-600);
 }
+
+@media (max-width: 768px) {
+    .resultados button {
+        min-height: 56px;
+    }
+
+    input {
+        font-size: 16px;
+    }
+}

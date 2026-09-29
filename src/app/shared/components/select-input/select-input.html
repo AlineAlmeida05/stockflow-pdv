@@ -9,9 +9,18 @@
     }
 
     <select
+        #selectInput
         [ngModel]="value"
         (ngModelChange)="
             valueChange.emit($event)">
+
+        @if (placeholder) {
+
+        <option value>
+            {{ placeholder }}
+        </option>
+
+        }
 
         @for (
         option of options;

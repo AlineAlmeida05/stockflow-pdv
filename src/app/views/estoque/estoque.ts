@@ -1,19 +1,16 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MainLayout } from '../../layout/main-layout/main-layout';
-
 import { Produto } from '../../core/models/produto.model';
 import { ProdutoService } from '../../core/services/produto.service';
-
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { SearchInput } from '../../shared/components/search-input/search-input';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { DataTable } from '../../shared/components/data-table/data-table';
 import { Toolbar } from '../../shared/components/toolbar/toolbar';
 import { StatCard } from '../../shared/components/stat-card/stat-card';
-
 import { FormsModule } from '@angular/forms';
 import { SelectInput } from '../../shared/components/select-input/select-input';
+
 
 @Component({
     selector: 'app-estoque',
@@ -82,10 +79,6 @@ export class Estoque implements OnInit {
 
     statusOptions = [
         {
-            value: 'todos',
-            label: 'Todos'
-        },
-        {
             value: 'normal',
             label: 'Normal'
         },
@@ -98,6 +91,9 @@ export class Estoque implements OnInit {
             label: 'Crítico'
         }
     ];
+
+    @ViewChild(SearchInput)
+    searchInput?: SearchInput;
 
     constructor(
         private produtoService: ProdutoService,
@@ -118,6 +114,12 @@ export class Estoque implements OnInit {
                     this.produtos = produtos;
 
                     this.cdr.detectChanges();
+
+                    setTimeout(() => {
+
+                        this.searchInput?.focar();
+
+                    });
 
                 },
 

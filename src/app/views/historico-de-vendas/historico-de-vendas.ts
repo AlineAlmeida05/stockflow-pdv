@@ -1,14 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
-
 import { MainLayout } from '../../layout/main-layout/main-layout';
-
 import { Venda } from '../../core/models/venda.model';
-
 import { VendaService } from '../../core/services/venda.service';
-
 import { FormsModule } from '@angular/forms';
-
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
@@ -124,10 +119,10 @@ export class HistoricoDeVendas
 
         return Number(
             this.vendasFiltradas
-    .filter(
-        venda =>
-            venda.status === 'finalizada'
-    )
+                .filter(
+                    venda =>
+                        venda.status === 'finalizada'
+                )
                 .reduce(
                     (total, venda) =>
                         total + venda.valorTotal,
@@ -312,7 +307,7 @@ export class HistoricoDeVendas
                     }
                 ),
                 variant: 'danger'
-            }, 
+            },
             {
                 title: 'Canceladas',
                 value: this.totalCanceladas,
@@ -421,6 +416,32 @@ export class HistoricoDeVendas
             venda =>
                 venda.status === 'cancelada'
         ).length;
+
+    }
+
+    obterIconePagamento(
+        formaPagamento: string
+    ): string {
+
+        switch (formaPagamento) {
+
+            case 'pix':
+                return '📱';
+
+            case 'dinheiro':
+                return '💵';
+
+            case 'debito':
+            case 'credito':
+                return '💳';
+
+            case 'fiado':
+                return '📒';
+
+            default:
+                return '';
+
+        }
 
     }
 

@@ -1,10 +1,4 @@
-import {
-    Component,
-    EventEmitter,
-    Input,
-    Output
-} from '@angular/core';
-
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -28,6 +22,15 @@ export class SelectInput {
     value = '';
 
     @Input()
+    placeholder = '';
+
+    @Input()
+    disabled = false;
+
+    @ViewChild('selectInput')
+    selectInput?: ElementRef<HTMLSelectElement>;
+
+    @Input()
     options: {
         value: string;
         label: string;
@@ -36,5 +39,16 @@ export class SelectInput {
     @Output()
     valueChange =
         new EventEmitter<string>();
+
+    @Input()
+    size: 'sm' | 'md' | 'lg' = 'md';
+
+    focar(): void {
+
+        this.selectInput
+            ?.nativeElement
+            .focus();
+
+    }
 
 }
