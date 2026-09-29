@@ -89,7 +89,7 @@ export class EntradaDeEstoque implements OnInit {
                 field: 'statusEstoque',
                 header: 'Status',
                 type: 'badge',
-                align: 'center'
+                align: 'right'
             }
         ];
 

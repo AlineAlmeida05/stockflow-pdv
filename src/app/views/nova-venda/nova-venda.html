@@ -6,63 +6,20 @@
     </app-page-title>
 
     <div class="venda-content">
-        <div class="venda-content__carrinho">
-            <h2>
-                Carrinho
-            </h2>
-            @if (carrinho.length === 0) {
-
-            <app-empty-state
-                icon="🛒"
-                title="Carrinho vazio"
-                message="Utilize a busca de produtos para adicionar itens ao carrinho e iniciar uma venda.">
-            </app-empty-state>
-            } @else {
-
-            <app-data-table
-                [columns]="colunasCarrinho"
-                [data]="carrinhoTabela"
-                [showActions]="true"
-                [showEditAction]="false"
-                (delete)="removerItemCarrinho($event)"
-                [deleteIcon]="'🗑️'">
-            </app-data-table>
-
-            }
-            <div class="total-venda">
-                <div>
-                    <span>
-                        Total da Venda
-                    </span>
-                    <small>
-                        {{ quantidadeItens }}
-                        item(ns)
-                    </small>
-                    @if (totalDescontos > 0) {
-                    <small class="desconto-total">
-                        Economia:
-                        {{ totalDescontos | currency:'BRL' }}
-                    </small>
-                    }
-                </div>
-                <strong>
-                    {{ total | currency:'BRL' }}
-                </strong>
-            </div>
-        </div>
-
-        <div class="venda-content__sidebar">
+        <div class="produto-panel">
             <div class="card novo-item-card">
                 <app-smart-product-search
                     [produtos]="produtos"
                     (produtoSelecionado)="
         selecionarProduto($event)">
                 </app-smart-product-search>
-                @if (produtoSelecionado) {
+
+                @if (produtoSelecionadoId && produtoSelecionado) {
 
                 <div class="produto-resumo">
 
-                    <div class="produto-resumo-item">
+                    <div
+                        class="produto-resumo-item produto-resumo-item--principal">
 
                         <small>Produto</small>
 
@@ -143,10 +100,92 @@
                     </button>
                 </div>
             </div>
+        </div>
+
+        <div class="venda-content__carrinho">
+            <h2>
+                Carrinho
+            </h2>
+            <div class="total-venda">
+                <div>
+                    <small>
+                        {{ quantidadeItens }}
+                        item(ns)
+                    </small>
+                    @if (totalDescontos > 0) {
+                    <small class="desconto-total">
+                        Economia:
+                        {{ totalDescontos | currency:'BRL' }}
+                    </small>
+                    }
+                </div>
+                <strong>
+                    {{ total | currency:'BRL' }}
+                </strong>
+            </div>
+
+            @if (carrinho.length === 0) {
+
+            <app-empty-state
+                icon="🛒"
+                title="Carrinho vazio"
+                message="Utilize a busca de produtos para adicionar itens ao carrinho e iniciar uma venda.">
+            </app-empty-state>
+            } @else {
+
+            <div class="carrinho-tabela">
+
+                <app-data-table
+                    [columns]="colunasCarrinho"
+                    [data]="carrinhoTabela"
+                    [showActions]="true"
+                    [showEditAction]="false"
+                    (delete)="removerItemCarrinho($event)"
+                    [deleteIcon]="'🗑️'">
+                </app-data-table>
+            </div>
+
+            }
+
+        </div>
+
+        <div class="pagamento-panel">
             <div class="card pagamento-card">
                 <h3>
                     Pagamento
                 </h3>
+                <div class="resumo-pagamento">
+
+                    <div>
+                        <span>Total</span>
+                        <strong>
+                            {{ total | currency:'BRL' }}
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Pagamento</span>
+
+                        <strong>
+                            {{ formaPagamentoDescricao }}
+                        </strong>
+                    </div>
+
+                    @if (formaPagamento === 'fiado' && resumoCliente) {
+
+                    <div>
+
+                        <span>Cliente</span>
+
+                        <strong>
+                            {{ resumoCliente.nome }}
+                        </strong>
+
+                    </div>
+
+                    }
+
+                </div>
                 <div class="field">
                     <label>Forma de Pagamento</label>
                     <select
@@ -307,39 +346,9 @@
                 }
                 }
 
-                <div class="resumo-pagamento">
-
-                    <div>
-                        <span>Total</span>
-                        <strong>
-                            {{ total | currency:'BRL' }}
-                        </strong>
-                    </div>
-
-                    <div>
-                        <span>Pagamento</span>
-                        <strong>
-                            {{ formaPagamento }}
-                        </strong>
-                    </div>
-
-                    @if (formaPagamento === 'fiado' && resumoCliente) {
-
-                    <div>
-
-                        <span>Cliente</span>
-
-                        <strong>
-                            {{ resumoCliente.nome }}
-                        </strong>
-
-                    </div>
-
-                    }
-
-                </div>
                 <button
                     type="button"
+                    class="btn btn-primary"
                     (click)="finalizarVenda()"
                     [disabled]="
                         carrinho.length === 0 ||
@@ -347,20 +356,39 @@
                         creditoInsuficiente ||
                         clienteBloqueadoFiado
                     ">
-                    Finalizar Venda (F2)
+                    {{
+                    finalizandoVenda
+                    ? 'Finalizando...'
+                    : carrinho.length === 0
+                    ? 'Carrinho Vazio'
+                    : 'Finalizar Venda (F2)'
+                    }}
                 </button>
             </div>
         </div>
+
     </div>
     <div class="atalhos-venda">
 
-        <span>F3 Produto</span>
+        <span>
+            <kbd>F3</kbd>
+            Produto
+        </span>
 
-        <span>F4 Pagamento</span>
+        <span>
+            <kbd>F4</kbd>
+            Pagamento
+        </span>
 
-        <span>ESC Limpar</span>
+        <span>
+            <kbd>ESC</kbd>
+            Limpar
+        </span>
 
-        <span>F2 Finalizar</span>
+        <span>
+            <kbd>F2</kbd>
+            Finalizar
+        </span>
 
     </div>
 </app-main-layout>

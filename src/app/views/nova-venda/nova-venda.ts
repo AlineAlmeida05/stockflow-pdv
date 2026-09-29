@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { Produto } from '../../core/models/produto.model';
@@ -33,7 +33,7 @@ import { SmartProductSearch } from '../../shared/components/smart-product-search
     templateUrl: './nova-venda.html',
     styleUrl: './nova-venda.scss'
 })
-export class NovaVenda implements OnInit {
+export class NovaVenda implements OnInit, AfterViewInit {
 
     produtos: Produto[] = [];
 
@@ -124,7 +124,7 @@ export class NovaVenda implements OnInit {
         private vendaService: VendaService,
         private clienteService: ClienteService,
         private alertService: AlertService,
-        private confirmDialogService: ConfirmDialogService
+        private confirmDialogService: ConfirmDialogService,
     ) { }
 
     ngOnInit(): void {
@@ -162,6 +162,7 @@ export class NovaVenda implements OnInit {
         return this.produtos.find(
             produto => produto.id === this.produtoSelecionadoId
         );
+        
 
     }
 
@@ -551,8 +552,9 @@ export class NovaVenda implements OnInit {
             return;
         }
 
-        this.produtoSelecionadoId =
-            produto.id;
+        this.produtoSelecionadoId = produto.id;
+
+        this.quantidade = 1;
 
         this.focarQuantidade();
 
@@ -868,5 +870,41 @@ export class NovaVenda implements OnInit {
                 }
 
             });
+    }
+
+    get formaPagamentoDescricao(): string {
+
+        switch (this.formaPagamento) {
+
+            case 'pix':
+                return 'PIX';
+
+            case 'dinheiro':
+                return 'Dinheiro';
+
+            case 'debito':
+                return 'Débito';
+
+            case 'credito':
+                return 'Crédito';
+
+            case 'fiado':
+                return 'Fiado';
+
+            default:
+                return 'Não informado';
+
+        }
+
+    }
+
+    ngAfterViewInit(): void {
+
+        setTimeout(() => {
+
+            this.smartProductSearch?.focar();
+
+        });
+
     }
 }

@@ -53,48 +53,15 @@
 
                 <td
                     [class.text-center]="column.align === 'center'"
-                    [class.text-right]="column.align === 'right'">
+                    [class.text-right]="column.align === 'right'"
+                    [class.table-cell-product]="column.field === 'produtoNome'"
+                    [class.table-cell-subtotal]="column.field === 'subtotal'">
                     @if (column.type === 'badge') {
 
                     <span
-                        [class.status-ativo]="
-        $any(row)[column.field] === 'Ativo'"
-                        [class.status-inativo]="
-        $any(row)[column.field] === 'Inativo'"
-                        [class.status-em-dia]="
-        $any(row)[column.field] === 'Em Dia'"
-                        [class.status-devedor]="
-        $any(row)[column.field] === 'Devedor'
-    "
-                        [class.status-inadimplente]="
-        $any(row)[column.field] === 'Inadimplente'
-    "
-                        [class.status-limite-excedido]="
-        $any(row)[column.field] === 'Limite Excedido'
-    "
-                        [class.status-em-dia]="
-    $any(row)[column.field] === 'Em Dia'
-"
-                        [class.status-devedor]="
-    $any(row)[column.field] === 'Devedor'
-"
-                        [class.status-inadimplente]="
-    $any(row)[column.field] === 'Inadimplente'
-"
-                        [class.status-limite-excedido]="
-    $any(row)[column.field] === 'Limite Excedido'
-" [class.status-em-estoque]="
-    $any(row)[column.field] === 'Em Estoque'
-"
-                        [class.status-atencao]="
-    $any(row)[column.field] === 'Atenção'
-"
-                        [class.status-critico]="
-    $any(row)[column.field] === 'Crítico'
-"
-                        [class.status-sem-estoque]="
-    $any(row)[column.field] === 'Sem Estoque'
-">
+                        [class]="getBadgeClass(
+        $any(row)[column.field]
+    )">
 
                         {{ $any(row)[column.field] }}
 

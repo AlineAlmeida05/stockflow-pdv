@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormsModule } from "@angular/forms";
 import { Produto } from "../../../core/models/produto.model";
-
+import { ChangeDetectorRef } from '@angular/core';
 
 
 @Component({
@@ -32,6 +32,10 @@ export class SmartProductSearch {
 
     mostrarResultados = false;
 
+    constructor(
+        private cdr: ChangeDetectorRef
+    ) { }
+
     get resultados(): Produto[] {
 
         const busca =
@@ -46,6 +50,7 @@ export class SmartProductSearch {
         }
 
         return this.produtos
+            .filter(produto => produto.ativo)
             .filter(
                 produto =>
 
@@ -64,14 +69,14 @@ export class SmartProductSearch {
                     produto.codigoBarras
                         ?.toLowerCase()
                         .includes(busca)
-
             )
             .sort((a, b) =>
                 a.nome.localeCompare(
                     b.nome,
                     'pt-BR'
                 )
-            );
+            )
+            .slice(0, 10);
 
     }
 
@@ -155,6 +160,8 @@ export class SmartProductSearch {
 
         this.mostrarResultados = false;
 
+        this.cdr.detectChanges();
+
     }
 
     setProduto(
@@ -181,6 +188,16 @@ export class SmartProductSearch {
         this.selecionarProduto(
             this.resultados[0]
         );
+
+    }
+
+    fecharResultados(): void {
+
+        setTimeout(() => {
+
+            this.mostrarResultados = false;
+
+        }, 150);
 
     }
 
