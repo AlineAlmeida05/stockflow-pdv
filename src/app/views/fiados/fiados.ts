@@ -15,6 +15,7 @@ import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { AlertService } from '../../core/services/alert.service';
 import { CurrencyInput } from '../../shared/components/currency-input/currency-input';
 import { ClienteResumo } from '../../core/models/cliente-resumo.model';
+import { ExpandableCard } from '../../shared/components/expandable-card/expandable-card';
 
 @Component({
     selector: 'app-fiados',
@@ -28,7 +29,8 @@ import { ClienteResumo } from '../../core/models/cliente-resumo.model';
         SearchInput,
         EmptyState,
         SplitPanel,
-        CurrencyInput
+        CurrencyInput,
+        ExpandableCard
     ],
     templateUrl: './fiados.html',
     styleUrl: './fiados.scss'
