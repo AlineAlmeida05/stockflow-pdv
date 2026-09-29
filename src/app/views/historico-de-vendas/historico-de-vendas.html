@@ -5,17 +5,20 @@
         subtitle="Consulte vendas realizadas, detalhes dos itens e cancelamentos.">
     </app-page-title>
 
-    <app-stat-card-carousel
-        [cards]="cardsHistorico">
-    </app-stat-card-carousel>
-
-    <div class="formulario">
+    <div class="filtros">
 
         <app-select-input
             label="Forma de Pagamento"
             [(value)]="filtroPagamento"
             [options]="opcoesPagamento">
         </app-select-input>
+
+        <app-select-input
+            label="Status"
+            [(value)]="filtroStatus"
+            [options]="opcoesStatus">
+        </app-select-input>
+
     </div>
 
     <app-split-panel>
@@ -31,54 +34,37 @@
             <div
                 class="card venda-card"
                 [class.venda-card--active]="
-                    vendaSelecionada?.id === venda.id"
+        vendaSelecionada?.id === venda.id"
                 (click)="selecionarVenda(venda)">
 
-                <strong class="venda-card__valor">
+                <div class="venda-card__header">
 
-                    {{
-                    venda.valorTotal
-                    | currency:'BRL'
-                    }}
+                    <strong class="venda-card__valor">
+                        {{ venda.valorTotal | currency:'BRL' }}
+                    </strong>
 
-                </strong>
+                    <span class="venda-card__data">
+                        {{
+                        venda.dataVenda
+                        | date:'dd/MM/yyyy HH:mm'
+                        }}
+                    </span>
 
-                <span class="venda-card__data">
-
-                    {{
-                    venda.dataVenda
-                    | date:'dd/MM/yyyy HH:mm'
-                    }}
-
-                </span>
-                @if (venda.usuarioNome) {
-                <span class="venda-card__usuario">
-                    👤{{ venda.usuarioNome }}
-                </span>
-                }
-                @if (venda.clienteNome) {
-
-                <div class="venda-card__cliente">
-                    {{ venda.clienteNome }}
                 </div>
-                }
 
                 <div class="venda-card__footer">
 
-                    <app-status-badge
-                        [text]="venda.formaPagamento.toUpperCase()"
-                        variant="info">
-                    </app-status-badge>
+                    <span class="venda-card__itens">
+                        {{ venda.quantidadeItens }} item(ns)
+                    </span>
 
-                    @if (venda.status === 'cancelada') {
-
-                    <app-status-badge
-                        text="Cancelada"
-                        icon="⛔"
-                        variant="danger">
-                    </app-status-badge>
-
-                    }
+                    <span
+                        class="venda-card__pagamento">
+                        {{
+                        venda.formaPagamento
+                        | uppercase
+                        }}
+                    </span>
 
                 </div>
 
@@ -93,67 +79,63 @@
             </h2>
 
             <div class="total-venda-card">
-                <span>
-                    Total da Venda
-                </span>
+                <div class="total-venda-card__header">
 
-                <strong>
-
-                    {{
-                    vendaSelecionada.valorTotal
-                    | currency:'BRL'
-                    }}
-
-                </strong>
-            </div>
-
-            <div class="venda-meta">
-                <div class="forma-pagamento">
                     <span>
-                        Forma de Pagamento
+                        Total da Venda
                     </span>
 
-                    <app-status-badge
-                        [text]="vendaSelecionada.formaPagamento | uppercase"
-                        [icon]="obterIconePagamento(
-                            vendaSelecionada.formaPagamento
-                        )"
-                        variant="info">
-                    </app-status-badge>
-                </div>
-                @if (vendaSelecionada.usuarioNome) {
-                <div class="vendedor-venda">
-                    <span>
-                        Vendedor
-                    </span>
                     <strong>
-                        {{ vendaSelecionada.usuarioNome }}
+
+                        {{
+                        vendaSelecionada.valorTotal
+                        | currency:'BRL'
+                        }}
+
                     </strong>
                 </div>
-                }
 
-                @if (vendaSelecionada.clienteNome) {
-                <div class="cliente-venda">
-                    <span>
-                        Cliente
-                    </span>
-                    <strong>
-                        {{ vendaSelecionada.clienteNome }}
-                    </strong>
+                <div class="venda-meta">
+
+                    <div class="venda-meta__item">
+                        {{
+                        obterIconePagamento(vendaSelecionada.formaPagamento)
+                        }}
+                        {{ vendaSelecionada.formaPagamento | uppercase }}
+                    </div>
+
+                    <span class="venda-meta__divider">|</span>
+
+                    <div class="venda-meta__item">
+                        👤 {{ vendaSelecionada.usuarioNome }}
+                    </div>
+
+                    <span class="venda-meta__divider">|</span>
+
+                    <div
+                        class="venda-meta__item"
+                        [class.status-finalizada]="vendaSelecionada.status === 'finalizada'"
+                        [class.status-cancelada]="vendaSelecionada.status === 'cancelada'">
+
+                        {{ obterTextoStatus(vendaSelecionada.status) }}
+
+                    </div>
+
+                    @if (vendaSelecionada.status === 'finalizada') {
+
+                    <button
+                        class="btn btn-danger"
+                        type="button"
+                        (click)="mostrarCancelamento = true">
+
+                        Cancelar Venda
+
+                    </button>
+
+                    }
+
                 </div>
-                }
 
-                <div class="status-venda">
-                    <span>
-                        Status
-                    </span>
-
-                    <app-status-badge
-                        [text]="obterTextoStatus(vendaSelecionada.status)"
-                        [variant]="obterVariantStatus(
-                vendaSelecionada.status)">
-                    </app-status-badge>
-                </div>
             </div>
 
             @if (
@@ -162,7 +144,7 @@
 
             <div class="motivo-cancelamento">
                 <span>
-                    Motivo do Cancelamento
+                    Motivo do Cancelamento:
                 </span>
 
                 <p>
@@ -170,49 +152,37 @@
                     vendaSelecionada.motivoCancelamento
                     }}
                 </p>
+                @if (vendaSelecionada.dataCancelamento &&
+                vendaSelecionada.usuarioCancelamento) {
+
+                <div class="cancelamento-resumo">
+
+                    <div class="info-cancelamento">
+                        <span>Data do Cancelamento</span>
+                        <strong>
+                            {{
+                            vendaSelecionada.dataCancelamento
+                            | date:'dd/MM/yyyy HH:mm'
+                            }}
+                        </strong>
+                    </div>
+
+                    <div class="info-cancelamento">
+                        <span>Cancelado por</span>
+                        <strong>
+                            {{ vendaSelecionada.usuarioCancelamento }}
+                        </strong>
+                    </div>
+
+                </div>
+                }
             </div>
 
             }
-            @if (vendaSelecionada.dataCancelamento) {
 
-            <div class="info-cancelamento">
-                <span>
-                    Data do Cancelamento
-                </span>
-                <strong>
-                    {{
-                    vendaSelecionada.dataCancelamento
-                    | date:'dd/MM/yyyy HH:mm'
-                    }}
-                </strong>
-            </div>
-            }
-            @if (vendaSelecionada.usuarioCancelamento) {
-
-            <div class="info-cancelamento">
-
-                <span>
-                    Cancelado por
-                </span>
-
-                <strong>
-
-                    {{ vendaSelecionada.usuarioCancelamento }}
-
-                </strong>
-
-            </div>
-
-            }
             @if (
             vendaSelecionada.status === 'finalizada'
             ) {
-            <button
-                class="btn btn-danger"
-                type="button"
-                (click)="mostrarCancelamento = true">
-                Cancelar Venda
-            </button>
 
             @if (
             mostrarCancelamento &&
@@ -259,43 +229,36 @@
                 track item.produtoId
                 ) {
 
-                <div class="card item-venda">
-                    <h4 class="item-venda__nome">
-                        {{ item.produtoNome }}
-                    </h4>
-                    @if (item.promocaoAplicada) {
+                <div class="item-venda">
 
-                    <app-status-badge
-                        text="Promoção"
-                        icon="🔥"
-                        variant="warning">
-                    </app-status-badge>
-                    }
+                    <div class="item-venda__header">
 
-                    <div class="item-venda__quantidade">
+                        <h4 class="item-venda__nome">
+                            {{ item.produtoNome }}
+                        </h4>
+
+                        @if (item.promocaoAplicada) {
+                        <app-status-badge
+                            text="Promoção"
+                            icon="🔥"
+                            variant="warning">
+                        </app-status-badge>
+                        }
+
+                    </div>
+
+                    <div class="item-venda__info">
+
                         <span>
-                            Quantidade
+                            Qtd. {{ item.quantidade }}
                         </span>
 
                         <strong>
-                            {{ item.quantidade }}
+                            {{ item.subtotal | currency:'BRL' }}
                         </strong>
+
                     </div>
 
-                    <div class="item-venda__subtotal">
-                        <span>
-                            Subtotal
-                        </span>
-
-                        <strong>
-
-                            {{
-                            item.subtotal
-                            | currency:'BRL'
-                            }}
-
-                        </strong>
-                    </div>
                 </div>
                 }
             </app-expandable-card>

@@ -7,7 +7,6 @@ import { FormsModule } from '@angular/forms';
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
-import { StatCardCarousel } from '../../shared/components/stat-card-carousel/stat-card-carousel';
 import { SelectInput } from '../../shared/components/select-input/select-input';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 import { AlertService } from '../../core/services/alert.service';
@@ -26,7 +25,6 @@ import { ChangeDetectorRef } from '@angular/core';
         PageTitle,
         EmptyState,
         SplitPanel,
-        StatCardCarousel,
         SelectInput,
         StatusBadge,
         ExpandableCard,
@@ -49,6 +47,8 @@ export class HistoricoDeVendas
     mostrarCancelamento = false;
 
     motivoCancelamento = '';
+
+    filtroStatus = '';
 
     opcoesPagamento = [
         {
@@ -93,19 +93,19 @@ export class HistoricoDeVendas
 
     get vendasFiltradas(): Venda[] {
 
-        return this.vendas.filter(
-            venda => {
+        return this.vendas.filter(venda => {
 
-                const pagamentoOk =
-                    !this.filtroPagamento ||
-                    venda.formaPagamento ===
-                    this.filtroPagamento;
+            const pagamentoOk =
+                !this.filtroPagamento ||
+                venda.formaPagamento === this.filtroPagamento;
 
+            const statusOk =
+                !this.filtroStatus ||
+                venda.status === this.filtroStatus;
 
-                return pagamentoOk;
+            return pagamentoOk && statusOk;
 
-            }
-        );
+        });
 
     }
 
@@ -445,5 +445,18 @@ export class HistoricoDeVendas
 
     }
 
-
+    opcoesStatus = [
+        {
+            value: '',
+            label: 'Todos'
+        },
+        {
+            value: 'finalizada',
+            label: 'Finalizadas'
+        },
+        {
+            value: 'cancelada',
+            label: 'Canceladas'
+        }
+    ];
 }
