@@ -103,23 +103,18 @@ tbody tr:hover {
 
 .toggle-slider::before {
     content: "";
-
     position: absolute;
     width: 18px;
     height: 18px;
-
     left: 3px;
     top: 3px;
-
     background: white;
     border-radius: 50%;
-
     transition: 0.2s;
 }
 
 .toggle-switch.toggle-ativo .toggle-slider {
     background-color: var(--color-success);
-
     justify-content: flex-start;
     padding-left: 10px;
 }
@@ -224,4 +219,44 @@ tbody tr:hover {
 .status-danger {
     color: var(--color-danger);
     font-weight: 700;
+}
+
+.table-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 80px;
+}
+
+.table-progress__bar {
+    flex: 1;
+    height: 8px;
+    background: var(--color-gray-200);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.table-progress__fill {
+    height: 100%;
+    background: var(--color-primary);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+}
+
+.table-progress span {
+    min-width: 40px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.progress-success {
+    background: var(--color-success);
+}
+
+.progress-warning {
+    background: #d97706;
+}
+
+.progress-danger {
+    background: var(--color-danger);
 }

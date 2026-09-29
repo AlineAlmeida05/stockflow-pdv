@@ -35,12 +35,12 @@ export class Estoque implements OnInit {
 
     textoBusca = '';
 
-    filtroStatus = 'todos';
+    filtroStatus = '';
 
     colunasEstoque: {
         field: string;
         header: string;
-        type?: | 'text' | 'badge' | 'currency' | 'date';
+        type?: | 'text' | 'badge' | 'currency' | 'date' | 'progress';
         align: 'left' | 'right' | 'center';
     }[] = [
             {
@@ -67,6 +67,7 @@ export class Estoque implements OnInit {
             {
                 field: 'nivelEstoque',
                 header: 'Nível',
+                type: 'progress',
                 align: 'center'
             },
             {
@@ -192,9 +193,7 @@ export class Estoque implements OnInit {
                     return false;
                 }
 
-                if (
-                    this.filtroStatus === 'todos'
-                ) {
+                if (!this.filtroStatus) {
                     return true;
                 }
 
@@ -234,23 +233,21 @@ export class Estoque implements OnInit {
 
     get totalProdutos(): number {
 
-        return this.produtosFiltrados.length;
+        return this.produtos.length;
 
     }
 
     get totalEmEstoque(): number {
-
-        return this.produtosFiltrados.filter(
+        return this.produtos.filter(
             produto =>
                 produto.estoqueAtual >
                 produto.estoqueMinimo * 2
         ).length;
-
     }
 
     get totalBaixo(): number {
 
-        return this.produtosFiltrados.filter(
+        return this.produtos.filter(
             produto =>
                 produto.estoqueAtual <=
                 produto.estoqueMinimo
@@ -260,13 +257,21 @@ export class Estoque implements OnInit {
 
     get totalAtencao(): number {
 
-        return this.produtosFiltrados.filter(
+        return this.produtos.filter(
             produto =>
                 produto.estoqueAtual >
                 produto.estoqueMinimo &&
                 produto.estoqueAtual <=
                 produto.estoqueMinimo * 2
         ).length;
+
+    }
+
+    selecionarFiltro(
+        filtro: string
+    ): void {
+
+        this.filtroStatus = filtro;
 
     }
 

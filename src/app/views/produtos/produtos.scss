@@ -13,15 +13,30 @@
 }
 
 .produtos-resumo {
-  margin-bottom: 1rem;
-  display: inline-flex;
-  gap: 0.5rem;
+  display: flex;
   align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  padding: 11px;
 }
 
 .form-actions {
   display: flex;
   gap: 12px;
-  margin-top: 1.5rem;
   justify-content: flex-end;
+}
+
+.produtos-toolbar-left {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex: 1;
+}
+
+.produtos-toolbar-right {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
 }

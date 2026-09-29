@@ -5,18 +5,33 @@
     </app-page-title>
 
     <app-toolbar>
-        <button
-            type="button"
-            class="btn btn-primary"
-            (click)="novoProduto()"
-            [disabled]="salvandoProduto">
-            + Novo Produto
-        </button>
 
-        <app-search-input
-            placeholder="Buscar produto..."
-            [(value)]="textoBusca">
-        </app-search-input>
+        <div class="produtos-toolbar-left">
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                (click)="novoProduto()"
+                [disabled]="salvandoProduto">
+                + Novo Produto
+            </button>
+            <div class="produtos-toolbar-right">
+
+                <div class="card produtos-resumo">
+                    <span>
+                        📦
+                    </span>
+                    {{ produtosFiltrados.length }} produtos
+                </div>
+
+                <app-search-input
+                    placeholder="Buscar produto..."
+                    [(value)]="textoBusca">
+                </app-search-input>
+            </div>
+
+        </div>
+
     </app-toolbar>
 
     @if (mostrarFormulario) {
@@ -151,17 +166,6 @@
         </div>
     </div>
     }
-
-    <div class="card produtos-resumo">
-        <span>
-            📦
-        </span>
-
-        <strong>
-            Total de produtos:
-        </strong>
-        {{ produtosFiltrados.length }}
-    </div>
 
     @if (
     produtosFiltrados.length === 0

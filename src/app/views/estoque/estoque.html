@@ -23,30 +23,54 @@
 
     <div class="estoque-resumo">
 
-        <app-stat-card
-            title="Produtos"
-            [value]="totalProdutos"
-            variant="info">
-        </app-stat-card>
+        <div
+            class="estoque-card"
+            [class.estoque-card--active]="filtroStatus === ''"
+            (click)="selecionarFiltro('')">
 
-        <app-stat-card
-            title="Normal"
-            [value]="totalEmEstoque"
-            variant="success">
-        </app-stat-card>
+            <app-stat-card
+                title="Produtos"
+                [value]="totalProdutos"
+                variant="info">
+            </app-stat-card>
+        </div>
 
-        <app-stat-card
-            title="Atenção"
-            [value]="totalAtencao"
-            variant="warning">
-        </app-stat-card>
+        <div
+            class="estoque-card"
+            [class.estoque-card--active]="filtroStatus === 'normal'"
+            (click)="selecionarFiltro('normal')">
 
-        <app-stat-card
-            title="Crítico"
-            [value]="totalBaixo"
-            variant="danger">
-        </app-stat-card>
+            <app-stat-card
+                title="Normal"
+                [value]="totalEmEstoque"
+                variant="success">
+            </app-stat-card>
 
+        </div>
+
+        <div
+            class="estoque-card"
+            [class.estoque-card--active]="filtroStatus === 'atencao'"
+            (click)="selecionarFiltro('atencao')">
+
+            <app-stat-card
+                title="Atenção"
+                [value]="totalAtencao"
+                variant="warning">
+            </app-stat-card>
+
+        </div>
+
+        <div
+            class="estoque-card"
+            [class.estoque-card--active]="filtroStatus === 'baixo'"
+            (click)="selecionarFiltro('baixo')">
+            <app-stat-card
+                title="Crítico"
+                [value]="totalBaixo"
+                variant="danger">
+            </app-stat-card>
+        </div>
     </div>
 
     @if (
