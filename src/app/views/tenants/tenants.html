@@ -23,7 +23,9 @@
             @if (!mostrarFormulario) {
 
             <app-empty-state
-                message="Clique em '+ Novo Tenant' para iniciar um cadastro.">
+                icon="🏢"
+                title="Nenhum tenant em edição"
+                message="Clique em '+ Cadastrar Tenant' para criar um novo tenant ou selecione um tenant para visualizar os detalhes.">
             </app-empty-state>
             }
 
@@ -250,7 +252,9 @@
             @if (tenants.length === 0) {
 
             <app-empty-state
-                message="Nenhum tenant cadastrado.">
+                icon="🏬"
+                title="Nenhum tenant cadastrado"
+                message="Cadastre o primeiro tenant para iniciar a utilização da plataforma.">
             </app-empty-state>
 
             } @else {

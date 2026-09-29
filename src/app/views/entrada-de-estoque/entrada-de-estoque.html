@@ -15,9 +15,11 @@
                     </h3>
 
                     @if (!produtoSelecionado) {
-                        <app-empty-state message="Selecione um produto na tabela ao lado
-                        ou utilize a busca para localizar um produto.">                            
-                        </app-empty-state>              
+                    <app-empty-state
+                        icon="📦"
+                        title="Nenhum produto selecionado"
+                        message="Selecione um produto na tabela ao lado ou utilize a busca para localizar um produto.">
+                    </app-empty-state>
 
                     }
 
@@ -75,8 +77,6 @@
                         </div>
 
                     </div>
-
-                    
 
                     <div class="field">
                         @if (!produtoSelecionadoId) {
