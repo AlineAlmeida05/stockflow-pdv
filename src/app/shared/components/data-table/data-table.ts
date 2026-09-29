@@ -17,7 +17,7 @@ export class DataTable {
     columns: {
         field: string;
         header: string;
-        type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle';
+        type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle' | 'progress';
         align?: 'left' | 'center' | 'right';
         badgeVariantField?: string;
     }[] = [];
@@ -152,6 +152,37 @@ export class DataTable {
                 return '';
 
         }
+
+    }
+
+    getProgressValue(
+        value: string
+    ): number {
+
+        return Number(
+            value.replace('%', '')
+        ) || 0;
+
+    }
+
+    getProgressClass(
+        value: string
+    ): string {
+
+        const percentual =
+            Number(
+                value.replace('%', '')
+            ) || 0;
+
+        if (percentual <= 25) {
+            return 'progress-danger';
+        }
+
+        if (percentual <= 50) {
+            return 'progress-warning';
+        }
+
+        return 'progress-success';
 
     }
 }

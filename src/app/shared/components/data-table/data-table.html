@@ -129,6 +129,35 @@
                         </div>
                     </div>
 
+                    } @else if (column.type === 'progress') {
+
+                    <div class="table-progress">
+
+                        <div class="table-progress__bar">
+
+                            <div
+                                class="table-progress__fill"
+                                [class]="
+        'table-progress__fill ' +
+        getProgressClass(
+            $any(row)[column.field]
+        )
+    "
+                                [style.width.%]="getProgressValue(
+        $any(row)[column.field]
+    )">
+                            </div>
+
+                        </div>
+
+                        <span>
+
+                            {{ $any(row)[column.field] }}
+
+                        </span>
+
+                    </div>
+
                     } @else {
 
                     {{
