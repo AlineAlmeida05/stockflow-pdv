@@ -258,3 +258,13 @@
   margin-top: 4px;
   color: var(--color-gray-900);
 }
+
+.vendas-panel {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.detalhes-panel {
+    max-height: 70vh;
+    overflow-y: auto;
+}

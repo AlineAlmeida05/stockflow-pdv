@@ -2,9 +2,18 @@
     <button
         type="button"
         class="expandable-card__header"
+        [disabled]="!collapsible"
         (click)="toggle()">
         <span>
+
+            @if (icon) {
+
+            {{ icon }}
+
+            }
+
             {{ title }}
+
         </span>
 
         <span
