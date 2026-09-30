@@ -15,6 +15,7 @@ import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { AlertService } from '../../core/services/alert.service';
 import { CurrencyInput } from '../../shared/components/currency-input/currency-input';
 import { ClienteResumo } from '../../core/models/cliente-resumo.model';
+import { ExpandableCard } from '../../shared/components/expandable-card/expandable-card';
 
 @Component({
     selector: 'app-fiados',
@@ -28,7 +29,8 @@ import { ClienteResumo } from '../../core/models/cliente-resumo.model';
         SearchInput,
         EmptyState,
         SplitPanel,
-        CurrencyInput
+        CurrencyInput,
+        ExpandableCard
     ],
     templateUrl: './fiados.html',
     styleUrl: './fiados.scss'
@@ -162,6 +164,8 @@ export class Fiados implements OnInit {
 
                     this.clientes = clientes;
 
+                    this.cdr.detectChanges();
+
                     clientes.forEach(cliente => {
 
                         this.clienteService
@@ -173,6 +177,8 @@ export class Fiados implements OnInit {
                                     this.resumosClientes[
                                         cliente.id
                                     ] = resumo;
+
+                                    this.cdr.detectChanges();
 
                                 },
 
@@ -271,6 +277,8 @@ export class Fiados implements OnInit {
 
                     this.clienteResumo =
                         resumo;
+
+                    this.cdr.detectChanges();
 
                 },
 
@@ -386,6 +394,8 @@ export class Fiados implements OnInit {
                     this.formaPagamento = 'pix';
 
                     this.mostrarRecebimento = false;
+
+                    this.cdr.detectChanges();
 
                     this.alertService.success(
                         'Pagamento registrado com sucesso.'
@@ -552,6 +562,37 @@ export class Fiados implements OnInit {
 
     }
 
+    obterDescricaoMovimento(
+        movimento: any
+    ): string {
 
+        if (
+            movimento.tipo === 'fiado'
+        ) {
+            return '📒 FIADO';
+        }
+
+        switch (
+        movimento.formaPagamento
+        ) {
+
+            case 'pix':
+                return '📱 PIX';
+
+            case 'dinheiro':
+                return '💵 DINHEIRO';
+
+            case 'debito':
+                return '💳 DÉBITO';
+
+            case 'credito':
+                return '💳 CRÉDITO';
+
+            default:
+                return '💰 PAGAMENTO';
+
+        }
+
+    }
 
 }

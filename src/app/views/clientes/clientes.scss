@@ -44,6 +44,14 @@ label {
   color: var(--color-gray-500);
 }
 
+app-search-input {
+    min-width: 400px;
+}
+
+.formulario .field {
+    width: 100%;
+}
+
 .formulario-cliente.visualizacao {
   input,
   textarea {

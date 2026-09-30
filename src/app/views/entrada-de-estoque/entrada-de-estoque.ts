@@ -11,9 +11,7 @@ import { SearchInput } from '../../shared/components/search-input/search-input';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { DataTable } from '../../shared/components/data-table/data-table';
 import { CurrencyInput } from '../../shared/components/currency-input/currency-input';
-import { SelectInput } from '../../shared/components/select-input/select-input';
 import { AlertService } from '../../core/services/alert.service';
-import { StatCard } from '../../shared/components/stat-card/stat-card';
 import { ExpandableCard } from '../../shared/components/expandable-card/expandable-card';
 import { SmartProductSearch } from '../../shared/components/smart-product-search/smart-product-search';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
@@ -30,7 +28,6 @@ import { MovimentacaoEstoqueRequest } from '../../core/models/movimentacao-estoq
         SearchInput,
         DataTable,
         CurrencyInput,
-        StatCard,
         ExpandableCard,
         EmptyState,
         SmartProductSearch
