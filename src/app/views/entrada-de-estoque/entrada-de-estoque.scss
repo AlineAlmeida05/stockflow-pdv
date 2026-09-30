@@ -44,6 +44,12 @@
   margin-bottom: 12px;
 }
 
+.produto-selecionado > div {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 8px;
+}
+
 .produto-selecionado strong {
   color: var(--color-primary);
 }
@@ -85,4 +91,8 @@
 .resumo-sem-estoque {
   color: #7f1d1d;
   font-weight: 600;
+}
+
+.field {
+  margin-bottom: 0;
 }

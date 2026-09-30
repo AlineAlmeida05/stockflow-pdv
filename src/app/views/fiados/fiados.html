@@ -14,66 +14,71 @@
                 [(value)]="textoBusca">
             </app-search-input>
 
-            @for (
-            cliente of clientesDevedoresFiltrados;
-            track cliente.id
-            ) {
-            <div
-                class="card cliente-card"
-                [class.cliente-card--active]="
+            <div class="clientes-lista">
+
+                @for (
+                cliente of clientesDevedoresFiltrados;
+                track cliente.id
+                ) {
+
+                <div
+                    class="card cliente-card"
+                    [class.cliente-card--active]="
                     this.cliente?.id === cliente.id"
-                (click)="selecionarCliente(cliente)">
+                    (click)="selecionarCliente(cliente)">
 
-                <div class="cliente-card__header">
-                    <h3>
-                        {{ cliente.nome }}
-                    </h3>
-                    @if (
-                    formatarStatus(
-                    cliente.id
-                    )
-                    ) {
-
-                    <div class="cliente-card__status">
-                        {{
+                    <div class="cliente-card__header">
+                        <h3>
+                            {{ cliente.nome }}
+                        </h3>
+                        @if (
                         formatarStatus(
                         cliente.id
                         )
-                        }}
+                        ) {
+
+                        <div class="cliente-card__status">
+                            {{
+                            formatarStatus(
+                            cliente.id
+                            )
+                            }}
+                        </div>
+                        }
                     </div>
+
+                    <div class="cliente-card__saldo">
+                        <span>
+                            Saldo Devedor
+                        </span>
+
+                        <strong class="danger">
+                            {{
+                            obterResumoCliente(
+                            cliente.id
+                            )?.saldoDevedor
+                            | currency:'BRL'
+                            }}
+
+                        </strong>
+                    </div>
+
+                    @if (
+                    deveExibirAlertaFinanceiro(
+                    cliente.id
+                    )
+                    ) {
+                    <button
+                        type="button"
+                        class="btn btn-secondary btn-whatsapp"
+                        (click)="cobrarViaWhatsapp(cliente)">
+                        💬 Cobrar Cliente
+                    </button>
                     }
                 </div>
 
-                <div class="cliente-card__saldo">
-                    <span>
-                        Saldo Devedor
-                    </span>
-
-                    <strong class="danger">
-                        {{
-                        obterResumoCliente(
-                        cliente.id
-                        )?.saldoDevedor
-                        | currency:'BRL'
-                        }}
-
-                    </strong>
-                </div>
-
-                @if (
-                deveExibirAlertaFinanceiro(
-                cliente.id
-                )
-                ) {
-                <button
-                    type="button"
-                    class="btn btn-secondary btn-whatsapp"
-                    (click)="cobrarViaWhatsapp(cliente)">
-                    💬 Cobrar Cliente
-                </button>
                 }
             </div>
-            }
         </div>
 
         <div right class="extrato">
@@ -190,80 +195,76 @@
             </div>
 
             }
-            <h3>
-                Extrato
-            </h3>
 
             <app-expandable-card
-    icon="📒"
-    [title]="'Extrato (' + obterExtratoCliente().length + ')'">
-    <div class="extrato-lista">
+                icon="📒"
+                [title]="'Extrato (' + obterExtratoCliente().length + ')'">
+                <div class="extrato-lista">
 
-            @for (
-            movimento of obterExtratoCliente();
-            track $index
-            ) {
-            <div
-                class="extrato-item"
-                [class.extrato-item--fiado]="
+                    @for (
+                    movimento of obterExtratoCliente();
+                    track $index
+                    ) {
+                    <div
+                        class="extrato-item"
+                        [class.extrato-item--fiado]="
                 movimento.tipo === 'fiado'"
-                [class.extrato-item--pagamento]="
+                        [class.extrato-item--pagamento]="
                 movimento.tipo === 'pagamento'">
 
-                <div class="extrato-item__info">
+                        <div class="extrato-item__info">
 
-                    <span class="pagamento">
+                            <span class="pagamento">
 
-                        {{
-                        movimento.tipo === 'pagamento'
-                        ? 'Pagamento ' +
-                        movimento.formaPagamento?.toUpperCase()
-                        : 'Venda Fiada'
-                        }}
+                                {{
+                                obterDescricaoMovimento(
+                                movimento
+                                )
+                                }}
 
-                    </span>
+                            </span>
 
-                    @if (movimento.tipo === 'pagamento') {
+                            @if (movimento.tipo === 'pagamento') {
 
-                    <span>
-                        • 👤 {{ movimento.usuarioNome }}
-                    </span>
+                            <span>
+                                • 👤 {{ movimento.usuarioNome }}
+                            </span>
+
+                            }
+
+                            <span>
+                                • {{
+                                movimento.data
+                                | date:'dd/MM/yyyy HH:mm'
+                                }}
+                            </span>
+
+                        </div>
+
+                        <strong class="extrato-item__valor">
+
+                            @if (movimento.tipo === 'fiado') {
+
+                            - {{
+                            movimento.valor
+                            | currency:'BRL'
+                            }}
+
+                            } @else {
+
+                            + {{
+                            movimento.valor
+                            | currency:'BRL'
+                            }}
+
+                            }
+
+                        </strong>
+
+                    </div>
 
                     }
-
-                    <span>
-                        • {{
-                        movimento.data
-                        | date:'dd/MM/yyyy HH:mm'
-                        }}
-                    </span>
-
                 </div>
-
-                <strong class="extrato-item__valor">
-
-                    @if (movimento.tipo === 'fiado') {
-
-                    - {{
-                    movimento.valor
-                    | currency:'BRL'
-                    }}
-
-                    } @else {
-
-                    + {{
-                    movimento.valor
-                    | currency:'BRL'
-                    }}
-
-                    }
-
-                </strong>
-
-            </div>
-
-            }
-            </div>
             </app-expandable-card>
 
             } @else {
