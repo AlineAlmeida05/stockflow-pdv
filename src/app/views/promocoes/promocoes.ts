@@ -1,24 +1,18 @@
-
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-
 import { MainLayout } from '../../layout/main-layout/main-layout';
-
 import { Produto } from '../../core/models/produto.model';
-
 import { ProdutoService } from '../../core/services/produto.service';
-
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { SearchInput } from '../../shared/components/search-input/search-input';
-
 import { AlertService } from '../../core/services/alert.service';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
-import { StatCard } from '../../shared/components/stat-card/stat-card';
 import { PromocaoService } from '../../core/services/promocao.service';
 import { Promocao } from '../../core/models/promocao.model';
 import { ProdutoPromocao } from '../../core/models/produto-promocao.model';
+import { NotificacaoService } from '../../core/services/notificacao.service';
 
 
 @Component({
@@ -31,8 +25,7 @@ import { ProdutoPromocao } from '../../core/models/produto-promocao.model';
         EmptyState,
         SplitPanel,
         SearchInput,
-        StatusBadge,
-        StatCard
+        StatusBadge
     ],
     templateUrl: './promocoes.html',
     styleUrl: './promocoes.scss'
@@ -252,10 +245,13 @@ export class Promocoes implements OnInit {
         private produtoService: ProdutoService,
         private promocaoService: PromocaoService,
         private alertService: AlertService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private notificacaoService: NotificacaoService
     ) { }
 
     ngOnInit(): void {
+
+        this.carregarDados();
 
         this.produtoService
             .listar()
@@ -303,12 +299,20 @@ export class Promocoes implements OnInit {
 
                 next: painel => {
 
-                    this.pendentes =
-                        painel.pendentes;
+                    this.pendentes = painel.pendentes;
 
-                    this.ativas =
-                        painel.ativas;
+                    this.ativas = painel.ativas;
 
+                    console.log('Pendentes', this.pendentes);
+                    console.log('Ativas', this.ativas);
+                    console.log(
+                        'Painel combinado',
+                        this.promocoesPainel
+                    );
+                    console.log(
+                        'produtosAtivosFiltrados',
+                        this.produtosAtivosFiltrados
+                    );
                     this.cdr.detectChanges();
 
                 },
@@ -450,16 +454,36 @@ export class Promocoes implements OnInit {
         if (
             prioridadeBackend === 'ALTA'
         ) {
-            return 'Alta';
+            return 'Prioridade Alta';
         }
 
         if (
             prioridadeBackend === 'MEDIA'
         ) {
-            return 'Média';
+            return 'Prioridade Média';
         }
 
-        return prioridadeBackend;
+        return 'Prioridade Baixa';
+
+    }
+
+    obterQuantidadeRestante(
+        promocao: Promocao
+    ): number {
+
+        if (
+            !promocao.metaUnidades
+        ) {
+
+            return 0;
+
+        }
+
+        return Math.max(
+            0,
+            promocao.metaUnidades -
+            promocao.unidadesVendidas
+        );
 
     }
 
@@ -477,39 +501,41 @@ export class Promocoes implements OnInit {
         }
 
         this.promocaoService
-    .criar({
+            .criar({
 
-        produtoId: produto.id
+                produtoId: produto.id
 
-    })
-    .subscribe({
+            })
+            .subscribe({
 
-        next: () => {
+                next: () => {
 
-            produto.promocaoAtiva =
-                true;
+                    this.carregarDados();
 
-            this.cdr.detectChanges();
+                    this.notificacaoService
+                        .notificarAtualizacaoBadges();
 
-            this.alertService.success(
-                'Promoção ativada com sucesso.'
-            );
+                    this.cdr.detectChanges();
 
-        },
+                    this.alertService.success(
+                        'Promoção ativada com sucesso.'
+                    );
 
-        error: erro => {
+                },
 
-            console.error(
-                erro
-            );
+                error: erro => {
 
-            this.alertService.error(
-                'Erro ao ativar promoção.'
-            );
+                    console.error(
+                        erro
+                    );
 
-        }
+                    this.alertService.error(
+                        'Erro ao ativar promoção.'
+                    );
 
-    });
+                }
+
+            });
 
     }
 
@@ -539,14 +565,10 @@ export class Promocoes implements OnInit {
 
                 next: () => {
 
-                    produto.promocaoAtiva =
-                        false;
+                    this.carregarDados();
 
-                    produto.precoPromocional =
-                        undefined;
-
-                    produto.promocaoMotivo =
-                        undefined;
+                    this.notificacaoService
+                        .notificarAtualizacaoBadges();
 
                     this.cdr.detectChanges();
 
@@ -775,15 +797,6 @@ export class Promocoes implements OnInit {
 
     }
 
-    obterIndicadorPromocao(
-        produto: Produto
-    ): string {
-
-        return produto.promocaoAtiva
-            ? '✅'
-            : '⚠️';
-    }
-
     obterStatusMeta(
         promocao: Promocao
     ): string {
@@ -845,6 +858,38 @@ export class Promocoes implements OnInit {
 
     }
 
+    get produtosPendentes(): Produto[] {
+
+        return this.pendentes
+            .map(item =>
+                this.produtos.find(
+                    produto =>
+                        produto.id === item.id
+                )
+            )
+            .filter(
+                (produto): produto is Produto =>
+                    !!produto
+            );
+
+    }
+
+    get produtosAtivos(): Produto[] {
+
+        return this.ativas
+            .map(item =>
+                this.produtos.find(
+                    produto =>
+                        produto.id === item.id
+                )
+            )
+            .filter(
+                (produto): produto is Produto =>
+                    !!produto
+            );
+
+    }
+
     get produtosPainelFiltrados(): Produto[] {
 
         return this.produtosPainel.filter(
@@ -859,6 +904,61 @@ export class Promocoes implements OnInit {
 
     }
 
+    get produtosPendentesFiltrados(): Produto[] {
+
+        return this.pendentes
+            .map(item =>
+                this.produtos.find(
+                    produto =>
+                        produto.id === item.id
+                )
+            )
+            .filter(
+                (produto): produto is Produto =>
+                    !!produto
+            )
+            .filter(
+                produto =>
+                    produto.nome
+                        .toLowerCase()
+                        .includes(
+                            this.textoBusca
+                                .toLowerCase()
+                        )
+            );
+
+    }
+
+    get produtosAtivosFiltrados(): Produto[] {
+
+        console.log(
+            'Ativas painel',
+            this.ativas
+        );
+
+        return this.ativas
+            .map(item =>
+                this.produtos.find(
+                    produto =>
+                        produto.id === item.id
+                )
+            )
+            .filter(
+                (produto): produto is Produto =>
+                    !!produto
+            )
+            .filter(
+                produto =>
+                    produto.nome
+                        .toLowerCase()
+                        .includes(
+                            this.textoBusca
+                                .toLowerCase()
+                        )
+            );
+
+    }
+
     obterDadosPromocao(
         produtoId: string
     ): ProdutoPromocao | undefined {
@@ -870,5 +970,47 @@ export class Promocoes implements OnInit {
 
     }
 
+    produtoEstaComPromocaoAtiva(
+        produtoId: string
+    ): boolean {
 
+        return Boolean(
+            this.obterDadosPromocao(
+                produtoId
+            )?.promocaoAtiva
+        );
+
+    }
+
+    private carregarDados(): void {
+
+        this.produtoService
+            .listar()
+            .subscribe({
+                next: produtos => {
+                    this.produtos = produtos;
+                    this.cdr.detectChanges();
+                }
+            });
+
+        this.promocaoService
+            .listar()
+            .subscribe({
+                next: promocoes => {
+                    this.promocoes = promocoes;
+                    this.cdr.detectChanges();
+                }
+            });
+
+        this.promocaoService
+            .listarPainel()
+            .subscribe({
+                next: painel => {
+                    this.pendentes = painel.pendentes;
+                    this.ativas = painel.ativas;
+                    this.cdr.detectChanges();
+                }
+            });
+
+    }
 }   
