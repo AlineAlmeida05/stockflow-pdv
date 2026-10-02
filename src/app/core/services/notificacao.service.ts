@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { MenuBadge } from '../models/menu-badge.model';
+import { Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -22,4 +23,17 @@ export class NotificacaoService {
             `${this.apiUrl}/menu`
         );
     }
+
+    private readonly badgesAtualizados =
+        new Subject<void>();
+
+    badgesAtualizados$ =
+        this.badgesAtualizados.asObservable();
+
+    notificarAtualizacaoBadges(): void {
+
+        this.badgesAtualizados.next();
+
+    }
+
 }

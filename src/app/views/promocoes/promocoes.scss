@@ -14,7 +14,7 @@
   padding: 24px;
   border-radius: 16px;
   background: var(--color-white);
-  border-left: 4px solid var(--color-secondary);
+  border-left: 3px solid var(--color-secondary);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
@@ -73,6 +73,13 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
+.titulo-badges {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .produto-status {
   display: flex;
   flex-wrap: wrap;
@@ -82,7 +89,7 @@
 
 .preco-promocional {
   font-weight: bold;
-  color: green;
+  color: var(--color-success);
 }
 
 .produto-acoes {
@@ -109,7 +116,7 @@
 .promo-progress__bar {
   width: 100%;
   height: 8px;
-  background: #e5e7eb;
+  background: var(--color-white);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -118,4 +125,139 @@
   height: 100%;
   background: var(--color-success);
   transition: width 300ms ease;
+}
+
+.promocoes-divider {
+  margin: 24px 0;
+  border: none;
+  border-top: 1px solid var(--color-gray-300);
+}
+
+.status-promocao {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.status-promocao--pendente {
+  color: #f59e0b;
+}
+
+.status-promocao--ativa {
+  color: var(--color-success);
+}
+
+.desconto-highlight {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-success) 10%, white);
+  border: 1px solid var(--color-success);
+  color: var(--color-success);
+  font-weight: 700;
+}
+
+.produto-card--pendente {
+  background: rgb(245 158 11 / 12%);
+}
+
+.produto-card--promocao-ativa {
+  background: rgb(16 185 129 / 12%);
+}
+
+.resumo-promocao-coluna {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.resumo-promocao-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.resumo-promocao-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--color-gray-200);
+  background: var(--color-white);
+  transition: 0.2s ease;
+}
+
+.produto-detalhes__item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--color-gray-100);
+}
+
+.resumo-promocao-item strong,
+.produto-detalhes__item strong {
+  color: var(--color-gray-600);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.resumo-promocao-item span,
+.produto-detalhes__item span {
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.valor-promocional {
+  color: var(--color-success);
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+.valor-atual {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--color-gray-900);
+}
+
+.promo-progress__remaining {
+    display: block;
+    margin-top: 6px;
+    font-size: .8rem;
+    color: var(--color-gray-600);
+}
+
+.promo-progress__footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: .8rem;
+    color: var(--color-gray-600);
+}
+
+.promo-progress__bar-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.promo-progress__percent {
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--color-gray-700);
+    min-width: 36px;
+}
+
+.promo-progress__remaining {
+    margin-top: 6px;
+    font-size: .75rem;
+    color: var(--color-gray-500);
+
 }

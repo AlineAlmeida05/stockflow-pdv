@@ -35,30 +35,19 @@ export class Sidebar implements OnInit {
 
   ngOnInit(): void {
 
+    this.carregarBadges();
+
     this.notificacaoService
-      .listarBadges()
-      .subscribe({
+      .badgesAtualizados$
+      .subscribe(() => {
 
-        next: badges => {
-
-          this.badges = badges;
-
-          this.cdr.detectChanges();
-
-        },
-
-        error: erro => {
-
-          console.error(
-            'Erro ao carregar badges',
-            erro
-          );
-
-        }
+        this.carregarBadges();
 
       });
 
   }
+
+
 
   fecharMenu() {
     this.closeMenu.emit();
@@ -96,6 +85,30 @@ export class Sidebar implements OnInit {
       );
 
     return badge?.totalPendencias ?? 0;
+
+  }
+
+  private carregarBadges(): void {
+
+    this.notificacaoService
+      .listarBadges()
+      .subscribe({
+        next: badges => {
+
+          this.badges = badges;
+
+          this.cdr.detectChanges();
+
+        },
+        error: erro => {
+
+          console.error(
+            'Erro ao carregar badges',
+            erro
+          );
+
+        }
+      });
 
   }
 
