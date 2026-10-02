@@ -8,51 +8,53 @@
 
         <button
             type="button"
+            [class.active]="abaSelecionada === 'geral'"
             (click)="abaSelecionada = 'geral'">
             Geral
         </button>
 
         <button
             type="button"
+            [class.active]="abaSelecionada === 'vendas'"
             (click)="abaSelecionada = 'vendas'">
+
             Vendas
+
         </button>
 
         <button
             type="button"
+            [class.active]="abaSelecionada === 'estoque'"
             (click)="abaSelecionada = 'estoque'">
             Estoque
         </button>
 
         <button
             type="button"
+            [class.active]="abaSelecionada === 'financeiro'"
             (click)="abaSelecionada = 'financeiro'">
             Financeiro
         </button>
 
         <button
             type="button"
+            [class.active]="abaSelecionada === 'promocoes'"
             (click)="abaSelecionada = 'promocoes'">
             Promoções
         </button>
 
         <button
             type="button"
+            [class.active]="abaSelecionada === 'produtos'"
             (click)="abaSelecionada = 'produtos'">
             Produtos
-        </button>
-
-        <button
-            type="button"
-            (click)="abaSelecionada = 'usuarios'">
-            Usuários
         </button>
 
     </div>
 
     <div class="dashboard-filters">
         <button
-            class="btn btn-primary"
+            class="btn"
             type="button"
             [class.active]="periodoSelecionado === 'hoje'"
             (click)="alterarPeriodo('hoje')">
@@ -60,7 +62,7 @@
         </button>
 
         <button
-            class="btn btn-primary"
+            class="btn"
             type="button"
             [class.active]="periodoSelecionado === '7dias'"
             (click)="alterarPeriodo('7dias')">
@@ -68,7 +70,7 @@
         </button>
 
         <button
-            class="btn btn-primary"
+            class="btn"
             type="button"
             [class.active]="periodoSelecionado === '30dias'"
             (click)="alterarPeriodo('30dias')">
@@ -76,7 +78,7 @@
         </button>
 
         <button
-            class="btn btn-primary"
+            class="btn"
             type="button"
             [class.active]="periodoSelecionado === 'mes'"
             (click)="alterarPeriodo('mes')">
@@ -84,7 +86,7 @@
         </button>
 
         <button
-            class="btn btn-primary"
+            class="btn"
             type="button"
             [class.active]="periodoSelecionado === 'todos'"
             (click)="alterarPeriodo('todos')">
@@ -101,53 +103,377 @@
     <app-dashboard-layout>
         <div summary>
             <div class="dashboard-panel">
-                <h2>
-                    📋 Resumo Executivo
-                </h2>
+
                 <div class="executive-summary">
-                    <div class="summary-item">
+                    <h2>
+                        Resumo Executivo
+                    </h2>
+
+                    <div
+                        class="summary-item summary-item--vendas"
+                        [class.summary-item--active]="resumoGeralSelecionado === 'vendas'"
+                        (click)="resumoGeralSelecionado = 'vendas'">
+
                         <span>
                             Vendas {{ descricaoPeriodo }}
                         </span>
+
                         <strong>
                             {{ dashboard?.totalVendas ?? 0 }}
                         </strong>
+
                     </div>
 
-                    <div class="summary-item">
+                    <div
+                        class="summary-item summary-item--faturamento"
+                        [class.summary-item--active]="resumoGeralSelecionado === 'faturamento'"
+                        (click)="resumoGeralSelecionado = 'faturamento'">
+
                         <span>
                             Faturamento {{ descricaoPeriodo }}
                         </span>
+
                         <strong>
                             {{ (dashboard?.faturamento ?? 0) | currency:'BRL' }}
                         </strong>
+
                     </div>
 
-                    <div class="summary-item">
+                    <div
+                        class="summary-item summary-item--devedores"
+                        [class.summary-item--active]="resumoGeralSelecionado === 'devedores'"
+                        (click)="resumoGeralSelecionado = 'devedores'">
+
                         <span>Clientes Devedores</span>
+
                         <strong>
                             {{ dashboard?.clientesDevedores ?? 0 }}
                         </strong>
                     </div>
 
-                    <div class="summary-item">
-                        <span>Baixo</span>
+                    <div
+                        class="summary-item summary-item--estoque"
+                        [class.summary-item--active]="resumoGeralSelecionado === 'estoque'"
+                        (click)="resumoGeralSelecionado = 'estoque'">
+
+                        <span>Estoque Baixo</span>
+
                         <strong>
                             {{ dashboard?.produtosComEstoqueBaixo ?? 0 }}
                         </strong>
                     </div>
-
-                    @if ((dashboard?.topProdutosVendidos?.length ?? 0) > 0) {
-
-                    <div class="summary-item">
-                        <span>Produto Top</span>
-                        <strong>
-                            {{ dashboard?.topProdutosVendidos?.[0]?.nome }}
-                        </strong>
-                    </div>
-                    }
                 </div>
             </div>
+
+        </div>
+
+        <div main>
+            <div class="dashboard-panel">
+
+                <h2>
+                    Detalhamento
+                </h2>
+
+                @if (!resumoGeralSelecionado) {
+
+                <app-empty-state
+                    title="Nenhum indicador selecionado"
+                    message="Clique em um indicador do Resumo Executivo para visualizar os dados detalhados."
+                    icon="📊">
+                </app-empty-state>
+
+                }
+                @if (
+                resumoGeralSelecionado === 'vendas'
+                ) {
+
+                <h3>
+                    Vendas {{ descricaoPeriodo }}
+                </h3>
+
+                @if (
+                vendasFiltradas.length === 0
+                ) {
+
+                <app-empty-state
+                    icon="📈"
+                    title="Nenhuma venda encontrada"
+                    message="Não existem vendas registradas para o período selecionado.">
+                </app-empty-state>
+
+                } @else {
+
+                <div class="dashboard-table-container">
+
+                    <table class="dashboard-table">
+
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Valor</th>
+                                <th>Pagamento</th>
+                                <th>Itens</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @for (
+                            venda of vendasFiltradas;
+                            track venda.id
+                            ) {
+
+                            <tr>
+                                <td class="dashboard-table__value">
+                                    {{venda.dataVenda | date:'dd/MM/yyyy'}}
+                                </td>
+
+                                <td class="dashboard-table__value-success">
+                                    {{venda.valorTotal | currency:'BRL'}}
+                                </td>
+
+                                <td class="dashboard-table__value">
+                                    {{formatarPagamento(venda.formaPagamento)}}
+                                </td>
+
+                                <td class="dashboard-table__value">
+                                    {{venda.quantidadeItens}}
+                                </td>
+                            </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+                </div>
+                }
+
+                }
+                @if (
+                resumoGeralSelecionado === 'faturamento'
+                ) {
+
+                <h3>
+                    Faturamento {{ descricaoPeriodo }}
+                </h3>
+
+                @if (
+                vendasFiltradas.length === 0
+                ) {
+
+                <app-empty-state
+                    icon="💰"
+                    title="Nenhum faturamento encontrado"
+                    message="Não existem vendas registradas para o período selecionado.">
+                </app-empty-state>
+
+                } @else {
+                <div class="dashboard-table-container">
+
+                    <table class="dashboard-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Pagamento</th>
+                                <th>Valor</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @for (
+                            venda of vendasFiltradas;
+                            track venda.id
+                            ) {
+
+                            <tr>
+                                <td class="dashboard-table__value">
+                                    {{venda.dataVenda| date:'dd/MM/yyyy'}}
+                                </td>
+
+                                <td class="dashboard-table__value">
+                                    {{formatarPagamento(venda.formaPagamento)}}
+                                </td>
+
+                                <td class="dashboard-table__value">
+                                    {{venda.valorTotal| currency:'BRL'}}
+                                </td>
+                            </tr>
+                            }
+
+                        </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <th colspan="2">
+                                    Total
+                                </th>
+
+                                <th>
+                                    {{faturamentoPeriodo| currency:'BRL'}}
+                                </th>
+                            </tr>
+                        </tfoot>
+
+                    </table>
+                </div>
+                }
+
+                }
+                @if (
+                resumoGeralSelecionado === 'devedores'
+                ) {
+
+                <h3>
+                    Clientes Devedores
+                </h3>
+
+                @if (
+                fiadosFiltrados.length === 0
+                ) {
+
+                <app-empty-state
+                    icon="💳"
+                    title="Nenhum cliente devedor"
+                    message="Não existem fiados em aberto no momento.">
+                </app-empty-state>
+
+                } @else {
+                <div class="dashboard-table-container">
+
+                    <table class="dashboard-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Cliente
+                                </th>
+
+                                <th>
+                                    Valor Devido
+                                </th>
+
+                                <th>
+                                    Data Lançamento
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @for (
+                            fiado of fiadosFiltrados;
+                            track fiado.id
+                            ) {
+
+                            <tr>
+
+                                <td class="dashboard-table__value">
+                                    {{ fiado.clienteNome }}
+                                </td>
+
+                                <td class="dashboard-table__value-devido">
+                                    {{fiado.valorTotal| currency:'BRL'}}
+                                </td>
+
+                                <td class="dashboard-table__value">
+                                    {{fiado.dataLancamento| date:'dd/MM/yyyy'}}
+                                </td>
+
+                            </tr>
+
+                            }
+
+                        </tbody>
+
+                    </table>
+                </div>
+                }
+                }
+
+                @if (
+                resumoGeralSelecionado === 'estoque'
+                ) {
+
+                <h3>
+                    Produtos com Estoque Baixo
+                </h3>
+
+                @if (
+                produtosEstoqueBaixo.length === 0
+                ) {
+
+                <app-empty-state
+                    icon="📦"
+                    title="Nenhum produto com estoque baixo"
+                    message="Todos os produtos estão acima do estoque mínimo.">
+                </app-empty-state>
+
+                } @else {
+
+                <div class="dashboard-table-container">
+
+                    <table class="dashboard-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Produto
+                                </th>
+
+                                <th>
+                                    Estoque Atual
+                                </th>
+
+                                <th>
+                                    Estoque Mínimo
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @for (
+                            produto of produtosEstoqueBaixo;
+                            track produto.id
+                            ) {
+
+                            <tr>
+
+                                <td class="dashboard-table__value">
+                                    {{ produto.nome }}
+                                </td>
+
+                                <td class="dashboard-table__estoque-atual">
+                                    {{ produto.estoqueAtual }}
+                                </td>
+
+                                <td class="dashboard-table__value">
+                                    {{ produto.estoqueMinimo }}
+                                </td>
+
+                            </tr>
+
+                            }
+
+                        </tbody>
+
+                    </table>
+                </div>
+
+                }
+
+                }
+
+            </div>
+
         </div>
 
     </app-dashboard-layout>
@@ -157,21 +483,8 @@
     <app-dashboard-layout>
         <div summary>
             <div class="dashboard-panel">
-
-                <div main>
-                    <div class="dashboard-panel">
-                        <h2>
-                            📈 Evolução das Vendas
-                        </h2>
-
-                        <app-dashboard-chart
-                            [chartData]="vendasChartData"
-                            [chartOptions]="vendasChartOptions">
-                        </app-dashboard-chart>
-                    </div>
-                </div>
                 <h2>
-                    💳 Receita por Forma de Pagamento
+                    Receita por Forma de Pagamento
                 </h2>
 
                 <app-dashboard-chart
@@ -185,13 +498,12 @@
         <div main>
             <div class="dashboard-panel">
                 <h2>
-                    🏆 Top Produtos Vendidos
+                    Evolução das Vendas
                 </h2>
 
                 <app-dashboard-chart
-                    type="bar"
-                    [chartData]="topProdutosChartData"
-                    [chartOptions]="topProdutosChartOptions">
+                    [chartData]="vendasChartData"
+                    [chartOptions]="vendasChartOptions">
                 </app-dashboard-chart>
             </div>
         </div>
@@ -201,17 +513,309 @@
     @if (abaSelecionada === 'estoque') {
     <app-dashboard-layout>
         <div summary>
+
             <div class="dashboard-panel">
+
                 <h2>
-                    📦 Giro de Estoque
+                    Resumo de Estoque
                 </h2>
 
-                <app-dashboard-chart
-                    type="bar"
-                    [chartData]="giroChartData"
-                    [chartOptions]="giroChartOptions">
-                </app-dashboard-chart>
+                <div class="executive-summary">
+
+                    <div
+                        class="summary-item summary-item--vendas"
+                        [class.summary-item--active]="
+                            resumoEstoqueSelecionado === 'produtos'"
+                        (click)="resumoEstoqueSelecionado = 'produtos'">
+
+                        <span>
+                            Total Produtos
+                        </span>
+
+                        <strong>
+                            {{ produtos.length }}
+                        </strong>
+
+                    </div>
+
+                    <div
+                        class="summary-item summary-item--vendas"
+                        [class.summary-item--active]="
+                            resumoEstoqueSelecionado === 'estoqueBaixo'"
+                        (click)="
+                            resumoEstoqueSelecionado = 'estoqueBaixo'">
+
+                        <span>
+                            Estoque Baixo
+                        </span>
+
+                        <strong>
+                            {{ produtosEstoqueBaixo.length }}
+                        </strong>
+
+                    </div>
+
+                    <div
+                        class="summary-item summary-item--vendas"
+                        [class.summary-item--active]="resumoEstoqueSelecionado === 'semEstoque'"
+                        (click)="resumoEstoqueSelecionado = 'semEstoque'">
+
+                        <span>
+                            Sem Estoque
+                        </span>
+
+                        <strong>
+                            {{ produtosSemEstoque.length }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
             </div>
+
+        </div>
+        <div main>
+
+            <div class="dashboard-panel">
+
+                <h2>
+                    Detalhamento
+                </h2>
+
+                @if (!resumoEstoqueSelecionado) {
+
+                <app-empty-state
+                    icon="📦"
+                    title="Nenhum indicador selecionado"
+                    message="Clique em um indicador para visualizar os produtos.">
+                </app-empty-state>
+
+                }
+                @if (
+                resumoEstoqueSelecionado ===
+                'produtos'
+                ) {
+
+                <h3>
+                    Todos os Produtos
+                </h3>
+
+                <div class="dashboard-table-container">
+
+                    <table class="dashboard-table">
+
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Estoque</th>
+                                <th>Mínimo</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @for (
+                            produto of produtos;
+                            track produto.id
+                            ) {
+
+                            <tr>
+
+                                <td class="dashboard-table__value">
+                                    {{ produto.nome }}
+                                </td>
+
+                                <td class="dashboard-table__value">
+                                    {{ produto.estoqueAtual }}
+                                </td>
+
+                                <td class="dashboard-table__value">
+                                    {{ produto.estoqueMinimo }}
+                                </td>
+
+                            </tr>
+
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                }
+                @if (
+                resumoEstoqueSelecionado ===
+                'estoqueBaixo'
+                ) {
+
+                <h3>
+                    Produtos com Estoque Baixo
+                </h3>
+
+                @if (
+                produtosEstoqueBaixo.length === 0
+                ) {
+
+                <app-empty-state
+                    icon="📦"
+                    title="Nenhum produto com estoque baixo"
+                    message="Todos os produtos estão acima do estoque mínimo.">
+                </app-empty-state>
+
+                } @else {
+
+                <div class="dashboard-table-container">
+
+                    <table class="dashboard-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Produto</th>
+
+                                <th>Estoque Atual</th>
+
+                                <th>Estoque Mínimo</th>
+
+                                <th>Diferença</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @for (
+                            produto of produtosEstoqueBaixo;
+                            track produto.id
+                            ) {
+
+                            <tr>
+
+                                <td class="dashboard-table__value">
+                                    {{ produto.nome }}
+                                </td>
+
+                                <td class="dashboard-table__warning">
+
+                                    {{ produto.estoqueAtual }}
+
+                                </td>
+
+                                <td class="dashboard-table__value">
+
+                                    {{ produto.estoqueMinimo }}
+
+                                </td>
+
+                                <td class="dashboard-table__value">
+
+                                    {{
+                                    produto.estoqueMinimo -
+                                    produto.estoqueAtual
+                                    }}
+
+                                </td>
+
+                            </tr>
+
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                }
+
+                }
+                @if (
+                resumoEstoqueSelecionado ===
+                'semEstoque'
+                ) {
+
+                <h3>
+                    Produtos Sem Estoque
+                </h3>
+
+                @if (
+                produtosSemEstoque.length === 0
+                ) {
+
+                <app-empty-state
+                    icon="✅"
+                    title="Nenhum produto sem estoque"
+                    message="Todos os produtos possuem estoque disponível.">
+                </app-empty-state>
+
+                } @else {
+
+                <div class="dashboard-table-container">
+
+                    <table class="dashboard-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Produto</th>
+
+                                <th>Estoque Atual</th>
+
+                                <th>Estoque Mínimo</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @for (
+                            produto of produtosSemEstoque;
+                            track produto.id
+                            ) {
+
+                            <tr>
+
+                                <td class="dashboard-table__value">
+
+                                    {{ produto.nome }}
+
+                                </td>
+
+                                <td
+                                    class="dashboard-table__danger">
+
+                                    {{ produto.estoqueAtual }}
+
+                                </td>
+
+                                <td class="dashboard-table__value">
+
+                                    {{ produto.estoqueMinimo }}
+
+                                </td>
+
+                            </tr>
+
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                }
+
+                }
+
+            </div>
+
         </div>
 
     </app-dashboard-layout>
@@ -222,7 +826,7 @@
     <div main>
         <div class="dashboard-panel">
             <h2>
-                📒 Evolução dos Fiados
+                Evolução dos Fiados
             </h2>
 
             <app-dashboard-chart
@@ -236,120 +840,702 @@
 
     @if (abaSelecionada === 'promocoes') {
 
-    <div class="dashboard-panel">
+    <app-dashboard-layout>
+        <div summary>
+            <div class="dashboard-panel">
 
-        <h2>
-            🎯 Resumo de Promoções
-        </h2>
+                <h2>
+                    Resumo de Promoções
+                </h2>
 
-        <div class="executive-summary">
+                <div class="executive-summary">
 
-            <div class="summary-item">
-                <span>Promoções Ativas</span>
-                <strong>
-                    {{ totalPromocoesAtivas }}
-                </strong>
+                    <div
+                        class="summary-item"
+                        [class.summary-item--active]="resumoPromocoesSelecionado === 'promocoesAtivas'"
+                        (click)="resumoPromocoesSelecionado ='promocoesAtivas'">
+                        <span>Promoções Ativas</span>
+                        <strong>
+                            {{ totalPromocoesAtivas }}
+                        </strong>
+                    </div>
+
+                    <div
+                        class="summary-item"
+                        [class.summary-item--active]="resumoPromocoesSelecionado === 'vendasPromocionais'"
+                        (click)="resumoPromocoesSelecionado ='vendasPromocionais'">
+                        <span>Vendas Promocionais</span>
+                        <strong>
+                            {{ totalVendasPromocionais }}
+                        </strong>
+                    </div>
+
+                    <div
+                        class="summary-item"
+                        [class.summary-item--active]="resumoPromocoesSelecionado ==='faturamentoPromocional'"
+                        (click)="resumoPromocoesSelecionado ='faturamentoPromocional'">
+                        <span>Faturamento Promocional</span>
+                        <strong>
+                            {{ faturamentoPromocional | currency:'BRL' }}
+                        </strong>
+                    </div>
+
+                    <div
+                        class="summary-item"
+                        [class.summary-item--active]="resumoPromocoesSelecionado === 'promocoesEficientes'"
+                        (click)="resumoPromocoesSelecionado ='promocoesEficientes'">
+                        <span>Promoções Eficientes</span>
+                        <strong>
+                            {{ totalPromocoesEficientes }}
+                        </strong>
+                    </div>
+
+                </div>
+
             </div>
+        </div>
 
-            <div class="summary-item">
-                <span>Vendas Promocionais</span>
-                <strong>
-                    {{ totalVendasPromocionais }}
-                </strong>
-            </div>
+        <div main>
+            <div class="dashboard-panel">
 
-            <div class="summary-item">
-                <span>Faturamento Promocional</span>
-                <strong>
-                    {{ faturamentoPromocional | currency:'BRL' }}
-                </strong>
-            </div>
+                <h2>
+                    Detalhamento
+                </h2>
 
-            <div class="summary-item">
-                <span>Promoções Eficientes</span>
-                <strong>
-                    {{ totalPromocoesEficientes }}
-                </strong>
+                @if (
+                resumoPromocoesSelecionado === 'promocoesAtivas'
+                ) {
+
+                <h3>
+                    Promoções Ativas
+                </h3>
+
+                <ul>
+
+                    @if (
+                    promocoesAtivasDetalhes.length === 0
+                    ) {
+
+                    <app-empty-state
+                        icon="🎯"
+                        title="Nenhuma promoção ativa"
+                        message="Não existem promoções ativas no momento.">
+                    </app-empty-state>
+
+                    } @else {
+
+                    <div class="dashboard-table-container">
+
+                        <table class="dashboard-table">
+
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Produto
+                                    </th>
+
+                                    <th>
+                                        Estoque Atual
+                                    </th>
+
+                                    <th>
+                                        Estoque Mínimo
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                @for (
+                                promocao of promocoesAtivasDetalhes;
+                                track promocao.nome
+                                ) {
+
+                                <tr>
+
+                                    <td class="dashboard-table__value">
+                                        {{ promocao.nome }}
+                                    </td>
+
+                                    <td class="dashboard-table__value">
+                                        {{ promocao.estoqueAtual }}
+                                    </td>
+
+                                    <td class="dashboard-table__value">
+                                        {{ promocao.estoqueMinimo }}
+                                    </td>
+
+                                </tr>
+
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    }
+
+                </ul>
+
+                }
+
+                @if (
+                resumoPromocoesSelecionado === 'vendasPromocionais'
+                ) {
+
+                <h3>
+                    Vendas Promocionais
+                </h3>
+
+                @if (
+                produtosPromocionaisMaisVendidos.length === 0
+                ) {
+
+                <app-empty-state
+                    icon="🛒"
+                    title="Nenhuma venda promocional"
+                    message="Não existem vendas promocionais registradas para o período selecionado.">
+                </app-empty-state>
+
+                } @else {
+
+                <div class="dashboard-table-container">
+
+                    <table class="dashboard-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Produto
+                                </th>
+
+                                <th>
+                                    Quantidade Vendida
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @for (
+                            produto of produtosPromocionaisMaisVendidos;
+                            track produto.nome
+                            ) {
+
+                            <tr>
+
+                                <td class="dashboard-table__value">
+                                    {{ produto.nome }}
+                                </td>
+
+                                <td class="dashboard-table__value-success" >
+                                    {{ produto.quantidade }}
+                                </td>
+
+                            </tr>
+
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                }
+
+                }
+
+                @if (
+                resumoPromocoesSelecionado === 'faturamentoPromocional'
+                ) {
+
+                <h3>
+                    Faturamento Promocional
+                </h3>
+
+                <div class="dashboard-resumo-financeiro">
+                    <strong>
+                        {{faturamentoPromocional| currency:'BRL'}}
+                    </strong>
+
+                    <p>
+                        Valor total obtido através de vendas promocionais.
+                    </p>
+
+                </div>
+
+                }
+
+                @if (
+                resumoPromocoesSelecionado === 'promocoesEficientes'
+                ) {
+
+                <h3>
+                    Promoções Eficientes
+                </h3>
+
+                @if (
+                promocoesEficientes.length === 0
+                ) {
+
+                <app-empty-state
+                    icon="✅"
+                    title="Nenhuma promoção eficiente"
+                    message="Nenhuma promoção atingiu os critérios definidos até o momento.">
+                </app-empty-state>
+
+                } @else {
+
+                <div class="dashboard-table-container">
+
+                    <table class="dashboard-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Produto
+                                </th>
+
+                                <th>
+                                    Giro (%)
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @for (
+                            promocao of promocoesEficientes;
+                            track promocao.nome
+                            ) {
+
+                            <tr>
+
+                                <td class="dashboard-table__value">
+                                    {{ promocao.nome }}
+                                </td>
+
+                                <td
+                                    class="dashboard-table__success">
+                                    {{ promocao.giro }}%
+                                </td>
+                            </tr>
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+                }
+
+                }
+
             </div>
 
         </div>
-
-    </div>
+    </app-dashboard-layout>
 
     }
 
     @if (abaSelecionada === 'produtos') {
 
-    <div class="dashboard-panel">
+    <app-dashboard-layout>
 
-        <h2>
-            📦 Resumo de Produtos
-        </h2>
+        <div summary>
 
-        <div class="executive-summary">
+            <div class="dashboard-panel">
 
-            <div class="summary-item">
-                <span>Total Produtos</span>
-                <strong>
-                    {{ produtos.length }}
-                </strong>
-            </div>
+                <h2>
+                    Resumo de Produtos
+                </h2>
 
-            <div class="summary-item">
-                <span>Sem Estoque</span>
-                <strong>
-                    {{ produtosSemEstoque.length }}
-                </strong>
-            </div>
+                <div class="executive-summary">
 
-            <div class="summary-item">
-                <span>Estoque Baixo</span>
-                <strong>
-                    {{ produtosEstoqueBaixo.length }}
-                </strong>
-            </div>
+                    <div
+                        class="summary-item"
+                        [class.summary-item--active]="resumoProdutosSelecionado ==='todos'"
+                        (click)="resumoProdutosSelecionado ='todos' ">
+                        <span>Total Produtos</span>
+                        <strong>
+                            {{ produtos.length }}
+                        </strong>
+                    </div>
 
-            @if ((dashboard?.topProdutosVendidos?.length ?? 0) > 0) {
+                    <div
+                        class="summary-item"
+                        [class.summary-item--active]="resumoProdutosSelecionado ==='semEstoque' "
+                        (click)="resumoProdutosSelecionado ='semEstoque'">
+                        <span>Sem Estoque</span>
+                        <strong>
+                            {{ produtosSemEstoque.length }}
+                        </strong>
+                    </div>
 
-            <div class="summary-item">
-                <span>Mais Vendido</span>
-                <strong>
-                    {{ dashboard?.topProdutosVendidos?.[0]?.nome }}
-                </strong>
-            </div>
+                    <div
+                        class="summary-item"
+                        [class.summary-item--active]="resumoProdutosSelecionado ==='estoqueBaixo' "
+                        (click)="resumoProdutosSelecionado ='estoqueBaixo'">
+                        <span>Estoque Baixo</span>
+                        <strong>
+                            {{ produtosEstoqueBaixo.length }}
+                        </strong>
+                    </div>
 
-            }
+                    @if ((dashboard?.topProdutosVendidos?.length ?? 0) > 0) {
 
-        </div>
+                    <div
+                        class="summary-item"
+                        [class.summary-item--active]="resumoProdutosSelecionado ==='maisVendido' "
+                        (click)="resumoProdutosSelecionado ='maisVendido'">
+                        <span>Mais Vendido</span>
+                        <strong>
+                            {{ dashboard?.topProdutosVendidos?.[0]?.nome }}
+                        </strong>
+                    </div>
 
-    </div>
+                    }
 
-    }
+                </div>
 
-    @if (abaSelecionada === 'usuarios') {
-
-    <div class="dashboard-panel">
-
-        <h2>
-            👤 Indicadores de Usuários
-        </h2>
-
-        <div class="executive-summary">
-
-            <div class="summary-item">
-                <span>
-                    Módulo em preparação
-                </span>
-
-                <strong>
-                    Backend pendente
-                </strong>
             </div>
 
         </div>
 
-    </div>
+        <div main>
+
+            <div class="dashboard-panel">
+
+                <h2>
+                    Detalhamento
+                </h2>
+
+                @if (
+                !resumoProdutosSelecionado
+                ) {
+
+                <app-empty-state
+                    icon="📦"
+                    title="Nenhum indicador selecionado"
+                    message="Clique em um indicador para visualizar os detalhes dos produtos.">
+                </app-empty-state>
+
+                }
+                @if (
+                resumoProdutosSelecionado ===
+                'todos'
+                ) {
+
+                <h3>
+                    Todos os Produtos
+                </h3>
+
+                @if (
+                produtos.length === 0
+                ) {
+
+                <app-empty-state
+                    icon="📦"
+                    title="Nenhum produto encontrado"
+                    message="Não existem produtos cadastrados.">
+                </app-empty-state>
+
+                } @else {
+
+                <div class="dashboard-table-container">
+
+                    <table class="dashboard-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Produto
+                                </th>
+
+                                <th>
+                                    Estoque Atual
+                                </th>
+
+                                <th>
+                                    Estoque Mínimo
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @for (
+                            produto of produtos;
+                            track produto.id
+                            ) {
+
+                            <tr>
+
+                                <td class="dashboard-table__value-success" >
+                                    {{ produto.nome }}
+                                </td>
+
+                                <td class="dashboard-table__value" >
+                                    {{ produto.estoqueAtual }}
+                                </td>
+
+                                <td class="dashboard-table__value" >
+                                    {{ produto.estoqueMinimo }}
+                                </td>
+
+                            </tr>
+
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                } }
+                @if (
+                resumoProdutosSelecionado ===
+                'semEstoque'
+                ) {
+
+                <h3>
+                    Produtos Sem Estoque
+                </h3>
+
+                @if (
+                produtosSemEstoque.length === 0
+                ) {
+
+                <app-empty-state
+                    icon="✅"
+                    title="Nenhum produto sem estoque"
+                    message="Todos os produtos possuem estoque disponível.">
+                </app-empty-state>
+
+                } @else {
+
+                <div class="dashboard-table-container">
+
+                    <table class="dashboard-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Produto</th>
+
+                                <th>Estoque</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @for (
+                            produto of produtosSemEstoque;
+                            track produto.id
+                            ) {
+
+                            <tr>
+
+                                <td class="dashboard-table__value">
+                                    {{ produto.nome }}
+                                </td>
+
+                                <td
+                                    class="dashboard-table__danger">
+
+                                    {{ produto.estoqueAtual }}
+
+                                </td>
+
+                            </tr>
+
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                } }
+                @if (
+                resumoProdutosSelecionado ===
+                'estoqueBaixo'
+                ) {
+
+                <h3>
+                    Produtos com Estoque Baixo
+                </h3>
+
+                @if (
+                produtosEstoqueBaixo.length === 0
+                ) {
+
+                <app-empty-state
+                    icon="📦"
+                    title="Nenhum produto com estoque baixo"
+                    message="Todos os produtos estão acima do estoque mínimo.">
+                </app-empty-state>
+
+                } @else {
+
+                <div class="dashboard-table-container">
+
+                    <table class="dashboard-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Produto
+                                </th>
+
+                                <th>
+                                    Estoque Atual
+                                </th>
+
+                                <th>
+                                    Estoque Mínimo
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @for (
+                            produto of produtosEstoqueBaixo;
+                            track produto.id
+                            ) {
+
+                            <tr>
+
+                                <td class="dashboard-table__value" >
+                                    {{ produto.nome }}
+                                </td>
+
+                                <td
+                                    class="dashboard-table__warning">
+
+                                    {{ produto.estoqueAtual }}
+
+                                </td>
+
+                                <td class="dashboard-table__value" >
+
+                                    {{ produto.estoqueMinimo }}
+
+                                </td>
+
+                            </tr>
+
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                } }
+
+                @if (
+                resumoProdutosSelecionado ===
+                'maisVendido'
+                ) {
+
+                <h3>
+                    Produtos Mais Vendidos
+                </h3>
+
+                @if (
+                (dashboard?.topProdutosVendidos?.length ?? 0) === 0
+                ) {
+
+                <app-empty-state
+                    icon="📈"
+                    title="Nenhum produto vendido"
+                    message="Não existem vendas registradas para o período selecionado.">
+                </app-empty-state>
+
+                } @else {
+
+                <div class="dashboard-table-container">
+
+                    <table class="dashboard-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Produto
+                                </th>
+
+                                <th>
+                                    Quantidade
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @for (
+                            produto of dashboard?.topProdutosVendidos ?? [];
+                            track produto.nome
+                            ) {
+
+                            <tr>
+
+                                <td>
+                                    {{ produto.nome }}
+                                </td>
+
+                                <td>
+                                    {{ produto.quantidade }}
+                                </td>
+
+                            </tr>
+
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                } }
+
+            </div>
+
+        </div>
+
+    </app-dashboard-layout>
 
     }
-
+    
 </app-main-layout>

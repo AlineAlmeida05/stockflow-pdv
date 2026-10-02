@@ -71,6 +71,16 @@ export interface ProdutoPromocionalResponse {
 
 }
 
+export interface PromocaoAtivaResponse {
+
+    nome: string;
+
+    estoqueAtual: number;
+
+    estoqueMinimo: number;
+
+}
+
 export interface DashboardResponse {
 
     totalProdutos: number;
@@ -117,6 +127,9 @@ export interface DashboardResponse {
 
     promocoesEficientes:
     PromocaoEficienteResponse[];
+
+    promocoesAtivasDetalhes:
+    PromocaoAtivaResponse[];
 
 
 }
