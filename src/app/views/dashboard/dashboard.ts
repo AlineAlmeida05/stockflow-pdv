@@ -17,7 +17,6 @@ import { DashboardChart } from '../../shared/components/dashboard-chart/dashboar
 import { ChartConfiguration } from 'chart.js';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { DashboardResponse } from '../../core/models/dashboard-response.model';
-import { JsonPipe } from '@angular/common';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 
 @Component({
@@ -31,7 +30,6 @@ import { EmptyState } from '../../shared/components/empty-state/empty-state';
         DashboardLayout,
         DashboardChart,
         FormsModule,
-        JsonPipe,
         EmptyState,
         DatePipe
     ],

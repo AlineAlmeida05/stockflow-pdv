@@ -2,26 +2,289 @@
 
     <app-page-title
         title="Empresa"
-        subtitle="Informações institucionais da adega">
+        subtitle="Informações institucionais da sua empresa">
     </app-page-title>
 
-    <div class="company-page">
-        <div class="company-layout">
-            <div class="company-layout__left">
-                <app-company-profile-card
-                    [empresa]="empresa">
-                </app-company-profile-card>
+    <app-split-panel>
+
+        <div left>
+
+            <div class="dashboard-panel">
+
+                <h2>
+                    Dados da Empresa
+                </h2>
+
+                <div class="company-info">
+
+                    <div class="company-info__item">
+
+                        <span>
+                            Nome Fantasia
+                        </span>
+
+                        <strong>
+                            {{ tenantAtual?.nome || '-' }}
+                        </strong>
+
+                    </div>
+
+                    <div class="company-info__item">
+
+                        <span>
+                            Razão Social
+                        </span>
+
+                        <strong>
+                            {{ tenantAtual?.razaoSocial || '-' }}
+                        </strong>
+
+                    </div>
+
+                    <div class="company-info__item">
+
+                        <span>
+                            CNPJ
+                        </span>
+
+                        <strong>
+                            {{ tenantAtual?.cnpj || '-' }}
+                        </strong>
+
+                    </div>
+
+                    <div class="company-info__item">
+
+                        <span>
+                            Responsável
+                        </span>
+
+                        <strong>
+                            {{ tenantAtual?.responsavel || '-' }}
+                        </strong>
+
+                    </div>
+
+                    <div class="company-info__item">
+
+                        <span>
+                            Telefone
+                        </span>
+
+                        <strong>
+                            {{ tenantAtual?.telefone || '-' }}
+                        </strong>
+
+                    </div>
+
+                    <div class="company-info__item">
+
+                        <span>
+                            E-mail
+                        </span>
+
+                        <strong>
+                            {{ tenantAtual?.email || '-' }}
+                        </strong>
+
+                    </div>
+
+                    <div class="company-info__item">
+
+                        <span>
+                            Cidade / UF
+                        </span>
+
+                        <strong>
+                            {{ tenantAtual?.cidade || '-' }}
+                            -
+                            {{ tenantAtual?.uf || '-' }}
+                        </strong>
+
+                    </div>
+
+                    <div class="company-info__item">
+
+                        <span>
+                            Endereço
+                        </span>
+
+                        <strong>
+                            {{ tenantAtual?.endereco || '-' }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
             </div>
 
-            <div class="company-layout__right">
-                <app-company-brand-card
-                    [empresa]="empresa">
-                </app-company-brand-card>
-
-                <app-company-support-card
-                    [empresa]="empresa">
-                </app-company-support-card>
-            </div>
         </div>
-    </div>
+
+        <div right>
+
+            <div class="dashboard-panel">
+
+                <h2>
+                    Identidade Visual
+                </h2>
+
+                <div class="brand-section">
+
+                    <div class="brand-layout">
+
+                        @if (tenantAtual?.logoUrl) {
+
+                        <div class="brand-logo">
+
+                            <img
+                                [src]="tenantAtual?.logoUrl"
+                                [alt]="tenantAtual?.nome">
+
+                        </div>
+
+                        }
+
+                        <div class="brand-colors">
+
+                            <div class="brand-color">
+
+                                <span>
+                                    Cor Primária
+                                </span>
+
+                                <div
+                                    class="brand-color__preview"
+                                    [style.background]="
+                        tenantAtual?.corPrimaria
+                    ">
+                                </div>
+
+                                <strong>
+                                    {{ tenantAtual?.corPrimaria || '-' }}
+                                </strong>
+
+                            </div>
+
+                            <div class="brand-color">
+
+                                <span>
+                                    Cor Secundária
+                                </span>
+
+                                <div
+                                    class="brand-color__preview"
+                                    [style.background]="
+                        tenantAtual?.corSecundaria
+                    ">
+                                </div>
+
+                                <strong>
+                                    {{ tenantAtual?.corSecundaria || '-' }}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="dashboard-panel">
+
+                <h2>
+                    Recursos e Status
+                </h2>
+
+                <div class="status-grid">
+
+                    <div class="status-item">
+
+                        <span>
+                            Status da Conta
+                        </span>
+
+                        <strong
+                            class="status-success">
+
+                            {{
+                            tenantAtual?.ativo
+                            ? '✅ Ativa'
+                            : '❌ Inativa'
+                            }}
+
+                        </strong>
+
+                    </div>
+
+                    @if (
+                    tenantAtual?.marketingIaHabilitado
+                    ) {
+
+                    <div class="status-item">
+
+                        <span>
+                            Marketing IA
+                        </span>
+
+                        <strong
+                            class="status-success">
+
+                            ✅ Habilitado
+
+                        </strong>
+
+                    </div>
+
+                    }
+
+                    @if (
+                    tenantAtual?.deliveryHabilitado
+                    ) {
+
+                    <div class="status-item">
+
+                        <span>
+                            Delivery
+                        </span>
+
+                        <strong
+                            class="status-success">
+
+                            ✅ Habilitado
+
+                        </strong>
+
+                    </div>
+
+                    }
+
+                    <div class="status-item">
+
+                        <span>
+                            Cliente desde
+                        </span>
+
+                        <strong>
+
+                            {{
+                            tenantAtual?.criadoEm
+                            | date:'dd/MM/yyyy'
+                            }}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </app-split-panel>
+
 </app-main-layout>

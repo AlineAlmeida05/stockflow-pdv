@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { StatCard } from '../../../../shared/components/stat-card/stat-card';
 import { StatCardCarousel } from '../../../../shared/components/stat-card-carousel/stat-card-carousel';
 import { ReportLayout } from '../../../../shared/components/report-layout/report-layout';
 import { DataTable } from '../../../../shared/components/data-table/data-table';
@@ -8,7 +7,6 @@ import { DataTable } from '../../../../shared/components/data-table/data-table';
     selector: 'app-report-estoque',
     standalone: true,
     imports: [
-        StatCard,
         StatCardCarousel,
         ReportLayout,
         DataTable

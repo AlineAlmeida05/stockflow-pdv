@@ -1,12 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { PageTitle } from '../../shared/components/page-title/page-title';
-import { CompanyProfileCard } from './components/company-profile-card/company-profile-card';
-import { CompanySupportCard } from './components/company-support-card/company-support-card';
 import { Empresa } from '../../core/models/empresa.model';
-
 import { EmpresaService } from '../../core/services/empresa.service';
-import { CompanyBrandCard } from './components/company-brand-card/company-brand-card';
+import { SplitPanel } from '../../shared/components/split-panel/split-panel';
+import { TenantContextService } from '../../core/services/tenant-context.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-empresa',
@@ -14,9 +13,8 @@ import { CompanyBrandCard } from './components/company-brand-card/company-brand-
     imports: [
         MainLayout,
         PageTitle,
-        CompanyProfileCard,
-        CompanySupportCard,
-        CompanyBrandCard
+        SplitPanel,
+        DatePipe
     ],
     templateUrl: './empresa.html',
     styleUrl: './empresa.scss'
@@ -25,7 +23,9 @@ import { CompanyBrandCard } from './components/company-brand-card/company-brand-
 export class EmpresaComponent implements OnInit {
 
     constructor(
-        private empresaService: EmpresaService
+        private empresaService: EmpresaService,
+        public tenantContextService: TenantContextService,
+        private cd: ChangeDetectorRef
     ) { }
 
     empresa!: Empresa;
@@ -38,8 +38,9 @@ export class EmpresaComponent implements OnInit {
 
                 next: empresa => {
 
-                    this.empresa =
-                        empresa;
+                    this.empresa = empresa;
+
+                    this.cd.detectChanges();
 
                 },
 
@@ -53,6 +54,14 @@ export class EmpresaComponent implements OnInit {
                 }
 
             });
+
+    }
+
+    get tenantAtual() {
+
+        return this
+            .tenantContextService
+            .tenantAtual;
 
     }
 

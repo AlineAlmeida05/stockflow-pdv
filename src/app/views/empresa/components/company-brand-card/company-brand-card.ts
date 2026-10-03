@@ -14,8 +14,7 @@ export class CompanyBrandCard {
     empresa!: Empresa;
 
     constructor(
-        public tenantContextService:
-            TenantContextService
+        public tenantContextService: TenantContextService
     ) { }
 
     get tenantAtual() {

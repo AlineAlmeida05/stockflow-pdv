@@ -1,20 +1,14 @@
 import { Component, OnInit, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { CurrencyPipe } from '@angular/common';
-
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { PageTitle } from '../../shared/components/page-title/page-title';
-import { StatCard } from '../../shared/components/stat-card/stat-card';
-import { DataTable } from '../../shared/components/data-table/data-table';
 import { Venda } from '../../core/models/venda.model';
 import { VendaService } from '../../core/services/venda.service';
 import { FormsModule } from '@angular/forms';
 import { Produto } from '../../core/models/produto.model';
 import { ProdutoService } from '../../core/services/produto.service';
 import { MovimentacaoEstoque } from '../../core/models/movimentacao-estoque.model';
-
 import { MovimentacaoEstoqueService } from '../../core/services/movimentacao-estoque.service';
 import { Fiado } from '../../core/models/fiado.model';
-
 import { FiadoService } from '../../core/services/fiado.service';
 import { ReportVendas } from './components/report-vendas/report-vendas';
 import { ReportEstoque } from './components/report-estoque/report-estoque';
@@ -30,10 +24,7 @@ import { AlertService } from '../../core/services/alert.service';
     standalone: true,
     imports: [
         MainLayout,
-        CurrencyPipe,
         PageTitle,
-        StatCard,
-        DataTable,
         FormsModule,
         ReportVendas,
         ReportEstoque,
