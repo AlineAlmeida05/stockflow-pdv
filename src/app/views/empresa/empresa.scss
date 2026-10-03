@@ -1,22 +1,117 @@
-.company-page {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+.dashboard-panel {
+    padding: 20px;
+    border-radius: 12px;
+    background: var(--color-white);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--color-gray-200);
 }
 
-.company-layout {
+.company-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.company-info__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.company-info__item span {
+    color: var(--color-gray-600);
+}
+
+.company-info__item strong {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.brand-section {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 24px;
+}
+
+.brand-logo {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid var(--color-gray-200);
+    border-radius: 12px;
+}
+
+.brand-logo img {
+    width: 140px;
+    height: auto;
+    object-fit: contain;
+}
+
+.brand-color {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.brand-color span {
+    color: var(--color-gray-600);
+    font-size: 0.875rem;
+}
+
+.brand-color strong {
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.brand-color__preview {
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--color-gray-200);
+}
+
+.brand-colors {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.brand-layout {
     display: grid;
-    grid-template-columns:
-        55%
-        45%;
+    grid-template-columns: 220px 1fr;
     gap: 24px;
-    align-items: stretch;
+    align-items: center;
 }
 
-.company-layout__right {
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.status-item {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 8px;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid var(--color-gray-200);
 }
 
+.status-item span {
+    color: var(--color-gray-600);
+    font-size: 0.875rem;
+}
 
+.status-success {
+    color: var(--color-success);
+}
+
+.status-danger {
+    color: var(--color-danger);
+}

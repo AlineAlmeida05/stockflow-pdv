@@ -1,30 +1,23 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
 import { MainLayout } from '../../layout/main-layout/main-layout';
-
 import { VendaService } from '../../core/services/venda.service';
 import { FiadoService } from '../../core/services/fiado.service';
 import { ProdutoService } from '../../core/services/produto.service';
-
 import { Venda } from '../../core/models/venda.model';
 import { Fiado } from '../../core/models/fiado.model';
-
 import { Produto } from '../../core/models/produto.model';
-
 import { MovimentacaoEstoque } from '../../core/models/movimentacao-estoque.model';
 import { MovimentacaoEstoqueService } from '../../core/services/movimentacao-estoque.service';
 import { PageTitle } from '../../shared/components/page-title/page-title';
-
-
 import { StatCardCarousel } from '../../shared/components/stat-card-carousel/stat-card-carousel';
 import { DashboardLayout } from '../../shared/components/dashboard-layout/dashboard-layout';
 import { DashboardChart } from '../../shared/components/dashboard-chart/dashboard-chart';
 import { ChartConfiguration } from 'chart.js';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { DashboardResponse } from '../../core/models/dashboard-response.model';
-import { JsonPipe } from '@angular/common';
+import { EmptyState } from '../../shared/components/empty-state/empty-state';
 
 @Component({
     selector: 'app-dashboard',
@@ -37,7 +30,8 @@ import { JsonPipe } from '@angular/common';
         DashboardLayout,
         DashboardChart,
         FormsModule,
-        JsonPipe
+        EmptyState,
+        DatePipe
     ],
     templateUrl: './dashboard.html',
     styleUrl: './dashboard.scss'
@@ -52,7 +46,16 @@ export class Dashboard implements OnInit {
 
     movimentacoes: MovimentacaoEstoque[] = [];
 
-    dashboard?: DashboardResponse;
+    dashboard?: DashboardResponse;    
+
+    resumoGeralSelecionado = '';
+
+    resumoEstoqueSelecionado = '';
+
+    resumoPromocoesSelecionado = '';
+
+    resumoProdutosSelecionado = '';
+    
 
     periodoSelecionado:
         'hoje'
@@ -69,7 +72,6 @@ export class Dashboard implements OnInit {
         | 'financeiro'
         | 'promocoes'
         | 'produtos'
-        | 'usuarios'
         = 'geral';
 
     constructor(
@@ -163,10 +165,19 @@ export class Dashboard implements OnInit {
 
             });
 
-        this.carregarDashboard();                
+        this.carregarDashboard();
+
+        this.cdr.detectChanges();
 
     }
 
+    get promocoesAtivasDetalhes() {
+
+    return this.dashboard
+        ?.promocoesAtivasDetalhes
+        ?? [];
+
+}
 
     get vendasHoje(): Venda[] {
 
@@ -195,6 +206,7 @@ export class Dashboard implements OnInit {
             periodo;
 
         this.carregarDashboard();
+        this.cdr.detectChanges();
 
     }
 
@@ -251,6 +263,112 @@ export class Dashboard implements OnInit {
                 fiado => fiado.clienteId
             )
         ).size;
+
+    }
+
+    get fiadosFiltrados(): Fiado[] {
+
+        const hoje = new Date();
+
+        switch (this.periodoSelecionado) {
+
+            case 'hoje':
+
+                return this.fiados.filter(
+                    fiado =>
+                        new Date(
+                            fiado.dataLancamento
+                        ).toDateString()
+                        === hoje.toDateString()
+                );
+
+            case '7dias':
+
+                const seteDias = new Date();
+
+                seteDias.setDate(
+                    seteDias.getDate() - 7
+                );
+
+                return this.fiados.filter(
+                    fiado =>
+                        new Date(
+                            fiado.dataLancamento
+                        ) >= seteDias
+                );
+
+            case '30dias':
+
+                const trintaDias =
+                    new Date();
+
+                trintaDias.setDate(
+                    trintaDias.getDate() - 30
+                );
+
+                return this.fiados.filter(
+                    fiado =>
+                        new Date(
+                            fiado.dataLancamento
+                        ) >= trintaDias
+                );
+
+            case 'mes':
+
+                return this.fiados.filter(
+                    fiado => {
+
+                        const data =
+                            new Date(
+                                fiado.dataLancamento
+                            );
+
+                        return (
+                            data.getMonth()
+                            === hoje.getMonth()
+                            &&
+                            data.getFullYear()
+                            === hoje.getFullYear()
+                        );
+
+                    }
+                );
+
+            default:
+
+                return this.fiados;
+
+        }
+
+    }
+
+    formatarPagamento(
+        pagamento: string
+    ): string {
+
+        switch (
+        pagamento?.toLowerCase()
+        ) {
+
+            case 'pix':
+                return 'PIX';
+
+            case 'credito':
+                return 'Crédito';
+
+            case 'debito':
+                return 'Débito';
+
+            case 'dinheiro':
+                return 'Dinheiro';
+
+            case 'fiado':
+                return 'Fiado';
+
+            default:
+                return pagamento;
+
+        }
 
     }
 
@@ -584,33 +702,7 @@ export class Dashboard implements OnInit {
 
         ];
 
-    }
-
-    get cardsUsuarios() {
-
-        return [
-
-            {
-                title: 'Usuários',
-                value: 0,
-                variant: 'info' as const
-            },
-
-            {
-                title: 'Acessos Hoje',
-                value: 0,
-                variant: 'success' as const
-            },
-
-            {
-                title: 'Vendas por Usuário',
-                value: '-',
-                variant: 'warning' as const
-            }
-
-        ];
-
-    }
+    }    
 
     get cardsAtuais() {
 
@@ -637,10 +729,6 @@ export class Dashboard implements OnInit {
             case 'produtos':
 
                 return this.cardsProdutos;
-
-            case 'usuarios':
-
-                return this.cardsUsuarios;
 
             default:
 
@@ -1025,13 +1113,14 @@ export class Dashboard implements OnInit {
 
                 next: dashboard => {
 
-                    this.dashboard =
-                        dashboard;
+                    this.dashboard = dashboard;
+
+                    this.cdr.detectChanges();
 
                 }
 
             });
 
     }
-
+    
 }

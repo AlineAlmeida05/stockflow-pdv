@@ -45,15 +45,15 @@
 }
 
 .valor-negativo {
-    color: #dc3545;
+    color: var(--color-danger);
 }
 
 .movimentacao-card--pagamento {
-    border-left: 4px solid #198754;
+    border-left: 4px solid var(--color-success);
 }
 
 .movimentacao-card--fiado {
-    border-left: 4px solid #dc3545;
+    border-left: 4px solid var(--color-danger);
 }
 
 app-search-input {

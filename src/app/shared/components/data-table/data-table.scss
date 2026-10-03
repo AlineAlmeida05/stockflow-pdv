@@ -159,7 +159,7 @@ tbody tr:hover {
 }
 
 .status-devedor {
-    color: #d97706;
+    color: var(--color-warning);
     font-weight: 600;
 }
 
@@ -179,7 +179,7 @@ tbody tr:hover {
 }
 
 .status-atencao {
-    color: #d97706;
+    color: var(--color-warning);
     font-weight: 600;
 }
 
@@ -212,7 +212,7 @@ tbody tr:hover {
 }
 
 .status-warning {
-    color: #d97706;
+    color: var(--color-warning);
     font-weight: 600;
 }
 
@@ -254,7 +254,7 @@ tbody tr:hover {
 }
 
 .progress-warning {
-    background: #d97706;
+    background: var(--color-warning);
 }
 
 .progress-danger {

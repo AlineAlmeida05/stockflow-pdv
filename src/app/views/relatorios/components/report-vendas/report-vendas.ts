@@ -1,11 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-import { StatCard } from '../../../../shared/components/stat-card/stat-card';
-
 import { DataTable } from '../../../../shared/components/data-table/data-table';
-
 import { ReportLayout } from '../../../../shared/components/report-layout/report-layout';
 import { StatCardCarousel } from '../../../../shared/components/stat-card-carousel/stat-card-carousel';
 
@@ -16,7 +12,6 @@ import { StatCardCarousel } from '../../../../shared/components/stat-card-carous
     imports: [
         CurrencyPipe,
         FormsModule,
-        StatCard,
         DataTable,
         StatCardCarousel,
         ReportLayout
