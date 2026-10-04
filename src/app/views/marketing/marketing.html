@@ -11,17 +11,311 @@
 
             <div left>
 
-                <app-marketing-campaign-form
-                    (campanhaGerada)="atualizarCampanha($event)">
-                </app-marketing-campaign-form>
+                <div class="marketing-card">
+
+                    <h3>
+                        Criar Arte de Divulgação
+                    </h3>
+
+                    <div class="marketing-form">
+
+                        <label>
+
+                            Produto em Promoção
+
+                            <select
+                                [(ngModel)]="promocaoSelecionada">
+
+                                <option value>
+                                    Selecione
+                                </option>
+
+                                @for (
+                                promocao of promocoesAtivas;
+                                track promocao.id
+                                ) {
+
+                                <option
+                                    [value]="promocao.id">
+
+                                    {{ promocao.nome }}
+
+                                    -
+
+                                    R$
+
+                                    {{ promocao.precoPromocional }}
+
+                                </option>
+
+                                }
+
+                            </select>
+
+                        </label>
+
+                        <label>
+
+                            Modo da IA
+
+                            <select
+                                [(ngModel)]="modoIaSelecionado">
+
+                                <option>
+                                    Automático
+                                </option>
+
+                                <option>
+                                    Manual
+                                </option>
+
+                            </select>
+
+                        </label>
+
+                        <label>
+
+                            Observações
+
+                            <textarea
+                                rows="4"
+                                [(ngModel)]="observacoes">
+
+                </textarea>
+
+                        </label>
+
+                        @if (
+                        modoIaSelecionado ===
+                        'Manual'
+                        ) {
+
+                        <h3>
+                            Direção Criativa
+                        </h3>
+
+                        <label>
+
+                            Tom
+
+                            <select
+                                [(ngModel)]="tomSelecionado">
+
+                                <option>
+                                    Promocional
+                                </option>
+
+                                <option>
+                                    Divertido
+                                </option>
+
+                                <option>
+                                    Urgente
+                                </option>
+
+                                <option>
+                                    Premium
+                                </option>
+
+                            </select>
+
+                        </label>
+
+                        <label>
+
+                            Tipo da Promoção
+
+                            <select
+                                [(ngModel)]="
+            tipoPromocaoSelecionado
+        ">
+
+                                <option>
+                                    Mega Promoção
+                                </option>
+
+                                <option>
+                                    Oferta Relâmpago
+                                </option>
+
+                                <option>
+                                    Combo Especial
+                                </option>
+
+                                <option>
+                                    Mais Vendido
+                                </option>
+
+                                <option>
+                                    Lançamento
+                                </option>
+
+                            </select>
+
+                        </label>
+
+                        <label>
+
+                            Elemento Visual Principal
+
+                            <select
+                                [(ngModel)]="
+            elementoVisualSelecionado
+        ">
+
+                                <option>
+                                    Automático
+                                </option>
+
+                                <option>
+                                    Gelo
+                                </option>
+
+                                <option>
+                                    Fumaça
+                                </option>
+
+                                <option>
+                                    Neon
+                                </option>
+
+                                <option>
+                                    Luxo
+                                </option>
+
+                                <option>
+                                    Madeira
+                                </option>
+
+                                <option>
+                                    Churrasco
+                                </option>
+
+                                <option>
+                                    Balada
+                                </option>
+
+                            </select>
+
+                        </label>
+
+                        }
+
+                        <button
+                            type="button"
+                            (click)="gerarCampanha()">
+
+                            ✨ Criar Arte
+
+                        </button>
+
+                    </div>
+
+                </div>
 
             </div>
 
             <div right>
 
-                <app-marketing-generated-content
-                    [campanha]="campanhaAtual">
-                </app-marketing-generated-content>
+                <div class="marketing-card">
+
+                    @if (campanhaAtual) {
+
+                    <div class="prompt-header">
+
+                        <h3>
+                            🎨 Prompt
+                        </h3>
+
+                        <button
+                            type="button"
+                            class="copy-button"
+                            (click)="copiarPrompt()">
+
+                            📋 Copiar Prompt
+
+                        </button>
+
+                    </div>
+
+                    <div class="prompt-container">
+                        <pre>
+                            {{ campanhaAtual.prompt }}
+                        </pre>
+                    </div>
+
+                    <div class="marketing-ai-tools">
+
+                        <h3>
+                            🚀 Gerar Arte com IA
+                        </h3>
+
+                        <p>
+
+                            Copie o prompt acima e utilize a plataforma de sua
+                            preferência para criar a arte promocional.
+
+                        </p>
+
+                        <div class="marketing-ai-links">
+
+                            <a
+                                href="https://chatgpt.com"
+                                target="_blank">
+
+                                <span>
+                                    🤖
+                                </span>
+
+                                <strong>
+                                    ChatGPT
+                                </strong>
+
+                            </a>
+
+                            <a
+                                href="https://copilot.microsoft.com"
+                                target="_blank">
+
+                                <span>
+                                    🧠
+                                </span>
+
+                                <strong>
+                                    Microsoft Copilot
+                                </strong>
+
+                            </a>
+
+                            <a
+                                href="https://gemini.google.com"
+                                target="_blank">
+
+                                <span>
+                                    ✨
+                                </span>
+
+                                <strong>
+                                    Gemini
+                                </strong>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    } @else {
+
+                    <app-empty-state
+                        icon="🤖"
+                        title="Nenhuma campanha gerada"
+                        message="Selecione uma promoção e clique em Criar Arte para gerar um prompt personalizado.">
+                    </app-empty-state>
+
+                    }
+
+                </div>
 
             </div>
 
