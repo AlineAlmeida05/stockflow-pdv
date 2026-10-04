@@ -7,9 +7,9 @@ import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { SearchInput } from '../../shared/components/search-input/search-input';
 import { Toolbar } from '../../shared/components/toolbar/toolbar';
 import { SelectInput } from '../../shared/components/select-input/select-input';
-import { StatCardCarousel } from '../../shared/components/stat-card-carousel/stat-card-carousel';
 import { ExtratoFinanceiroService } from '../../core/services/extrato-financeiro.service';
 import { IndicadoresExtrato } from '../../core/models/indicadores-extrato.model';
+import { StatCard } from '../../shared/components/stat-card/stat-card';
 
 
 @Component({
@@ -24,7 +24,7 @@ import { IndicadoresExtrato } from '../../core/models/indicadores-extrato.model'
         SearchInput,
         Toolbar,
         SelectInput,
-        StatCardCarousel
+        StatCard
     ],
     templateUrl: './extrato-financeiro.html',
     styleUrl: './extrato-financeiro.scss'
@@ -41,6 +41,33 @@ export class ExtratoFinanceiro
 
     indicadores?: IndicadoresExtrato;
 
+    paginaAtual = 1;
+
+    itensPorPagina = '10';
+
+    opcoesItensPorPagina = [
+
+        {
+            label: '10 por página',
+            value: '10'
+        },
+
+        {
+            label: '25 por página',
+            value: '25'
+        },
+
+        {
+            label: '50 por página',
+            value: '50'
+        },
+
+        {
+            label: '100 por página',
+            value: '100'
+        }
+
+    ];
 
     formasPagamento = [
 
@@ -156,6 +183,11 @@ export class ExtratoFinanceiro
 
                 next: movimentacoes => {
 
+                    console.log(
+                        'MOVIMENTACOES',
+                        movimentacoes
+                    );
+
                     this.movimentacoes = movimentacoes;
 
                     this.atualizarIndicadores();
@@ -189,12 +221,16 @@ export class ExtratoFinanceiro
 
                 const atendeBusca =
 
-                    movimentacao.clienteNome
+                    (
+                        movimentacao.clienteNome
+                        ?? ''
+                    )
                         .toLowerCase()
                         .includes(
                             this.textoBusca
                                 .toLowerCase()
                         );
+
 
                 const atendeTipo =
 
@@ -240,6 +276,108 @@ export class ExtratoFinanceiro
 
             }
         );
+
+    }
+
+    get movimentacoesPaginadas() {
+
+        const inicio =
+
+            (this.paginaAtual - 1)
+            * Number(this.itensPorPagina);
+
+        const fim =
+
+            inicio
+            + Number(this.itensPorPagina);
+
+        return this
+            .movimentacoesFiltradas
+            .slice(
+                inicio,
+                fim
+            );
+
+    }
+
+    get totalPaginas() {
+
+        return Math.max(
+
+            1,
+
+            Math.ceil(
+
+                this.movimentacoesFiltradas.length
+                /
+                Number(this.itensPorPagina)
+
+            )
+
+        );
+
+    }
+
+    proximaPagina(): void {
+
+        if (
+            this.paginaAtual <
+            this.totalPaginas
+        ) {
+
+            this.paginaAtual++;
+
+        }
+
+    }
+
+    paginaAnterior(): void {
+
+        if (
+            this.paginaAtual > 1
+        ) {
+
+            this.paginaAtual--;
+
+        }
+
+    }
+
+    reiniciarPaginacao(): void {
+
+        this.paginaAtual = 1;
+
+    }
+
+    get inicioPagina(): number {
+
+        return this.movimentacoesFiltradas.length === 0
+
+            ? 0
+
+            : (
+                (this.paginaAtual - 1)
+                * Number(this.itensPorPagina)
+            ) + 1;
+
+    }
+
+    get fimPagina(): number {
+
+        return Math.min(
+
+            this.paginaAtual
+            * Number(this.itensPorPagina),
+
+            this.movimentacoesFiltradas.length
+
+        );
+
+    }
+
+    alterarItensPorPagina(): void {
+
+        this.paginaAtual = 1;
 
     }
 
@@ -300,6 +438,12 @@ export class ExtratoFinanceiro
                 value:
                     clientesDevedores,
                 variant: 'danger'
+            },
+
+            {
+                title: 'Movimentações',
+                value: this.movimentacoes.length,
+                variant: 'info'
             }
 
         ];

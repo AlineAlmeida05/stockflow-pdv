@@ -5,42 +5,46 @@
         subtitle="Acompanhe todas as movimentações financeiras da empresa.">
     </app-page-title>
 
-    <app-stat-card-carousel
-        [cards]="cards">
-    </app-stat-card-carousel>
+    <div class="extrato-indicators">
+
+        @for (card of cards; track card.title) {
+
+        <app-stat-card
+            [title]="card.title"
+            [value]="card.value"
+            [variant]="card.variant">
+        </app-stat-card>
+
+        }
+
+    </div>
 
     <app-toolbar>
 
         <app-select-input
             label="Movimentação"
             [(value)]="formaPagamentoSelecionada"
+            (valueChange)="reiniciarPaginacao()"
             [options]="formasPagamento">
         </app-select-input>
 
         <app-select-input
             label="Período"
             [(value)]="periodoSelecionado"
+            (valueChange)="reiniciarPaginacao()"
             [options]="periodos">
         </app-select-input>
 
         <app-search-input
             placeholder="Buscar cliente..."
-            [(value)]="textoBusca">
+            [(value)]="textoBusca"
+            (valueChange)="reiniciarPaginacao()">
         </app-search-input>
 
     </app-toolbar>
 
-    <div class="resumo-card">
-        <span>
-            Total de Movimentações
-        </span>
-        <strong>
-            {{ movimentacoesFiltradas.length }}
-        </strong>
-    </div>
-
     <div class="timeline">
-       @if (movimentacoesFiltradas.length === 0) {
+        @if (movimentacoesFiltradas.length === 0) {
 
         <app-empty-state
             icon="💰"
@@ -51,104 +55,93 @@
         } @else {
 
         @for (
-        movimentacao of movimentacoesFiltradas;
+        movimentacao of movimentacoesPaginadas;
         track $index
         ) {
 
         <div
             class="card movimentacao-card"
-            [class.movimentacao-card--fiado]="
-                movimentacao.tipo === 'fiado'
-            "
-            [class.movimentacao-card--pagamento]="
-                movimentacao.tipo === 'pagamento'
-            ">
+            [class.movimentacao-card--fiado]="movimentacao.tipo === 'fiado'"
+            [class.movimentacao-card--pagamento]="movimentacao.tipo === 'pagamento' ">
 
             <div class="movimentacao-header">
 
-                <strong>
-
-                    {{
-                    movimentacao.tipo === 'pagamento'
-                    ? 'Pagamento ' +
-                    (
-                    movimentacao.formaPagamento
-                    ?.toUpperCase() ?? ''
-                    )
-                    : 'Venda Fiada'
-                    }}
-
-                </strong>
-
-                <span>
-
-                    {{
-                    movimentacao.data
-                    | date:'dd/MM/yyyy HH:mm'
-                    }}
-
-                </span>
-
-            </div>
-
-            <div class="movimentacao-body">
-
-                <div>
+                <div class="movimentacao-principal">
 
                     <strong>
-                        Cliente:
+
+                        {{movimentacao.tipo === 'fiado'
+                        ? movimentacao.clienteNome
+                        : movimentacao.formaPagamento?.toUpperCase()
+                        }}
+
                     </strong>
 
-                    {{ movimentacao.clienteNome }}
+                    <div class="movimentacao-meta">
+
+                        @if (
+                        movimentacao.tipo === 'fiado'
+                        ) {
+
+                        FIADO
+
+                        @if (
+                        movimentacao.usuarioNome
+                        ) {
+
+                        •
+
+                        {{ movimentacao.usuarioNome }}
+
+                        }
+
+                        } @else {
+
+                        {{ movimentacao.usuarioNome }}
+
+                        }
+
+                        •
+
+                        {{
+                        movimentacao.data
+                        | date:'dd/MM/yyyy HH:mm'
+                        }}
+
+                    </div>
 
                 </div>
 
-                @if (
-                movimentacao.tipo === 'pagamento'
-                ) {
+                <div
+                    class="movimentacao-valor">
 
-                <div>
+                    @if (
+                    movimentacao.tipo === 'fiado'
+                    ) {
 
-                    <strong>
-                        Recebido por:
-                    </strong>
+                    <span class="valor-negativo">
 
-                    {{ movimentacao.usuarioNome }}
+                        - {{
+                        movimentacao.valor
+                        | currency:'BRL'
+                        }}
+
+                    </span>
+
+                    } @else {
+
+                    <span class="valor-positivo">
+
+                        + {{
+                        movimentacao.valor
+                        | currency:'BRL'
+                        }}
+
+                    </span>
+
+                    }
 
                 </div>
-
-                }
-
-            </div>
-
-            <div
-                class="movimentacao-valor">
-
-                @if (
-                movimentacao.tipo === 'fiado'
-                ) {
-
-                <span class="valor-negativo">
-
-                    - {{
-                    movimentacao.valor
-                    | currency:'BRL'
-                    }}
-
-                </span>
-
-                } @else {
-
-                <span class="valor-positivo">
-
-                    + {{
-                    movimentacao.valor
-                    | currency:'BRL'
-                    }}
-
-                </span>
-
-                }
 
             </div>
 
@@ -157,5 +150,83 @@
         }
 
     </div>
+
+    @if (
+    movimentacoesFiltradas.length > 0
+    ) {
+
+    <div class="pagination">
+
+        <div class="pagination-left">
+
+            <app-select-input
+                label="Registros"
+                [(value)]="itensPorPagina"
+                (valueChange)="alterarItensPorPagina()"
+                [options]="opcoesItensPorPagina">
+            </app-select-input>
+
+            <span class="pagination-info">
+
+                Mostrando
+
+                {{ inicioPagina }}
+
+                -
+
+                {{ fimPagina }}
+
+                de
+
+                {{ movimentacoesFiltradas.length }}
+
+                movimentações
+
+            </span>
+
+        </div>
+
+        <div class="pagination-right">
+
+            <button
+                class="btn"
+                type="button"
+                (click)="paginaAnterior()"
+                [disabled]="paginaAtual === 1">
+
+                Anterior
+
+            </button>
+
+            <span class="pagination-page">
+
+                Página
+
+                {{ paginaAtual }}
+
+                de
+
+                {{ totalPaginas }}
+
+            </span>
+
+            <button
+                class="btn"
+                type="button"
+                (click)="proximaPagina()"
+                [disabled]="
+                paginaAtual ===
+                totalPaginas
+            ">
+
+                Próxima
+
+            </button>
+
+        </div>
+
+    </div>
+
+    }
 
 </app-main-layout>
