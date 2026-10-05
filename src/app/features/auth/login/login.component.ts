@@ -112,10 +112,6 @@ export class LoginComponent implements OnInit {
 
                     this.cdr.detectChanges();
 
-                    this.alertService.removeToast(
-                        loadingToast.id
-                    );
-
                 })
             )
             .subscribe({
@@ -132,8 +128,10 @@ export class LoginComponent implements OnInit {
 
                     }
 
-                    this.alertService.success(
-                        'Login realizado com sucesso.'
+                    this.alertService.updateToast(
+                        loadingToast.id,
+                        'Login realizado com sucesso.',
+                        'success'
                     );
 
                     this.router.navigate([
@@ -144,9 +142,12 @@ export class LoginComponent implements OnInit {
 
                 error: () => {
 
-                    this.alertService.error(
-                        'Usuário ou senha inválidos.'
+                    this.alertService.updateToast(
+                        loadingToast.id,
+                        'Usuário ou senha inválidos.',
+                        'error'
                     );
+
 
                 }
             });
@@ -213,12 +214,16 @@ export class LoginComponent implements OnInit {
 
                         this.tenantNaoEncontrado = true;
 
+                        this.cdr.detectChanges();
+
                         return;
-                    }
+                    }                    
 
                     this.tenant = tenant;
 
                     this.aplicarTemaTenant();
+
+                    this.cdr.detectChanges();
 
                 },
 
