@@ -3,8 +3,8 @@
 }
 
 .formulario-cliente {
-    padding: 20px;
-    margin-bottom: 24px;
+  padding: 20px;
+  margin-bottom: 24px;
 }
 
 .formulario-acoes {
@@ -45,11 +45,11 @@ label {
 }
 
 app-search-input {
-    min-width: 400px;
+  min-width: 400px;
 }
 
 .formulario .field {
-    width: 100%;
+  width: 100%;
 }
 
 .formulario-cliente.visualizacao {
@@ -64,6 +64,24 @@ app-search-input {
   label {
     color: var(--color-gray-500);
   }
+}
 
-  
+@media (max-width: 768px) {
+  app-search-input {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .formulario-acoes {
+    flex-direction: column;
+  }
+
+  app-search-input {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .formulario-acoes {
+    flex-direction: column;
+  }
 }
