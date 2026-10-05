@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { TenantContextService } from '../../../core/services/tenant-context.service';
 import { BRANDING_CONFIG } from '../../../config/branding.config';
 import { Router } from '@angular/router';
@@ -8,6 +8,7 @@ import { FormBuilder } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { AlertService } from '../../../core/services/alert.service';
+
 
 @Component({
     selector: 'app-header',
@@ -68,6 +69,21 @@ export class Header {
 
     }
 
+    @HostListener(
+        'document:keydown.escape'
+    )
+    onEscape(): void {
+
+        if (
+            this.modalAlterarSenhaAberto
+        ) {
+
+            this.fecharModalAlterarSenha();
+
+        }
+
+    }
+
     sair(): void {
 
         this.authService.logout();
@@ -120,6 +136,11 @@ export class Header {
 
         this.salvandoSenha = true;
 
+        const loadingToast =
+            this.alertService.loading(
+                'Alterando senha...'
+            );
+
         this.authService
             .alterarSenha(
                 this.formAlterarSenha.value
@@ -128,8 +149,10 @@ export class Header {
 
                 next: () => {
 
-                    this.alertService.success(
-                        'Senha alterada com sucesso. Faça login novamente.'
+                    this.alertService.updateToast(
+                        loadingToast.id,
+                        'Senha alterada com sucesso. Faça login novamente.',
+                        'success'
                     );
 
                     const slug =
@@ -149,8 +172,10 @@ export class Header {
                         erro?.error?.message
                         || 'Não foi possível alterar a senha.';
 
-                    this.alertService.error(
-                        mensagem
+                    this.alertService.updateToast(
+                        loadingToast.id,
+                        mensagem,
+                        'error'
                     );
 
                     this.salvandoSenha = false;
@@ -158,6 +183,13 @@ export class Header {
                 }
 
             });
+
+    }
+
+    get ehSuperAdmin(): boolean {
+
+        return this.usuarioLogado?.perfil ===
+            'SUPER_ADMIN';
 
     }
 }
