@@ -1,10 +1,22 @@
 <div class="layout">
 
-  <app-sidebar>
+  <app-sidebar
+    [class.sidebar--open]="menuAberto"
+    (closeMenu)="fecharMenu()">
   </app-sidebar>
 
+  @if (menuAberto) {
+
+  <div
+    class="sidebar-backdrop"
+    (click)="fecharMenu()">
+  </div>
+
+  }
+
   <div class="page-content">
-    <app-header>
+    <app-header
+      (toggleMenu)="alternarMenu()">
     </app-header>
 
     <main class="content">

@@ -10,7 +10,10 @@
     [routerLinkActiveOptions]="{ exact: true }"
     class="sidebar-link"
     (click)="fecharMenu()">
-    {{ item.label }}
+
+    <span class="sidebar-link__label">
+      {{ item.label }}
+    </span>
 
     @if (
     obterBadge(item.modulo) > 0
@@ -21,6 +24,7 @@
     </span>
 
     }
+
   </a>
   }
 </nav>

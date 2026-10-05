@@ -1,5 +1,12 @@
 <header class="header">
 
+  <button
+    type="button"
+    class="menu-toggle"
+    (click)="alternarMenu()">
+    ☰
+  </button>
+
   <div class="header-company">
 
     <img
@@ -50,7 +57,7 @@
       @if (menuPerfilAberto) {
       <div class="profile-dropdown">
 
-        <div class="profile-dropdown__info">          
+        <div class="profile-dropdown__info">
 
           <small>
             Email: {{ usuarioLogado?.email }}

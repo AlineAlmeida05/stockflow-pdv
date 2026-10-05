@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, EventEmitter, Output, HostListener } from '@angular/core';
 import { TenantContextService } from '../../../core/services/tenant-context.service';
 import { BRANDING_CONFIG } from '../../../config/branding.config';
 import { Router } from '@angular/router';
@@ -21,6 +21,9 @@ import { AlertService } from '../../../core/services/alert.service';
 })
 export class Header {
 
+    @Output()
+    toggleMenu = new EventEmitter<void>();
+
     menuPerfilAberto = false;
 
     modalAlterarSenhaAberto = false;
@@ -28,6 +31,8 @@ export class Header {
     formAlterarSenha!: FormGroup;
 
     salvandoSenha = false;
+
+    branding = BRANDING_CONFIG;
 
     constructor(
         public tenantContextService: TenantContextService,
@@ -58,9 +63,6 @@ export class Header {
 
     }
 
-    branding =
-        BRANDING_CONFIG;
-
     get tenantAtual() {
 
         return this
@@ -69,9 +71,7 @@ export class Header {
 
     }
 
-    @HostListener(
-        'document:keydown.escape'
-    )
+    @HostListener('document:keydown.escape')
     onEscape(): void {
 
         if (
@@ -91,6 +91,16 @@ export class Header {
         this.router.navigate([
             '/login'
         ]);
+
+    }
+
+    alternarMenu(): void {
+
+        console.log(
+            'Header clicou'
+        );
+
+        this.toggleMenu.emit();
 
     }
 
