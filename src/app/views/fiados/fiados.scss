@@ -9,7 +9,7 @@
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease,
-        border-color 0.2s ease;    
+        border-color 0.2s ease;
 }
 
 .clientes-lista {
@@ -251,4 +251,60 @@
     top: 0;
     z-index: 10;
     background: white;
+}
+
+
+
+@media (max-width: 768px) {
+    app-search-input {
+        width: 100%;
+    }
+
+    .btn-whatsapp {
+        width: 100%;
+    }
+
+    .recebimento-card__actions {
+        flex-direction: column;
+    }
+
+    .saldo-card__header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .extrato-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .extrato-item__valor {
+        align-self: flex-end;
+    }
+
+    .clientes,
+    .extrato {
+        height: auto;
+    }
+
+    .saldo-card__meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .saldo-card__meta .btn {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .saldo-card__divider {
+        display: none;
+    }
+
+    .saldo-card__header strong {
+        font-size: 1.75rem;
+    }
+
+    
 }

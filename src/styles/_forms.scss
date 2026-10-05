@@ -96,6 +96,11 @@
     color: var(--color-gray-500);
 }
 
+.field select {
+    width: 100%;
+    max-width: 100%;
+}
+
 @media (max-width: 768px) {
     .field-small {
         flex: 1 1 100%;
@@ -105,5 +110,15 @@
 
     .field-large {
         flex: 1 1 100%;
+    }
+
+    .field select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .field {
+        width: 100%;
+        overflow: hidden;
     }
 }
