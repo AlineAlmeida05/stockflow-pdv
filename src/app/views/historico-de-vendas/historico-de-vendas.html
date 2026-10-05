@@ -35,6 +35,7 @@
             <div
                 class="card venda-card"
                 [class.venda-card--active]="vendaSelecionada?.id === venda.id"
+                [class.venda-card--cancelada]="venda.status === 'cancelada'"
                 (click)="selecionarVenda(venda)">
 
                 <div class="venda-card__header">

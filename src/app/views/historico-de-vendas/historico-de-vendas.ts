@@ -188,14 +188,24 @@ export class HistoricoDeVendas
 
                 next: vendaDetalhada => {
 
-                    this.vendaSelecionada =
-                        vendaDetalhada;
+                    this.vendaSelecionada = vendaDetalhada;
 
-                    this.mostrarCancelamento =
-                        false;
+                    setTimeout(() => {
 
-                    this.motivoCancelamento =
-                        '';
+                        document
+                            .querySelector(
+                                '.detalhes-panel'
+                            )
+                            ?.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+
+                    });
+
+                    this.mostrarCancelamento = false;
+
+                    this.motivoCancelamento = '';
 
                 },
 
@@ -246,6 +256,13 @@ export class HistoricoDeVendas
                     );
 
                     this.carregarVendas();
+
+                    this.vendaSelecionada = {
+                        ...this.vendaSelecionada!,
+                        status: 'cancelada',
+                        motivoCancelamento:
+                            this.motivoCancelamento
+                    };
 
                     this.mostrarCancelamento = false;
 
