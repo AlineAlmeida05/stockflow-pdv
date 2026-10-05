@@ -77,13 +77,26 @@
                     <label for="senha">
                         Senha
                     </label>
-                    <input
-                        id="senha"
-                        type="password"
-                        formControlName="senha"
-                        [class.field-invalid]="
+                    <div class="password-field">
+                        <input
+                            id="senha"
+                            [type]="mostrarSenha ? 'text' : 'password'"
+                            formControlName="senha"
+                            formControlName="senha"
+                            [class.field-invalid]="
                             form.get('senha')?.touched &&
                             form.get('senha')?.invalid">
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            (click)="alternarSenha()">
+
+                            {{ mostrarSenha ? '🙈' : '👁️' }}
+
+                        </button>
+                    </div>
+
                     @if (
                     form.get('senha')?.touched &&
                     form.get('senha')?.hasError('required')
