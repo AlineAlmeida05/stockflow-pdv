@@ -136,13 +136,14 @@
 }
 
 @media (max-width: 768px) {
-    .toast {
-        min-width: unset;
-        width: 100%;
-    }
-
     .toast-container {
+        top: 120px;
         left: 16px;
         right: 16px;
+    }
+
+    .toast {
+        width: 100%;
+        min-width: unset;
     }
 }

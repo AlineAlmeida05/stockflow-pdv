@@ -191,6 +191,7 @@ app-dashboard-layout {
 
 .dashboard-table {
     width: 100%;
+    min-width: 600px;
     border-collapse: collapse;
 }
 
@@ -224,7 +225,7 @@ app-dashboard-layout {
 
 .dashboard-table-container {
     max-height: 450px;
-    overflow-y: auto;
+    overflow-x: auto;
     border: 1px solid var(--color-gray-200);
     border-radius: 12px;
 }
@@ -269,21 +270,61 @@ app-dashboard-layout {
 .dashboard-table__success {
     color: var(--color-success);
     font-weight: 700;
-
 }
 
 .dashboard-resumo-financeiro {
     text-align: center;
     padding: 32px;
-
 }
 
 .dashboard-resumo-financeiro strong {
     font-size: 2rem;
     color: var(--color-success);
     font-weight: 700;
-
 }
 
+@media (max-width: 768px) {
+    .dashboard-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        width: 100%;
+        scrollbar-width: none;
+    }
 
+    .dashboard-tabs button,
+    .dashboard-filters button {
+        flex-shrink: 0;
+    }
 
+    .dashboard-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .dashboard-filters {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        width: 100%;
+        scrollbar-width: none;
+    }
+
+    .dashboard-filters::-webkit-scrollbar {
+        display: none;
+    }
+
+    .executive-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-panel {
+        min-height: auto;
+        padding: 16px;
+    }
+
+    .dashboard-table-container {
+        overflow-x: auto;
+    }
+
+    app-dashboard-chart {
+        height: 260px;
+    }
+}
