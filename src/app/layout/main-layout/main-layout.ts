@@ -19,4 +19,38 @@ import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-di
 
 export class MainLayout {
 
+  menuAberto = false;
+
+  constructor() {
+
+    console.log(
+      'MainLayout criado'
+    );
+
+  }
+
+
+  alternarMenu(): void {
+
+    console.log(
+      'Antes:',
+      this.menuAberto
+    );
+
+    this.menuAberto =
+      !this.menuAberto;
+
+    console.log(
+      'Depois:',
+      this.menuAberto
+    );
+
+  }
+
+  fecharMenu(): void {
+
+    this.menuAberto = false;
+
+  }
+
 }
