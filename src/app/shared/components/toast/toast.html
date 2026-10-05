@@ -9,12 +9,12 @@
 
     <div
         class="toast"
+        [class.toast-closing]="toast.closing"
         [class.toast-success]="toast.type === 'success'"
         [class.toast-error]="toast.type === 'error'"
         [class.toast-warning]="toast.type === 'warning'"
         [class.toast-info]="toast.type === 'info'"
-        [class.toast-loading]="toast.type === 'loading'"
-        >
+        [class.toast-loading]="toast.type === 'loading'">
 
         <span class="toast__icon">
             {{ getIcon(toast.type) }}
@@ -31,8 +31,13 @@
             ✕
         </button>
 
+        @if (toast.type !== 'loading') {
+
+        <div class="toast__progress"></div>
+
+        }
+
     </div>
-    <div class="toast__progress"></div>
 
     }
 

@@ -44,13 +44,14 @@ export class AlertService {
 
         if (toast.autoClose) {
 
-            setTimeout(() => {
+            toast.timeoutId =
+                setTimeout(() => {
 
-                this.removeToast(
-                    toast.id
-                );
+                    this.removeToast(
+                        toast.id
+                    );
 
-            }, 3000);
+                }, 3000);
 
         }
 
@@ -62,15 +63,79 @@ export class AlertService {
         id: number
     ): void {
 
-        this.toasts =
-            this.toasts.filter(
-                toast =>
-                    toast.id !== id
+        const toast =
+            this.toasts.find(
+                toast => toast.id === id
             );
+
+        if (!toast) {
+            return;
+        }
+
+        if (toast.closing) {
+            return;
+        }
+
+        toast.closing = true;
 
         this.toastsSubject.next(
             [...this.toasts]
         );
+
+        setTimeout(() => {
+
+            this.toasts =
+                this.toasts.filter(
+                    toast => toast.id !== id
+                );
+
+            this.toastsSubject.next(
+                [...this.toasts]
+            );
+
+        }, 300);
+
+    }
+
+    updateToast(
+        id: number,
+        message: string,
+        type: Toast['type']
+    ): void {
+
+        const toast =
+            this.toasts.find(
+                toast => toast.id === id
+            );
+
+        if (!toast) {
+            return;
+        }
+
+        if (toast.timeoutId) {
+
+            clearTimeout(
+                toast.timeoutId
+            );
+
+        }
+
+        toast.message = message;
+        toast.type = type;
+        toast.autoClose = type !== 'loading';
+
+        this.toastsSubject.next(
+            [...this.toasts]
+        );
+
+        toast.timeoutId =
+            setTimeout(() => {
+
+                this.removeToast(
+                    toast.id
+                );
+
+            }, 3000);
 
     }
 

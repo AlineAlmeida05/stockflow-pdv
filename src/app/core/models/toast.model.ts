@@ -13,4 +13,8 @@ export interface Toast {
 
     autoClose?: boolean;
 
+    closing?: boolean;
+
+    timeoutId?: ReturnType<typeof setTimeout>;
+
 }
