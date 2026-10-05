@@ -1,23 +1,31 @@
 <header class="header">
+
   <div class="header-company">
+
     <img
       [src]="tenantAtual?.logoUrl || branding.logo"
       [alt]="tenantAtual?.nome || branding.nomeExibicao">
     <div>
 
       <h2>
-        {{ tenantAtual?.nome || branding.nomeExibicao }}
+        {{
+        ehSuperAdmin
+        ? tenantAtual?.nome || branding.nomeExibicao
+        : branding.nomeExibicao
+        }}
       </h2>
 
       <p>
         {{ branding.slogan }}
       </p>
-    </div>
 
+    </div>
   </div>
 
   <div class="header-actions">
+
     <div class="profile-menu">
+
       <button
         class="btn btn-secondary profile-button"
         (click)="alternarMenuPerfil()">
@@ -29,32 +37,25 @@
           </span>
 
           <span class="profile-button__role">
-            {{ usuarioLogado?.perfil }}
+            Perfil: {{ usuarioLogado?.perfil }}
           </span>
+
         </div>
+
+        <span class="profile-button__arrow">
+          {{ menuPerfilAberto ? '▲' : '▼' }}
+        </span>
       </button>
 
       @if (menuPerfilAberto) {
       <div class="profile-dropdown">
-        <div class="profile-dropdown__info">
 
-          <strong>
-            {{ usuarioLogado?.nome }}
-          </strong>
+        <div class="profile-dropdown__info">          
 
           <small>
-            {{ usuarioLogado?.email }}
+            Email: {{ usuarioLogado?.email }}
           </small>
 
-          <small>
-            Perfil:
-            {{ usuarioLogado?.perfil }}
-          </small>
-
-          <small>
-            Tenant:
-            {{ usuarioLogado?.tenantNome }}
-          </small>
         </div>
 
         <hr>
@@ -83,9 +84,20 @@
 
   <div class="modal">
 
-    <h3>
-      Alterar Senha
-    </h3>
+    <div class="modal-header">
+
+      <h3>
+        Alterar Senha
+      </h3>
+
+      <button
+        type="button"
+        class="modal-close"
+        (click)="fecharModalAlterarSenha()">
+        ✕
+      </button>
+
+    </div>
 
     <form
       [formGroup]="formAlterarSenha">
@@ -123,6 +135,7 @@
         <input
           type="password"
           formControlName="confirmarSenha">
+
         @if (
         formAlterarSenha.value.novaSenha &&
         formAlterarSenha.value.confirmarSenha &&
@@ -138,6 +151,7 @@
       </div>
 
       <div class="modal-actions">
+
         <button
           type="button"
           class="btn btn-secondary"
