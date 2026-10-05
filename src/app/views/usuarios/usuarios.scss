@@ -38,3 +38,17 @@
 app-search-input {
     min-width: 400px;
 }
+
+@media (max-width: 768px) {
+    app-search-input {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .formulario-acoes {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    
+}
