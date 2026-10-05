@@ -68,8 +68,8 @@
 @media (max-width: 768px) {
     :host {
         position: fixed;
-        top: 120px;
-        height: calc(100vh - 81px);
+        top: 65px;
+        height: calc(100vh - 65px);
         left: 0;
         z-index: 2000;
         transform: translateX(-100%);
@@ -80,4 +80,9 @@
     :host(.sidebar--open) {
         transform: translateX(0);
     }
+
+    .sidebar-nav {
+        padding-bottom: 20px;
+    }
+
 }
