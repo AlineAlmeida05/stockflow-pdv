@@ -412,90 +412,16 @@ export class Usuarios implements OnInit {
 
     }
 
-    excluirUsuario(
-        usuario: unknown
-    ): void {
-
-        const usuarioSelecionado =
-            usuario as Usuario;
-
-        if (!usuarioSelecionado.id) {
-
-            return;
-
-        }
-
-        if (
-            !confirm(
-                `Deseja realmente desativar o usuário ${usuarioSelecionado.nome}?`
-            )
-        ) {
-
-            return;
-
-        }
-
-        const loadingToast =
-            this.alertService.loading(
-                'Desativando usuário...'
-            );
-
-        this.usuarioService
-            .excluir(
-                usuarioSelecionado.id
-            )
-            .subscribe({
-
-                next: () => {
-
-                    this.carregarUsuarios();
-
-                    this.alertService.removeToast(
-                        loadingToast.id
-                    );
-
-                    this.alertService.success(
-                        'Usuário desativado com sucesso.'
-                    );
-
-                },
-
-                error: erro => {
-
-                    this.alertService.removeToast(
-                        loadingToast.id
-                    );
-
-                    this.alertService.error(
-                        'Erro ao excluir usuário.'
-                    );
-
-                    console.error(
-                        erro
-                    );
-
-                }
-
-            });
-
-    }
-
     limparFormulario(): void {
 
         this.novoNome = '';
         this.novoEmail = '';
         this.novaSenha = '';
-
         this.novoPerfil = 'GERENTE';
-
         this.novoAtivo = true;
-
         this.usuarioEmEdicao = null;
-
         this.modoEdicao = false;
-
         this.mostrarFormulario = false;
-
     }
 
     editarUsuario(
@@ -506,52 +432,30 @@ export class Usuarios implements OnInit {
             usuario as Usuario;
 
         this.modoVisualizacao = false;
-
         this.usuarioEmEdicao = usuarioSelecionado;
-
         this.novoNome = usuarioSelecionado.nome;
-
         this.novoEmail = usuarioSelecionado.email;
-
         this.novaSenha = '';
-
         this.novoPerfil = usuarioSelecionado.perfil;
-
         this.novoAtivo = usuarioSelecionado.ativo;
-
         this.mostrarFormulario = true;
-
         this.modoEdicao = true;
-
         this.tenantCadastroId = usuarioSelecionado.tenantId ?? '';
-
     }
 
     novoUsuario(): void {
-
         this.modoVisualizacao = false;
-
         this.limparFormulario();
-
         this.mostrarFormulario = true;
-
         this.modoEdicao = false;
-
-
     }
 
     cancelarEdicao(): void {
-
         this.modoVisualizacao = false;
-
         this.mostrarFormulario = false;
-
         this.modoEdicao = false;
-
         this.usuarioEmEdicao = null;
-
         this.limparFormulario();
-
     }
 
     get usuariosFiltrados(): unknown[] {
@@ -588,6 +492,8 @@ export class Usuarios implements OnInit {
                 next: tenants => {
 
                     this.tenants = tenants;
+
+                    this.cdr.detectChanges();
 
                 },
 
@@ -713,24 +619,14 @@ export class Usuarios implements OnInit {
             usuario as Usuario;
 
         this.usuarioEmEdicao = usuarioSelecionado;
-
         this.novoNome = usuarioSelecionado.nome;
-
         this.novoEmail = usuarioSelecionado.email;
-
         this.novaSenha = '';
-
         this.novoPerfil = usuarioSelecionado.perfil;
-
         this.novoAtivo = usuarioSelecionado.ativo;
-
         this.mostrarFormulario = true;
-
         this.modoVisualizacao = true;
-
         this.tenantCadastroId = usuarioSelecionado.tenantId ?? '';
-
-
     }
 
     obterNomeTenant(
@@ -780,10 +676,18 @@ export class Usuarios implements OnInit {
 
             message:
                 usuario.ativo
-                    ? `Deseja realmente desativar o usuário ${usuario.nome}?`
-                    : `Deseja realmente ativar o usuário ${usuario.nome}?`,
+                    ? `Deseja realmente desativar o usuário "${usuario.nome}"?`
+                    : `Deseja realmente ativar o usuário "${usuario.nome}"?`,
 
-            confirmText: 'Confirmar',
+            type:
+                usuario.ativo
+                    ? 'warning'
+                    : 'info',
+
+            confirmText:
+                usuario.ativo
+                    ? 'Desativar'
+                    : 'Ativar',
 
             cancelText: 'Cancelar',
 

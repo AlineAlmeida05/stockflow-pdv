@@ -127,8 +127,6 @@ export class Clientes implements OnInit {
 
                     this.clientes = clientes;
 
-                    console.log('Clientes retornados:', clientes);
-
                     clientes.forEach(
                         cliente =>
                             this.carregarResumoCliente(
@@ -403,11 +401,6 @@ export class Clientes implements OnInit {
                         cliente.saldoDevedor =
                             resumo.saldoDevedor;
 
-                        console.log(
-                            cliente.nome,
-                            cliente.saldoDevedor
-                        );
-
                         cliente.creditoDisponivel =
                             resumo.creditoDisponivel;
 
@@ -558,6 +551,8 @@ export class Clientes implements OnInit {
                 message:
                     `Deseja realmente inativar o cliente ${cliente.nome}?`,
 
+                type: 'warning',
+
                 confirmText: 'Inativar',
 
                 cancelText: 'Cancelar',
@@ -606,6 +601,8 @@ export class Clientes implements OnInit {
 
                 message:
                     `Deseja realmente reativar o cliente ${cliente.nome}?`,
+
+                type: 'info',
 
                 confirmText: 'Reativar',
 

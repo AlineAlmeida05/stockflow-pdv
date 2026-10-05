@@ -109,7 +109,9 @@ export class Tenants implements OnInit {
 
         if (!this.novoNome.trim()) {
 
-            alert('Informe o nome da adega.');
+            this.alertService.warning(
+                'Informe o nome da adega.'
+            );
 
             return;
 
@@ -123,29 +125,17 @@ export class Tenants implements OnInit {
             );
 
         const request: TenantCreateRequest = {
-
             nome: this.novoNome,
-
             slug: this.novoSlug,
-
             codigoTenant: this.novoCodigoTenant,
-
             logoUrl: this.novoLogoUrl,
-
             faviconUrl: this.novoFaviconUrl,
-
             corPrimaria: this.novaCorPrimaria,
-
             corSecundaria: this.novaCorSecundaria,
-
             responsavel: this.novoResponsavel,
-
             email: this.novoEmail,
-
             cidade: this.novaCidade,
-
             ativo: this.novoAtivo
-
         };
 
         this.tenantService
@@ -180,7 +170,6 @@ export class Tenants implements OnInit {
 
                     this.salvando = false;
 
-
                     this.cdr.detectChanges();
 
                 },
@@ -203,61 +192,6 @@ export class Tenants implements OnInit {
 
             });
 
-    }
-
-    excluirTenant(id: string): void {
-
-        if (
-            !confirm(
-                'Deseja realmente excluir este tenant?'
-            )
-        ) {
-
-            return;
-
-        }
-
-        const loadingToast =
-            this.alertService.loading(
-                'Excluindo tenant...'
-            );
-
-        this.tenantService
-            .excluir(id)
-            .subscribe({
-
-                next: () => {
-
-                    this.tenants =
-                        this.tenants.filter(
-                            tenant => tenant.id !== id
-                        );
-
-                    this.alertService.removeToast(
-                        loadingToast.id
-                    );
-
-                    this.alertService.success(
-                        'Tenant excluído com sucesso.'
-                    );
-
-                    this.cdr.detectChanges();
-
-                },
-
-                error: () => {
-
-                    this.alertService.removeToast(
-                        loadingToast.id
-                    );
-
-                    this.alertService.error(
-                        'Erro ao excluir tenant.'
-                    );
-
-                }
-
-            });
     }
 
     carregarTenants(): void {
@@ -306,29 +240,17 @@ export class Tenants implements OnInit {
             );
 
         const request: TenantUpdateRequest = {
-
             nome: this.novoNome,
-
             slug: this.novoSlug,
-
             codigoTenant: this.novoCodigoTenant,
-
             logoUrl: this.novoLogoUrl,
-
             faviconUrl: this.novoFaviconUrl,
-
             corPrimaria: this.novaCorPrimaria,
-
             corSecundaria: this.novaCorSecundaria,
-
             responsavel: this.novoResponsavel,
-
             email: this.novoEmail,
-
             cidade: this.novaCidade,
-
             ativo: this.novoAtivo
-
         };
 
         this.tenantService
@@ -357,13 +279,9 @@ export class Tenants implements OnInit {
                     );
 
                     this.salvando = false;
-
                     this.modoEdicao = false;
-
                     this.tenantEditando = null;
-
                     this.novoAtivo = true;
-
                     this.cdr.detectChanges();
                     this.novoNome = '';
                     this.novoSlug = '';
@@ -403,19 +321,13 @@ export class Tenants implements OnInit {
     cancelarEdicao(): void {
 
         this.mostrarFormulario = false;
-
         this.modoEdicao = false;
-
         this.tenantEditando = null;
-
         this.novoNome = '';
         this.novoSlug = '';
         this.novoLogoUrl = '';
-
         this.novoFaviconUrl = '';
-
         this.novaCorPrimaria = '';
-
         this.novaCorSecundaria = '';
         this.novoResponsavel = '';
         this.novoEmail = '';
@@ -427,11 +339,8 @@ export class Tenants implements OnInit {
     novoTenant(): void {
 
         this.mostrarFormulario = true;
-
         this.modoEdicao = false;
-
         this.tenantEditando = null;
-
         this.novoNome = '';
         this.novoSlug = '';
         this.novoLogoUrl = '';
@@ -560,13 +469,9 @@ export class Tenants implements OnInit {
     ): void {
 
         this.tenantEditando = tenant;
-
         this.mostrarFormulario = true;
-
         this.modoVisualizacao = true;
-
         this.modoEdicao = false;
-
         this.novoNome = tenant.nome ?? '';
         this.novoSlug = tenant.slug ?? '';
         this.novoCodigoTenant = tenant.codigoTenant ?? '';
@@ -593,16 +498,6 @@ export class Tenants implements OnInit {
         tenant: Tenant
     ): void {
 
-        console.log(
-            'Status atual:',
-            tenant.ativo
-        );
-
-        console.log(
-            'Novo status:',
-            !tenant.ativo
-        );
-
         const atualizado = {
             ...tenant,
             ativo: !tenant.ativo
@@ -616,43 +511,75 @@ export class Tenants implements OnInit {
 
             message:
                 tenant.ativo
-                    ? 'Deseja realmente desativar este tenant?'
-                    : 'Deseja realmente ativar este tenant?',
+                    ? `Deseja realmente desativar o tenant "${tenant.nome}"?`
+                    : `Deseja realmente ativar o tenant "${tenant.nome}"?`,
 
-            confirmText: 'Confirmar',
+            type:
+                tenant.ativo
+                    ? 'warning'
+                    : 'info',
+
+            confirmText:
+                tenant.ativo
+                    ? 'Desativar'
+                    : 'Ativar',
             cancelText: 'Cancelar',
 
             onConfirm: () => {
 
-                // atualizar
+                const loadingToast =
+                    this.alertService.loading(
+                        tenant.ativo
+                            ? 'Desativando tenant...'
+                            : 'Ativando tenant...'
+                    );
+
+                this.tenantService
+                    .atualizar(
+                        tenant.id!,
+                        atualizado
+                    )
+                    .subscribe({
+
+                        next: () => {
+
+                            this.alertService.removeToast(
+                                loadingToast.id
+                            );
+
+                            this.alertService.success(
+                                tenant.ativo
+                                    ? 'Tenant desativado com sucesso.'
+                                    : 'Tenant ativado com sucesso.'
+                            );
+
+                            this.carregarTenants();
+
+                            this.cdr.detectChanges();
+
+                        },
+
+                        error: erro => {
+
+                            this.alertService.removeToast(
+                                loadingToast.id
+                            );
+
+                            this.alertService.error(
+                                'Erro ao atualizar tenant.'
+                            );
+
+                            console.error(
+                                'Erro ao atualizar tenant',
+                                erro
+                            );
+
+                        }
+
+                    });
 
             }
         });
-
-        this.tenantService
-            .atualizar(
-                tenant.id!,
-                atualizado
-            )
-            .subscribe({
-
-                next: () => {
-
-                    
-
-                    this.carregarTenants();
-
-                },
-                error: erro => {
-
-                    console.error(
-                        'Erro ao atualizar tenant',
-                        erro
-                    );
-
-                }
-
-            });
 
     }
 

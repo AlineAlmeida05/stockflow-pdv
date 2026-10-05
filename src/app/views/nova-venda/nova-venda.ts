@@ -360,8 +360,6 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
             this.adicionandoItem = false;
         }
-
-        console.log(this.carrinho);
     }
 
     removerItem(produtoId: string): void {
@@ -433,7 +431,7 @@ export class NovaVenda implements OnInit, AfterViewInit {
             this.finalizandoVenda = false;
 
             this.alertService.warning(
-                'Selecione um cliente para venda fiado.'
+                'Selecione um cliente para vender fiado.'
             );
 
             return;
@@ -480,8 +478,6 @@ export class NovaVenda implements OnInit, AfterViewInit {
             return;
 
         }
-
-        console.log('Passou nas validações');
 
         this.salvarVenda();
 
@@ -538,7 +534,7 @@ export class NovaVenda implements OnInit, AfterViewInit {
         if (!produto.ativo) {
 
             this.alertService.warning(
-                'Produto inativo.'
+                'Este produto está inativo.'
             );
 
             return;
@@ -637,34 +633,6 @@ export class NovaVenda implements OnInit, AfterViewInit {
                 .select();
 
         });
-
-    }
-
-    get indicadorEstoque(): 'alto' | 'medio' | 'baixo' {
-
-        if (!this.produtoSelecionado) {
-
-            return 'alto';
-
-        }
-
-        if (
-            this.produtoSelecionado.estoqueAtual <= 5
-        ) {
-
-            return 'baixo';
-
-        }
-
-        if (
-            this.produtoSelecionado.estoqueAtual <= 10
-        ) {
-
-            return 'medio';
-
-        }
-
-        return 'alto';
 
     }
 

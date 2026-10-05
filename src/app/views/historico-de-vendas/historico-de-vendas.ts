@@ -78,6 +78,21 @@ export class HistoricoDeVendas
 
     ];
 
+    opcoesStatus = [
+        {
+            value: '',
+            label: 'Todos'
+        },
+        {
+            value: 'finalizada',
+            label: 'Finalizadas'
+        },
+        {
+            value: 'cancelada',
+            label: 'Canceladas'
+        }
+    ];
+
     constructor(
         private vendaService: VendaService,
         private alertService: AlertService,
@@ -330,16 +345,17 @@ export class HistoricoDeVendas
 
     abrirConfirmacaoCancelamento(): void {
 
-        if (
-            !this.motivoCancelamento.trim()
-        ) {
+        if (!this.vendaSelecionada) {
+            return;
+        }
+
+        if (!this.motivoCancelamento.trim()) {
 
             this.alertService.warning(
                 'Informe o motivo do cancelamento.'
             );
 
             return;
-
         }
 
         this.confirmDialogService.open({
@@ -347,12 +363,17 @@ export class HistoricoDeVendas
             title: 'Cancelar Venda',
 
             message:
-                'Deseja realmente cancelar esta venda?',
+                `Deseja realmente cancelar a venda de ${this.vendaSelecionada.valorTotal.toLocaleString(
+                    'pt-BR',
+                    {
+                        style: 'currency',
+                        currency: 'BRL'
+                    }
+                )} realizada por ${this.vendaSelecionada.usuarioNome}?`,
 
             type: 'danger',
 
-            confirmText:
-                'Cancelar Venda',
+            confirmText: 'Cancelar Venda',
 
             onConfirm: () => {
 
@@ -445,18 +466,23 @@ export class HistoricoDeVendas
 
     }
 
-    opcoesStatus = [
-        {
-            value: '',
-            label: 'Todos'
-        },
-        {
-            value: 'finalizada',
-            label: 'Finalizadas'
-        },
-        {
-            value: 'cancelada',
-            label: 'Canceladas'
-        }
-    ];
+    podeCancelarVenda(
+        venda: Venda
+    ): boolean {
+
+        const dataVenda =
+            new Date(venda.dataVenda);
+
+        const agora =
+            new Date();
+
+        const limite =
+            24 * 60 * 60 * 1000;
+
+        return (
+            agora.getTime() -
+            dataVenda.getTime()
+        ) <= limite;
+
+    }
 }

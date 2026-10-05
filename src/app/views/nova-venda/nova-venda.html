@@ -6,8 +6,11 @@
     </app-page-title>
 
     <div class="venda-content">
+
         <div class="produto-panel">
+
             <div class="card novo-item-card">
+
                 <app-smart-product-search
                     [produtos]="produtos"
                     (produtoSelecionado)="
@@ -57,16 +60,14 @@
                     <div class="produto-resumo-item">
                         <small>Promoção:</small>
                         <strong>
-                            {{ produtoSelecionado.precoPromocional |
-                            currency:'BRL'}}
+                            {{ produtoSelecionado.precoPromocional | currency:'BRL'}}
                         </strong>
                     </div>
 
                     } @else {
                     <div class="produto-resumo-item">
                         <small>Preço:</small>
-                        <strong>{{ produtoSelecionado.precoVenda |
-                            currency:'BRL' }}</strong>
+                        <strong>{{ produtoSelecionado.precoVenda | currency:'BRL' }}</strong>
                     </div>
 
                     }
@@ -76,10 +77,13 @@
                 }
 
                 <div class="venda-toolbar__quantidade">
+                    
                     <div class="field">
+
                         <label>
                             Quantidade
                         </label>
+
                         <input
                             #quantidadeInput
                             type="number"
@@ -87,38 +91,42 @@
                             (keyup.enter)="adicionarAoCarrinho()">
                     </div>
                 </div>
+
                 <div class="venda-toolbar__acoes">
+
                     <button
                         class="btn btn-primary"
                         type="button"
                         (click)="adicionarAoCarrinho()"
                         [disabled]="adicionandoItem">
-                        {{
-                        adicionandoItem? 'Adicionando...':
-                        'Adicionar ao Carrinho'
-                        }}
+                        {{ adicionandoItem? 'Adicionando...':'Adicionar ao Carrinho'}}
                     </button>
                 </div>
             </div>
         </div>
 
         <div class="venda-content__carrinho">
+
             <h2>
                 Carrinho
             </h2>
+
             <div class="total-venda">
                 <div>
                     <small>
                         {{ quantidadeItens }}
                         item(ns)
                     </small>
+                    
                     @if (totalDescontos > 0) {
+
                     <small class="desconto-total">
                         Economia:
                         {{ totalDescontos | currency:'BRL' }}
                     </small>
                     }
                 </div>
+
                 <strong>
                     {{ total | currency:'BRL' }}
                 </strong>
@@ -210,6 +218,7 @@
                             Fiado
                         </option>
                     </select>
+
                     @if (formaPagamento === 'fiado') {
 
                     <div class="field">
@@ -245,10 +254,7 @@
                                 <span>Limite Crédito</span>
 
                                 <strong>
-                                    {{
-                                    resumoCliente.limiteCredito
-                                    | currency:'BRL'
-                                    }}
+                                    {{resumoCliente.limiteCredito| currency:'BRL'}}
                                 </strong>
                             </div>
 
@@ -256,10 +262,7 @@
                                 <span>Saldo Devedor</span>
 
                                 <strong class="saldo-devedor">
-                                    {{
-                                    resumoCliente.saldoDevedor
-                                    | currency:'BRL'
-                                    }}
+                                    {{resumoCliente.saldoDevedor| currency:'BRL'}}
                                 </strong>
                             </div>
 
@@ -267,10 +270,7 @@
                                 <span>Crédito Disponível</span>
 
                                 <strong class="credito-disponivel">
-                                    {{
-                                    resumoCliente.creditoDisponivel
-                                    | currency:'BRL'
-                                    }}
+                                    {{resumoCliente.creditoDisponivel| currency:'BRL'}}
                                 </strong>
                             </div>
 
@@ -280,17 +280,13 @@
 
                                 <strong
                                     [class.status-em-dia]="
-                                        resumoCliente.status === 'Em Dia'
-                                    "
+                                        resumoCliente.status === 'Em Dia'"
                                     [class.status-devedor]="
-                                        resumoCliente.status === 'Devedor'
-                                    "
+                                        resumoCliente.status === 'Devedor'"
                                     [class.status-inadimplente]="
-                                        resumoCliente.status === 'Inadimplente'
-                                    "
+                                        resumoCliente.status === 'Inadimplente'"
                                     [class.status-limite-excedido]="
-                                        resumoCliente.status === 'Limite Excedido'
-                                    ">
+                                        resumoCliente.status === 'Limite Excedido'">
 
                                     {{ resumoCliente.status }}
 
@@ -305,9 +301,7 @@
                         @if (clienteBloqueadoFiado) {
 
                         <small class="cliente-bloqueado">
-
                             ⚠️ Cliente bloqueado para compras fiado.
-
                         </small>
 
                         }
@@ -317,14 +311,18 @@
                 </div>
 
                 @if (formaPagamento === 'dinheiro') {
+
                 <div class="field">
+
                     <app-currency-input
                         label="Valor Recebido"
                         placeholder="0,00"
                         [(value)]="valorRecebido"
                         (keyup.enter)="finalizarVenda()">
                     </app-currency-input>
+
                 </div>
+
                 @if (
                 formaPagamento === 'dinheiro' &&
                 valorRecebido !== null
@@ -368,6 +366,7 @@
         </div>
 
     </div>
+    
     <div class="atalhos-venda">
 
         <span>
