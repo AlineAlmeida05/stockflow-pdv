@@ -96,11 +96,14 @@ export class Header {
 
     alternarMenu(): void {
 
-        console.log(
-            'Header clicou'
-        );
-
         this.toggleMenu.emit();
+
+    }
+
+    get primeiroNome(): string {
+
+        return this.usuarioLogado?.nome
+            ?.split(' ')[0] ?? '';
 
     }
 

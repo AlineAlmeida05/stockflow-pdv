@@ -169,4 +169,32 @@
     .menu-toggle {
         display: block;
     }
+
+    .header {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .header-company img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .header-company p {
+        display: none;
+    }
+
+    .header-company h2 {
+        font-size: 0.9rem;
+    }
+
+    .profile-button__role {
+        display: none;
+    }
+
+    .profile-dropdown {
+        width: 220px;
+        right: 0;
+        left: auto;
+    }
 }
