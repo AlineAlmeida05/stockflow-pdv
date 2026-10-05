@@ -312,12 +312,10 @@ export class Usuarios implements OnInit {
 
                         this.limparFormulario();
 
-                        this.alertService.removeToast(
-                            loadingToast.id
-                        );
-
-                        this.alertService.success(
-                            'Usuário atualizado com sucesso.'
+                        this.alertService.updateToast(
+                            loadingToast.id,
+                            'Usuário atualizado com sucesso.',
+                            'success'
                         );
 
                     },
@@ -326,12 +324,10 @@ export class Usuarios implements OnInit {
 
                         this.salvando = false;
 
-                        this.alertService.removeToast(
-                            loadingToast.id
-                        );
-
-                        this.alertService.error(
-                            'Erro ao atualizar usuário.'
+                        this.alertService.updateToast(
+                            loadingToast.id,
+                            'Erro ao atualizar usuário.',
+                            'error'
                         );
 
                         console.error(
@@ -379,12 +375,10 @@ export class Usuarios implements OnInit {
 
                     this.modoEdicao = false;
 
-                    this.alertService.removeToast(
-                        loadingToast.id
-                    );
-
-                    this.alertService.success(
-                        'Usuário criado com sucesso.'
+                    this.alertService.updateToast(
+                        loadingToast.id,
+                        'Usuário criado com sucesso.',
+                        'success'
                     );
 
                 },
@@ -393,13 +387,11 @@ export class Usuarios implements OnInit {
 
                     this.salvando = false;
 
-                    this.alertService.removeToast(
-                        loadingToast.id
-                    );
-
-                    this.alertService.error(
+                    this.alertService.updateToast(
+                        loadingToast.id,
                         erro.error?.message ??
-                        'Erro ao criar usuário.'
+                        'Erro ao criar usuário.',
+                        'error'
                     );
 
                     console.error(
@@ -703,17 +695,11 @@ export class Usuarios implements OnInit {
                 const request: UsuarioUpdateRequest = {
 
                     nome: usuario.nome,
-
                     email: usuario.email,
-
                     senha: '',
-
                     perfil: usuario.perfil,
-
                     ativo: !usuario.ativo,
-
                     tenantId: usuario.tenantId!
-
                 };
 
                 this.usuarioService
@@ -727,27 +713,23 @@ export class Usuarios implements OnInit {
 
                             this.carregarUsuarios();
 
-                            this.alertService.removeToast(
-                                loadingToast.id
-                            );
-
-                            this.alertService.success(
+                            this.alertService.updateToast(
+                                loadingToast.id,
                                 `Usuário ${acao === 'ativar'
                                     ? 'ativado'
                                     : 'desativado'
-                                } com sucesso.`
+                                } com sucesso.`,
+                                'success'
                             );
 
                         },
 
                         error: erro => {
 
-                            this.alertService.removeToast(
-                                loadingToast.id
-                            );
-
-                            this.alertService.error(
-                                'Erro ao atualizar usuário.'
+                            this.alertService.updateToast(
+                                loadingToast.id,
+                                'Erro ao atualizar usuário.',
+                                'error'
                             );
 
                             console.error(erro);

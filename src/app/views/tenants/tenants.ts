@@ -160,12 +160,10 @@ export class Tenants implements OnInit {
                     this.novaCidade = '';
                     this.novoAtivo = true;
 
-                    this.alertService.removeToast(
-                        loadingToast.id
-                    );
-
-                    this.alertService.success(
-                        'Tenant criado com sucesso.'
+                    this.alertService.updateToast(
+                        loadingToast.id,
+                        'Tenant criado com sucesso.',
+                        'success'
                     );
 
                     this.salvando = false;
@@ -176,12 +174,10 @@ export class Tenants implements OnInit {
 
                 error: (erro) => {
 
-                    this.alertService.removeToast(
-                        loadingToast.id
-                    );
-
-                    this.alertService.error(
-                        'Erro ao criar tenant.'
+                    this.alertService.updateToast(
+                        loadingToast.id,
+                        'Erro ao criar tenant.',
+                        'error'
                     );
 
                     this.salvando = false;
@@ -270,12 +266,10 @@ export class Tenants implements OnInit {
                                     : tenant
                         );
 
-                    this.alertService.removeToast(
-                        loadingToast.id
-                    );
-
-                    this.alertService.success(
-                        'Tenant atualizado com sucesso.'
+                    this.alertService.updateToast(
+                        loadingToast.id,
+                        'Tenant atualizado com sucesso.',
+                        'success'
                     );
 
                     this.salvando = false;
@@ -300,12 +294,10 @@ export class Tenants implements OnInit {
 
                 error: erro => {
 
-                    this.alertService.removeToast(
-                        loadingToast.id
-                    );
-
-                    this.alertService.error(
-                        'Erro ao atualizar tenant.'
+                    this.alertService.updateToast(
+                        loadingToast.id,
+                        'Erro ao atualizar tenant.',
+                        'error'
                     );
 
                     this.salvando = false;
@@ -543,14 +535,12 @@ export class Tenants implements OnInit {
 
                         next: () => {
 
-                            this.alertService.removeToast(
-                                loadingToast.id
-                            );
-
-                            this.alertService.success(
+                            this.alertService.updateToast(
+                                loadingToast.id,
                                 tenant.ativo
                                     ? 'Tenant desativado com sucesso.'
-                                    : 'Tenant ativado com sucesso.'
+                                    : 'Tenant ativado com sucesso.',
+                                'success'
                             );
 
                             this.carregarTenants();
@@ -561,12 +551,10 @@ export class Tenants implements OnInit {
 
                         error: erro => {
 
-                            this.alertService.removeToast(
-                                loadingToast.id
-                            );
-
-                            this.alertService.error(
-                                'Erro ao atualizar tenant.'
+                            this.alertService.updateToast(
+                                loadingToast.id,
+                                'Erro ao atualizar tenant.',
+                                'error'
                             );
 
                             console.error(

@@ -45,6 +45,8 @@ export class LoginComponent implements OnInit {
 
                 this.carregarTenant();
 
+                this.cdr.detectChanges();
+
             });
 
     }
@@ -125,6 +127,8 @@ export class LoginComponent implements OnInit {
                             .setTenant(
                                 this.tenant
                             );
+
+                        this.cdr.detectChanges();
 
                     }
 

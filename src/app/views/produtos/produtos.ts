@@ -645,27 +645,23 @@ export class Produtos implements OnInit {
 
               this.cdr.detectChanges();
 
-              this.alertService.removeToast(
-                loadingToast.id
-              );
-
-              this.alertService.success(
+              this.alertService.updateToast(
+                loadingToast.id,
                 `Produto ${acao === 'ativar'
                   ? 'ativado'
                   : 'desativado'
-                } com sucesso.`
+                } com sucesso.`,
+                'success'
               );
 
             },
 
             error: erro => {
 
-              this.alertService.removeToast(
-                loadingToast.id
-              );
-
-              this.alertService.error(
-                'Erro ao atualizar produto.'
+              this.alertService.updateToast(
+                loadingToast.id,
+                'Erro ao atualizar produto.',
+                'error'
               );
 
               console.error(erro);
