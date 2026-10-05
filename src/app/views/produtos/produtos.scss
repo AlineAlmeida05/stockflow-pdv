@@ -40,3 +40,19 @@
   align-items: center;
   justify-content: space-between;
 }
+
+@media (max-width: 768px) {
+  .produtos-toolbar-left {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .produtos-toolbar-right {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+}

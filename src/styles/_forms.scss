@@ -33,7 +33,6 @@
     font-weight: 600;
     color: var(--color-gray-700);
     margin-bottom: 4px;
-    
 }
 
 .field input,
@@ -95,4 +94,16 @@
     background-color: var(--color-gray-100);
     border-color: var(--color-gray-300);
     color: var(--color-gray-500);
+}
+
+@media (max-width: 768px) {
+    .field-small {
+        flex: 1 1 100%;
+
+        min-width: unset;
+    }
+
+    .field-large {
+        flex: 1 1 100%;
+    }
 }
