@@ -241,7 +241,9 @@ export class EntradaDeEstoque implements OnInit {
                 title: 'Confirmar Entrada',
 
                 message:
-                    `Confirma a entrada de ${quantidade} unidades deste produto?`,
+                    `Confirma a entrada de ${quantidade} unidades do produto "${produto.nome}"?`,
+
+                type: 'warning',
 
                 confirmText: 'Confirmar',
 

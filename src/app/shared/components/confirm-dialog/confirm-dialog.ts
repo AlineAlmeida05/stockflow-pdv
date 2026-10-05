@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { ConfirmDialogService } from '../../../core/services/confirm-dialog.service';
 import { HostListener } from '@angular/core';
 
@@ -7,7 +7,8 @@ import { HostListener } from '@angular/core';
     selector: 'app-confirm-dialog',
     standalone: true,
     imports: [
-        AsyncPipe
+        AsyncPipe,
+        NgClass
     ],
     templateUrl: './confirm-dialog.html',
     styleUrl: './confirm-dialog.scss'
@@ -16,24 +17,22 @@ import { HostListener } from '@angular/core';
 export class ConfirmDialog {
 
     constructor(
-        public confirmDialogService:
-            ConfirmDialogService
+        public confirmDialogService: ConfirmDialogService
     ) { }
 
-    @HostListener(
-        'document:keydown.escape'
-    )
+    @HostListener('document:keydown.escape')
     onEscape(): void {
 
-        this.cancelar();
+        if (
+            !this.confirmDialogService.currentDialog
+        ) {
+            return;
+        }
 
+        this.cancelar();
     }
 
     confirmar(): void {
-
-        console.log(
-            this.confirmDialogService.currentDialog
-        );
 
         const dialog =
             this.confirmDialogService
@@ -43,9 +42,9 @@ export class ConfirmDialog {
             return;
         }
 
-        dialog.onConfirm();
-
         this.confirmDialogService.close();
+
+        dialog.onConfirm();
 
     }
 
@@ -55,4 +54,62 @@ export class ConfirmDialog {
 
     }
 
+    get dialogType(): string {
+
+        return (
+            this.confirmDialogService
+                .currentDialog?.type
+            ?? 'warning'
+        );
+
+    }
+
+    get dialogIcon(): string {
+
+        switch (this.dialogType) {
+
+            case 'danger':
+                return '🗑️';
+
+            case 'warning':
+                return '⚠️';
+
+            case 'info':
+                return 'ℹ️';
+
+            default:
+                return '⚠️';
+
+        }
+
+    }
+
+
+    get confirmButtonText(): string {
+
+        const dialog =
+            this.confirmDialogService
+                .currentDialog;
+
+        if (dialog?.confirmText) {
+            return dialog.confirmText;
+        }
+
+        switch (dialog?.type) {
+
+            case 'danger':
+                return 'Excluir';
+
+            case 'warning':
+                return 'Continuar';
+
+            case 'info':
+                return 'Confirmar';
+
+            default:
+                return 'Confirmar';
+
+        }
+
+    }
 }

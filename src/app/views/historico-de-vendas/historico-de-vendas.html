@@ -23,6 +23,7 @@
 
     <app-split-panel>
         <div left class="vendas-panel">
+
             <h2>
                 Vendas
             </h2>
@@ -33,8 +34,7 @@
             ) {
             <div
                 class="card venda-card"
-                [class.venda-card--active]="
-        vendaSelecionada?.id === venda.id"
+                [class.venda-card--active]="vendaSelecionada?.id === venda.id"
                 (click)="selecionarVenda(venda)">
 
                 <div class="venda-card__header">
@@ -44,10 +44,7 @@
                     </strong>
 
                     <span class="venda-card__data">
-                        {{
-                        venda.dataVenda
-                        | date:'dd/MM/yyyy HH:mm'
-                        }}
+                        {{venda.dataVenda| date:'dd/MM/yyyy HH:mm'}}
                     </span>
 
                 </div>
@@ -60,10 +57,7 @@
 
                     <span
                         class="venda-card__pagamento">
-                        {{
-                        venda.formaPagamento
-                        | uppercase
-                        }}
+                        {{venda.formaPagamento| uppercase }}
                     </span>
 
                 </div>
@@ -74,11 +68,13 @@
 
         <div right class="detalhes-panel">
             @if (vendaSelecionada) {
+
             <h2>
                 Detalhes da Venda
             </h2>
 
             <div class="total-venda-card">
+
                 <div class="total-venda-card__header">
 
                     <span>
@@ -86,21 +82,14 @@
                     </span>
 
                     <strong>
-
-                        {{
-                        vendaSelecionada.valorTotal
-                        | currency:'BRL'
-                        }}
-
+                        {{vendaSelecionada.valorTotal| currency:'BRL' }}
                     </strong>
                 </div>
 
                 <div class="venda-meta">
 
                     <div class="venda-meta__item">
-                        {{
-                        obterIconePagamento(vendaSelecionada.formaPagamento)
-                        }}
+                        {{obterIconePagamento(vendaSelecionada.formaPagamento)}}
                         {{ vendaSelecionada.formaPagamento | uppercase }}
                     </div>
 
@@ -121,19 +110,32 @@
 
                     </div>
 
-                    @if (vendaSelecionada.status === 'finalizada') {
+                    <span class="venda-meta__divider">|</span>
+
+                    @if (
+                    vendaSelecionada.status === 'finalizada'
+                    && podeCancelarVenda(vendaSelecionada)
+                    ) {
 
                     <button
                         class="btn btn-danger"
                         type="button"
                         (click)="mostrarCancelamento = true">
-
                         Cancelar Venda
-
                     </button>
 
                     }
 
+                    @if (
+                    vendaSelecionada.status === 'finalizada'
+                    && !podeCancelarVenda(vendaSelecionada)
+                    ) {
+
+                    <div class="venda-meta__item status-expirado">
+                        ⏱️ Prazo de cancelamento expirado
+                    </div>
+
+                    }
                 </div>
 
             </div>
@@ -148,10 +150,9 @@
                 </span>
 
                 <p>
-                    {{
-                    vendaSelecionada.motivoCancelamento
-                    }}
+                    {{vendaSelecionada.motivoCancelamento}}
                 </p>
+
                 @if (vendaSelecionada.dataCancelamento &&
                 vendaSelecionada.usuarioCancelamento) {
 
@@ -160,10 +161,7 @@
                     <div class="info-cancelamento">
                         <span>Data do Cancelamento</span>
                         <strong>
-                            {{
-                            vendaSelecionada.dataCancelamento
-                            | date:'dd/MM/yyyy HH:mm'
-                            }}
+                            {{vendaSelecionada.dataCancelamento| date:'dd/MM/yyyy HH:mm'}}
                         </strong>
                     </div>
 

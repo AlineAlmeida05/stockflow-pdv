@@ -110,8 +110,6 @@ export class Produtos implements OnInit {
 
         next: produtos => {
 
-          console.log(produtos);
-
           this.produtos = [...produtos];
 
           this.cdr.detectChanges();
@@ -202,6 +200,8 @@ export class Produtos implements OnInit {
 
             this.carregarProdutos();
 
+            this.cdr.detectChanges();
+
             this.alertService.success(
               'Produto atualizado com sucesso.'
             );
@@ -261,6 +261,8 @@ export class Produtos implements OnInit {
 
             this.carregarProdutos();
 
+            this.cdr.detectChanges();
+
             this.alertService.success(
               'Produto cadastrado com sucesso.'
             );
@@ -287,16 +289,10 @@ export class Produtos implements OnInit {
     this.codigoBarras = '';
     this.precoVenda = 0;
     this.estoqueMinimo = 0;
-
     this.produtoEditandoId = null;
-
     this.estoqueAtual = 0;
-
     this.dataCadastro = '';
-
     this.mostrarFormulario = false;
-
-    this.carregarProdutos();
 
   }
 
@@ -321,6 +317,8 @@ export class Produtos implements OnInit {
       message:
         'Deseja realmente inativar este produto? O histórico será preservado.',
 
+      type: 'warning',
+
       confirmText: 'Inativar',
 
       cancelText: 'Cancelar',
@@ -342,6 +340,8 @@ export class Produtos implements OnInit {
             next: () => {
 
               this.carregarProdutos();
+
+              this.cdr.detectChanges();
 
               this.alertService.success(
                 'Produto inativado com sucesso.'
@@ -455,6 +455,8 @@ export class Produtos implements OnInit {
       message:
         'Deseja realmente reativar este produto?',
 
+      type: 'info',
+
       confirmText: 'Reativar',
 
       cancelText: 'Cancelar',
@@ -472,6 +474,8 @@ export class Produtos implements OnInit {
             next: () => {
 
               this.carregarProdutos();
+
+              this.cdr.detectChanges();
 
               this.alertService.success(
                 'Produto reativado com sucesso.'
@@ -604,10 +608,18 @@ export class Produtos implements OnInit {
 
       message:
         produto.ativo
-          ? `Deseja realmente desativar o produto ${produto.nome}?`
-          : `Deseja realmente ativar o produto ${produto.nome}?`,
+          ? `Deseja realmente desativar o produto "${produto.nome}"?`
+          : `Deseja realmente ativar o produto "${produto.nome}"?`,
 
-      confirmText: 'Confirmar',
+      type:
+        produto.ativo
+          ? 'warning'
+          : 'info',
+
+      confirmText:
+        produto.ativo
+          ? 'Desativar'
+          : 'Ativar',
 
       cancelText: 'Cancelar',
 
@@ -623,15 +635,15 @@ export class Produtos implements OnInit {
         this.produtoService
           .atualizar({
             ...produto,
-
             ativo: !produto.ativo
-
           } as Produto)
           .subscribe({
 
             next: () => {
 
               this.carregarProdutos();
+
+              this.cdr.detectChanges();
 
               this.alertService.removeToast(
                 loadingToast.id

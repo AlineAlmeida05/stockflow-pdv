@@ -3,16 +3,26 @@ confirmDialogService.dialog$ | async;
 as dialog
 ) {
 
-<div class="dialog-backdrop">
-    <div class="dialog"
+<div
+    class="dialog-backdrop"
+    (click)="cancelar()">
+
+    <div
+        class="dialog"
         (click)="$event.stopPropagation()">
-        <div class="dialog-header">
+
+        <div
+            class="dialog-header"
+            [ngClass]="dialogType">
+
             <span class="dialog-icon">
-                ⚠️
+                {{ dialogIcon }}
             </span>
+
             <h2>
                 {{ dialog.title }}
             </h2>
+
         </div>
 
         <p>
@@ -24,19 +34,17 @@ as dialog
                 type="button"
                 class="btn btn-secondary"
                 (click)="cancelar()">
-                {{
-                dialog.cancelText || 'Cancelar'
-                }}
+                {{dialog.cancelText || 'Cancelar'}}
             </button>
 
             <button
                 type="button"
-                class="btn btn-danger"
+                class="btn"
+                [class.btn-danger]="dialogType === 'danger'"
+                [class.btn-warning]="dialogType === 'warning'"
+                [class.btn-primary]="dialogType === 'info'"
                 (click)="confirmar()">
-                {{
-                dialog.confirmText
-                || 'Excluir'
-                }}
+                {{confirmButtonText}}
             </button>
         </div>
     </div>
