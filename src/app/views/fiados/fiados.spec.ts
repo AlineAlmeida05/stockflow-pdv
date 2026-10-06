@@ -1,4 +1,6 @@
 import { Fiados } from './fiados';
+import { of } from 'rxjs';
+import { vi } from 'vitest';
 
 describe(
     'Fiados',
@@ -221,6 +223,178 @@ describe(
                 ).toBe(
                     '💳 CRÉDITO'
                 );
+
+            }
+        );
+
+        it(
+            'não deve continuar quando não existir cliente selecionado',
+            () => {
+
+                const pagamentoService = {
+                    salvar: vi.fn()
+                };
+
+                component =
+                    new Fiados(
+                        {} as never,
+                        {} as never,
+                        pagamentoService as never,
+                        {} as never,
+                        {} as never
+                    );
+
+                component.cliente = undefined;
+
+                component.valorRecebido = 100;
+
+                component.confirmarRecebimento();
+
+                expect(
+                    pagamentoService.salvar
+                ).not.toHaveBeenCalled();
+
+            }
+        );
+
+        it(
+            'não deve continuar quando o valor recebido for menor ou igual a zero',
+            () => {
+
+                const pagamentoService = {
+                    salvar: vi.fn()
+                };
+
+                component =
+                    new Fiados(
+                        {} as never,
+                        {} as never,
+                        pagamentoService as never,
+                        {} as never,
+                        {} as never
+                    );
+
+                component.cliente = {
+                    id: '1'
+                } as never;
+
+                component.valorRecebido = 0;
+
+                component.confirmarRecebimento();
+
+                expect(
+                    pagamentoService.salvar
+                ).not.toHaveBeenCalled();
+
+            }
+        );
+
+        it(
+            'deve exibir aviso quando o valor exceder o saldo devedor',
+            () => {
+
+                const alertService = {
+                    warning: vi.fn()
+                };
+
+                component =
+                    new Fiados(
+                        {} as never,
+                        {} as never,
+                        {} as never,
+                        alertService as never,
+                        {} as never
+                    );
+
+                component.cliente = {
+                    id: '1'
+                } as never;
+
+                component.clienteResumo = {
+                    saldoDevedor: 100
+                } as never;
+
+                component.valorRecebido = 150;
+
+                component.confirmarRecebimento();
+
+                expect(
+                    alertService.warning
+                ).toHaveBeenCalledWith(
+                    'O valor informado excede o saldo devedor.'
+                );
+
+            }
+        );
+
+        it(
+            'deve registrar pagamento com sucesso',
+            () => {
+
+                const clienteService = {
+                    listar: vi.fn(() => of([]))
+                };
+
+                const fiadoService = {
+                    listar: vi.fn(() => of([]))
+                };
+
+                const pagamentoService = {
+                    salvar: vi.fn(() => of({})),
+                    listar: vi.fn(() => of([]))
+                };
+
+                const alertService = {
+                    success: vi.fn(),
+                    error: vi.fn(),
+                    warning: vi.fn()
+                };
+
+                component =
+                    new Fiados(
+                        clienteService as never,
+                        fiadoService as never,
+                        pagamentoService as never,
+                        alertService as never,
+                        {
+                            detectChanges: vi.fn()
+                        } as never
+                    );
+
+                component.cliente = {
+                    id: '1'
+                } as never;
+
+                component.clienteResumo = {
+                    saldoDevedor: 500
+                } as never;
+
+                component.valorRecebido = 100;
+
+                component.formaPagamento = 'pix';
+
+                component.confirmarRecebimento();
+
+                expect(
+                    pagamentoService.salvar
+                ).toHaveBeenCalled();
+
+                expect(
+                    alertService.success
+                ).toHaveBeenCalledWith(
+                    'Pagamento registrado com sucesso.'
+                );
+                expect(
+                    component.valorRecebido
+                ).toBe(0);
+
+                expect(
+                    component.formaPagamento
+                ).toBe('pix');
+
+                expect(
+                    component.mostrarRecebimento
+                ).toBe(false);
 
             }
         );
