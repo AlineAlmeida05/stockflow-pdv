@@ -353,5 +353,232 @@ describe(
       }
     );
 
+    it(
+      'deve preparar formulário para novo cliente',
+      () => {
+
+        component.nome = 'Teste';
+
+        component.telefone = '123';
+
+        component.clienteEditandoId = '1';
+
+        component.novoCliente();
+
+        expect(
+          component.nome
+        ).toBe('');
+
+        expect(
+          component.telefone
+        ).toBe('');
+
+        expect(
+          component.clienteEditandoId
+        ).toBeNull();
+
+        expect(
+          component.mostrarFormulario
+        ).toBe(true);
+
+      }
+    );
+
+    it(
+      'deve limpar formulário ao cancelar edição',
+      () => {
+
+        component.nome = 'Teste';
+
+        component.telefone = '123';
+
+        component.clienteEditandoId = '1';
+
+        component.cancelarEdicao();
+
+        expect(
+          component.nome
+        ).toBe('');
+
+        expect(
+          component.telefone
+        ).toBe('');
+
+        expect(
+          component.clienteEditandoId
+        ).toBeNull();
+
+        expect(
+          component.mostrarFormulario
+        ).toBe(false);
+
+      }
+    );
+
+    it(
+      'deve desabilitar modo visualização',
+      () => {
+
+        component.modoVisualizacao = true;
+
+        component.habilitarEdicao();
+
+        expect(
+          component.modoVisualizacao
+        ).toBe(false);
+
+      }
+    );
+
+    it(
+      'deve retornar vazio para data indefinida',
+      () => {
+
+        expect(
+          component.formatarData()
+        ).toBe('');
+
+      }
+    );
+
+    it(
+      'deve formatar data válida',
+      () => {
+
+        const resultado =
+          component.formatarData(
+            '2026-10-06'
+          );
+
+        expect(
+          resultado
+        ).not.toBe('');
+
+      }
+    );
+
+    it(
+      'deve carregar dados para edição',
+      () => {
+
+        const cliente = {
+          id: '1',
+          nome: 'Maria',
+          telefone: '11999999999',
+          limiteCredito: 500,
+          observacao: 'teste'
+        } as never;
+
+        component.editarCliente(
+          cliente
+        );
+
+        expect(
+          component.clienteEditandoId
+        ).toBe('1');
+
+        expect(
+          component.nome
+        ).toBe('Maria');
+
+        expect(
+          component.telefone
+        ).toBe('11999999999');
+
+        expect(
+          component.mostrarFormulario
+        ).toBe(true);
+
+      }
+    );
+
+    it(
+      'deve carregar cliente para visualização',
+      () => {
+
+        const cliente = {
+          id: '1',
+          nome: 'Maria',
+          telefone: '11999999999',
+          limiteCredito: 500
+        } as never;
+
+        component.visualizarCliente(
+          cliente
+        );
+
+        expect(
+          component.clienteSelecionado
+        ).toBe(cliente);
+
+        expect(
+          component.modoVisualizacao
+        ).toBe(true);
+
+        expect(
+          component.mostrarFormulario
+        ).toBe(true);
+
+      }
+    );
+
+    it(
+      'deve abrir confirmação para inativar cliente ativo',
+      () => {
+
+        const open = vi.fn();
+
+        component =
+          new Clientes(
+            {} as never,
+            {} as never,
+            {
+              open
+            } as never,
+            {} as never
+          );
+
+        component.alternarStatusCliente({
+          id: '1',
+          nome: 'Maria',
+          ativo: true
+        } as never);
+
+        expect(
+          open
+        ).toHaveBeenCalled();
+
+      }
+    );
+
+    it(
+      'deve abrir confirmação para reativar cliente inativo',
+      () => {
+
+        const open = vi.fn();
+
+        component =
+          new Clientes(
+            {} as never,
+            {} as never,
+            {
+              open
+            } as never,
+            {} as never
+          );
+
+        component.alternarStatusCliente({
+          id: '1',
+          nome: 'Maria',
+          ativo: false
+        } as never);
+
+        expect(
+          open
+        ).toHaveBeenCalled();
+
+      }
+    );
+
   }
 );

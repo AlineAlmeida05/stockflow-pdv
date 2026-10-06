@@ -239,7 +239,181 @@ describe(
             }
         );
 
-        
+        it(
+            'deve somar apenas vendas finalizadas no faturamento',
+            () => {
 
+                component.vendas = [
+                    {
+                        status: 'finalizada',
+                        valorTotal: 100
+                    } as never,
+
+                    {
+                        status: 'cancelada',
+                        valorTotal: 50
+                    } as never
+                ];
+
+                expect(
+                    component.faturamentoTotal
+                ).toBe(100);
+
+            }
+        );
+
+        it(
+            'deve calcular o ticket médio',
+            () => {
+
+                component.vendas = [
+                    {
+                        status: 'finalizada',
+                        valorTotal: 100
+                    } as never,
+
+                    {
+                        status: 'finalizada',
+                        valorTotal: 200
+                    } as never
+                ];
+
+                expect(
+                    component.ticketMedio
+                ).toBe(150);
+
+            }
+        );
+
+        it(
+            'deve somar corretamente os fiados',
+            () => {
+
+                component.vendas = [
+                    {
+                        formaPagamento: 'fiado',
+                        valorTotal: 100
+                    } as never,
+
+                    {
+                        formaPagamento: 'pix',
+                        valorTotal: 50
+                    } as never,
+
+                    {
+                        formaPagamento: 'fiado',
+                        valorTotal: 200
+                    } as never
+                ];
+
+                expect(
+                    component.totalFiados
+                ).toBe(300);
+
+            }
+        );
+
+        it(
+            'deve retornar a quantidade de vendas canceladas',
+            () => {
+
+                component.vendas = [
+                    {
+                        status: 'cancelada'
+                    } as never,
+
+                    {
+                        status: 'cancelada'
+                    } as never,
+
+                    {
+                        status: 'finalizada'
+                    } as never
+                ];
+
+                expect(
+                    component.totalCanceladas
+                ).toBe(2);
+
+            }
+        );
+
+        it(
+            'deve retornar danger para venda cancelada',
+            () => {
+
+                expect(
+                    component.obterVariantStatus(
+                        'cancelada'
+                    )
+                ).toBe(
+                    'danger'
+                );
+
+            }
+        );
+
+        it(
+            'deve retornar success para venda finalizada',
+            () => {
+
+                expect(
+                    component.obterVariantStatus(
+                        'finalizada'
+                    )
+                ).toBe(
+                    'success'
+                );
+
+            }
+        );
+
+        it(
+            'deve filtrar vendas por forma de pagamento',
+            () => {
+
+                component.vendas = [
+                    {
+                        formaPagamento: 'pix'
+                    } as never,
+
+                    {
+                        formaPagamento: 'fiado'
+                    } as never
+                ];
+
+                component.filtroPagamento =
+                    'pix';
+
+                expect(
+                    component.vendasFiltradas.length
+                ).toBe(1);
+
+            }
+        );
+
+        it(
+            'deve filtrar vendas por status',
+            () => {
+
+                component.vendas = [
+                    {
+                        status: 'cancelada'
+                    } as never,
+
+                    {
+                        status: 'finalizada'
+                    } as never
+                ];
+
+                component.filtroStatus =
+                    'cancelada';
+
+                expect(
+                    component.vendasFiltradas.length
+                ).toBe(1);
+
+            }
+        );
     }
 );

@@ -257,6 +257,123 @@ describe(
             }
         );
 
+        it(
+            'deve retornar a quantidade de vendas de hoje',
+            () => {
+
+                component.vendas = [
+                    {
+                        dataVenda: new Date().toISOString()
+                    } as never,
+
+                    {
+                        dataVenda: new Date().toISOString()
+                    } as never
+                ];
+
+                expect(
+                    component.totalVendasHoje
+                ).toBe(2);
+
+            }
+        );
+
+        it(
+            'deve somar o faturamento de hoje',
+            () => {
+
+                component.vendas = [
+                    {
+                        dataVenda: new Date().toISOString(),
+                        valorTotal: 100
+                    } as never,
+
+                    {
+                        dataVenda: new Date().toISOString(),
+                        valorTotal: 200
+                    } as never
+                ];
+
+                expect(
+                    component.faturamentoHoje
+                ).toBe(300);
+
+            }
+        );
+
+        it(
+            'deve retornar zero quando não existir dashboard',
+            () => {
+
+                component.dashboard = undefined;
+
+                expect(
+                    component.totalPromocoesAtivas
+                ).toBe(0);
+
+            }
+        );
+
+        it(
+            'deve possuir indicadores promocionais quando houver promoções ativas',
+            () => {
+
+                component.dashboard = {
+                    promocoesAtivas: 1
+                } as never;
+
+                expect(
+                    component.possuiIndicadoresPromocionais
+                ).toBe(true);
+
+            }
+        );
+
+        it(
+            'não deve possuir indicadores promocionais quando não houver promoções',
+            () => {
+
+                component.dashboard = {
+                    promocoesAtivas: 0,
+                    totalVendasPromocionais: 0
+                } as never;
+
+                expect(
+                    component.possuiIndicadoresPromocionais
+                ).toBe(false);
+
+            }
+        );
+
+        it(
+            'deve calcular corretamente produtos ativos e inativos',
+            () => {
+
+                component.produtos = [
+                    {
+                        ativo: true
+                    } as never,
+
+                    {
+                        ativo: true
+                    } as never,
+
+                    {
+                        ativo: false
+                    } as never
+                ];
+
+                const cards =
+                    component.cardsProdutos;
+
+                expect(cards[1].value).toBe(2);
+
+                expect(cards[2].value).toBe(1);
+
+            }
+        );
+
+        
 
     }
 );
