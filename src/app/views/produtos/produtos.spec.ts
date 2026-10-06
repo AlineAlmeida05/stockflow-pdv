@@ -153,5 +153,34 @@ describe(
             }
         );
 
+        it(
+  'deve exibir aviso quando o nome estiver vazio',
+  () => {
+
+    const alertService = {
+      warning: vi.fn()
+    };
+
+    component =
+      new Produtos(
+        {} as never,
+        {} as never,
+        alertService as never,
+        {} as never
+      );
+
+    component.nome = '';
+
+    component.salvarProduto();
+
+    expect(
+      alertService.warning
+    ).toHaveBeenCalledWith(
+      'Informe o nome do produto.'
+    );
+
+  }
+);
+
     }
 );
