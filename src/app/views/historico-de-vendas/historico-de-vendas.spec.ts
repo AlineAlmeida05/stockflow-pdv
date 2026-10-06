@@ -415,5 +415,220 @@ describe(
 
             }
         );
+
+        it(
+            'deve montar card de vendas',
+            () => {
+
+                const cards =
+                    component.cardsHistorico;
+
+                expect(
+                    cards[0].title
+                ).toBe('Vendas');
+
+            }
+        );
+
+        it(
+            'não deve abrir confirmação sem venda selecionada',
+            () => {
+
+                const open = vi.fn();
+
+                component =
+                    new HistoricoDeVendas(
+                        {} as never,
+                        {} as never,
+                        {
+                            open
+                        } as never,
+                        {} as never
+                    );
+
+                component.vendaSelecionada =
+                    undefined;
+
+                component.abrirConfirmacaoCancelamento();
+
+                expect(
+                    open
+                ).not.toHaveBeenCalled();
+
+            }
+        );
+
+        it(
+            'deve exibir aviso quando o motivo estiver vazio',
+            () => {
+
+                const alertService = {
+                    warning: vi.fn()
+                };
+
+                component =
+                    new HistoricoDeVendas(
+                        {} as never,
+                        alertService as never,
+                        {} as never,
+                        {} as never
+                    );
+
+                component.vendaSelecionada = {
+                    id: '1',
+                    valorTotal: 100
+                } as never;
+
+                component.motivoCancelamento = '';
+
+                component.abrirConfirmacaoCancelamento();
+
+                expect(
+                    alertService.warning
+                ).toHaveBeenCalledWith(
+                    'Informe o motivo do cancelamento.'
+                );
+
+            }
+        );
+
+        it(
+            'deve abrir confirmação quando os dados forem válidos',
+            () => {
+
+                const open = vi.fn();
+
+                component =
+                    new HistoricoDeVendas(
+                        {} as never,
+                        {} as never,
+                        {
+                            open
+                        } as never,
+                        {} as never
+                    );
+
+                component.vendaSelecionada = {
+                    id: '1',
+                    valorTotal: 100,
+                    usuarioNome: 'Maria'
+                } as never;
+
+                component.motivoCancelamento =
+                    'Teste';
+
+                component.abrirConfirmacaoCancelamento();
+
+                expect(
+                    open
+                ).toHaveBeenCalled();
+
+            }
+        );
+
+        it(
+            'deve retornar ícone de dinheiro',
+            () => {
+
+                expect(
+                    component.obterIconePagamento(
+                        'dinheiro'
+                    )
+                ).toBe('💵');
+
+            }
+        );
+
+        it(
+            'deve retornar ícone para débito',
+            () => {
+
+                expect(
+                    component.obterIconePagamento(
+                        'debito'
+                    )
+                ).toBe('💳');
+
+            }
+        );
+
+        it(
+            'deve retornar ícone para crédito',
+            () => {
+
+                expect(
+                    component.obterIconePagamento(
+                        'credito'
+                    )
+                ).toBe('💳');
+
+            }
+        );
+
+        it(
+            'deve retornar vazio para forma desconhecida',
+            () => {
+
+                expect(
+                    component.obterIconePagamento(
+                        'boleto'
+                    )
+                ).toBe('');
+
+            }
+        );
+
+        it(
+            'deve retornar todas as vendas quando não houver filtros',
+            () => {
+
+                component.vendas = [
+                    {} as never,
+                    {} as never
+                ];
+
+                component.filtroPagamento = '';
+                component.filtroStatus = '';
+
+                expect(
+                    component.vendasFiltradas.length
+                ).toBe(2);
+
+            }
+        );
+
+        it(
+            'deve aplicar filtro de status e pagamento simultaneamente',
+            () => {
+
+                component.vendas = [
+                    {
+                        status: 'finalizada',
+                        formaPagamento: 'pix'
+                    } as never,
+
+                    {
+                        status: 'finalizada',
+                        formaPagamento: 'fiado'
+                    } as never,
+
+                    {
+                        status: 'cancelada',
+                        formaPagamento: 'pix'
+                    } as never
+                ];
+
+                component.filtroStatus =
+                    'finalizada';
+
+                component.filtroPagamento =
+                    'pix';
+
+                expect(
+                    component.vendasFiltradas.length
+                ).toBe(1);
+
+            }
+        );
     }
 );

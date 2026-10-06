@@ -373,7 +373,200 @@ describe(
             }
         );
 
-        
+        it(
+            'deve retornar cards de vendas quando a aba for vendas',
+            () => {
+
+                component.abaSelecionada = 'vendas';
+
+                expect(
+                    component.cardsAtuais
+                ).toEqual(
+                    component.cardsVendas
+                );
+
+            }
+        );
+
+        it(
+            'deve retornar cards de estoque quando a aba for estoque',
+            () => {
+
+                component.abaSelecionada = 'estoque';
+
+                expect(
+                    component.cardsAtuais
+                ).toEqual(
+                    component.cardsEstoque
+                );
+
+            }
+        );
+
+        it(
+            'deve retornar cards financeiros quando a aba for financeiro',
+            () => {
+
+                component.abaSelecionada = 'financeiro';
+
+                expect(
+                    component.cardsAtuais
+                ).toEqual(
+                    component.cardsFinanceiro
+                );
+
+            }
+        );
+
+        it(
+            'deve retornar cards de promoções quando a aba for promocoes',
+            () => {
+
+                component.abaSelecionada = 'promocoes';
+
+                expect(
+                    component.cardsAtuais
+                ).toEqual(
+                    component.cardsPromocoes
+                );
+
+            }
+        );
+
+        it(
+            'deve retornar cards de produtos quando a aba for produtos',
+            () => {
+
+                component.abaSelecionada = 'produtos';
+
+                expect(
+                    component.cardsAtuais
+                ).toEqual(
+                    component.cardsProdutos
+                );
+
+            }
+        );
+
+        it(
+            'deve retornar cards gerais por padrão',
+            () => {
+
+                component.abaSelecionada = 'geral';
+
+                expect(
+                    component.cardsAtuais
+                ).toEqual(
+                    component.cardsGeral
+                );
+
+            }
+        );
+
+        it(
+            'deve formatar débito corretamente',
+            () => {
+
+                expect(
+                    component.formatarPagamento(
+                        'debito'
+                    )
+                ).toBe(
+                    'Débito'
+                );
+
+            }
+        );
+
+        it(
+            'deve formatar dinheiro corretamente',
+            () => {
+
+                expect(
+                    component.formatarPagamento(
+                        'dinheiro'
+                    )
+                ).toBe(
+                    'Dinheiro'
+                );
+
+            }
+        );
+
+        it(
+            'deve formatar fiado corretamente',
+            () => {
+
+                expect(
+                    component.formatarPagamento(
+                        'fiado'
+                    )
+                ).toBe(
+                    'Fiado'
+                );
+
+            }
+        );
+
+        it(
+            'deve montar os cards de vendas corretamente',
+            () => {
+
+                component.dashboard = {
+                    totalVendas: 2,
+                    faturamento: 300
+                } as never;
+
+                component.vendas = [
+                    {
+                        dataVenda:
+                            new Date().toISOString()
+                    } as never
+                ];
+
+                const cards =
+                    component.cardsVendas;
+
+                expect(
+                    cards[0].value
+                ).toBe(2);
+
+                expect(
+                    cards[1].value
+                ).toContain('300');
+
+                expect(
+                    cards[2].value
+                ).toBe(1);
+
+            }
+        );
+
+        it(
+            'deve retornar zero vendas quando não existir venda',
+            () => {
+
+                component.vendas = [];
+
+                expect(
+                    component.totalVendasHoje
+                ).toBe(0);
+
+            }
+        );
+
+        it(
+            'deve retornar faturamento zero sem vendas',
+            () => {
+
+                component.vendas = [];
+
+                expect(
+                    component.faturamentoHoje
+                ).toBe(0);
+
+            }
+        );
 
     }
 );

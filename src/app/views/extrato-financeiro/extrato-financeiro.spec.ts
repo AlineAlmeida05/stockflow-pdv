@@ -230,6 +230,172 @@ describe(
       }
     );
 
+    it(
+      'deve filtrar movimentações de hoje',
+      () => {
+
+        component.movimentacoes = [
+          {
+            clienteNome: 'Maria',
+            data: new Date().toISOString(),
+            tipo: 'fiado'
+          } as never,
+
+          {
+            clienteNome: 'João',
+            data: '2020-01-01',
+            tipo: 'fiado'
+          } as never
+        ];
+
+        component.periodoSelecionado = 'hoje';
+
+        expect(
+          component.movimentacoesFiltradas.length
+        ).toBe(1);
+
+      }
+    );
+
+    it(
+      'deve filtrar movimentações dos últimos 7 dias',
+      () => {
+
+        const recente =
+          new Date(
+            Date.now() -
+            3 * 24 * 60 * 60 * 1000
+          );
+
+        const antiga =
+          new Date(
+            Date.now() -
+            10 * 24 * 60 * 60 * 1000
+          );
+
+        component.movimentacoes = [
+          {
+            data: recente.toISOString(),
+            tipo: 'fiado'
+          } as never,
+
+          {
+            data: antiga.toISOString(),
+            tipo: 'fiado'
+          } as never
+        ];
+
+        component.periodoSelecionado =
+          '7dias';
+
+        expect(
+          component.movimentacoesFiltradas.length
+        ).toBe(1);
+
+      }
+    );
+
+    it(
+      'deve filtrar movimentações dos últimos 30 dias',
+      () => {
+
+        const recente =
+          new Date(
+            Date.now() -
+            10 * 24 * 60 * 60 * 1000
+          );
+
+        const antiga =
+          new Date(
+            Date.now() -
+            40 * 24 * 60 * 60 * 1000
+          );
+
+        component.movimentacoes = [
+          {
+            data: recente.toISOString(),
+            tipo: 'fiado'
+          } as never,
+
+          {
+            data: antiga.toISOString(),
+            tipo: 'fiado'
+          } as never
+        ];
+
+        component.periodoSelecionado =
+          '30dias';
+
+        expect(
+          component.movimentacoesFiltradas.length
+        ).toBe(1);
+
+      }
+    );
+
+    it(
+      'deve voltar para a primeira página ao alterar itens por página',
+      () => {
+
+        component.paginaAtual = 5;
+
+        component.alterarItensPorPagina();
+
+        expect(
+          component.paginaAtual
+        ).toBe(1);
+
+      }
+    );
+
+    it(
+      'deve avançar para próxima página',
+      () => {
+
+        component.movimentacoes =
+          Array.from(
+            { length: 30 },
+            (_, i) => ({
+              clienteNome: `Cliente ${i}`
+            })
+          ) as never;
+
+        component.itensPorPagina = '10';
+
+        component.proximaPagina();
+
+        expect(
+          component.paginaAtual
+        ).toBe(2);
+
+      }
+    );
+
+    it(
+      'não deve ultrapassar a última página',
+      () => {
+
+        component.movimentacoes =
+          Array.from(
+            { length: 10 },
+            (_, i) => ({
+              clienteNome: `Cliente ${i}`
+            })
+          ) as never;
+
+        component.itensPorPagina = '10';
+
+        component.paginaAtual = 1;
+
+        component.proximaPagina();
+
+        expect(
+          component.paginaAtual
+        ).toBe(1);
+
+      }
+    );
+
 
   }
 );
