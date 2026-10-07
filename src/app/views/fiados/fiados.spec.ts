@@ -2,6 +2,17 @@ import { Fiados } from './fiados';
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 
+beforeEach(() => {
+
+    vi.spyOn(
+        console,
+        'error'
+    ).mockImplementation(
+        () => { }
+    );
+
+});
+
 describe(
     'Fiados',
     () => {
@@ -21,8 +32,7 @@ describe(
 
         });
 
-        it(
-            'deve retornar Limite excedido quando o status for LIMITE_EXCEDIDO',
+        it('deve retornar Limite excedido quando o status for LIMITE_EXCEDIDO',
             () => {
 
                 component.resumosClientes = {
@@ -40,8 +50,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar Inadimplente quando o status for INADIMPLENTE',
+        it('deve retornar Inadimplente quando o status for INADIMPLENTE',
             () => {
 
                 component.resumosClientes = {
@@ -59,8 +68,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar Devedor quando o status for DEVEDOR',
+        it('deve retornar Devedor quando o status for DEVEDOR',
             () => {
 
                 component.resumosClientes = {
@@ -78,8 +86,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar string vazia para status desconhecido',
+        it('deve retornar string vazia para status desconhecido',
             () => {
 
                 component.resumosClientes = {
@@ -97,8 +104,7 @@ describe(
             }
         );
 
-        it(
-            'deve exibir alerta para cliente inadimplente',
+        it('deve exibir alerta para cliente inadimplente',
             () => {
 
                 component.resumosClientes = {
@@ -114,8 +120,7 @@ describe(
             }
         );
 
-        it(
-            'deve exibir alerta para limite excedido',
+        it('deve exibir alerta para limite excedido',
             () => {
 
                 component.resumosClientes = {
@@ -131,8 +136,7 @@ describe(
             }
         );
 
-        it(
-            'não deve exibir alerta para cliente devedor',
+        it('não deve exibir alerta para cliente devedor',
             () => {
 
                 component.resumosClientes = {
@@ -148,8 +152,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar FIADO para movimentações do tipo fiado',
+        it('deve retornar FIADO para movimentações do tipo fiado',
             () => {
 
                 expect(
@@ -163,8 +166,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar PIX para pagamentos PIX',
+        it('deve retornar PIX para pagamentos PIX',
             () => {
 
                 expect(
@@ -179,8 +181,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar DINHEIRO para pagamentos em dinheiro',
+        it('deve retornar DINHEIRO para pagamentos em dinheiro',
             () => {
 
                 expect(
@@ -195,8 +196,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar DÉBITO para pagamentos em débito',
+        it('deve retornar DÉBITO para pagamentos em débito',
             () => {
 
                 expect(
@@ -211,8 +211,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar CRÉDITO para pagamentos em crédito',
+        it('deve retornar CRÉDITO para pagamentos em crédito',
             () => {
 
                 expect(
@@ -227,8 +226,7 @@ describe(
             }
         );
 
-        it(
-            'não deve continuar quando não existir cliente selecionado',
+        it('não deve continuar quando não existir cliente selecionado',
             () => {
 
                 const pagamentoService = {
@@ -257,8 +255,7 @@ describe(
             }
         );
 
-        it(
-            'não deve continuar quando o valor recebido for menor ou igual a zero',
+        it('não deve continuar quando o valor recebido for menor ou igual a zero',
             () => {
 
                 const pagamentoService = {
@@ -289,8 +286,7 @@ describe(
             }
         );
 
-        it(
-            'deve exibir aviso quando o valor exceder o saldo devedor',
+        it('deve exibir aviso quando o valor exceder o saldo devedor',
             () => {
 
                 const alertService = {
@@ -327,8 +323,7 @@ describe(
             }
         );
 
-        it(
-            'deve registrar pagamento com sucesso',
+        it('deve registrar pagamento com sucesso',
             () => {
 
                 const clienteService = {
@@ -399,5 +394,475 @@ describe(
             }
         );
 
+        it('deve carregar dados no ngOnInit',
+            () => {
+
+                const spy =
+                    vi.spyOn(
+                        component,
+                        'carregarDados'
+                    )
+                        .mockImplementation(
+                            () => { }
+                        );
+
+                component.ngOnInit();
+
+                expect(
+                    spy
+                ).toHaveBeenCalled();
+
+            }
+        );
+
+        it('deve retornar saldo devedor atual',
+            () => {
+
+                component.clienteResumo = {
+                    saldoDevedor: 500
+                } as any;
+
+                expect(
+                    component.saldoDevedorAtual
+                ).toBe(500);
+
+            }
+        );
+
+        it('deve retornar zero sem resumo',
+            () => {
+
+                component.clienteResumo =
+                    undefined;
+
+                expect(
+                    component.saldoDevedorAtual
+                ).toBe(0);
+
+            }
+        );
+
+        it('deve retornar dias sem pagamento',
+            () => {
+
+                component.clienteResumo = {
+                    diasSemPagamento: 20
+                } as any;
+
+                expect(
+                    component.diasSemPagamento
+                ).toBe(20);
+
+            }
+        );
+
+        it('deve retornar zero sem resumo',
+            () => {
+
+                component.clienteResumo =
+                    undefined;
+
+                expect(
+                    component.diasSemPagamento
+                ).toBe(0);
+
+            }
+        );
+
+        it('deve retornar status vindo do resumo',
+            () => {
+
+                component.clienteResumo = {
+                    status: 'DEVEDOR'
+                } as any;
+
+                expect(
+                    component.statusFinanceiro
+                ).toBe('DEVEDOR');
+
+            }
+        );
+
+        it('deve retornar EM_DIA sem resumo',
+            () => {
+
+                component.clienteResumo =
+                    undefined;
+
+                expect(
+                    component.statusFinanceiro
+                ).toBe('EM_DIA');
+
+            }
+        );
+
+        it('deve formatar limite excedido no resumo',
+            () => {
+
+                component.clienteResumo = {
+                    status: 'LIMITE_EXCEDIDO'
+                } as any;
+
+                expect(
+                    component.formatarStatusResumo()
+                ).toBe(
+                    '⚠️ Limite excedido'
+                );
+
+            }
+        );
+
+        it('deve formatar inadimplente no resumo',
+            () => {
+
+                component.clienteResumo = {
+                    status: 'INADIMPLENTE'
+                } as any;
+
+                expect(
+                    component.formatarStatusResumo()
+                ).toBe(
+                    '🔴 Inadimplente'
+                );
+
+            }
+        );
+
+        it('deve formatar devedor no resumo',
+            () => {
+
+                component.clienteResumo = {
+                    status: 'DEVEDOR'
+                } as any;
+
+                expect(
+                    component.formatarStatusResumo()
+                ).toBe(
+                    '🟠 Devedor'
+                );
+
+            }
+        );
+
+        it('deve retornar vazio para status padrao no resumo',
+            () => {
+
+                component.clienteResumo = {
+                    status: 'EM_DIA'
+                } as any;
+
+                expect(
+                    component.formatarStatusResumo()
+                ).toBe('');
+
+            }
+        );
+
+        it('deve exibir alerta resumo para inadimplente',
+            () => {
+
+                component.clienteResumo = {
+                    status: 'INADIMPLENTE'
+                } as any;
+
+                expect(
+                    component.deveExibirAlertaFinanceiroResumo()
+                ).toBe(true);
+
+            }
+        );
+
+        it('deve exibir alerta resumo para limite excedido',
+            () => {
+
+                component.clienteResumo = {
+                    status: 'LIMITE_EXCEDIDO'
+                } as any;
+
+                expect(
+                    component.deveExibirAlertaFinanceiroResumo()
+                ).toBe(true);
+
+            }
+        );
+
+        it('nao deve exibir alerta resumo para devedor',
+            () => {
+
+                component.clienteResumo = {
+                    status: 'DEVEDOR'
+                } as any;
+
+                expect(
+                    component.deveExibirAlertaFinanceiroResumo()
+                ).toBe(false);
+
+            }
+        );
+
+        it('deve retornar resumo do cliente',
+            () => {
+
+                const resumo = {
+                    saldoDevedor: 100
+                };
+
+                component.resumosClientes = {
+                    '1': resumo as any
+                };
+
+                expect(
+                    component.obterResumoCliente(
+                        '1'
+                    )
+                ).toEqual(
+                    resumo
+                );
+
+            }
+        );
+
+        it('deve retornar undefined quando nao existir resumo',
+            () => {
+
+                expect(
+                    component.obterResumoCliente(
+                        '999'
+                    )
+                ).toBeUndefined();
+
+            }
+        );
+
+        it('deve retornar dias sem pagamento do cliente',
+            () => {
+
+                component.resumosClientes = {
+                    '1': {
+                        diasSemPagamento: 15
+                    } as any
+                };
+
+                expect(
+                    component.obterDiasSemPagamento(
+                        '1'
+                    )
+                ).toBe(15);
+
+            }
+        );
+
+        it('deve retornar zero quando nao existir resumo',
+            () => {
+
+                expect(
+                    component.obterDiasSemPagamento(
+                        '1'
+                    )
+                ).toBe(0);
+
+            }
+        );
+
+        it('deve retornar apenas clientes devedores',
+            () => {
+
+                component.clientes = [
+                    {
+                        id: '1'
+                    } as any,
+                    {
+                        id: '2'
+                    } as any
+                ];
+
+                component.resumosClientes = {
+                    '1': {
+                        saldoDevedor: 100
+                    } as any,
+                    '2': {
+                        saldoDevedor: 0
+                    } as any
+                };
+
+                expect(
+                    component.clientesDevedores.length
+                ).toBe(1);
+
+            }
+        );
+
+        it('deve retornar vazio sem cliente selecionado',
+            () => {
+
+                component.cliente =
+                    undefined;
+
+                expect(
+                    component.obterFiadosCliente()
+                ).toEqual([]);
+
+            }
+        );
+
+        it('deve retornar apenas os fiados do cliente',
+            () => {
+
+                component.cliente = {
+                    id: '1'
+                } as any;
+
+                component.fiados = [
+                    {
+                        clienteId: '1'
+                    } as any,
+                    {
+                        clienteId: '2'
+                    } as any
+                ];
+
+                expect(
+                    component.obterFiadosCliente().length
+                ).toBe(1);
+
+            }
+        );
+
+        it('deve retornar vazio sem cliente selecionado',
+            () => {
+
+                component.cliente =
+                    undefined;
+
+                expect(
+                    component.obterExtratoCliente()
+                ).toEqual([]);
+
+            }
+        );
+
+        it('deve combinar fiados e pagamentos',
+            () => {
+
+                component.cliente = {
+                    id: '1'
+                } as any;
+
+                component.fiados = [
+                    {
+                        clienteId: '1',
+                        dataLancamento:
+                            new Date().toISOString(),
+                        valorTotal: 100
+                    } as any
+                ];
+
+                component.pagamentos = [
+                    {
+                        clienteId: '1',
+                        dataPagamento:
+                            new Date().toISOString(),
+                        valorPago: 50
+                    } as any
+                ];
+
+                expect(
+                    component.obterExtratoCliente().length
+                ).toBe(2);
+
+            }
+        );
+
+        it('deve filtrar clientes devedores por nome',
+            () => {
+
+                component.clientes = [
+                    {
+                        id: '1',
+                        nome: 'Maria'
+                    } as any
+                ];
+
+                component.resumosClientes = {
+                    '1': {
+                        saldoDevedor: 100
+                    } as any
+                };
+
+                component.textoBusca =
+                    'Maria';
+
+                expect(
+                    component.clientesDevedoresFiltrados.length
+                ).toBe(1);
+
+            }
+        );
+
+        it('nao deve abrir whatsapp sem cliente',
+            () => {
+
+                const spy =
+                    vi.spyOn(
+                        window,
+                        'open'
+                    );
+
+                component.cliente =
+                    undefined;
+
+                component.cobrarViaWhatsapp(
+                    {} as any
+                );
+
+                expect(
+                    spy
+                ).not.toHaveBeenCalled();
+
+            }
+        );
+
+        it('deve abrir whatsapp',
+            () => {
+
+                const spy =
+                    vi.spyOn(
+                        window,
+                        'open'
+                    )
+                        .mockImplementation(
+                            () => null
+                        );
+
+                const cliente = {
+                    nome: 'Maria',
+                    telefone: '(11)99999-9999'
+                } as any;
+
+                component.cliente = cliente;
+
+                component.clienteResumo = {
+                    saldoDevedor: 100,
+                    diasSemPagamento: 10
+                } as any;
+
+                component.cobrarViaWhatsapp(
+                    cliente
+                );
+
+                expect(
+                    spy
+                ).toHaveBeenCalled();
+
+            }
+        );
+
+        afterEach(() => {
+
+            vi.restoreAllMocks();
+
+        });
     }
+
+
 );

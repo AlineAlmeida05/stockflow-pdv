@@ -1,4 +1,5 @@
 import { Estoque } from './estoque';
+import { of, throwError } from 'rxjs';
 
 describe(
   'Estoque',
@@ -16,8 +17,7 @@ describe(
 
     });
 
-    it(
-      'deve retornar a quantidade total de produtos',
+    it('deve retornar a quantidade total de produtos',
       () => {
 
         component.produtos = [
@@ -33,8 +33,7 @@ describe(
       }
     );
 
-    it(
-      'deve retornar a quantidade de produtos em estoque',
+    it('deve retornar a quantidade de produtos em estoque',
       () => {
 
         component.produtos = [
@@ -61,8 +60,7 @@ describe(
       }
     );
 
-    it(
-      'deve retornar a quantidade de produtos críticos',
+    it('deve retornar a quantidade de produtos críticos',
       () => {
 
         component.produtos = [
@@ -89,8 +87,7 @@ describe(
       }
     );
 
-    it(
-      'deve retornar a quantidade de produtos em atenção',
+    it('deve retornar a quantidade de produtos em atenção',
       () => {
 
         component.produtos = [
@@ -117,8 +114,7 @@ describe(
       }
     );
 
-    it(
-      'deve filtrar produtos críticos',
+    it('deve filtrar produtos críticos',
       () => {
 
         component.produtos = [
@@ -144,8 +140,7 @@ describe(
       }
     );
 
-    it(
-      'deve filtrar produtos em atenção',
+    it('deve filtrar produtos em atenção',
       () => {
 
         component.produtos = [
@@ -171,8 +166,7 @@ describe(
       }
     );
 
-    it(
-      'deve ignorar maiúsculas na busca',
+    it('deve ignorar maiúsculas na busca',
       () => {
 
         component.produtos = [
@@ -191,8 +185,7 @@ describe(
       }
     );
 
-    it(
-      'deve exibir status Sem Estoque',
+    it('deve exibir status Sem Estoque',
       () => {
 
         component.produtos = [
@@ -215,8 +208,7 @@ describe(
       }
     );
 
-    it(
-      'deve exibir status Crítico',
+    it('deve exibir status Crítico',
       () => {
 
         component.produtos = [
@@ -239,8 +231,7 @@ describe(
       }
     );
 
-    it(
-      'deve exibir status Atenção',
+    it('deve exibir status Atenção',
       () => {
 
         component.produtos = [
@@ -263,8 +254,7 @@ describe(
       }
     );
 
-    it(
-      'deve exibir status Em Estoque',
+    it('deve exibir status Em Estoque',
       () => {
 
         component.produtos = [
@@ -287,8 +277,7 @@ describe(
       }
     );
 
-    it(
-      'deve calcular corretamente o nível de estoque',
+    it('deve calcular corretamente o nível de estoque',
       () => {
 
         component.produtos = [
@@ -311,8 +300,7 @@ describe(
       }
     );
 
-    it(
-      'deve retornar hífen quando estoque mínimo for zero',
+    it('deve retornar hífen quando estoque mínimo for zero',
       () => {
 
         component.produtos = [
@@ -335,5 +323,215 @@ describe(
       }
     );
 
+    it('deve carregar produtos no ngOnInit',
+      () => {
+
+        const spy =
+          vi.spyOn(
+            component,
+            'carregarProdutos'
+          )
+            .mockImplementation(
+              () => { }
+            );
+
+        component.ngOnInit();
+
+        expect(
+          spy
+        ).toHaveBeenCalled();
+
+      }
+    );
+
+    it('deve carregar produtos recebidos do servico',
+      () => {
+
+        const produtos = [
+          {
+            nome: 'Produto A'
+          }
+        ];
+
+        const produtoService = {
+          listar: vi.fn(
+            () => of(produtos)
+          )
+        };
+
+        component =
+          new Estoque(
+            produtoService as never,
+            {
+              detectChanges: vi.fn()
+            } as never
+          );
+
+        component.carregarProdutos();
+
+        expect(
+          component.produtos
+        ).toEqual(produtos);
+
+      }
+    );
+
+    it('deve tratar erro ao carregar produtos',
+      () => {
+
+        const consoleSpy =
+          vi.spyOn(
+            console,
+            'error'
+          )
+            .mockImplementation(
+              () => { }
+            );
+
+        const produtoService = {
+          listar: vi.fn(
+            () =>
+              throwError(
+                () => new Error()
+              )
+          )
+        };
+
+        component =
+          new Estoque(
+            produtoService as never,
+            {
+              detectChanges: vi.fn()
+            } as never
+          );
+
+        component.carregarProdutos();
+
+        expect(
+          consoleSpy
+        ).toHaveBeenCalled();
+
+      }
+    );
+
+    it('deve filtrar produtos normais',
+      () => {
+
+        component.produtos = [
+          {
+            nome: 'A',
+            estoqueAtual: 20,
+            estoqueMinimo: 5
+          } as any,
+          {
+            nome: 'B',
+            estoqueAtual: 5,
+            estoqueMinimo: 5
+          } as any
+        ];
+
+        component.filtroStatus =
+          'normal';
+
+        expect(
+          component.produtosFiltrados.length
+        ).toBe(1);
+
+      }
+    );
+
+    it('deve retornar todos os produtos sem filtro',
+      () => {
+
+        component.produtos = [
+          {
+            nome: 'A'
+          } as any,
+          {
+            nome: 'B'
+          } as any
+        ];
+
+        component.filtroStatus = '';
+
+        expect(
+          component.produtosFiltrados.length
+        ).toBe(2);
+
+      }
+    );
+
+    it('deve retornar lista vazia quando a busca nao encontrar produto',
+      () => {
+
+        component.produtos = [
+          {
+            nome: 'Whisky'
+          } as any
+        ];
+
+        component.textoBusca =
+          'Vodka';
+
+        expect(
+          component.produtosFiltrados.length
+        ).toBe(0);
+
+      }
+    );
+
+    it('deve selecionar filtro',
+      () => {
+
+        component.selecionarFiltro(
+          'baixo'
+        );
+
+        expect(
+          component.filtroStatus
+        ).toBe(
+          'baixo'
+        );
+
+      }
+    );
+
+    it('deve focar campo de busca ao carregar produtos',
+      () => {
+
+        vi.useFakeTimers();
+
+        const focar = vi.fn();
+
+        const produtoService = {
+          listar: vi.fn(
+            () => of([])
+          )
+        };
+
+        component =
+          new Estoque(
+            produtoService as never,
+            {
+              detectChanges: vi.fn()
+            } as never
+          );
+
+        component.searchInput = {
+          focar
+        } as any;
+
+        component.carregarProdutos();
+
+        vi.runAllTimers();
+
+        expect(
+          focar
+        ).toHaveBeenCalled();
+
+        vi.useRealTimers();
+
+      }
+    );
   }
 );

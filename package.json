@@ -6,8 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "test:coverage": "ng test --coverage",
+    "test": "ng test --setup-files src/test-setup.ts",
+    "test:coverage": "ng test --coverage --setup-files src/test-setup.ts",
     "serve:ssr:stockflow-pdv-frontend": "node dist/stockflow-pdv-frontend/server/server.mjs"
   },
   "private": true,
@@ -36,6 +36,7 @@
     "@angular/compiler-cli": "^22.1.0",
     "@types/express": "^5.0.1",
     "@types/node": "^20.17.19",
+    "@vitest/coverage-v8": "^4.1.11",
     "jsdom": "^28.0.0",
     "prettier": "^3.8.1",
     "typescript": "~6.0.2",

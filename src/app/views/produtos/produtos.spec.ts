@@ -1,5 +1,5 @@
 import { Produtos } from './produtos';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
 
@@ -21,8 +21,7 @@ describe(
 
         });
 
-        it(
-            'deve retornar todos os produtos quando a busca estiver vazia',
+        it('deve retornar todos os produtos quando a busca estiver vazia',
             () => {
 
                 component.produtos = [
@@ -43,8 +42,7 @@ describe(
             }
         );
 
-        it(
-            'deve filtrar produtos pelo nome',
+        it('deve filtrar produtos pelo nome',
             () => {
 
                 component.produtos = [
@@ -72,8 +70,7 @@ describe(
             }
         );
 
-        it(
-            'deve ignorar maiúsculas e minúsculas na busca',
+        it('deve ignorar maiúsculas e minúsculas na busca',
             () => {
 
                 component.produtos = [
@@ -91,8 +88,7 @@ describe(
             }
         );
 
-        it(
-            'deve exibir "-" quando o produto não possuir preço promocional',
+        it('deve exibir "-" quando o produto não possuir preço promocional',
             () => {
 
                 component.produtos = [
@@ -114,8 +110,7 @@ describe(
             }
         );
 
-        it(
-            'deve exibir status Ativo para produtos ativos',
+        it('deve exibir status Ativo para produtos ativos',
             () => {
 
                 component.produtos = [
@@ -135,8 +130,7 @@ describe(
             }
         );
 
-        it(
-            'deve exibir status Inativo para produtos inativos',
+        it('deve exibir status Inativo para produtos inativos',
             () => {
 
                 component.produtos = [
@@ -156,8 +150,7 @@ describe(
             }
         );
 
-        it(
-            'deve exibir aviso quando o nome estiver vazio',
+        it('deve exibir aviso quando o nome estiver vazio',
             () => {
 
                 const alertService = {
@@ -185,8 +178,7 @@ describe(
             }
         );
 
-        it(
-            'deve exibir aviso quando o nome estiver vazio',
+        it('deve exibir aviso quando o nome estiver vazio',
             () => {
 
                 const alertService = {
@@ -216,8 +208,7 @@ describe(
             }
         );
 
-        it(
-            'deve exibir aviso quando o estoque mínimo for inválido',
+        it('deve exibir aviso quando o estoque mínimo for inválido',
             () => {
 
                 const alertService = {
@@ -247,8 +238,7 @@ describe(
             }
         );
 
-        it(
-            'deve exibir aviso quando o preço de venda for inválido',
+        it('deve exibir aviso quando o preço de venda for inválido',
             () => {
 
                 const alertService = {
@@ -278,8 +268,7 @@ describe(
             }
         );
 
-        it(
-            'não deve continuar quando já estiver salvando',
+        it('não deve continuar quando já estiver salvando',
             () => {
 
                 const produtoService = {
@@ -305,8 +294,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar ícone de pausa para produto ativo',
+        it('deve retornar ícone de pausa para produto ativo',
             () => {
 
                 expect(
@@ -318,8 +306,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar ícone de play para produto inativo',
+        it('deve retornar ícone de play para produto inativo',
             () => {
 
                 expect(
@@ -331,8 +318,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar vazio para valor undefined',
+        it('deve retornar vazio para valor undefined',
             () => {
 
                 expect(
@@ -342,8 +328,7 @@ describe(
             }
         );
 
-        it(
-            'deve formatar moeda em reais',
+        it('deve formatar moeda em reais',
             () => {
 
                 expect(
@@ -353,8 +338,7 @@ describe(
             }
         );
 
-        it(
-            'deve cadastrar produto com sucesso',
+        it('deve cadastrar produto com sucesso',
             () => {
 
                 const produtoService = {
@@ -412,8 +396,7 @@ describe(
             }
         );
 
-        it(
-            'deve atualizar produto com sucesso',
+        it('deve atualizar produto com sucesso',
             () => {
 
                 const produtoService = {
@@ -455,6 +438,354 @@ describe(
                     alertService.success
                 ).toHaveBeenCalledWith(
                     'Produto atualizado com sucesso.'
+                );
+
+            }
+        );
+
+        it('deve carregar produtos no ngOnInit',
+            () => {
+
+                const spy =
+                    vi.spyOn(
+                        component,
+                        'carregarProdutos'
+                    )
+                        .mockImplementation(
+                            () => { }
+                        );
+
+                component.ngOnInit();
+
+                expect(
+                    spy
+                ).toHaveBeenCalled();
+
+            }
+        );
+
+        it('deve carregar produtos recebidos do servico',
+            () => {
+
+                const produtos = [
+                    {
+                        id: '1',
+                        nome: 'Whisky'
+                    }
+                ];
+
+                const produtoService = {
+                    listar: vi.fn(
+                        () => of(produtos)
+                    )
+                };
+
+                component =
+                    new Produtos(
+                        produtoService as any,
+                        {} as any,
+                        {} as any,
+                        {
+                            detectChanges: vi.fn()
+                        } as any
+                    );
+
+                component.carregarProdutos();
+
+                expect(
+                    component.produtos
+                ).toEqual(produtos);
+
+            }
+        );
+
+        it('deve tratar erro ao carregar produtos',
+            () => {
+
+                const consoleSpy =
+                    vi.spyOn(
+                        console,
+                        'error'
+                    )
+                        .mockImplementation(
+                            () => { }
+                        );
+
+                const produtoService = {
+                    listar: vi.fn(
+                        () =>
+                            throwError(
+                                () => new Error()
+                            )
+                    )
+                };
+
+                component =
+                    new Produtos(
+                        produtoService as any,
+                        {} as any,
+                        {} as any,
+                        {} as any
+                    );
+
+                component.carregarProdutos();
+
+                expect(
+                    consoleSpy
+                ).toHaveBeenCalled();
+
+            }
+        );
+
+        it('deve preparar formulario para novo produto',
+            () => {
+
+                component.nome = 'Teste';
+                component.mostrarFormulario = false;
+                component.produtoEditandoId = '1';
+
+                component.novoProduto();
+
+                expect(
+                    component.mostrarFormulario
+                ).toBe(true);
+
+                expect(
+                    component.produtoEditandoId
+                ).toBeNull();
+
+                expect(
+                    component.nome
+                ).toBe('');
+
+            }
+        );
+
+        it('deve cancelar edicao',
+            () => {
+
+                component.nome = 'Teste';
+                component.mostrarFormulario = true;
+                component.produtoEditandoId = '1';
+
+                component.cancelarEdicao();
+
+                expect(
+                    component.mostrarFormulario
+                ).toBe(false);
+
+                expect(
+                    component.produtoEditandoId
+                ).toBeNull();
+
+                expect(
+                    component.nome
+                ).toBe('');
+
+            }
+        );
+
+        it('deve carregar dados ao visualizar produto',
+            () => {
+
+                const produto = {
+                    id: '1',
+                    nome: 'Whisky',
+                    categoria: 'Bebidas',
+                    codigoBarras: '123',
+                    precoVenda: 50,
+                    estoqueAtual: 10,
+                    estoqueMinimo: 2,
+                    ativo: true,
+                    dataCadastro: '2025-01-01'
+                };
+
+                component.visualizarProduto(
+                    produto
+                );
+
+                expect(
+                    component.nome
+                ).toBe('Whisky');
+
+                expect(
+                    component.mostrarFormulario
+                ).toBe(true);
+
+                expect(
+                    component.modoVisualizacao
+                ).toBe(true);
+
+            }
+        );
+
+        it('deve habilitar edicao',
+            () => {
+
+                component.modoVisualizacao = true;
+
+                component.habilitarEdicao();
+
+                expect(
+                    component.modoVisualizacao
+                ).toBe(false);
+
+            }
+        );
+
+        it('deve chamar excluirProdutoTabela',
+            () => {
+
+                const spy =
+                    vi.spyOn(
+                        component,
+                        'excluirProduto'
+                    )
+                        .mockImplementation(
+                            () => { }
+                        );
+
+                component.excluirProdutoTabela(
+                    {
+                        id: '1'
+                    }
+                );
+
+                expect(
+                    spy
+                ).toHaveBeenCalled();
+
+            }
+        );
+
+        it('nao deve alternar status sem id',
+            () => {
+
+                const open = vi.fn();
+
+                component =
+                    new Produtos(
+                        {} as any,
+                        {
+                            open
+                        } as any,
+                        {} as any,
+                        {} as any
+                    );
+
+                component.alternarStatusProduto({
+                    ativo: true
+                } as any);
+
+                expect(
+                    open
+                ).not.toHaveBeenCalled();
+
+            }
+        );
+
+        it('deve abrir confirmacao para alternar status',
+            () => {
+
+                const open = vi.fn();
+
+                component =
+                    new Produtos(
+                        {} as any,
+                        {
+                            open
+                        } as any,
+                        {} as any,
+                        {} as any
+                    );
+
+                component.alternarStatusProduto({
+                    id: '1',
+                    nome: 'Whisky',
+                    ativo: true
+                } as any);
+
+                expect(
+                    open
+                ).toHaveBeenCalled();
+
+            }
+        );
+
+        it('deve abrir confirmacao para reativar produto',
+            () => {
+
+                const open = vi.fn();
+
+                component =
+                    new Produtos(
+                        {} as any,
+                        {
+                            open
+                        } as any,
+                        {} as any,
+                        {} as any
+                    );
+
+                component.reativarProduto(
+                    '1'
+                );
+
+                expect(
+                    open
+                ).toHaveBeenCalled();
+
+            }
+        );
+
+        it('deve abrir confirmacao para inativar produto',
+            () => {
+
+                const open = vi.fn();
+
+                component =
+                    new Produtos(
+                        {} as any,
+                        {
+                            open
+                        } as any,
+                        {} as any,
+                        {} as any
+                    );
+
+                component.excluirProduto({
+                    id: '1',
+                    ativo: true
+                } as any);
+
+                expect(
+                    open
+                ).toHaveBeenCalled();
+
+            }
+        );
+
+        it('deve reativar produto quando estiver inativo',
+            () => {
+
+                const spy =
+                    vi.spyOn(
+                        component,
+                        'reativarProduto'
+                    )
+                        .mockImplementation(
+                            () => { }
+                        );
+
+                component.excluirProduto({
+                    id: '1',
+                    ativo: false
+                } as any);
+
+                expect(
+                    spy
+                ).toHaveBeenCalledWith(
+                    '1'
                 );
 
             }

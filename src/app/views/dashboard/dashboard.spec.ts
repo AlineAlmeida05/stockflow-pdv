@@ -20,8 +20,7 @@ describe(
 
         });
 
-        it(
-            'deve retornar Hoje para o período hoje',
+        it('deve retornar Hoje para o período hoje',
             () => {
 
                 component.periodoSelecionado =
@@ -36,8 +35,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar 7 dias para o período 7dias',
+        it('deve retornar 7 dias para o período 7dias',
             () => {
 
                 component.periodoSelecionado =
@@ -52,8 +50,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar 30 dias para o período 30dias',
+        it('deve retornar 30 dias para o período 30dias',
             () => {
 
                 component.periodoSelecionado =
@@ -68,8 +65,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar Mês Atual para o período mes',
+        it('deve retornar Mês Atual para o período mes',
             () => {
 
                 component.periodoSelecionado =
@@ -84,8 +80,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar Todos para o período todos',
+        it('deve retornar Todos para o período todos',
             () => {
 
                 component.periodoSelecionado =
@@ -100,8 +95,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar apenas produtos sem estoque',
+        it('deve retornar apenas produtos sem estoque',
             () => {
 
                 component.produtos = [
@@ -125,8 +119,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar apenas produtos com estoque baixo',
+        it('deve retornar apenas produtos com estoque baixo',
             () => {
 
                 component.produtos = [
@@ -153,8 +146,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar a quantidade correta de clientes devedores',
+        it('deve retornar a quantidade correta de clientes devedores',
             () => {
 
                 component.fiados = [
@@ -178,8 +170,7 @@ describe(
             }
         );
 
-        it(
-            'deve somar corretamente os fiados em aberto',
+        it('deve somar corretamente os fiados em aberto',
             () => {
 
                 component.fiados = [
@@ -199,8 +190,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar a quantidade correta de produtos com estoque baixo',
+        it('deve retornar a quantidade correta de produtos com estoque baixo',
             () => {
 
                 component.produtos = [
@@ -227,8 +217,7 @@ describe(
             }
         );
 
-        it(
-            'deve formatar PIX corretamente',
+        it('deve formatar PIX corretamente',
             () => {
 
                 expect(
@@ -242,8 +231,7 @@ describe(
             }
         );
 
-        it(
-            'deve formatar crédito corretamente',
+        it('deve formatar crédito corretamente',
             () => {
 
                 expect(
@@ -257,8 +245,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar a quantidade de vendas de hoje',
+        it('deve retornar a quantidade de vendas de hoje',
             () => {
 
                 component.vendas = [
@@ -278,8 +265,7 @@ describe(
             }
         );
 
-        it(
-            'deve somar o faturamento de hoje',
+        it('deve somar o faturamento de hoje',
             () => {
 
                 component.vendas = [
@@ -301,8 +287,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar zero quando não existir dashboard',
+        it('deve retornar zero quando não existir dashboard',
             () => {
 
                 component.dashboard = undefined;
@@ -314,8 +299,7 @@ describe(
             }
         );
 
-        it(
-            'deve possuir indicadores promocionais quando houver promoções ativas',
+        it('deve possuir indicadores promocionais quando houver promoções ativas',
             () => {
 
                 component.dashboard = {
@@ -329,8 +313,7 @@ describe(
             }
         );
 
-        it(
-            'não deve possuir indicadores promocionais quando não houver promoções',
+        it('não deve possuir indicadores promocionais quando não houver promoções',
             () => {
 
                 component.dashboard = {
@@ -345,8 +328,7 @@ describe(
             }
         );
 
-        it(
-            'deve calcular corretamente produtos ativos e inativos',
+        it('deve calcular corretamente produtos ativos e inativos',
             () => {
 
                 component.produtos = [
@@ -373,8 +355,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar cards de vendas quando a aba for vendas',
+        it('deve retornar cards de vendas quando a aba for vendas',
             () => {
 
                 component.abaSelecionada = 'vendas';
@@ -388,8 +369,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar cards de estoque quando a aba for estoque',
+        it('deve retornar cards de estoque quando a aba for estoque',
             () => {
 
                 component.abaSelecionada = 'estoque';
@@ -403,8 +383,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar cards financeiros quando a aba for financeiro',
+        it('deve retornar cards financeiros quando a aba for financeiro',
             () => {
 
                 component.abaSelecionada = 'financeiro';
@@ -418,8 +397,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar cards de promoções quando a aba for promocoes',
+        it('deve retornar cards de promoções quando a aba for promocoes',
             () => {
 
                 component.abaSelecionada = 'promocoes';
@@ -433,8 +411,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar cards de produtos quando a aba for produtos',
+        it('deve retornar cards de produtos quando a aba for produtos',
             () => {
 
                 component.abaSelecionada = 'produtos';
@@ -448,8 +425,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar cards gerais por padrão',
+        it('deve retornar cards gerais por padrão',
             () => {
 
                 component.abaSelecionada = 'geral';
@@ -463,8 +439,7 @@ describe(
             }
         );
 
-        it(
-            'deve formatar débito corretamente',
+        it('deve formatar débito corretamente',
             () => {
 
                 expect(
@@ -478,8 +453,7 @@ describe(
             }
         );
 
-        it(
-            'deve formatar dinheiro corretamente',
+        it('deve formatar dinheiro corretamente',
             () => {
 
                 expect(
@@ -493,8 +467,7 @@ describe(
             }
         );
 
-        it(
-            'deve formatar fiado corretamente',
+        it('deve formatar fiado corretamente',
             () => {
 
                 expect(
@@ -508,8 +481,7 @@ describe(
             }
         );
 
-        it(
-            'deve montar os cards de vendas corretamente',
+        it('deve montar os cards de vendas corretamente',
             () => {
 
                 component.dashboard = {
@@ -542,8 +514,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar zero vendas quando não existir venda',
+        it('deve retornar zero vendas quando não existir venda',
             () => {
 
                 component.vendas = [];
@@ -555,8 +526,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar faturamento zero sem vendas',
+        it('deve retornar faturamento zero sem vendas',
             () => {
 
                 component.vendas = [];
@@ -568,5 +538,493 @@ describe(
             }
         );
 
+        it('deve alterar periodo selecionado',
+            () => {
+
+                component =
+                    new Dashboard(
+                        {} as never,
+                        {} as never,
+                        {} as never,
+                        {} as never,
+                        {} as never,
+                        {
+                            detectChanges: vi.fn()
+                        } as never
+                    );
+
+                vi.spyOn(
+                    component as any,
+                    'carregarDashboard'
+                ).mockImplementation(
+                    () => { }
+                );
+
+                component.alterarPeriodo(
+                    '7dias'
+                );
+
+                expect(
+                    component.periodoSelecionado
+                ).toBe(
+                    '7dias'
+                );
+
+            }
+        );
+
+        it('deve recarregar dashboard ao alterar periodo',
+            () => {
+
+                component =
+                    new Dashboard(
+                        {} as never,
+                        {} as never,
+                        {} as never,
+                        {} as never,
+                        {} as never,
+                        {
+                            detectChanges: vi.fn()
+                        } as never
+                    );
+
+                const spy =
+                    vi.spyOn(
+                        component as any,
+                        'carregarDashboard'
+                    ).mockImplementation(
+                        () => { }
+                    );
+
+                component.alterarPeriodo(
+                    '30dias'
+                );
+
+                expect(
+                    spy
+                ).toHaveBeenCalled();
+
+            }
+        );
+
+        it('deve filtrar vendas de hoje',
+            () => {
+
+                component.periodoSelecionado =
+                    'hoje';
+
+                component.vendas = [
+                    {
+                        dataVenda:
+                            new Date().toISOString()
+                    } as any
+                ];
+
+                expect(
+                    component.vendasFiltradas.length
+                ).toBe(1);
+
+            }
+        );
+
+        it('deve filtrar vendas dos ultimos 7 dias',
+            () => {
+
+                component.periodoSelecionado =
+                    '7dias';
+
+                component.vendas = [
+                    {
+                        dataVenda:
+                            new Date().toISOString()
+                    } as any
+                ];
+
+                expect(
+                    component.vendasFiltradas.length
+                ).toBe(1);
+
+            }
+        );
+
+        it('deve filtrar vendas dos ultimos 30 dias',
+            () => {
+
+                component.periodoSelecionado =
+                    '30dias';
+
+                component.vendas = [
+                    {
+                        dataVenda:
+                            new Date().toISOString()
+                    } as any
+                ];
+
+                expect(
+                    component.vendasFiltradas.length
+                ).toBe(1);
+
+            }
+        );
+
+        it('deve filtrar vendas do mes atual',
+            () => {
+
+                component.periodoSelecionado =
+                    'mes';
+
+                component.vendas = [
+                    {
+                        dataVenda:
+                            new Date().toISOString()
+                    } as any
+                ];
+
+                expect(
+                    component.vendasFiltradas.length
+                ).toBe(1);
+
+            }
+        );
+
+        it('deve retornar todas as vendas',
+            () => {
+
+                component.periodoSelecionado =
+                    'todos';
+
+                component.vendas = [
+                    {} as any,
+                    {} as any
+                ];
+
+                expect(
+                    component.vendasFiltradas.length
+                ).toBe(2);
+
+            }
+        );
+
+        it('deve filtrar fiados de hoje',
+            () => {
+
+                component.periodoSelecionado =
+                    'hoje';
+
+                component.fiados = [
+                    {
+                        dataLancamento:
+                            new Date().toISOString()
+                    } as any
+                ];
+
+                expect(
+                    component.fiadosFiltrados.length
+                ).toBe(1);
+
+            }
+        );
+
+        it('deve filtrar fiados dos ultimos 7 dias',
+            () => {
+
+                component.periodoSelecionado =
+                    '7dias';
+
+                component.fiados = [
+                    {
+                        dataLancamento:
+                            new Date().toISOString()
+                    } as any
+                ];
+
+                expect(
+                    component.fiadosFiltrados.length
+                ).toBe(1);
+
+            }
+        );
+
+        it('deve filtrar fiados dos ultimos 30 dias',
+            () => {
+
+                component.periodoSelecionado =
+                    '30dias';
+
+                component.fiados = [
+                    {
+                        dataLancamento:
+                            new Date().toISOString()
+                    } as any
+                ];
+
+                expect(
+                    component.fiadosFiltrados.length
+                ).toBe(1);
+
+            }
+        );
+
+        it('deve filtrar fiados do mes atual',
+            () => {
+
+                component.periodoSelecionado =
+                    'mes';
+
+                component.fiados = [
+                    {
+                        dataLancamento:
+                            new Date().toISOString()
+                    } as any
+                ];
+
+                expect(
+                    component.fiadosFiltrados.length
+                ).toBe(1);
+
+            }
+        );
+
+        it('deve retornar todos os fiados',
+            () => {
+
+                component.periodoSelecionado =
+                    'todos';
+
+                component.fiados = [
+                    {} as any,
+                    {} as any
+                ];
+
+                expect(
+                    component.fiadosFiltrados.length
+                ).toBe(2);
+
+            }
+        );
+
+        it('deve retornar valor original para pagamento desconhecido',
+            () => {
+
+                expect(
+                    component.formatarPagamento(
+                        'boleto'
+                    )
+                ).toBe(
+                    'boleto'
+                );
+
+            }
+        );
+
+        it('deve retornar apenas vendas promocionais',
+            () => {
+
+                component.vendas = [
+                    {
+                        status: 'finalizada',
+                        itens: [
+                            {
+                                promocaoAplicada: true
+                            }
+                        ]
+                    } as any
+                ];
+
+                expect(
+                    component.vendasPromocionais.length
+                ).toBe(1);
+
+            }
+        );
+
+        it('nao deve considerar venda cancelada',
+            () => {
+
+                component.vendas = [
+                    {
+                        status: 'cancelada',
+                        itens: [
+                            {
+                                promocaoAplicada: true
+                            }
+                        ]
+                    } as any
+                ];
+
+                expect(
+                    component.vendasPromocionais.length
+                ).toBe(0);
+
+            }
+        );
+
+        it('deve retornar vazio sem promocao',
+            () => {
+
+                component.vendas = [
+                    {
+                        status: 'finalizada',
+                        itens: [
+                            {
+                                promocaoAplicada: false
+                            }
+                        ]
+                    } as any
+                ];
+
+                expect(
+                    component.vendasPromocionais.length
+                ).toBe(0);
+
+            }
+        );
+
+        it('deve retornar total vendas promocionais',
+            () => {
+
+                component.dashboard = {
+                    totalVendasPromocionais: 12
+                } as any;
+
+                expect(
+                    component.totalVendasPromocionais
+                ).toBe(12);
+
+            }
+        );
+
+        it('deve retornar faturamento promocional',
+            () => {
+
+                component.dashboard = {
+                    faturamentoPromocional: 500
+                } as any;
+
+                expect(
+                    component.faturamentoPromocional
+                ).toBe(500);
+
+            }
+        );
+
+        it('deve retornar total promocoes eficientes',
+            () => {
+
+                component.dashboard = {
+                    totalPromocoesEficientes: 3
+                } as any;
+
+                expect(
+                    component.totalPromocoesEficientes
+                ).toBe(3);
+
+            }
+        );
+
+        it('deve montar grafico de vendas',
+            () => {
+
+                component.dashboard = {
+                    evolucaoVendas: [
+                        {
+                            data: '01/10',
+                            total: 100
+                        }
+                    ]
+                } as any;
+
+                expect(
+                    component.vendasChartData.labels
+                ).toEqual(
+                    ['01/10']
+                );
+
+            }
+        );
+
+        it('deve montar grafico de pagamentos',
+            () => {
+
+                component.dashboard = {
+                    faturamentoPorPagamento: [
+                        {
+                            formaPagamento: 'PIX',
+                            valor: 100
+                        }
+                    ]
+                } as any;
+
+                expect(
+                    component.pagamentoChartData.labels
+                ).toEqual(
+                    ['PIX']
+                );
+
+            }
+        );
+
+        it('deve montar grafico top produtos',
+            () => {
+
+                component.dashboard = {
+                    topProdutosVendidos: [
+                        {
+                            nome: 'Produto A',
+                            quantidade: 10
+                        }
+                    ]
+                } as any;
+
+                expect(
+                    component.topProdutosChartData.labels
+                ).toEqual(
+                    ['Produto A']
+                );
+
+            }
+        );
+
+        it('deve montar grafico de fiados',
+            () => {
+
+                component.dashboard = {
+                    evolucaoFiados: [
+                        {
+                            data: '01/10',
+                            total: 50
+                        }
+                    ]
+                } as any;
+
+                expect(
+                    component.fiadosChartData.labels
+                ).toEqual(
+                    ['01/10']
+                );
+
+            }
+        );
+
+        it('deve montar grafico de giro',
+            () => {
+
+                component.dashboard = {
+                    giroEstoque: [
+                        {
+                            nome: 'Produto A',
+                            giro: 80
+                        }
+                    ]
+                } as any;
+
+                expect(
+                    component.giroChartData.labels
+                ).toEqual(
+                    ['Produto A']
+                );
+
+            }
+        );
     }
 );

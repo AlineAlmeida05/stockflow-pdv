@@ -1,5 +1,5 @@
 import { Clientes } from './clientes';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
 describe(
@@ -20,8 +20,7 @@ describe(
 
     });
 
-    it(
-      'deve retornar todos os clientes quando a busca estiver vazia',
+    it('deve retornar todos os clientes quando a busca estiver vazia',
       () => {
 
         component.clientes = [
@@ -45,8 +44,7 @@ describe(
       }
     );
 
-    it(
-      'deve filtrar clientes pelo nome',
+    it('deve filtrar clientes pelo nome',
       () => {
 
         component.clientes = [
@@ -70,8 +68,7 @@ describe(
       }
     );
 
-    it(
-      'deve filtrar clientes pelo telefone',
+    it('deve filtrar clientes pelo telefone',
       () => {
 
         component.clientes = [
@@ -95,8 +92,7 @@ describe(
       }
     );
 
-    it(
-      'deve ignorar maiúsculas e minúsculas na busca',
+    it('deve ignorar maiúsculas e minúsculas na busca',
       () => {
 
         component.clientes = [
@@ -115,8 +111,7 @@ describe(
       }
     );
 
-    it(
-      'deve exibir controle Ativo para clientes ativos',
+    it('deve exibir controle Ativo para clientes ativos',
       () => {
 
         component.clientes = [
@@ -139,8 +134,7 @@ describe(
       }
     );
 
-    it(
-      'deve exibir controle Inativo para clientes inativos',
+    it('deve exibir controle Inativo para clientes inativos',
       () => {
 
         component.clientes = [
@@ -163,8 +157,7 @@ describe(
       }
     );
 
-    it(
-      'deve exibir sinal negativo para saldo devedor',
+    it('deve exibir sinal negativo para saldo devedor',
       () => {
 
         expect(
@@ -174,8 +167,7 @@ describe(
       }
     );
 
-    it(
-      'deve retornar string vazia para valor undefined',
+    it('deve retornar string vazia para valor undefined',
       () => {
 
         expect(
@@ -185,8 +177,7 @@ describe(
       }
     );
 
-    it(
-      'deve formatar valor monetário em reais',
+    it('deve formatar valor monetário em reais',
       () => {
 
         expect(
@@ -196,8 +187,7 @@ describe(
       }
     );
 
-    it(
-      'deve montar tabela com controle Ativo',
+    it('deve montar tabela com controle Ativo',
       () => {
 
         component.clientes = [
@@ -218,8 +208,7 @@ describe(
       }
     );
 
-    it(
-      'deve montar tabela com controle Inativo',
+    it('deve montar tabela com controle Inativo',
       () => {
 
         component.clientes = [
@@ -240,8 +229,7 @@ describe(
       }
     );
 
-    it(
-      'deve exibir aviso quando o nome do cliente estiver vazio',
+    it('deve exibir aviso quando o nome do cliente estiver vazio',
       () => {
 
         const alertService = {
@@ -269,8 +257,7 @@ describe(
       }
     );
 
-    it(
-      'deve cadastrar cliente com sucesso',
+    it('deve cadastrar cliente com sucesso',
       () => {
 
         const clienteService = {
@@ -310,8 +297,7 @@ describe(
       }
     );
 
-    it(
-      'deve atualizar cliente com sucesso',
+    it('deve atualizar cliente com sucesso',
       () => {
 
         const clienteService = {
@@ -353,8 +339,7 @@ describe(
       }
     );
 
-    it(
-      'deve preparar formulário para novo cliente',
+    it('deve preparar formulário para novo cliente',
       () => {
 
         component.nome = 'Teste';
@@ -384,8 +369,7 @@ describe(
       }
     );
 
-    it(
-      'deve limpar formulário ao cancelar edição',
+    it('deve limpar formulário ao cancelar edição',
       () => {
 
         component.nome = 'Teste';
@@ -415,8 +399,7 @@ describe(
       }
     );
 
-    it(
-      'deve desabilitar modo visualização',
+    it('deve desabilitar modo visualização',
       () => {
 
         component.modoVisualizacao = true;
@@ -430,8 +413,7 @@ describe(
       }
     );
 
-    it(
-      'deve retornar vazio para data indefinida',
+    it('deve retornar vazio para data indefinida',
       () => {
 
         expect(
@@ -441,8 +423,7 @@ describe(
       }
     );
 
-    it(
-      'deve formatar data válida',
+    it('deve formatar data válida',
       () => {
 
         const resultado =
@@ -457,8 +438,7 @@ describe(
       }
     );
 
-    it(
-      'deve carregar dados para edição',
+    it('deve carregar dados para edição',
       () => {
 
         const cliente = {
@@ -492,8 +472,7 @@ describe(
       }
     );
 
-    it(
-      'deve carregar cliente para visualização',
+    it('deve carregar cliente para visualização',
       () => {
 
         const cliente = {
@@ -522,8 +501,7 @@ describe(
       }
     );
 
-    it(
-      'deve abrir confirmação para inativar cliente ativo',
+    it('deve abrir confirmação para inativar cliente ativo',
       () => {
 
         const open = vi.fn();
@@ -551,8 +529,7 @@ describe(
       }
     );
 
-    it(
-      'deve abrir confirmação para reativar cliente inativo',
+    it('deve abrir confirmação para reativar cliente inativo',
       () => {
 
         const open = vi.fn();
@@ -577,6 +554,619 @@ describe(
           open
         ).toHaveBeenCalled();
 
+      }
+    );
+
+    it('deve carregar clientes no ngOnInit',
+      () => {
+
+        const clientes = [
+          {
+            id: '1',
+            nome: 'Maria'
+          }
+        ] as any;
+
+        const clienteService = {
+          listar: vi.fn(
+            () => of(clientes)
+          ),
+          obterResumo: vi.fn(
+            () => of(null)
+          )
+        };
+
+        component =
+          new Clientes(
+            clienteService as never,
+            {} as never,
+            {} as never,
+            {
+              detectChanges: vi.fn()
+            } as never
+          );
+
+        component.ngOnInit();
+
+        expect(
+          clienteService.listar
+        ).toHaveBeenCalled();
+
+        expect(
+          component.clientes
+        ).toEqual(clientes);
+
+      }
+    );
+
+    it('deve carregar clientes recebidos do servico',
+      () => {
+
+        const clientes = [
+          {
+            id: '1',
+            nome: 'Maria'
+          }
+        ] as any;
+
+        const clienteService = {
+          listar: vi.fn(() => of(clientes)),
+          obterResumo: vi.fn(() => of(null))
+        };
+
+        component =
+          new Clientes(
+            clienteService as never,
+            {} as never,
+            {} as never,
+            {
+              detectChanges: vi.fn()
+            } as never
+          );
+
+        component.carregarClientes();
+
+        expect(
+          component.clientes
+        ).toEqual(clientes);
+
+      }
+    );
+
+    it('deve tratar erro ao cadastrar cliente',
+      () => {
+
+        const clienteService = {
+          salvar: vi.fn(
+            () => throwError(
+              () => new Error()
+            )
+          )
+        };
+
+        const alertService = {
+          error: vi.fn()
+        };
+
+        component =
+          new Clientes(
+            clienteService as never,
+            alertService as never,
+            {} as never,
+            {
+              detectChanges: vi.fn()
+            } as never
+          );
+
+        component.nome = 'Maria';
+
+        component.salvarCliente();
+
+        expect(
+          alertService.error
+        ).toHaveBeenCalledWith(
+          'Erro ao cadastrar cliente.'
+        );
+
+      }
+    );
+
+    it('deve tratar erro ao atualizar cliente',
+      () => {
+
+        const clienteService = {
+          atualizar: vi.fn(
+            () => throwError(
+              () => new Error()
+            )
+          )
+        };
+
+        const alertService = {
+          error: vi.fn()
+        };
+
+        component =
+          new Clientes(
+            clienteService as never,
+            alertService as never,
+            {} as never,
+            {
+              detectChanges: vi.fn()
+            } as never
+          );
+
+        component.clienteEditandoId = '1';
+        component.nome = 'Maria';
+
+        component.salvarCliente();
+
+        expect(
+          alertService.error
+        ).toHaveBeenCalledWith(
+          'Erro ao atualizar cliente.'
+        );
+
+      }
+    );
+
+    it('deve excluir cliente com sucesso',
+      () => {
+
+        const clienteService = {
+          excluir: vi.fn(
+            () => of({})
+          ),
+          listar: vi.fn(
+            () => of([])
+          )
+        };
+
+        const alertService = {
+          success: vi.fn()
+        };
+
+        component =
+          new Clientes(
+            clienteService as never,
+            alertService as never,
+            {} as never,
+            {
+              detectChanges: vi.fn()
+            } as never
+          );
+
+        component.excluirCliente(
+          '1'
+        );
+
+        expect(
+          clienteService.excluir
+        ).toHaveBeenCalledWith(
+          '1'
+        );
+
+        expect(
+          alertService.success
+        ).toHaveBeenCalledWith(
+          'Cliente excluído com sucesso.'
+        );
+
+      }
+    );
+
+    it('deve tratar erro ao excluir cliente',
+      () => {
+
+        const clienteService = {
+          excluir: vi.fn(
+            () => throwError(
+              () => new Error()
+            )
+          )
+        };
+
+        const alertService = {
+          error: vi.fn()
+        };
+
+        component =
+          new Clientes(
+            clienteService as never,
+            alertService as never,
+            {} as never,
+            {
+              detectChanges: vi.fn()
+            } as never
+          );
+
+        component.excluirCliente(
+          '1'
+        );
+
+        expect(
+          alertService.error
+        ).toHaveBeenCalledWith(
+          'Erro ao excluir cliente.'
+        );
+
+      }
+    );
+
+    it('deve abrir dialog para excluir cliente',
+      () => {
+
+        const open = vi.fn();
+
+        component =
+          new Clientes(
+            {} as never,
+            {} as never,
+            {
+              open
+            } as never,
+            {} as never
+          );
+
+        component.confirmarExclusaoCliente(
+          {
+            id: '1',
+            nome: 'Maria'
+          } as any
+        );
+
+        expect(
+          open
+        ).toHaveBeenCalled();
+
+      }
+    );
+
+    it('deve excluir ao confirmar dialog',
+      () => {
+
+        let config: any;
+
+        const open = vi.fn(
+          (c: any) => {
+            config = c;
+          }
+        );
+
+        const excluirSpy =
+          vi.fn();
+
+        component =
+          new Clientes(
+            {
+              excluir: excluirSpy
+            } as never,
+            {} as never,
+            {
+              open
+            } as never,
+            {} as never
+          );
+
+        vi.spyOn(
+          component,
+          'excluirCliente'
+        ).mockImplementation(
+          () => { }
+        );
+
+        component.confirmarExclusaoCliente(
+          {
+            id: '1',
+            nome: 'Maria'
+          } as any
+        );
+
+        config.onConfirm();
+
+        expect(
+          component.excluirCliente
+        ).toHaveBeenCalledWith(
+          '1'
+        );
+
+      }
+    );
+
+    it('nao deve alterar cliente sem id',
+      () => {
+
+        const open = vi.fn();
+
+        component =
+          new Clientes(
+            {} as never,
+            {} as never,
+            {
+              open
+            } as never,
+            {} as never
+          );
+
+        component.alternarStatusCliente(
+          {
+            nome: 'Maria'
+          } as any
+        );
+
+        expect(
+          open
+        ).not.toHaveBeenCalled();
+
+      }
+    );
+
+    it('deve inativar cliente ao confirmar',
+      () => {
+
+        let config: any;
+
+        const open = vi.fn(
+          (c: any) => {
+            config = c;
+          }
+        );
+
+        const clienteService = {
+          excluir: vi.fn(
+            () => of({})
+          ),
+          listar: vi.fn(
+            () => of([])
+          )
+        };
+
+        component =
+          new Clientes(
+            clienteService as never,
+            {
+              info: vi.fn(),
+              success: vi.fn()
+            } as never,
+            {
+              open
+            } as never,
+            {
+              detectChanges: vi.fn()
+            } as never
+          );
+
+        component.alternarStatusCliente({
+          id: '1',
+          nome: 'Maria',
+          ativo: true
+        } as any);
+
+        config.onConfirm();
+
+        expect(
+          clienteService.excluir
+        ).toHaveBeenCalledWith(
+          '1'
+        );
+
+      }
+    );
+
+    it('deve tratar erro ao inativar cliente',
+      () => {
+
+        let config: any;
+
+        const open = vi.fn(
+          (c: any) => {
+            config = c;
+          }
+        );
+
+        const clienteService = {
+          excluir: vi.fn(
+            () => throwError(
+              () => new Error()
+            )
+          )
+        };
+
+        const alertService = {
+          info: vi.fn(),
+          error: vi.fn()
+        };
+
+        component =
+          new Clientes(
+            clienteService as never,
+            alertService as never,
+            {
+              open
+            } as never,
+            {} as never
+          );
+
+        component.alternarStatusCliente({
+          id: '1',
+          nome: 'Maria',
+          ativo: true
+        } as any);
+
+        config.onConfirm();
+
+        expect(
+          alertService.error
+        ).toHaveBeenCalledWith(
+          'Erro ao inativar cliente.'
+        );
+
+      }
+    );
+
+    it('deve reativar cliente ao confirmar',
+      () => {
+
+        let config: any;
+
+        const open = vi.fn(
+          (c: any) => {
+            config = c;
+          }
+        );
+
+        const clienteService = {
+          reativar: vi.fn(
+            () => of({})
+          ),
+          listar: vi.fn(
+            () => of([])
+          )
+        };
+
+        component =
+          new Clientes(
+            clienteService as never,
+            {
+              success: vi.fn()
+            } as never,
+            {
+              open
+            } as never,
+            {
+              detectChanges: vi.fn()
+            } as never
+          );
+
+        component.alternarStatusCliente({
+          id: '1',
+          nome: 'Maria',
+          ativo: false
+        } as any);
+
+        config.onConfirm();
+
+        expect(
+          clienteService.reativar
+        ).toHaveBeenCalledWith(
+          '1'
+        );
+
+      }
+    );
+
+    it('deve tratar erro ao reativar cliente',
+      () => {
+
+        let config: any;
+
+        const open = vi.fn(
+          (c: any) => {
+            config = c;
+          }
+        );
+
+        const clienteService = {
+          reativar: vi.fn(
+            () => throwError(
+              () => new Error()
+            )
+          )
+        };
+
+        const alertService = {
+          error: vi.fn()
+        };
+
+        component =
+          new Clientes(
+            clienteService as never,
+            alertService as never,
+            {
+              open
+            } as never,
+            {} as never
+          );
+
+        component.alternarStatusCliente({
+          id: '1',
+          nome: 'Maria',
+          ativo: false
+        } as any);
+
+        config.onConfirm();
+
+        expect(
+          alertService.error
+        ).toHaveBeenCalledWith(
+          'Erro ao reativar cliente.'
+        );
+
+      }
+    );
+
+    it('deve retornar Em Dia',
+      () => {
+        expect(
+          (component as any)
+            .formatarStatus(
+              'EM_DIA'
+            )
+        ).toBe(
+          'Em Dia'
+        );
+      }
+    );
+
+    it('deve retornar Devedor',
+      () => {
+        expect(
+          (component as any)
+            .formatarStatus(
+              'DEVEDOR'
+            )
+        ).toBe(
+          'Devedor'
+        );
+      }
+    );
+
+    it('deve retornar Inadimplente',
+      () => {
+        expect(
+          (component as any)
+            .formatarStatus(
+              'INADIMPLENTE'
+            )
+        ).toBe(
+          'Inadimplente'
+        );
+      }
+    );
+
+    it('deve retornar Limite Excedido',
+      () => {
+        expect(
+          (component as any)
+            .formatarStatus(
+              'LIMITE_EXCEDIDO'
+            )
+        ).toBe(
+          'Limite Excedido'
+        );
+      }
+    );
+
+    it('deve retornar status desconhecido',
+      () => {
+        expect(
+          (component as any)
+            .formatarStatus(
+              'TESTE'
+            )
+        ).toBe(
+          'TESTE'
+        );
       }
     );
 

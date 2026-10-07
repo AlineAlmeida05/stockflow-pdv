@@ -1,6 +1,6 @@
 import { HistoricoDeVendas } from './historico-de-vendas';
 import { vi } from 'vitest';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { Venda } from '../../core/models/venda.model';
 
 describe(
@@ -153,8 +153,7 @@ describe(
             }
         );
 
-        it(
-            'deve cancelar a venda com sucesso',
+        it('deve cancelar a venda com sucesso',
             () => {
 
                 const vendaService = {
@@ -213,8 +212,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar ícone PIX',
+        it('deve retornar ícone PIX',
             () => {
 
                 expect(
@@ -226,8 +224,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar ícone Fiado',
+        it('deve retornar ícone Fiado',
             () => {
 
                 expect(
@@ -239,8 +236,7 @@ describe(
             }
         );
 
-        it(
-            'deve somar apenas vendas finalizadas no faturamento',
+        it('deve somar apenas vendas finalizadas no faturamento',
             () => {
 
                 component.vendas = [
@@ -262,8 +258,7 @@ describe(
             }
         );
 
-        it(
-            'deve calcular o ticket médio',
+        it('deve calcular o ticket médio',
             () => {
 
                 component.vendas = [
@@ -285,8 +280,7 @@ describe(
             }
         );
 
-        it(
-            'deve somar corretamente os fiados',
+        it('deve somar corretamente os fiados',
             () => {
 
                 component.vendas = [
@@ -313,8 +307,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar a quantidade de vendas canceladas',
+        it('deve retornar a quantidade de vendas canceladas',
             () => {
 
                 component.vendas = [
@@ -338,8 +331,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar danger para venda cancelada',
+        it('deve retornar danger para venda cancelada',
             () => {
 
                 expect(
@@ -353,8 +345,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar success para venda finalizada',
+        it('deve retornar success para venda finalizada',
             () => {
 
                 expect(
@@ -368,8 +359,7 @@ describe(
             }
         );
 
-        it(
-            'deve filtrar vendas por forma de pagamento',
+        it('deve filtrar vendas por forma de pagamento',
             () => {
 
                 component.vendas = [
@@ -392,8 +382,7 @@ describe(
             }
         );
 
-        it(
-            'deve filtrar vendas por status',
+        it('deve filtrar vendas por status',
             () => {
 
                 component.vendas = [
@@ -416,8 +405,7 @@ describe(
             }
         );
 
-        it(
-            'deve montar card de vendas',
+        it('deve montar card de vendas',
             () => {
 
                 const cards =
@@ -430,8 +418,7 @@ describe(
             }
         );
 
-        it(
-            'não deve abrir confirmação sem venda selecionada',
+        it('não deve abrir confirmação sem venda selecionada',
             () => {
 
                 const open = vi.fn();
@@ -458,8 +445,7 @@ describe(
             }
         );
 
-        it(
-            'deve exibir aviso quando o motivo estiver vazio',
+        it('deve exibir aviso quando o motivo estiver vazio',
             () => {
 
                 const alertService = {
@@ -492,8 +478,7 @@ describe(
             }
         );
 
-        it(
-            'deve abrir confirmação quando os dados forem válidos',
+        it('deve abrir confirmação quando os dados forem válidos',
             () => {
 
                 const open = vi.fn();
@@ -526,8 +511,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar ícone de dinheiro',
+        it('deve retornar ícone de dinheiro',
             () => {
 
                 expect(
@@ -539,8 +523,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar ícone para débito',
+        it('deve retornar ícone para débito',
             () => {
 
                 expect(
@@ -552,8 +535,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar ícone para crédito',
+        it('deve retornar ícone para crédito',
             () => {
 
                 expect(
@@ -565,8 +547,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar vazio para forma desconhecida',
+        it('deve retornar vazio para forma desconhecida',
             () => {
 
                 expect(
@@ -578,8 +559,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar todas as vendas quando não houver filtros',
+        it('deve retornar todas as vendas quando não houver filtros',
             () => {
 
                 component.vendas = [
@@ -597,8 +577,7 @@ describe(
             }
         );
 
-        it(
-            'deve aplicar filtro de status e pagamento simultaneamente',
+        it('deve aplicar filtro de status e pagamento simultaneamente',
             () => {
 
                 component.vendas = [
@@ -630,5 +609,292 @@ describe(
 
             }
         );
+
+        it('deve carregar vendas no ngOnInit',
+            () => {
+
+                const spy =
+                    vi.spyOn(
+                        component,
+                        'carregarVendas'
+                    )
+                        .mockImplementation(
+                            () => { }
+                        );
+
+                component.ngOnInit();
+
+                expect(
+                    spy
+                ).toHaveBeenCalled();
+
+            }
+        );
+
+        it('deve carregar vendas recebidas do servico',
+            () => {
+
+                const vendas = [
+                    {
+                        id: '1',
+                        dataVenda: '2026-01-01'
+                    }
+                ];
+
+                const vendaService = {
+                    listar: vi.fn(
+                        () => of(vendas)
+                    )
+                };
+
+                component =
+                    new HistoricoDeVendas(
+                        vendaService as any,
+                        {} as any,
+                        {} as any,
+                        {
+                            detectChanges: vi.fn()
+                        } as any
+                    );
+
+                component.carregarVendas();
+
+                expect(
+                    component.vendas
+                ).toEqual(vendas);
+
+            }
+        );
+
+        it( 'deve carregar vendas recebidas do servico',
+            () => {
+
+                const vendas = [
+                    {
+                        id: '1',
+                        dataVenda: '2026-01-01'
+                    }
+                ];
+
+                const vendaService = {
+                    listar: vi.fn(
+                        () => of(vendas)
+                    )
+                };
+
+                component =
+                    new HistoricoDeVendas(
+                        vendaService as any,
+                        {} as any,
+                        {} as any,
+                        {
+                            detectChanges: vi.fn()
+                        } as any
+                    );
+
+                component.carregarVendas();
+
+                expect(
+                    component.vendas
+                ).toEqual(vendas);
+
+            }
+        );
+
+        it('deve selecionar venda',
+            () => {
+
+                const venda = {
+                    id: '1'
+                };
+
+                const vendaService = {
+                    buscarPorId: vi.fn(
+                        () => of(venda)
+                    )
+                };
+
+                component =
+                    new HistoricoDeVendas(
+                        vendaService as any,
+                        {} as any,
+                        {} as any,
+                        {} as any
+                    );
+
+                component.selecionarVenda(
+                    venda as any
+                );
+
+                expect(
+                    component.vendaSelecionada
+                ).toEqual(venda);
+
+            }
+        );
+
+        it('deve limpar estado de cancelamento ao selecionar venda',
+            () => {
+
+                const venda = {
+                    id: '1'
+                };
+
+                const vendaService = {
+                    buscarPorId: vi.fn(
+                        () => of(venda)
+                    )
+                };
+
+                component =
+                    new HistoricoDeVendas(
+                        vendaService as any,
+                        {} as any,
+                        {} as any,
+                        {} as any
+                    );
+
+                component.mostrarCancelamento = true;
+                component.motivoCancelamento = 'teste';
+
+                component.selecionarVenda(
+                    venda as any
+                );
+
+                expect(
+                    component.mostrarCancelamento
+                ).toBe(false);
+
+                expect(
+                    component.motivoCancelamento
+                ).toBe('');
+
+            }
+        );
+
+        it( 'deve tratar erro ao carregar detalhes da venda',
+            () => {
+
+                const alertService = {
+                    error: vi.fn()
+                };
+
+                const vendaService = {
+                    buscarPorId: vi.fn(
+                        () =>
+                            throwError(
+                                () => new Error()
+                            )
+                    )
+                };
+
+                component =
+                    new HistoricoDeVendas(
+                        vendaService as any,
+                        alertService as any,
+                        {} as any,
+                        {} as any
+                    );
+
+                component.selecionarVenda({
+                    id: '1'
+                } as any);
+
+                expect(
+                    alertService.error
+                ).toHaveBeenCalledWith(
+                    'Erro ao carregar detalhes da venda.'
+                );
+
+            }
+        );
+
+        it('deve retornar zero de ticket medio sem vendas',
+            () => {
+
+                component.vendas = [];
+
+                expect(
+                    component.ticketMedio
+                ).toBe(0);
+
+            }
+        );
+
+        it( 'deve retornar total de vendas filtradas',
+            () => {
+
+                component.vendas = [
+                    {} as any,
+                    {} as any,
+                    {} as any
+                ];
+
+                expect(
+                    component.totalVendas
+                ).toBe(3);
+
+            }
+        );
+
+        it('deve retornar cinco cards',
+            () => {
+
+                expect(
+                    component.cardsHistorico.length
+                ).toBe(5);
+
+            }
+        );
+
+        it('deve tratar erro ao cancelar venda',
+            () => {
+
+                const alertService = {
+                    error: vi.fn(),
+                    warning: vi.fn(),
+                    success: vi.fn()
+                };
+
+                const vendaService = {
+                    cancelar: vi.fn(
+                        () =>
+                            throwError(
+                                () => ({
+                                    error: {
+                                        message: 'Erro teste'
+                                    }
+                                })
+                            )
+                    )
+                };
+
+                component =
+                    new HistoricoDeVendas(
+                        vendaService as any,
+                        alertService as any,
+                        {} as any,
+                        {} as any
+                    );
+
+                component.vendaSelecionada = {
+                    id: '1'
+                } as any;
+
+                component.motivoCancelamento =
+                    'Motivo';
+
+                component.executarCancelamento();
+
+                expect(
+                    alertService.error
+                ).toHaveBeenCalledWith(
+                    'Erro teste'
+                );
+
+            }
+        );
+
+
     }
 );
