@@ -16,8 +16,7 @@ describe(
 
     });
 
-    it(
-      'deve iniciar na página 1 ao reiniciar paginação',
+    it('deve iniciar na página 1 ao reiniciar paginação',
       () => {
 
         component.paginaAtual = 5;
@@ -31,8 +30,7 @@ describe(
       }
     );
 
-    it(
-      'deve voltar para página 1 ao alterar itens por página',
+    it('deve voltar para página 1 ao alterar itens por página',
       () => {
 
         component.paginaAtual = 3;
@@ -46,8 +44,7 @@ describe(
       }
     );
 
-    it(
-      'não deve permitir página anterior quando estiver na primeira página',
+    it('não deve permitir página anterior quando estiver na primeira página',
       () => {
 
         component.paginaAtual = 1;
@@ -61,8 +58,7 @@ describe(
       }
     );
 
-    it(
-      'deve voltar uma página quando existir página anterior',
+    it('deve voltar uma página quando existir página anterior',
       () => {
 
         component.paginaAtual = 3;
@@ -76,8 +72,7 @@ describe(
       }
     );
 
-    it(
-      'deve retornar uma página quando não existirem movimentações',
+    it('deve retornar uma página quando não existirem movimentações',
       () => {
 
         component.movimentacoes = [];
@@ -91,8 +86,7 @@ describe(
       }
     );
 
-    it(
-      'deve calcular corretamente a quantidade de páginas',
+    it('deve calcular corretamente a quantidade de páginas',
       () => {
 
         component.movimentacoes =
@@ -114,8 +108,7 @@ describe(
       }
     );
 
-    it(
-      'deve filtrar movimentações pelo nome do cliente',
+    it('deve filtrar movimentações pelo nome do cliente',
       () => {
 
         component.movimentacoes = [
@@ -137,8 +130,7 @@ describe(
       }
     );
 
-    it(
-      'deve ignorar maiúsculas e minúsculas na busca',
+    it('deve ignorar maiúsculas e minúsculas na busca',
       () => {
 
         component.movimentacoes = [
@@ -156,8 +148,7 @@ describe(
       }
     );
 
-    it(
-      'deve filtrar movimentações PIX',
+    it('deve filtrar movimentações PIX',
       () => {
 
         component.movimentacoes = [
@@ -182,8 +173,7 @@ describe(
       }
     );
 
-    it(
-      'deve filtrar movimentações fiado',
+    it('deve filtrar movimentações fiado',
       () => {
 
         component.movimentacoes = [
@@ -207,8 +197,7 @@ describe(
       }
     );
 
-    it(
-      'deve retornar apenas itens da página atual',
+    it('deve retornar apenas itens da página atual',
       () => {
 
         component.movimentacoes =
@@ -230,8 +219,7 @@ describe(
       }
     );
 
-    it(
-      'deve filtrar movimentações de hoje',
+    it('deve filtrar movimentações de hoje',
       () => {
 
         component.movimentacoes = [
@@ -257,8 +245,7 @@ describe(
       }
     );
 
-    it(
-      'deve filtrar movimentações dos últimos 7 dias',
+    it('deve filtrar movimentações dos últimos 7 dias',
       () => {
 
         const recente =
@@ -295,8 +282,7 @@ describe(
       }
     );
 
-    it(
-      'deve filtrar movimentações dos últimos 30 dias',
+    it('deve filtrar movimentações dos últimos 30 dias',
       () => {
 
         const recente =
@@ -333,8 +319,7 @@ describe(
       }
     );
 
-    it(
-      'deve voltar para a primeira página ao alterar itens por página',
+    it('deve voltar para a primeira página ao alterar itens por página',
       () => {
 
         component.paginaAtual = 5;
@@ -348,8 +333,7 @@ describe(
       }
     );
 
-    it(
-      'deve avançar para próxima página',
+    it('deve avançar para próxima página',
       () => {
 
         component.movimentacoes =
@@ -371,8 +355,7 @@ describe(
       }
     );
 
-    it(
-      'não deve ultrapassar a última página',
+    it('não deve ultrapassar a última página',
       () => {
 
         component.movimentacoes =
@@ -396,6 +379,231 @@ describe(
       }
     );
 
+    it('deve retornar zero no inicio da pagina sem movimentacoes', () => {
+
+      component.movimentacoes = [];
+
+      expect(
+        component.inicioPagina
+      ).toBe(0);
+
+    });
+
+    it('deve calcular fim da pagina', () => {
+
+      component.movimentacoes =
+        Array.from(
+          { length: 25 },
+          () => ({})
+        ) as any;
+
+      component.itensPorPagina = '10';
+
+      expect(
+        component.fimPagina
+      ).toBe(10);
+
+    });
+
+    it('deve criar cards zerados sem indicadores', () => {
+
+      (component as any)
+        .atualizarIndicadores();
+
+      expect(
+        component.cards.length
+      ).toBe(5);
+
+    });
+
+    it('deve montar cards com indicadores', () => {
+
+      component.indicadores = {
+
+        totalRecebido: 1000,
+        saldoAberto: 200,
+        recebimentosHoje: 50,
+        clientesDevedores: 3
+
+      } as any;
+
+      (component as any)
+        .atualizarIndicadores();
+
+      expect(
+        component.cards.length
+      ).toBe(5);
+
+      expect(
+        component.cards[3].value
+      ).toBe(3);
+
+    });
+
+    it('deve carregar indicadores', () => {
+
+      const service = {
+
+        obterIndicadores: () => ({
+          subscribe: ({ next }: any) =>
+            next({
+              totalRecebido: 100
+            })
+        })
+
+      };
+
+      component =
+        new ExtratoFinanceiro(
+          service as any,
+          {
+            detectChanges: vi.fn()
+          } as any
+        );
+
+      component['carregarIndicadores']();
+
+      expect(
+        component.indicadores
+          ?.totalRecebido
+      ).toBe(100);
+
+    });
+
+    it('deve carregar movimentacoes', () => {
+
+      const service = {
+
+        listar: () => ({
+          subscribe: ({ next }: any) =>
+            next([
+              {
+                clienteNome: 'Maria'
+              }
+            ])
+        })
+
+      };
+
+      component =
+        new ExtratoFinanceiro(
+          service as any,
+          {
+            detectChanges: vi.fn()
+          } as any
+        );
+
+      component.carregarMovimentacoes();
+
+      expect(
+        component.movimentacoes.length
+      ).toBe(1);
+
+    });
+
+    it('deve chamar os carregamentos no ngOnInit', () => {
+
+      const service = {
+
+        listar: vi.fn(() => ({
+          subscribe: vi.fn()
+        })),
+
+        obterIndicadores: vi.fn(() => ({
+          subscribe: vi.fn()
+        }))
+
+      };
+
+      component =
+        new ExtratoFinanceiro(
+          service as any,
+          {
+            detectChanges: vi.fn()
+          } as any
+        );
+
+      const spyMov =
+        vi.spyOn(
+          component,
+          'carregarMovimentacoes'
+        );
+
+      const spyInd =
+        vi.spyOn(
+          component as any,
+          'carregarIndicadores'
+        );
+
+      component.ngOnInit();
+
+      expect(spyMov).toHaveBeenCalled();
+      expect(spyInd).toHaveBeenCalled();
+
+    });
+
+    it('deve incrementar pagina quando houver proxima pagina', () => {
+
+      component.movimentacoes =
+        Array.from(
+          { length: 30 },
+          () => ({})
+        ) as any;
+
+      component.itensPorPagina = '10';
+      component.paginaAtual = 1;
+
+      component.proximaPagina();
+
+      expect(
+        component.paginaAtual
+      ).toBe(2);
+
+    });
+
+    it('deve focar search input apos carregar movimentacoes', () => {
+
+      vi.useFakeTimers();
+
+      const focar =
+        vi.fn();
+
+      component.searchInput = {
+        focar
+      } as any;
+
+      const service = {
+
+        listar: () => ({
+          subscribe: ({ next }: any) =>
+            next([])
+        })
+
+      };
+
+      component =
+        new ExtratoFinanceiro(
+          service as any,
+          {
+            detectChanges: vi.fn()
+          } as any
+        );
+
+      component.searchInput = {
+        focar
+      } as any;
+
+      component.carregarMovimentacoes();
+
+      vi.runAllTimers();
+
+      expect(
+        focar
+      ).toHaveBeenCalled();
+
+      vi.useRealTimers();
+
+    });
 
   }
 );

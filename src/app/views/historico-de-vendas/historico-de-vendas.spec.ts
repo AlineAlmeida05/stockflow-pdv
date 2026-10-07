@@ -3,26 +3,80 @@ import { vi } from 'vitest';
 import { of, throwError } from 'rxjs';
 import { Venda } from '../../core/models/venda.model';
 
-describe(
-    'HistoricoDeVendas',
-    () => {
+function createVenda(
+    overrides: Partial<Venda> = {}
+): Venda {
 
-        let component: HistoricoDeVendas;
+    return {
+        id: '1',
+        status: 'finalizada',
+        valorTotal: 100,
+        formaPagamento: 'pix',
+        usuarioNome: 'Maria',
+        dataVenda: new Date().toISOString(),
+        ...overrides
+    } as Venda;
 
-        beforeEach(() => {
+}
 
-            component =
-                new HistoricoDeVendas(
-                    {} as never,
-                    {} as never,
-                    {} as never,
-                    {} as never
-                );
+function createComponent(
+    overrides: {
+        vendaService?: any;
+        alertService?: any;
+        confirmDialogService?: any;
+        cdr?: any;
+    } = {}
+) {
 
-        });
+    return new HistoricoDeVendas(
+        overrides.vendaService ??
+        vendaServiceMock,
 
-        it(
-            'deve permitir cancelar uma venda realizada há menos de 24 horas',
+        overrides.alertService ??
+        alertServiceMock,
+
+        overrides.confirmDialogService ??
+        confirmDialogServiceMock,
+
+        overrides.cdr ??
+        cdrMock
+    );
+
+}
+
+const cdrMock = {
+    detectChanges: vi.fn()
+};
+
+const alertServiceMock = {
+    success: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn()
+};
+
+const confirmDialogServiceMock = {
+    open: vi.fn()
+};
+
+const vendaServiceMock = {
+    listar: vi.fn(() => of([])),
+    buscarPorId: vi.fn(),
+    cancelar: vi.fn()
+};
+
+describe('HistoricoDeVendas', () => {
+
+    let component: HistoricoDeVendas;
+
+    beforeEach(() => {
+
+        component = createComponent();
+
+    });
+
+    describe('podeCancelarVenda', () => {
+
+        it('deve permitir cancelar uma venda realizada há menos de 24 horas',
             () => {
 
                 const venda = {
@@ -41,8 +95,7 @@ describe(
             }
         );
 
-        it(
-            'não deve permitir cancelar uma venda realizada há mais de 24 horas',
+        it('não deve permitir cancelar uma venda realizada há mais de 24 horas',
             () => {
 
                 const venda = {
@@ -61,8 +114,11 @@ describe(
             }
         );
 
-        it(
-            'deve retornar Cancelada quando o status for cancelada',
+    });
+
+    describe('obterTextoStatus', () => {
+
+        it('deve retornar Cancelada quando o status for cancelada',
             () => {
 
                 expect(
@@ -76,8 +132,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar Finalizada para qualquer outro status',
+        it('deve retornar Finalizada para qualquer outro status',
             () => {
 
                 expect(
@@ -91,8 +146,120 @@ describe(
             }
         );
 
-        it(
-            'deve exibir aviso quando tentar cancelar sem informar motivo',
+    });
+
+    describe('obterVariantStatus', () => {
+
+        it('deve retornar danger para venda cancelada',
+            () => {
+
+                expect(
+                    component.obterVariantStatus(
+                        'cancelada'
+                    )
+                ).toBe(
+                    'danger'
+                );
+
+            }
+
+        );
+
+        it('deve retornar success para venda finalizada',
+            () => {
+
+                expect(
+                    component.obterVariantStatus(
+                        'finalizada'
+                    )
+                ).toBe(
+                    'success'
+                );
+
+            }
+        );
+
+    });
+
+    describe('obterIconePagamento', () => {
+
+        it('deve retornar ícone PIX',
+            () => {
+
+                expect(
+                    component.obterIconePagamento(
+                        'pix'
+                    )
+                ).toBe('📱');
+
+            }
+        );
+
+        it('deve retornar ícone Fiado',
+            () => {
+
+                expect(
+                    component.obterIconePagamento(
+                        'fiado'
+                    )
+                ).toBe('📒');
+
+            }
+        );
+
+        it('deve retornar ícone de dinheiro',
+            () => {
+
+                expect(
+                    component.obterIconePagamento(
+                        'dinheiro'
+                    )
+                ).toBe('💵');
+
+            }
+        );
+
+        it('deve retornar ícone para débito',
+            () => {
+
+                expect(
+                    component.obterIconePagamento(
+                        'debito'
+                    )
+                ).toBe('💳');
+
+            }
+        );
+
+        it('deve retornar ícone para crédito',
+            () => {
+
+                expect(
+                    component.obterIconePagamento(
+                        'credito'
+                    )
+                ).toBe('💳');
+
+            }
+        );
+
+        it('deve retornar vazio para forma desconhecida',
+            () => {
+
+                expect(
+                    component.obterIconePagamento(
+                        'boleto'
+                    )
+                ).toBe('');
+
+            }
+        );
+
+    });
+
+    describe('executarCancelamento', () => {
+
+        it('deve exibir aviso quando tentar cancelar sem informar motivo',
             () => {
 
                 const alertService = {
@@ -120,8 +287,7 @@ describe(
             }
         );
 
-        it(
-            'não deve cancelar quando não existir venda selecionada',
+        it('não deve cancelar quando não existir venda selecionada',
             () => {
 
                 const cancelar = vi.fn();
@@ -177,11 +343,8 @@ describe(
                         } as never
                     );
 
-                component.vendaSelecionada = {
-                    id: '1',
-                    status: 'finalizada',
-                    valorTotal: 100
-                } as Venda;
+                component.vendaSelecionada =
+                    createVenda();
 
                 component.motivoCancelamento =
                     'Venda cancelada para teste';
@@ -212,211 +375,98 @@ describe(
             }
         );
 
-        it('deve retornar ícone PIX',
+        it('deve tratar erro ao cancelar venda',
             () => {
 
-                expect(
-                    component.obterIconePagamento(
-                        'pix'
+                const alertService = {
+                    error: vi.fn(),
+                    warning: vi.fn(),
+                    success: vi.fn()
+                };
+
+                const vendaService = {
+                    cancelar: vi.fn(
+                        () =>
+                            throwError(
+                                () => ({
+                                    error: {
+                                        message: 'Erro teste'
+                                    }
+                                })
+                            )
                     )
-                ).toBe('📱');
+                };
 
-            }
-        );
+                component =
+                    new HistoricoDeVendas(
+                        vendaService as any,
+                        alertService as any,
+                        {} as any,
+                        {} as any
+                    );
 
-        it('deve retornar ícone Fiado',
-            () => {
+                component.vendaSelecionada =
+                    createVenda();
 
-                expect(
-                    component.obterIconePagamento(
-                        'fiado'
-                    )
-                ).toBe('📒');
+                component.motivoCancelamento =
+                    'Motivo';
 
-            }
-        );
-
-        it('deve somar apenas vendas finalizadas no faturamento',
-            () => {
-
-                component.vendas = [
-                    {
-                        status: 'finalizada',
-                        valorTotal: 100
-                    } as never,
-
-                    {
-                        status: 'cancelada',
-                        valorTotal: 50
-                    } as never
-                ];
+                component.executarCancelamento();
 
                 expect(
-                    component.faturamentoTotal
-                ).toBe(100);
-
-            }
-        );
-
-        it('deve calcular o ticket médio',
-            () => {
-
-                component.vendas = [
-                    {
-                        status: 'finalizada',
-                        valorTotal: 100
-                    } as never,
-
-                    {
-                        status: 'finalizada',
-                        valorTotal: 200
-                    } as never
-                ];
-
-                expect(
-                    component.ticketMedio
-                ).toBe(150);
-
-            }
-        );
-
-        it('deve somar corretamente os fiados',
-            () => {
-
-                component.vendas = [
-                    {
-                        formaPagamento: 'fiado',
-                        valorTotal: 100
-                    } as never,
-
-                    {
-                        formaPagamento: 'pix',
-                        valorTotal: 50
-                    } as never,
-
-                    {
-                        formaPagamento: 'fiado',
-                        valorTotal: 200
-                    } as never
-                ];
-
-                expect(
-                    component.totalFiados
-                ).toBe(300);
-
-            }
-        );
-
-        it('deve retornar a quantidade de vendas canceladas',
-            () => {
-
-                component.vendas = [
-                    {
-                        status: 'cancelada'
-                    } as never,
-
-                    {
-                        status: 'cancelada'
-                    } as never,
-
-                    {
-                        status: 'finalizada'
-                    } as never
-                ];
-
-                expect(
-                    component.totalCanceladas
-                ).toBe(2);
-
-            }
-        );
-
-        it('deve retornar danger para venda cancelada',
-            () => {
-
-                expect(
-                    component.obterVariantStatus(
-                        'cancelada'
-                    )
-                ).toBe(
-                    'danger'
+                    alertService.error
+                ).toHaveBeenCalledWith(
+                    'Erro teste'
                 );
 
             }
         );
 
-        it('deve retornar success para venda finalizada',
+        it('deve exibir mensagem padrao ao cancelar venda quando erro nao possuir mensagem',
             () => {
 
-                expect(
-                    component.obterVariantStatus(
-                        'finalizada'
+                const alertService = {
+                    error: vi.fn(),
+                    success: vi.fn(),
+                    warning: vi.fn()
+                };
+
+                const vendaService = {
+
+                    cancelar: vi.fn(
+                        () =>
+                            throwError(
+                                () => ({})
+                            )
                     )
-                ).toBe(
-                    'success'
+
+                };
+
+                component = createComponent({
+                    vendaService,
+                    alertService
+                });
+
+                component.vendaSelecionada =
+                    createVenda();
+
+                component.motivoCancelamento =
+                    'Teste';
+
+                component.executarCancelamento();
+
+                expect(
+                    alertService.error
+                ).toHaveBeenCalledWith(
+                    'Erro ao cancelar venda.'
                 );
 
             }
         );
 
-        it('deve filtrar vendas por forma de pagamento',
-            () => {
+    });
 
-                component.vendas = [
-                    {
-                        formaPagamento: 'pix'
-                    } as never,
-
-                    {
-                        formaPagamento: 'fiado'
-                    } as never
-                ];
-
-                component.filtroPagamento =
-                    'pix';
-
-                expect(
-                    component.vendasFiltradas.length
-                ).toBe(1);
-
-            }
-        );
-
-        it('deve filtrar vendas por status',
-            () => {
-
-                component.vendas = [
-                    {
-                        status: 'cancelada'
-                    } as never,
-
-                    {
-                        status: 'finalizada'
-                    } as never
-                ];
-
-                component.filtroStatus =
-                    'cancelada';
-
-                expect(
-                    component.vendasFiltradas.length
-                ).toBe(1);
-
-            }
-        );
-
-        it('deve montar card de vendas',
-            () => {
-
-                const cards =
-                    component.cardsHistorico;
-
-                expect(
-                    cards[0].title
-                ).toBe('Vendas');
-
-            }
-        );
+    describe('abrirConfirmacaoCancelamento', () => {
 
         it('não deve abrir confirmação sem venda selecionada',
             () => {
@@ -460,10 +510,8 @@ describe(
                         {} as never
                     );
 
-                component.vendaSelecionada = {
-                    id: '1',
-                    valorTotal: 100
-                } as never;
+                component.vendaSelecionada =
+                    createVenda();
 
                 component.motivoCancelamento = '';
 
@@ -493,11 +541,8 @@ describe(
                         {} as never
                     );
 
-                component.vendaSelecionada = {
-                    id: '1',
-                    valorTotal: 100,
-                    usuarioNome: 'Maria'
-                } as never;
+                component.vendaSelecionada =
+                    createVenda();
 
                 component.motivoCancelamento =
                     'Teste';
@@ -511,202 +556,58 @@ describe(
             }
         );
 
-        it('deve retornar ícone de dinheiro',
-            () => {
+        it('deve executar cancelamento ao confirmar', () => {
 
-                expect(
-                    component.obterIconePagamento(
-                        'dinheiro'
-                    )
-                ).toBe('💵');
+            let config: any;
 
-            }
-        );
+            const open =
+                vi.fn(arg => {
+                    config = arg;
+                });
 
-        it('deve retornar ícone para débito',
-            () => {
-
-                expect(
-                    component.obterIconePagamento(
-                        'debito'
-                    )
-                ).toBe('💳');
-
-            }
-        );
-
-        it('deve retornar ícone para crédito',
-            () => {
-
-                expect(
-                    component.obterIconePagamento(
-                        'credito'
-                    )
-                ).toBe('💳');
-
-            }
-        );
-
-        it('deve retornar vazio para forma desconhecida',
-            () => {
-
-                expect(
-                    component.obterIconePagamento(
-                        'boleto'
-                    )
-                ).toBe('');
-
-            }
-        );
-
-        it('deve retornar todas as vendas quando não houver filtros',
-            () => {
-
-                component.vendas = [
-                    {} as never,
-                    {} as never
-                ];
-
-                component.filtroPagamento = '';
-                component.filtroStatus = '';
-
-                expect(
-                    component.vendasFiltradas.length
-                ).toBe(2);
-
-            }
-        );
-
-        it('deve aplicar filtro de status e pagamento simultaneamente',
-            () => {
-
-                component.vendas = [
+            component =
+                new HistoricoDeVendas(
+                    {} as any,
+                    {} as any,
                     {
-                        status: 'finalizada',
-                        formaPagamento: 'pix'
-                    } as never,
+                        open
+                    } as any,
+                    {} as any
+                );
 
-                    {
-                        status: 'finalizada',
-                        formaPagamento: 'fiado'
-                    } as never,
-
-                    {
-                        status: 'cancelada',
-                        formaPagamento: 'pix'
-                    } as never
-                ];
-
-                component.filtroStatus =
-                    'finalizada';
-
-                component.filtroPagamento =
-                    'pix';
-
-                expect(
-                    component.vendasFiltradas.length
-                ).toBe(1);
-
-            }
-        );
-
-        it('deve carregar vendas no ngOnInit',
-            () => {
-
-                const spy =
-                    vi.spyOn(
-                        component,
-                        'carregarVendas'
-                    )
-                        .mockImplementation(
-                            () => { }
-                        );
-
-                component.ngOnInit();
-
-                expect(
-                    spy
-                ).toHaveBeenCalled();
-
-            }
-        );
-
-        it('deve carregar vendas recebidas do servico',
-            () => {
-
-                const vendas = [
-                    {
-                        id: '1',
-                        dataVenda: '2026-01-01'
-                    }
-                ];
-
-                const vendaService = {
-                    listar: vi.fn(
-                        () => of(vendas)
-                    )
-                };
-
-                component =
-                    new HistoricoDeVendas(
-                        vendaService as any,
-                        {} as any,
-                        {} as any,
-                        {
-                            detectChanges: vi.fn()
-                        } as any
+            const spy =
+                vi.spyOn(
+                    component,
+                    'executarCancelamento'
+                )
+                    .mockImplementation(
+                        () => { }
                     );
 
-                component.carregarVendas();
+            component.vendaSelecionada =
+                createVenda();
 
-                expect(
-                    component.vendas
-                ).toEqual(vendas);
+            component.motivoCancelamento =
+                'Teste';
 
-            }
-        );
+            component.abrirConfirmacaoCancelamento();
 
-        it( 'deve carregar vendas recebidas do servico',
-            () => {
+            config.onConfirm();
 
-                const vendas = [
-                    {
-                        id: '1',
-                        dataVenda: '2026-01-01'
-                    }
-                ];
+            expect(
+                spy
+            ).toHaveBeenCalled();
 
-                const vendaService = {
-                    listar: vi.fn(
-                        () => of(vendas)
-                    )
-                };
+        });
+    });
 
-                component =
-                    new HistoricoDeVendas(
-                        vendaService as any,
-                        {} as any,
-                        {} as any,
-                        {
-                            detectChanges: vi.fn()
-                        } as any
-                    );
-
-                component.carregarVendas();
-
-                expect(
-                    component.vendas
-                ).toEqual(vendas);
-
-            }
-        );
+    describe('selecionarVenda', () => {
 
         it('deve selecionar venda',
             () => {
 
-                const venda = {
-                    id: '1'
-                };
+                const venda =
+                    createVenda();
 
                 const vendaService = {
                     buscarPorId: vi.fn(
@@ -736,9 +637,8 @@ describe(
         it('deve limpar estado de cancelamento ao selecionar venda',
             () => {
 
-                const venda = {
-                    id: '1'
-                };
+                const venda =
+                    createVenda();
 
                 const vendaService = {
                     buscarPorId: vi.fn(
@@ -772,7 +672,7 @@ describe(
             }
         );
 
-        it( 'deve tratar erro ao carregar detalhes da venda',
+        it('deve tratar erro ao carregar detalhes da venda',
             () => {
 
                 const alertService = {
@@ -809,6 +709,388 @@ describe(
             }
         );
 
+        it('deve executar scroll ao selecionar venda', () => {
+
+            vi.useFakeTimers();
+
+            const scrollIntoView =
+                vi.fn();
+
+            vi.spyOn(
+                document,
+                'querySelector'
+            ).mockReturnValue({
+                scrollIntoView
+            } as any);
+
+            const venda =
+                createVenda();
+
+            const vendaService = {
+
+                buscarPorId: vi.fn(
+                    () => of(venda)
+                )
+
+            };
+
+            component =
+                new HistoricoDeVendas(
+                    vendaService as any,
+                    {} as any,
+                    {} as any,
+                    {} as any
+                );
+
+            component.selecionarVenda(
+                venda as any
+            );
+
+            vi.runAllTimers();
+
+            expect(
+                scrollIntoView
+            ).toHaveBeenCalled();
+
+            vi.useRealTimers();
+
+        });
+    });
+
+    describe('carregarVendas', () => {
+
+        it('deve carregar vendas recebidas do servico',
+            () => {
+
+                const vendas = [
+                    {
+                        id: '1',
+                        dataVenda: '2026-01-01'
+                    }
+                ];
+
+                const vendaService = {
+                    listar: vi.fn(
+                        () => of(vendas)
+                    )
+                };
+
+                component =
+                    new HistoricoDeVendas(
+                        vendaService as any,
+                        {} as any,
+                        {} as any,
+                        {
+                            detectChanges: vi.fn()
+                        } as any
+                    );
+
+                component.carregarVendas();
+
+                expect(
+                    component.vendas
+                ).toEqual(vendas);
+
+            }
+        );
+
+        it('deve ordenar vendas da mais recente para mais antiga', () => {
+
+            const vendaService = {
+
+                listar: vi.fn(
+                    () => of([
+                        {
+                            id: '1',
+                            dataVenda: '2025-01-01'
+                        },
+
+                        {
+                            id: '2',
+                            dataVenda: '2026-01-01'
+                        }
+                    ])
+                )
+
+            };
+
+            component =
+                new HistoricoDeVendas(
+                    vendaService as any,
+                    {} as any,
+                    {} as any,
+                    {
+                        detectChanges: vi.fn()
+                    } as any
+                );
+
+            component.carregarVendas();
+
+            expect(
+                component.vendas[0].id
+            ).toBe('2');
+
+        });
+
+        it('deve tratar erro ao carregar vendas', () => {
+
+            const spy =
+                vi.spyOn(
+                    console,
+                    'error'
+                ).mockImplementation(
+                    () => { }
+                );
+
+            const vendaService = {
+
+                listar: vi.fn(
+                    () =>
+                        throwError(
+                            () => new Error()
+                        )
+                )
+
+            };
+
+            component =
+                new HistoricoDeVendas(
+                    vendaService as any,
+                    {} as any,
+                    {} as any,
+                    {} as any
+                );
+
+            component.carregarVendas();
+
+            expect(
+                spy
+            ).toHaveBeenCalled();
+
+        });
+
+        it('deve executar detectChanges ao carregar vendas', () => {
+
+            const detectChanges =
+                vi.fn();
+
+            const vendaService = {
+
+                listar: vi.fn(
+                    () => of([])
+                )
+
+            };
+
+            component =
+                new HistoricoDeVendas(
+                    vendaService as any,
+                    {} as any,
+                    {} as any,
+                    {
+                        detectChanges
+                    } as any
+                );
+
+            component.carregarVendas();
+
+            expect(
+                detectChanges
+            ).toHaveBeenCalled();
+
+        });
+    });
+
+    describe('ngOnInit', () => {
+
+        it('deve carregar vendas no ngOnInit',
+            () => {
+
+                const spy =
+                    vi.spyOn(
+                        component,
+                        'carregarVendas'
+                    )
+                        .mockImplementation(
+                            () => { }
+                        );
+
+                component.ngOnInit();
+
+                expect(
+                    spy
+                ).toHaveBeenCalled();
+
+            }
+        );
+
+    });
+
+    describe('vendasFiltradas', () => {
+
+        it('deve filtrar vendas por forma de pagamento',
+            () => {
+
+                component.vendas = [
+                    createVenda({
+                        formaPagamento: 'pix'
+                    }),
+
+                    createVenda({
+                        formaPagamento: 'fiado'
+                    })
+                ];
+
+                component.filtroPagamento =
+                    'pix';
+
+                expect(
+                    component.vendasFiltradas.length
+                ).toBe(1);
+
+            }
+        );
+
+        it('deve filtrar vendas por status',
+            () => {
+
+                component.vendas = [
+                    createVenda({
+                        status: 'cancelada'
+                    }),
+
+                    createVenda({
+                        status: 'finalizada'
+                    })
+                ];
+
+                component.filtroStatus =
+                    'cancelada';
+
+                expect(
+                    component.vendasFiltradas.length
+                ).toBe(1);
+
+            }
+        );
+
+        it('deve retornar todas as vendas quando não houver filtros',
+            () => {
+
+                component.vendas = [
+                    createVenda(),
+                    createVenda({
+                        id: '2'
+                    })
+                ];
+
+                component.filtroPagamento = '';
+                component.filtroStatus = '';
+
+                expect(
+                    component.vendasFiltradas.length
+                ).toBe(2);
+
+            }
+        );
+
+        it('deve aplicar filtro de status e pagamento simultaneamente',
+            () => {
+
+                component.vendas = [
+                    createVenda({
+                        status: 'finalizada',
+                        formaPagamento: 'pix'
+                    }),
+
+                    createVenda({
+                        status: 'finalizada',
+                        formaPagamento: 'fiado'
+                    }),
+
+                    createVenda({
+                        status: 'cancelada',
+                        formaPagamento: 'pix'
+                    })
+                ];
+
+                component.filtroStatus =
+                    'finalizada';
+
+                component.filtroPagamento =
+                    'pix';
+
+                expect(
+                    component.vendasFiltradas.length
+                ).toBe(1);
+
+            }
+        );
+
+        it('deve retornar lista vazia quando filtro nao encontrar vendas',
+            () => {
+
+                component.vendas = [
+                    createVenda({
+                        formaPagamento: 'pix'
+                    })
+                ];
+
+                component.filtroPagamento =
+                    'fiado';
+
+                expect(
+                    component.vendasFiltradas
+                ).toEqual([]);
+
+            }
+        );
+    });
+
+    describe('getters', () => {
+
+        it('deve somar apenas vendas finalizadas no faturamento',
+            () => {
+
+                component.vendas = [
+                    createVenda({
+                        status: 'finalizada',
+                        valorTotal: 100
+                    }),
+
+                    createVenda({
+                        status: 'cancelada',
+                        valorTotal: 50
+                    })
+                ];
+
+                expect(
+                    component.faturamentoTotal
+                ).toBe(100);
+
+            }
+        );
+
+        it('deve calcular o ticket médio',
+            () => {
+
+                component.vendas = [
+                    createVenda({
+                        valorTotal: 100
+                    }),
+
+                    createVenda({
+                        valorTotal: 200
+                    })
+                ];
+
+                expect(
+                    component.ticketMedio
+                ).toBe(150);
+
+            }
+        );
+
         it('deve retornar zero de ticket medio sem vendas',
             () => {
 
@@ -821,18 +1103,148 @@ describe(
             }
         );
 
-        it( 'deve retornar total de vendas filtradas',
+        it('deve somar corretamente os fiados',
             () => {
 
                 component.vendas = [
-                    {} as any,
-                    {} as any,
-                    {} as any
+                    createVenda({
+                        formaPagamento: 'fiado',
+                        valorTotal: 100
+                    }),
+
+                    createVenda({
+                        formaPagamento: 'pix',
+                        valorTotal: 50
+                    }),
+
+                    createVenda({
+                        formaPagamento: 'fiado',
+                        valorTotal: 200
+                    })
+                ];
+
+                expect(
+                    component.totalFiados
+                ).toBe(300);
+
+            }
+        );
+
+        it('deve retornar a quantidade de vendas canceladas',
+            () => {
+
+                component.vendas = [
+                    createVenda({
+                        status: 'cancelada'
+                    }),
+
+                    createVenda({
+                        status: 'cancelada'
+                    }),
+
+                    createVenda({
+                        status: 'finalizada'
+                    })
+                ];
+
+                expect(
+                    component.totalCanceladas
+                ).toBe(2);
+
+            }
+        );
+
+        it('deve retornar total de vendas filtradas',
+            () => {
+
+                component.vendas = [
+                    createVenda(),
+                    createVenda({ id: '2' }),
+                    createVenda({ id: '3' })
                 ];
 
                 expect(
                     component.totalVendas
                 ).toBe(3);
+
+            }
+        );
+
+        it('deve retornar total de vendas', () => {
+
+            component.vendas = [
+                createVenda({
+                    formaPagamento: 'pix'
+                }),
+
+                createVenda({
+                    formaPagamento: 'fiado'
+                })
+            ];
+
+            component.filtroPagamento = 'pix';
+
+            expect(
+                component.totalVendas
+            ).toBe(1);
+
+        });
+
+        it('deve retornar zero quando nao houver vendas finalizadas', () => {
+
+            component.vendas = [
+                createVenda({
+                    status: 'cancelada'
+                })
+            ];
+
+            expect(
+                component.faturamentoTotal
+            ).toBe(0);
+
+        });
+
+        it('deve retornar zero quando nao houver vendas fiadas', () => {
+
+            component.vendas = [
+                createVenda({
+                    formaPagamento: 'pix'
+                })
+            ];
+
+            expect(
+                component.totalFiados
+            ).toBe(0);
+
+        });
+
+        it('deve retornar zero canceladas quando nao houver vendas canceladas',
+            () => {
+
+                component.vendas = [
+                    createVenda()
+                ];
+
+                expect(
+                    component.totalCanceladas
+                ).toBe(0);
+
+            }
+        );
+
+    });
+
+    describe('cardsHistorico', () => {
+
+        it('deve montar card de vendas',
+            () => {
+
+                const cards =
+                    component.cardsHistorico;
+
+                expect(
+                    cards[0].title
+                ).toBe('Vendas');
 
             }
         );
@@ -847,54 +1259,76 @@ describe(
             }
         );
 
-        it('deve tratar erro ao cancelar venda',
+        it('deve montar os valores dos cards', () => {
+
+            component.vendas = [
+                createVenda({
+                    formaPagamento: 'fiado'
+                })
+            ];
+
+            const cards =
+                component.cardsHistorico;
+
+            expect(
+                cards.length
+            ).toBe(5);
+
+            expect(
+                cards[0].value
+            ).toBe(1);
+
+        });
+
+        it('deve montar card de canceladas',
             () => {
 
-                const alertService = {
-                    error: vi.fn(),
-                    warning: vi.fn(),
-                    success: vi.fn()
-                };
+                component.vendas = [
+                    createVenda({
+                        status: 'cancelada'
+                    })
+                ];
 
-                const vendaService = {
-                    cancelar: vi.fn(
-                        () =>
-                            throwError(
-                                () => ({
-                                    error: {
-                                        message: 'Erro teste'
-                                    }
-                                })
-                            )
-                    )
-                };
-
-                component =
-                    new HistoricoDeVendas(
-                        vendaService as any,
-                        alertService as any,
-                        {} as any,
-                        {} as any
-                    );
-
-                component.vendaSelecionada = {
-                    id: '1'
-                } as any;
-
-                component.motivoCancelamento =
-                    'Motivo';
-
-                component.executarCancelamento();
+                const card =
+                    component.cardsHistorico[4];
 
                 expect(
-                    alertService.error
-                ).toHaveBeenCalledWith(
-                    'Erro teste'
+                    card.title
+                ).toBe(
+                    'Canceladas'
                 );
+
+                expect(
+                    card.value
+                ).toBe(1);
 
             }
         );
+    });
 
 
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 );

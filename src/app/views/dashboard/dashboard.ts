@@ -19,6 +19,25 @@ import { DashboardService } from '../../core/services/dashboard.service';
 import { DashboardResponse } from '../../core/models/dashboard-response.model';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 
+
+type CardVariant =
+    | 'info'
+    | 'success'
+    | 'warning'
+    | 'danger';
+
+interface DashboardCard {
+    title: string;
+    value: string | number;
+    variant: CardVariant;
+}
+
+type PeriodoDashboard =
+    | 'hoje'
+    | '7dias'
+    | '30dias'
+    | 'mes'
+    | 'todos';
 @Component({
     selector: 'app-dashboard',
     standalone: true,
@@ -46,7 +65,7 @@ export class Dashboard implements OnInit {
 
     movimentacoes: MovimentacaoEstoque[] = [];
 
-    dashboard?: DashboardResponse;    
+    dashboard?: DashboardResponse;
 
     resumoGeralSelecionado = '';
 
@@ -55,15 +74,8 @@ export class Dashboard implements OnInit {
     resumoPromocoesSelecionado = '';
 
     resumoProdutosSelecionado = '';
-    
 
-    periodoSelecionado:
-        'hoje'
-        | '7dias'
-        | '30dias'
-        | 'mes'
-        | 'todos'
-        = 'hoje';
+    periodoSelecionado: PeriodoDashboard = 'hoje';
 
     abaSelecionada:
         'geral'
@@ -171,13 +183,111 @@ export class Dashboard implements OnInit {
 
     }
 
+    private criarCard(
+        title: string,
+        value: string | number,
+        variant: CardVariant
+    ): DashboardCard {
+
+        return {
+            title,
+            value,
+            variant
+        };
+
+    }
+
+    private formatarMoeda(
+        valor: number
+    ): string {
+
+        return valor.toLocaleString(
+            'pt-BR',
+            {
+                style: 'currency',
+                currency: 'BRL'
+            }
+        );
+
+    }
+
+    private estaNoPeriodo(
+        data: Date
+    ): boolean {
+
+        const hoje = new Date();
+
+        switch (this.periodoSelecionado) {
+
+            case 'hoje':
+                return (
+                    data.toDateString() ===
+                    hoje.toDateString()
+                );
+
+            case '7dias':
+                return (
+                    hoje.getTime() -
+                    data.getTime()
+                ) <= 7 * 24 * 60 * 60 * 1000;
+
+            case '30dias':
+                return (
+                    hoje.getTime() -
+                    data.getTime()
+                ) <= 30 * 24 * 60 * 60 * 1000;
+
+            case 'mes':
+                return (
+                    data.getMonth() === hoje.getMonth()
+                    &&
+                    data.getFullYear() === hoje.getFullYear()
+                );
+
+            default:
+                return true;
+        }
+    }
+
+    private carregarDashboard(): void {
+
+        this.dashboardService
+            .obterDashboard(
+                this.periodoSelecionado
+            )
+            .subscribe({
+
+                next: dashboard => {
+
+                    this.dashboard = dashboard;
+
+                    this.cdr.detectChanges();
+
+                }
+
+            });
+
+    }
+
+    get totalProdutosAtivos(): number {
+        return this.produtos.filter(
+            produto => produto.ativo
+        ).length;
+    }
+
+    get totalProdutosInativos(): number {
+        return this.produtos.filter(
+            produto => !produto.ativo
+        ).length;
+    }
+
     get promocoesAtivasDetalhes() {
 
-    return this.dashboard
-        ?.promocoesAtivasDetalhes
-        ?? [];
+        return this.dashboard
+            ?.promocoesAtivasDetalhes
+            ?? [];
 
-}
+    }
 
     get vendasHoje(): Venda[] {
 
@@ -194,16 +304,10 @@ export class Dashboard implements OnInit {
     }
 
     alterarPeriodo(
-        periodo:
-            'hoje'
-            | '7dias'
-            | '30dias'
-            | 'mes'
-            | 'todos'
+        periodo: PeriodoDashboard
     ) {
 
-        this.periodoSelecionado =
-            periodo;
+        this.periodoSelecionado = periodo;
 
         this.carregarDashboard();
         this.cdr.detectChanges();
@@ -266,80 +370,13 @@ export class Dashboard implements OnInit {
 
     }
 
-    get fiadosFiltrados(): Fiado[] {
-
-        const hoje = new Date();
-
-        switch (this.periodoSelecionado) {
-
-            case 'hoje':
-
-                return this.fiados.filter(
-                    fiado =>
-                        new Date(
-                            fiado.dataLancamento
-                        ).toDateString()
-                        === hoje.toDateString()
-                );
-
-            case '7dias':
-
-                const seteDias = new Date();
-
-                seteDias.setDate(
-                    seteDias.getDate() - 7
-                );
-
-                return this.fiados.filter(
-                    fiado =>
-                        new Date(
-                            fiado.dataLancamento
-                        ) >= seteDias
-                );
-
-            case '30dias':
-
-                const trintaDias =
-                    new Date();
-
-                trintaDias.setDate(
-                    trintaDias.getDate() - 30
-                );
-
-                return this.fiados.filter(
-                    fiado =>
-                        new Date(
-                            fiado.dataLancamento
-                        ) >= trintaDias
-                );
-
-            case 'mes':
-
-                return this.fiados.filter(
-                    fiado => {
-
-                        const data =
-                            new Date(
-                                fiado.dataLancamento
-                            );
-
-                        return (
-                            data.getMonth()
-                            === hoje.getMonth()
-                            &&
-                            data.getFullYear()
-                            === hoje.getFullYear()
-                        );
-
-                    }
-                );
-
-            default:
-
-                return this.fiados;
-
-        }
-
+    get fiadosFiltrados() {
+        return this.fiados.filter(
+            fiado =>
+                this.estaNoPeriodo(
+                    new Date(fiado.dataLancamento)
+                )
+        );
     }
 
     formatarPagamento(
@@ -536,175 +573,141 @@ export class Dashboard implements OnInit {
 
     }
 
-    get cardsGeral() {
+    get cardsGeral(): DashboardCard[] {
 
         return this.cardsDashboard;
 
     }
 
-    get cardsVendas() {
+    get cardsVendas(): DashboardCard[] {
+
+        return [
+            this.criarCard(
+                `Vendas (${this.descricaoPeriodo})`,
+                this.dashboard?.totalVendas ?? 0,
+                'info'
+            ),
+
+            this.criarCard(
+                'Faturamento',
+                this.formatarMoeda(
+                    this.dashboard?.faturamento ?? 0
+                ),
+                'success'
+            ),
+
+            this.criarCard(
+                'Vendas Hoje',
+                this.totalVendasHoje,
+                'info'
+            )
+        ];
+
+    }
+
+    get cardsEstoque(): DashboardCard[] {
+
+        return [
+            this.criarCard(
+                'Produtos',
+                this.dashboard?.totalProdutos ?? 0,
+                'info'
+            ),
+
+            this.criarCard(
+                'Estoque Baixo',
+                this.dashboard?.produtosComEstoqueBaixo ?? 0,
+                'warning'
+            ),
+
+            this.criarCard(
+                'Sem Estoque',
+                this.dashboard?.produtosSemEstoque ?? 0,
+                'danger'
+            )
+        ];
+
+    }
+
+    get cardsFinanceiro(): DashboardCard[] {
 
         return [
 
-            {
-                title: `Vendas (${this.descricaoPeriodo})`,
-                value: this.dashboard?.totalVendas ?? 0,
-                variant: 'info' as const
-            },
+            this.criarCard(
+                'Fiados em Aberto',
+                this.formatarMoeda(
+                    this.dashboard?.fiadosEmAberto ?? 0
+                ),
+                'warning'
+            ),
 
-            {
-                title: 'Faturamento',
-                value:
-                    (this.dashboard?.faturamento ?? 0)
-                        .toLocaleString(
-                            'pt-BR',
-                            {
-                                style: 'currency',
-                                currency: 'BRL'
-                            }
-                        ),
-                variant: 'success' as const
-            },
+            this.criarCard(
+                'Clientes Devedores',
+                this.dashboard?.clientesDevedores ?? 0,
+                'danger'
+            ),
 
-            {
-                title: 'Vendas Hoje',
-                value: this.totalVendasHoje,
-                variant: 'info' as const
-            }
+            this.criarCard(
+                'Faturamento',
+                this.formatarMoeda(
+                    this.dashboard?.faturamento ?? 0
+                ),
+                'success'
+            )
 
         ];
 
     }
 
-    get cardsEstoque() {
+    get cardsPromocoes(): DashboardCard[] {
 
         return [
+            this.criarCard(
+                'Promoções Ativas',
+                this.dashboard?.promocoesAtivas ?? 0,
+                'info'
+            ),
 
-            {
-                title: 'Produtos',
-                value: this.dashboard?.totalProdutos ?? 0,
-                variant: 'info' as const
-            },
+            this.criarCard(
+                'Vendas Promocionais',
+                this.totalVendasPromocionais,
+                'success'
+            ),
 
-            {
-                title: 'Estoque Baixo',
-                value: this.dashboard?.produtosComEstoqueBaixo ?? 0,
-                variant: 'warning' as const
-            },
-
-            {
-                title: 'Sem Estoque',
-                value: this.dashboard?.produtosSemEstoque ?? 0,
-                variant: 'danger' as const
-            }
-
+            this.criarCard(
+                'Promoções Eficientes',
+                this.totalPromocoesEficientes,
+                'success'
+            )
         ];
 
     }
 
-    get cardsFinanceiro() {
+    get cardsProdutos(): DashboardCard[] {
 
         return [
+            this.criarCard(
+                'Produtos',
+                this.produtos.length,
+                'info'
+            ),
 
-            {
-                title: 'Fiados em Aberto',
-                value: (this.dashboard?.fiadosEmAberto ?? 0)
-                    .toLocaleString(
-                        'pt-BR',
-                        {
-                            style: 'currency',
-                            currency: 'BRL'
-                        }
-                    ),
-                variant: 'warning' as const
-            },
+            this.criarCard(
+                'Ativos',
+                this.totalProdutosAtivos,
+                'success'
+            ),
 
-            {
-                title: 'Clientes Devedores',
-                value: this.dashboard?.clientesDevedores ?? 0,
-                variant: 'danger' as const
-            },
-
-            {
-                title: 'Faturamento',
-                value: (this.dashboard?.faturamento ?? 0)
-                    .toLocaleString(
-                        'pt-BR',
-                        {
-                            style: 'currency',
-                            currency: 'BRL'
-                        }
-                    ),
-                variant: 'success' as const
-            }
-
+            this.criarCard(
+                'Inativos',
+                this.totalProdutosInativos,
+                'warning'
+            )
         ];
 
     }
 
-    get cardsPromocoes() {
-
-        return [
-
-            {
-                title: 'Promoções Ativas',
-                value: this.dashboard?.promocoesAtivas ?? 0,
-                variant: 'info' as const
-            },
-
-            {
-                title: 'Vendas Promocionais',
-                value: this.totalVendasPromocionais,
-                variant: 'success' as const
-            },
-
-            {
-                title: 'Promoções Eficientes',
-                value: this.totalPromocoesEficientes,
-                variant: 'success' as const
-            }
-
-        ];
-
-    }
-
-    get cardsProdutos() {
-
-        const produtosAtivos =
-            this.produtos.filter(
-                produto => produto.ativo
-            ).length;
-
-        const produtosInativos =
-            this.produtos.filter(
-                produto => !produto.ativo
-            ).length;
-
-        return [
-
-            {
-                title: 'Produtos',
-                value: this.produtos.length,
-                variant: 'info' as const
-            },
-
-            {
-                title: 'Ativos',
-                value: produtosAtivos,
-                variant: 'success' as const
-            },
-
-            {
-                title: 'Inativos',
-                value: produtosInativos,
-                variant: 'warning' as const
-            }
-
-        ];
-
-    }    
-
-    get cardsAtuais() {
+    get cardsAtuais(): DashboardCard[] {
 
         switch (
         this.abaSelecionada
@@ -738,67 +741,49 @@ export class Dashboard implements OnInit {
 
     }
 
-    get cardsDashboard(): {
-        title: string;
-        value: string | number;
-        variant:
-        | 'info'
-        | 'success'
-        | 'warning'
-        | 'danger';
-    }[] {
+    get cardsDashboard(): DashboardCard[] {
 
         return [
 
-            {
-                title: `Vendas (${this.descricaoPeriodo})`,
-                value: this.dashboard?.totalVendas ?? 0,
-                variant: 'info'
-            },
+            this.criarCard(
+                `Vendas (${this.descricaoPeriodo})`,
+                this.dashboard?.totalVendas ?? 0,
+                'info'
+            ),
 
-            {
-                title: 'Faturamento',
-                value: (this.dashboard?.faturamento ?? 0)
-                    .toLocaleString(
-                        'pt-BR',
-                        {
-                            style: 'currency',
-                            currency: 'BRL'
-                        }
-                    ),
-                variant: 'success'
-            },
+            this.criarCard(
+                'Faturamento',
+                this.formatarMoeda(
+                    this.dashboard?.faturamento ?? 0
+                ),
+                'success'
+            ),
 
-            {
-                title: 'Fiados em Aberto',
-                value: (this.dashboard?.fiadosEmAberto ?? 0)
-                    .toLocaleString(
-                        'pt-BR',
-                        {
-                            style: 'currency',
-                            currency: 'BRL'
-                        }
-                    ),
-                variant: 'warning'
-            },
+            this.criarCard(
+                'Fiados em Aberto',
+                this.formatarMoeda(
+                    this.dashboard?.fiadosEmAberto ?? 0
+                ),
+                'warning'
+            ),
 
-            {
-                title: 'Produtos',
-                value: this.dashboard?.totalProdutos ?? 0,
-                variant: 'info'
-            },
+            this.criarCard(
+                'Produtos',
+                this.dashboard?.totalProdutos ?? 0,
+                'info'
+            ),
 
-            {
-                title: 'Clientes Devedores',
-                value: this.dashboard?.clientesDevedores ?? 0,
-                variant: 'danger'
-            },
+            this.criarCard(
+                'Clientes Devedores',
+                this.dashboard?.clientesDevedores ?? 0,
+                'danger'
+            ),
 
-            {
-                title: 'Baixo',
-                value: this.dashboard?.produtosComEstoqueBaixo ?? 0,
-                variant: 'warning'
-            }
+            this.criarCard(
+                'Baixo',
+                this.dashboard?.produtosComEstoqueBaixo ?? 0,
+                'warning'
+            )
 
         ];
 
@@ -1004,83 +989,13 @@ export class Dashboard implements OnInit {
 
     };
 
-    get vendasFiltradas(): Venda[] {
-
-        const hoje = new Date();
-
-        switch (
-        this.periodoSelecionado
-        ) {
-
-            case 'hoje':
-
-                return this.vendas.filter(
-                    venda =>
-                        new Date(
-                            venda.dataVenda
-                        ).toDateString()
-                        === hoje.toDateString()
-                );
-
-            case '7dias':
-
-                const seteDias =
-                    new Date();
-
-                seteDias.setDate(
-                    seteDias.getDate() - 7
-                );
-
-                return this.vendas.filter(
-                    venda =>
-                        new Date(
-                            venda.dataVenda
-                        ) >= seteDias
-                );
-
-            case '30dias':
-
-                const trintaDias =
-                    new Date();
-
-                trintaDias.setDate(
-                    trintaDias.getDate() - 30
-                );
-
-                return this.vendas.filter(
-                    venda =>
-                        new Date(
-                            venda.dataVenda
-                        ) >= trintaDias
-                );
-
-            case 'mes':
-
-                return this.vendas.filter(
-                    venda => {
-
-                        const data =
-                            new Date(
-                                venda.dataVenda
-                            );
-
-                        return (
-                            data.getMonth()
-                            === hoje.getMonth()
-                            &&
-                            data.getFullYear()
-                            === hoje.getFullYear()
-                        );
-
-                    }
-                );
-
-            default:
-
-                return this.vendas;
-
-        }
-
+    get vendasFiltradas() {
+        return this.vendas.filter(
+            venda =>
+                this.estaNoPeriodo(
+                    new Date(venda.dataVenda)
+                )
+        );
     }
 
     get descricaoPeriodo(): string {
@@ -1103,24 +1018,4 @@ export class Dashboard implements OnInit {
         }
     }
 
-    private carregarDashboard() {
-
-        this.dashboardService
-            .obterDashboard(
-                this.periodoSelecionado
-            )
-            .subscribe({
-
-                next: dashboard => {
-
-                    this.dashboard = dashboard;
-
-                    this.cdr.detectChanges();
-
-                }
-
-            });
-
-    }
-    
 }

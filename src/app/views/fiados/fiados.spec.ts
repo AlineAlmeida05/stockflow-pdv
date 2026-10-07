@@ -1,5 +1,5 @@
 import { Fiados } from './fiados';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
 beforeEach(() => {
@@ -856,6 +856,326 @@ describe(
 
             }
         );
+
+        it('deve tratar erro ao registrar pagamento', () => {
+
+            const alertService = {
+                success: vi.fn(),
+                error: vi.fn(),
+                warning: vi.fn()
+            };
+
+            const pagamentoService = {
+                salvar: vi.fn(
+                    () => throwError(() => new Error())
+                )
+            };
+
+            component =
+                new Fiados(
+                    {} as any,
+                    {} as any,
+                    pagamentoService as any,
+                    alertService as any,
+                    {} as any
+                );
+
+            component.cliente =
+                { id: '1' } as any;
+
+            component.clienteResumo =
+                { saldoDevedor: 200 } as any;
+
+            component.valorRecebido = 100;
+
+            component.confirmarRecebimento();
+
+            expect(
+                alertService.error
+            ).toHaveBeenCalledWith(
+                'Erro ao registrar pagamento.'
+            );
+
+        });
+
+        it('deve carregar clientes fiados e pagamentos', () => {
+
+            const clienteService = {
+                listar: vi.fn(() =>
+                    of([
+                        { id: '1' }
+                    ])
+                ),
+                obterResumo: vi.fn(() =>
+                    of({
+                        saldoDevedor: 100
+                    })
+                )
+            };
+
+            const fiadoService = {
+                listar: vi.fn(() =>
+                    of([
+                        { id: '10' }
+                    ])
+                )
+            };
+
+            const pagamentoService = {
+                listar: vi.fn(() =>
+                    of([
+                        { id: '20' }
+                    ])
+                )
+            };
+
+            component =
+                new Fiados(
+                    clienteService as any,
+                    fiadoService as any,
+                    pagamentoService as any,
+                    {} as any,
+                    {
+                        detectChanges: vi.fn()
+                    } as any
+                );
+
+            component.carregarDados();
+
+            expect(
+                component.clientes.length
+            ).toBe(1);
+
+            expect(
+                component.fiados.length
+            ).toBe(1);
+
+            expect(
+                component.pagamentos.length
+            ).toBe(1);
+
+        });
+
+        it('deve tratar erro ao carregar clientes', () => {
+
+            const spy =
+                vi.spyOn(
+                    console,
+                    'error'
+                );
+
+            const clienteService = {
+                listar: vi.fn(
+                    () =>
+                        throwError(
+                            () => new Error()
+                        )
+                )
+            };
+
+            const fiadoService = {
+                listar: vi.fn(
+                    () => of([])
+                )
+            };
+
+            const pagamentoService = {
+                listar: vi.fn(
+                    () => of([])
+                )
+            };
+
+            component =
+                new Fiados(
+                    clienteService as any,
+                    fiadoService as any,
+                    pagamentoService as any,
+                    {} as any,
+                    {
+                        detectChanges: vi.fn()
+                    } as any
+                );
+
+            component.carregarDados();
+
+            expect(
+                spy
+            ).toHaveBeenCalled();
+
+        });
+
+        it('deve selecionar cliente e carregar resumo', () => {
+
+            const cliente = {
+                id: '1'
+            };
+
+            const resumo = {
+                saldoDevedor: 500
+            };
+
+            const clienteService = {
+                obterResumo: vi.fn(
+                    () => of(resumo)
+                )
+            };
+
+            component =
+                new Fiados(
+                    clienteService as any,
+                    {} as any,
+                    {} as any,
+                    {} as any,
+                    {
+                        detectChanges: vi.fn()
+                    } as any
+                );
+
+            component.selecionarCliente(
+                cliente as any
+            );
+
+            expect(
+                component.cliente
+            ).toEqual(cliente);
+
+            expect(
+                component.clienteResumo
+            ).toEqual(resumo);
+
+        });
+
+        it('deve tratar erro ao carregar resumo do cliente', () => {
+
+            const spy =
+                vi.spyOn(
+                    console,
+                    'error'
+                );
+
+            const clienteService = {
+
+                obterResumo: vi.fn(
+                    () =>
+                        throwError(
+                            () => new Error()
+                        )
+                )
+
+            };
+
+            component =
+                new Fiados(
+                    clienteService as any,
+                    {} as any,
+                    {} as any,
+                    {} as any,
+                    {} as any
+                );
+
+            component.selecionarCliente({
+                id: '1'
+            } as any);
+
+            expect(
+                spy
+            ).toHaveBeenCalled();
+
+        });
+
+        it('deve ordenar clientes devedores pelo maior saldo', () => {
+
+            component.clientes = [
+                {
+                    id: '1'
+                } as any,
+                {
+                    id: '2'
+                } as any
+            ];
+
+            component.resumosClientes = {
+
+                '1': {
+                    saldoDevedor: 100
+                } as any,
+
+                '2': {
+                    saldoDevedor: 500
+                } as any
+
+            };
+
+            expect(
+                component.clientesDevedores[0]
+                    .id
+            ).toBe('2');
+
+        });
+
+        it('deve ordenar fiados mais recentes primeiro', () => {
+
+            component.cliente =
+                { id: '1' } as any;
+
+            component.fiados = [
+
+                {
+                    clienteId: '1',
+                    dataLancamento:
+                        '2025-01-01'
+                } as any,
+
+                {
+                    clienteId: '1',
+                    dataLancamento:
+                        '2026-01-01'
+                } as any
+
+            ];
+
+            expect(
+                component
+                    .obterFiadosCliente()[0]
+                    .dataLancamento
+            ).toBe('2026-01-01');
+
+        });
+
+        it('deve ordenar extrato por data decrescente', () => {
+
+            component.cliente =
+                { id: '1' } as any;
+
+            component.fiados = [
+
+                {
+                    clienteId: '1',
+                    dataLancamento:
+                        '2025-01-01',
+                    valorTotal: 100
+                } as any
+
+            ];
+
+            component.pagamentos = [
+
+                {
+                    clienteId: '1',
+                    dataPagamento:
+                        '2026-01-01',
+                    valorPago: 50
+                } as any
+
+            ];
+
+            expect(
+                component
+                    .obterExtratoCliente()[0]
+                    .tipo
+            ).toBe('pagamento');
+
+        });
 
         afterEach(() => {
 
