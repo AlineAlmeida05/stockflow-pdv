@@ -23,27 +23,12 @@ export class MainLayout {
 
   constructor() {
 
-    console.log(
-      'MainLayout criado'
-    );
-
   }
 
 
   alternarMenu(): void {
 
-    console.log(
-      'Antes:',
-      this.menuAberto
-    );
-
-    this.menuAberto =
-      !this.menuAberto;
-
-    console.log(
-      'Depois:',
-      this.menuAberto
-    );
+    this.menuAberto = !this.menuAberto;
 
   }
 
