@@ -105,26 +105,25 @@ export class Tenants implements OnInit {
 
     }
 
-    salvarTenant(): void {
+    private limparFormulario(): void {
 
-        if (!this.novoNome.trim()) {
+        this.novoNome = '';
+        this.novoSlug = '';
+        this.novoCodigoTenant = '';
+        this.novoLogoUrl = '';
+        this.novoFaviconUrl = '';
+        this.novaCorPrimaria = '';
+        this.novaCorSecundaria = '';
+        this.novoResponsavel = '';
+        this.novoEmail = '';
+        this.novaCidade = '';
+        this.novoAtivo = true;
 
-            this.alertService.warning(
-                'Informe o nome da adega.'
-            );
+    }
 
-            return;
+    private obterDadosTenant() {
 
-        }
-
-        this.salvando = true;
-
-        const loadingToast =
-            this.alertService.loading(
-                'Criando tenant...'
-            );
-
-        const request: TenantCreateRequest = {
+        return {
             nome: this.novoNome,
             slug: this.novoSlug,
             codigoTenant: this.novoCodigoTenant,
@@ -138,6 +137,31 @@ export class Tenants implements OnInit {
             ativo: this.novoAtivo
         };
 
+    }
+
+    private preencherFormulario(
+        tenant: Tenant
+    ): void {
+
+        this.novoNome = tenant.nome ?? '';
+        this.novoSlug = tenant.slug ?? '';
+        this.novoCodigoTenant = tenant.codigoTenant ?? '';
+        this.novoLogoUrl = tenant.logoUrl ?? '';
+        this.novoFaviconUrl = tenant.faviconUrl ?? '';
+        this.novaCorPrimaria = tenant.corPrimaria ?? '';
+        this.novaCorSecundaria = tenant.corSecundaria ?? '';
+        this.novoResponsavel = tenant.responsavel ?? '';
+        this.novoEmail = tenant.email ?? '';
+        this.novaCidade = tenant.cidade ?? '';
+        this.novoAtivo = tenant.ativo ?? true;
+
+    }
+
+    private criarTenant(
+        request: TenantCreateRequest,
+        loadingToast: ReturnType<AlertService['loading']>
+    ): void {
+
         this.tenantService
             .salvar(request)
             .subscribe({
@@ -149,16 +173,7 @@ export class Tenants implements OnInit {
                         tenantCriado
                     ];
 
-                    this.novoNome = '';
-                    this.novoSlug = '';
-                    this.novoLogoUrl = '';
-                    this.novoFaviconUrl = '';
-                    this.novaCorPrimaria = '';
-                    this.novaCorSecundaria = '';
-                    this.novoResponsavel = '';
-                    this.novoEmail = '';
-                    this.novaCidade = '';
-                    this.novoAtivo = true;
+                    this.limparFormulario();
 
                     this.alertService.updateToast(
                         loadingToast.id,
@@ -187,6 +202,89 @@ export class Tenants implements OnInit {
                 }
 
             });
+
+    }
+
+    private atualizarTenantExistente(
+        tenantId: string,
+        request: TenantUpdateRequest,
+        loadingToast: ReturnType<AlertService['loading']>
+    ): void {
+        this.tenantService
+            .atualizar(
+                tenantId,
+                request
+            )
+            .subscribe({
+
+                next: (tenantAtualizado) => {
+
+                    this.tenants =
+                        this.tenants.map(
+                            tenant =>
+                                tenant.id === tenantAtualizado.id
+                                    ? tenantAtualizado
+                                    : tenant
+                        );
+
+                    this.alertService.updateToast(
+                        loadingToast.id,
+                        'Tenant atualizado com sucesso.',
+                        'success'
+                    );
+
+                    this.salvando = false;
+                    this.modoEdicao = false;
+                    this.tenantEditando = null;
+                    this.novoAtivo = true;
+                    this.cdr.detectChanges();
+                    this.limparFormulario();
+
+                },
+
+                error: erro => {
+
+                    this.alertService.updateToast(
+                        loadingToast.id,
+                        'Erro ao atualizar tenant.',
+                        'error'
+                    );
+
+                    this.salvando = false;
+
+                    console.error(erro);
+
+                }
+
+            });
+    }
+
+    salvarTenant(): void {
+
+        if (!this.novoNome.trim()) {
+
+            this.alertService.warning(
+                'Informe o nome da adega.'
+            );
+
+            return;
+
+        }
+
+        this.salvando = true;
+
+        const loadingToast =
+            this.alertService.loading(
+                'Criando tenant...'
+            );
+
+        const request: TenantCreateRequest =
+            this.obterDadosTenant();
+
+        this.criarTenant(
+            request,
+            loadingToast
+        );
 
     }
 
@@ -235,78 +333,14 @@ export class Tenants implements OnInit {
                 'Atualizando tenant...'
             );
 
-        const request: TenantUpdateRequest = {
-            nome: this.novoNome,
-            slug: this.novoSlug,
-            codigoTenant: this.novoCodigoTenant,
-            logoUrl: this.novoLogoUrl,
-            faviconUrl: this.novoFaviconUrl,
-            corPrimaria: this.novaCorPrimaria,
-            corSecundaria: this.novaCorSecundaria,
-            responsavel: this.novoResponsavel,
-            email: this.novoEmail,
-            cidade: this.novaCidade,
-            ativo: this.novoAtivo
-        };
+        const request: TenantUpdateRequest =
+            this.obterDadosTenant();
 
-        this.tenantService
-            .atualizar(
-                this.tenantEditando.id,
-                request
-            )
-            .subscribe({
-
-                next: (tenantAtualizado) => {
-
-                    this.tenants =
-                        this.tenants.map(
-                            tenant =>
-                                tenant.id === tenantAtualizado.id
-                                    ? tenantAtualizado
-                                    : tenant
-                        );
-
-                    this.alertService.updateToast(
-                        loadingToast.id,
-                        'Tenant atualizado com sucesso.',
-                        'success'
-                    );
-
-                    this.salvando = false;
-                    this.modoEdicao = false;
-                    this.tenantEditando = null;
-                    this.novoAtivo = true;
-                    this.cdr.detectChanges();
-                    this.novoNome = '';
-                    this.novoSlug = '';
-                    this.novoLogoUrl = '';
-                    this.novoFaviconUrl = '';
-                    this.novaCorPrimaria = '';
-                    this.novaCorSecundaria = '';
-                    this.novoResponsavel = '';
-                    this.novoEmail = '';
-                    this.novaCidade = '';
-                    this.novoAtivo = true;
-
-                },
-
-
-
-                error: erro => {
-
-                    this.alertService.updateToast(
-                        loadingToast.id,
-                        'Erro ao atualizar tenant.',
-                        'error'
-                    );
-
-                    this.salvando = false;
-
-                    console.error(erro);
-
-                }
-
-            });
+        this.atualizarTenantExistente(
+            this.tenantEditando.id,
+            request,
+            loadingToast
+        );
 
     }
 
@@ -315,17 +349,7 @@ export class Tenants implements OnInit {
         this.mostrarFormulario = false;
         this.modoEdicao = false;
         this.tenantEditando = null;
-        this.novoNome = '';
-        this.novoSlug = '';
-        this.novoLogoUrl = '';
-        this.novoFaviconUrl = '';
-        this.novaCorPrimaria = '';
-        this.novaCorSecundaria = '';
-        this.novoResponsavel = '';
-        this.novoEmail = '';
-        this.novaCidade = '';
-        this.novoAtivo = true;
-
+        this.limparFormulario();
     }
 
     novoTenant(): void {
@@ -333,16 +357,7 @@ export class Tenants implements OnInit {
         this.mostrarFormulario = true;
         this.modoEdicao = false;
         this.tenantEditando = null;
-        this.novoNome = '';
-        this.novoSlug = '';
-        this.novoLogoUrl = '';
-        this.novoFaviconUrl = '';
-        this.novaCorPrimaria = '';
-        this.novaCorSecundaria = '';
-        this.novoResponsavel = '';
-        this.novoEmail = '';
-        this.novaCidade = '';
-        this.novoAtivo = true;
+        this.limparFormulario();
 
     }
 
@@ -464,17 +479,9 @@ export class Tenants implements OnInit {
         this.mostrarFormulario = true;
         this.modoVisualizacao = true;
         this.modoEdicao = false;
-        this.novoNome = tenant.nome ?? '';
-        this.novoSlug = tenant.slug ?? '';
-        this.novoCodigoTenant = tenant.codigoTenant ?? '';
-        this.novoLogoUrl = tenant.logoUrl ?? '';
-        this.novoFaviconUrl = tenant.faviconUrl ?? '';
-        this.novaCorPrimaria = tenant.corPrimaria ?? '';
-        this.novaCorSecundaria = tenant.corSecundaria ?? '';
-        this.novoResponsavel = tenant.responsavel ?? '';
-        this.novoEmail = tenant.email ?? '';
-        this.novaCidade = tenant.cidade ?? '';
-        this.novoAtivo = tenant.ativo ?? true;
+        this.preencherFormulario(
+            tenant
+        );
 
     }
 
