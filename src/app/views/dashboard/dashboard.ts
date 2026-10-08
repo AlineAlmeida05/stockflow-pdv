@@ -269,6 +269,76 @@ export class Dashboard implements OnInit {
 
     }
 
+    alterarPeriodo(
+        periodo: PeriodoDashboard
+    ): void {
+
+        this.periodoSelecionado = periodo;
+
+        this.carregarDashboard();
+        
+        this.cdr.detectChanges();
+
+    }
+
+    formatarPagamento(
+        pagamento: string
+    ): string {
+
+        switch (
+        pagamento?.toLowerCase()
+        ) {
+
+            case 'pix':
+                return 'PIX';
+
+            case 'credito':
+                return 'Crédito';
+
+            case 'debito':
+                return 'Débito';
+
+            case 'dinheiro':
+                return 'Dinheiro';
+
+            case 'fiado':
+                return 'Fiado';
+
+            default:
+                return pagamento;
+
+        }
+
+    }
+
+    giroChartOptions = {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        indexAxis: 'y' as const
+
+    };
+
+    pagamentoChartOptions: ChartConfiguration['options'] = {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        plugins: {
+
+            legend: {
+
+                position: 'bottom'
+
+            }
+
+        }
+
+    };
+
     get totalProdutosAtivos(): number {
         return this.produtos.filter(
             produto => produto.ativo
@@ -301,18 +371,7 @@ export class Dashboard implements OnInit {
                 ).toDateString() === hoje
         );
 
-    }
-
-    alterarPeriodo(
-        periodo: PeriodoDashboard
-    ) {
-
-        this.periodoSelecionado = periodo;
-
-        this.carregarDashboard();
-        this.cdr.detectChanges();
-
-    }
+    }    
 
     get totalVendasHoje(): number {
 
@@ -377,37 +436,7 @@ export class Dashboard implements OnInit {
                     new Date(fiado.dataLancamento)
                 )
         );
-    }
-
-    formatarPagamento(
-        pagamento: string
-    ): string {
-
-        switch (
-        pagamento?.toLowerCase()
-        ) {
-
-            case 'pix':
-                return 'PIX';
-
-            case 'credito':
-                return 'Crédito';
-
-            case 'debito':
-                return 'Débito';
-
-            case 'dinheiro':
-                return 'Dinheiro';
-
-            case 'fiado':
-                return 'Fiado';
-
-            default:
-                return pagamento;
-
-        }
-
-    }
+    }    
 
     get produtosComEstoqueBaixo(): number {
 
@@ -826,25 +855,7 @@ export class Dashboard implements OnInit {
 
         };
 
-    }
-
-    pagamentoChartOptions: ChartConfiguration['options'] = {
-
-        responsive: true,
-
-        maintainAspectRatio: false,
-
-        plugins: {
-
-            legend: {
-
-                position: 'bottom'
-
-            }
-
-        }
-
-    };
+    }    
 
     get topProdutosChartData() {
 
@@ -977,17 +988,7 @@ export class Dashboard implements OnInit {
 
         };
 
-    }
-
-    giroChartOptions = {
-
-        responsive: true,
-
-        maintainAspectRatio: false,
-
-        indexAxis: 'y' as const
-
-    };
+    }    
 
     get vendasFiltradas() {
         return this.vendas.filter(
