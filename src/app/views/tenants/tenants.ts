@@ -105,6 +105,154 @@ export class Tenants implements OnInit {
 
     }
 
+    private limparFormulario(): void {
+
+        this.novoNome = '';
+        this.novoSlug = '';
+        this.novoCodigoTenant = '';
+        this.novoLogoUrl = '';
+        this.novoFaviconUrl = '';
+        this.novaCorPrimaria = '';
+        this.novaCorSecundaria = '';
+        this.novoResponsavel = '';
+        this.novoEmail = '';
+        this.novaCidade = '';
+        this.novoAtivo = true;
+
+    }
+
+    private obterDadosTenant() {
+
+        return {
+            nome: this.novoNome,
+            slug: this.novoSlug,
+            codigoTenant: this.novoCodigoTenant,
+            logoUrl: this.novoLogoUrl,
+            faviconUrl: this.novoFaviconUrl,
+            corPrimaria: this.novaCorPrimaria,
+            corSecundaria: this.novaCorSecundaria,
+            responsavel: this.novoResponsavel,
+            email: this.novoEmail,
+            cidade: this.novaCidade,
+            ativo: this.novoAtivo
+        };
+
+    }
+
+    private preencherFormulario(
+        tenant: Tenant
+    ): void {
+
+        this.novoNome = tenant.nome ?? '';
+        this.novoSlug = tenant.slug ?? '';
+        this.novoCodigoTenant = tenant.codigoTenant ?? '';
+        this.novoLogoUrl = tenant.logoUrl ?? '';
+        this.novoFaviconUrl = tenant.faviconUrl ?? '';
+        this.novaCorPrimaria = tenant.corPrimaria ?? '';
+        this.novaCorSecundaria = tenant.corSecundaria ?? '';
+        this.novoResponsavel = tenant.responsavel ?? '';
+        this.novoEmail = tenant.email ?? '';
+        this.novaCidade = tenant.cidade ?? '';
+        this.novoAtivo = tenant.ativo ?? true;
+
+    }
+
+    private criarTenant(
+        request: TenantCreateRequest,
+        loadingToast: ReturnType<AlertService['loading']>
+    ): void {
+
+        this.tenantService
+            .salvar(request)
+            .subscribe({
+
+                next: (tenantCriado) => {
+
+                    this.tenants = [
+                        ...this.tenants,
+                        tenantCriado
+                    ];
+
+                    this.limparFormulario();
+
+                    this.alertService.updateToast(
+                        loadingToast.id,
+                        'Tenant criado com sucesso.',
+                        'success'
+                    );
+
+                    this.salvando = false;
+
+                    this.cdr.detectChanges();
+
+                },
+
+                error: () => {
+
+                    this.alertService.updateToast(
+                        loadingToast.id,
+                        'Erro ao criar tenant.',
+                        'error'
+                    );
+
+                    this.salvando = false;
+                }
+
+            });
+
+    }
+
+    private atualizarTenantExistente(
+        tenantId: string,
+        request: TenantUpdateRequest,
+        loadingToast: ReturnType<AlertService['loading']>
+    ): void {
+        this.tenantService
+            .atualizar(
+                tenantId,
+                request
+            )
+            .subscribe({
+
+                next: (tenantAtualizado) => {
+
+                    this.tenants =
+                        this.tenants.map(
+                            tenant =>
+                                tenant.id === tenantAtualizado.id
+                                    ? tenantAtualizado
+                                    : tenant
+                        );
+
+                    this.alertService.updateToast(
+                        loadingToast.id,
+                        'Tenant atualizado com sucesso.',
+                        'success'
+                    );
+
+                    this.salvando = false;
+                    this.modoEdicao = false;
+                    this.tenantEditando = null;
+                    this.novoAtivo = true;
+                    this.cdr.detectChanges();
+                    this.limparFormulario();
+
+                },
+
+                error: () => {
+
+                    this.alertService.updateToast(
+                        loadingToast.id,
+                        'Erro ao atualizar tenant.',
+                        'error'
+                    );
+
+                    this.salvando = false;
+                }
+
+            });
+    }
+
     salvarTenant(): void {
 
         if (!this.novoNome.trim()) {
@@ -124,69 +272,13 @@ export class Tenants implements OnInit {
                 'Criando tenant...'
             );
 
-        const request: TenantCreateRequest = {
-            nome: this.novoNome,
-            slug: this.novoSlug,
-            codigoTenant: this.novoCodigoTenant,
-            logoUrl: this.novoLogoUrl,
-            faviconUrl: this.novoFaviconUrl,
-            corPrimaria: this.novaCorPrimaria,
-            corSecundaria: this.novaCorSecundaria,
-            responsavel: this.novoResponsavel,
-            email: this.novoEmail,
-            cidade: this.novaCidade,
-            ativo: this.novoAtivo
-        };
+        const request: TenantCreateRequest =
+            this.obterDadosTenant();
 
-        this.tenantService
-            .salvar(request)
-            .subscribe({
-
-                next: (tenantCriado) => {
-
-                    this.tenants = [
-                        ...this.tenants,
-                        tenantCriado
-                    ];
-
-                    this.novoNome = '';
-                    this.novoSlug = '';
-                    this.novoLogoUrl = '';
-                    this.novoFaviconUrl = '';
-                    this.novaCorPrimaria = '';
-                    this.novaCorSecundaria = '';
-                    this.novoResponsavel = '';
-                    this.novoEmail = '';
-                    this.novaCidade = '';
-                    this.novoAtivo = true;
-
-                    this.alertService.updateToast(
-                        loadingToast.id,
-                        'Tenant criado com sucesso.',
-                        'success'
-                    );
-
-                    this.salvando = false;
-
-                    this.cdr.detectChanges();
-
-                },
-
-                error: (erro) => {
-
-                    this.alertService.updateToast(
-                        loadingToast.id,
-                        'Erro ao criar tenant.',
-                        'error'
-                    );
-
-                    this.salvando = false;
-
-                    console.error(erro);
-
-                }
-
-            });
+        this.criarTenant(
+            request,
+            loadingToast
+        );
 
     }
 
@@ -235,78 +327,14 @@ export class Tenants implements OnInit {
                 'Atualizando tenant...'
             );
 
-        const request: TenantUpdateRequest = {
-            nome: this.novoNome,
-            slug: this.novoSlug,
-            codigoTenant: this.novoCodigoTenant,
-            logoUrl: this.novoLogoUrl,
-            faviconUrl: this.novoFaviconUrl,
-            corPrimaria: this.novaCorPrimaria,
-            corSecundaria: this.novaCorSecundaria,
-            responsavel: this.novoResponsavel,
-            email: this.novoEmail,
-            cidade: this.novaCidade,
-            ativo: this.novoAtivo
-        };
+        const request: TenantUpdateRequest =
+            this.obterDadosTenant();
 
-        this.tenantService
-            .atualizar(
-                this.tenantEditando.id,
-                request
-            )
-            .subscribe({
-
-                next: (tenantAtualizado) => {
-
-                    this.tenants =
-                        this.tenants.map(
-                            tenant =>
-                                tenant.id === tenantAtualizado.id
-                                    ? tenantAtualizado
-                                    : tenant
-                        );
-
-                    this.alertService.updateToast(
-                        loadingToast.id,
-                        'Tenant atualizado com sucesso.',
-                        'success'
-                    );
-
-                    this.salvando = false;
-                    this.modoEdicao = false;
-                    this.tenantEditando = null;
-                    this.novoAtivo = true;
-                    this.cdr.detectChanges();
-                    this.novoNome = '';
-                    this.novoSlug = '';
-                    this.novoLogoUrl = '';
-                    this.novoFaviconUrl = '';
-                    this.novaCorPrimaria = '';
-                    this.novaCorSecundaria = '';
-                    this.novoResponsavel = '';
-                    this.novoEmail = '';
-                    this.novaCidade = '';
-                    this.novoAtivo = true;
-
-                },
-
-
-
-                error: erro => {
-
-                    this.alertService.updateToast(
-                        loadingToast.id,
-                        'Erro ao atualizar tenant.',
-                        'error'
-                    );
-
-                    this.salvando = false;
-
-                    console.error(erro);
-
-                }
-
-            });
+        this.atualizarTenantExistente(
+            this.tenantEditando.id,
+            request,
+            loadingToast
+        );
 
     }
 
@@ -315,17 +343,7 @@ export class Tenants implements OnInit {
         this.mostrarFormulario = false;
         this.modoEdicao = false;
         this.tenantEditando = null;
-        this.novoNome = '';
-        this.novoSlug = '';
-        this.novoLogoUrl = '';
-        this.novoFaviconUrl = '';
-        this.novaCorPrimaria = '';
-        this.novaCorSecundaria = '';
-        this.novoResponsavel = '';
-        this.novoEmail = '';
-        this.novaCidade = '';
-        this.novoAtivo = true;
-
+        this.limparFormulario();
     }
 
     novoTenant(): void {
@@ -333,16 +351,7 @@ export class Tenants implements OnInit {
         this.mostrarFormulario = true;
         this.modoEdicao = false;
         this.tenantEditando = null;
-        this.novoNome = '';
-        this.novoSlug = '';
-        this.novoLogoUrl = '';
-        this.novoFaviconUrl = '';
-        this.novaCorPrimaria = '';
-        this.novaCorSecundaria = '';
-        this.novoResponsavel = '';
-        this.novoEmail = '';
-        this.novaCidade = '';
-        this.novoAtivo = true;
+        this.limparFormulario();
 
     }
 
@@ -464,17 +473,9 @@ export class Tenants implements OnInit {
         this.mostrarFormulario = true;
         this.modoVisualizacao = true;
         this.modoEdicao = false;
-        this.novoNome = tenant.nome ?? '';
-        this.novoSlug = tenant.slug ?? '';
-        this.novoCodigoTenant = tenant.codigoTenant ?? '';
-        this.novoLogoUrl = tenant.logoUrl ?? '';
-        this.novoFaviconUrl = tenant.faviconUrl ?? '';
-        this.novaCorPrimaria = tenant.corPrimaria ?? '';
-        this.novaCorSecundaria = tenant.corSecundaria ?? '';
-        this.novoResponsavel = tenant.responsavel ?? '';
-        this.novoEmail = tenant.email ?? '';
-        this.novaCidade = tenant.cidade ?? '';
-        this.novoAtivo = tenant.ativo ?? true;
+        this.preencherFormulario(
+            tenant
+        );
 
     }
 
@@ -549,19 +550,13 @@ export class Tenants implements OnInit {
 
                         },
 
-                        error: erro => {
+                        error: () => {
 
                             this.alertService.updateToast(
                                 loadingToast.id,
                                 'Erro ao atualizar tenant.',
                                 'error'
                             );
-
-                            console.error(
-                                'Erro ao atualizar tenant',
-                                erro
-                            );
-
                         }
 
                     });

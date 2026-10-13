@@ -18,6 +18,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { UsuarioCreateRequest } from '../../core/requests/usuario-create-request';
 import { UsuarioUpdateRequest } from '../../core/requests/usuario-update-request';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
+import { AuthStateService } from '../../core/services/auth-state.service';
 
 
 const COLUNAS_USUARIOS: {
@@ -125,7 +126,8 @@ export class Usuarios implements OnInit {
         private tenantService: TenantService,
         private authService: AuthService,
         private cdr: ChangeDetectorRef,
-        private confirmDialogService: ConfirmDialogService
+        private confirmDialogService: ConfirmDialogService,
+        private authStateService: AuthStateService
     ) { }
 
     ngOnInit(): void {
@@ -141,8 +143,8 @@ export class Usuarios implements OnInit {
     carregarUsuarios(): void {
 
         const usuario =
-            this.authService
-                .usuarioLogado();
+            this.authStateService
+                .usuario
 
         if (!usuario) {
             return;
@@ -216,8 +218,8 @@ export class Usuarios implements OnInit {
         }
 
         const usuarioLogado =
-            this.authService
-                .usuarioLogado();
+            this.authStateService
+                .usuario
 
         return this.tenants.find(
             tenant =>
@@ -784,7 +786,8 @@ export class Usuarios implements OnInit {
     get ehSuperAdmin(): boolean {
 
         const usuario =
-            this.authService.usuarioLogado();
+            this.authStateService
+                .usuario
 
         return usuario?.perfil ===
             'SUPER_ADMIN';
@@ -794,8 +797,8 @@ export class Usuarios implements OnInit {
     get perfisDisponiveis(): string[] {
 
         const perfil =
-            this.authService
-                .usuarioLogado()
+            this.authStateService
+                .usuario
                 ?.perfil;
 
         return PERFIS_DISPONIVEIS[

@@ -6,8 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test --setup-files src/test-setup.ts",
-    "test:coverage": "ng test --coverage --setup-files src/test-setup.ts",
+    "test": "ng test --setup-files --reporter=basic src/test-setup.ts",
+    "test:coverage": "ng test --coverage --setup-files --reporter=basic src/test-setup.ts",
     "serve:ssr:stockflow-pdv-frontend": "node dist/stockflow-pdv-frontend/server/server.mjs"
   },
   "private": true,

@@ -515,10 +515,6 @@ export class Promocoes implements OnInit {
 
                 error: erro => {
 
-                    console.error(
-                        erro
-                    );
-
                     this.alertService.error(
                         'Erro ao ativar promoção.'
                     );
@@ -568,10 +564,6 @@ export class Promocoes implements OnInit {
                 },
 
                 error: erro => {
-
-                    console.error(
-                        erro
-                    );
 
                     this.alertService.error(
                         'Erro ao encerrar promoção.'
