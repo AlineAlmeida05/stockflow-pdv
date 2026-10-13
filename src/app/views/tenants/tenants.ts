@@ -187,7 +187,7 @@ export class Tenants implements OnInit {
 
                 },
 
-                error: (erro) => {
+                error: () => {
 
                     this.alertService.updateToast(
                         loadingToast.id,
@@ -196,9 +196,6 @@ export class Tenants implements OnInit {
                     );
 
                     this.salvando = false;
-
-                    console.error(erro);
-
                 }
 
             });
@@ -242,7 +239,7 @@ export class Tenants implements OnInit {
 
                 },
 
-                error: erro => {
+                error: () => {
 
                     this.alertService.updateToast(
                         loadingToast.id,
@@ -251,9 +248,6 @@ export class Tenants implements OnInit {
                     );
 
                     this.salvando = false;
-
-                    console.error(erro);
-
                 }
 
             });
@@ -556,19 +550,13 @@ export class Tenants implements OnInit {
 
                         },
 
-                        error: erro => {
+                        error: () => {
 
                             this.alertService.updateToast(
                                 loadingToast.id,
                                 'Erro ao atualizar tenant.',
                                 'error'
                             );
-
-                            console.error(
-                                'Erro ao atualizar tenant',
-                                erro
-                            );
-
                         }
 
                     });

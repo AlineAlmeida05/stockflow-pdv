@@ -7,6 +7,7 @@ import { OnInit } from '@angular/core';
 import { NotificacaoService } from '../../core/services/notificacao.service';
 import { MenuBadge } from '../../core/models/menu-badge.model';
 import { ChangeDetectorRef } from '@angular/core';
+import { AuthStateService } from '../../core/services/auth-state.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -30,12 +31,15 @@ export class Sidebar implements OnInit {
   constructor(
     private authService: AuthService,
     private notificacaoService: NotificacaoService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authStateService: AuthStateService
   ) { }
 
   ngOnInit(): void {
 
     this.carregarBadges();
+
+    this.cdr.detectChanges();
 
     this.notificacaoService
       .badgesAtualizados$
@@ -47,8 +51,6 @@ export class Sidebar implements OnInit {
 
   }
 
-
-
   fecharMenu() {
     this.closeMenu.emit();
   }
@@ -56,8 +58,8 @@ export class Sidebar implements OnInit {
   get menuFiltrado() {
 
     const usuario =
-      this.authService
-        .usuarioLogado();
+      this.authStateService
+        .usuario;
 
     if (!usuario) {
 

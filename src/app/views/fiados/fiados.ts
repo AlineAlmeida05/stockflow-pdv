@@ -405,10 +405,6 @@ export class Fiados implements OnInit {
 
                 error: erro => {
 
-                    console.error(
-                        erro
-                    );
-
                     this.alertService.error(
                         'Erro ao registrar pagamento.'
                     );

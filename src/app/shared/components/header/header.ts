@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, HostListener } from '@angular/core';
+import { Component, EventEmitter, Output, HostListener, ChangeDetectorRef } from '@angular/core';
 import { TenantContextService } from '../../../core/services/tenant-context.service';
 import { BRANDING_CONFIG } from '../../../config/branding.config';
 import { Router } from '@angular/router';
@@ -8,6 +8,7 @@ import { FormBuilder } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { AlertService } from '../../../core/services/alert.service';
+import { AuthStateService } from '../../../core/services/auth-state.service';
 
 
 @Component({
@@ -39,7 +40,9 @@ export class Header {
         private authService: AuthService,
         private router: Router,
         private fb: FormBuilder,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private authStateService: AuthStateService,
+        private cdr: ChangeDetectorRef
     ) {
         this.formAlterarSenha =
             this.fb.group({
@@ -86,11 +89,43 @@ export class Header {
 
     sair(): void {
 
-        this.authService.logout();
+        this.authService
+            .logout()
+            .subscribe({
 
-        this.router.navigate([
-            '/login'
-        ]);
+                next: () => {
+
+                    localStorage.removeItem(
+                        'token'
+                    );
+
+                    this.cdr.detectChanges();
+
+                    this.authStateService
+                        .limpar();
+
+                    this.router.navigate([
+                        '/login'
+                    ]);
+
+                },
+
+                error: () => {
+
+                    localStorage.removeItem(
+                        'token'
+                    );
+
+                    this.authStateService
+                        .limpar();
+
+                    this.router.navigate([
+                        '/login'
+                    ]);
+
+                }
+
+            });
 
     }
 
@@ -102,16 +137,13 @@ export class Header {
 
     get primeiroNome(): string {
 
-        return this.usuarioLogado?.nome
+        return this.usuario?.nome
             ?.split(' ')[0] ?? '';
 
     }
 
-    get usuarioLogado() {
-
-        return this.authService
-            .usuarioLogado();
-
+    get usuario() {
+        return this.authStateService.usuario;
     }
 
     alternarMenuPerfil(): void {
@@ -173,6 +205,8 @@ export class Header {
 
                     this.authService.logout();
 
+                    this.cdr.detectChanges();
+
                     this.router.navigate([
                         `/${slug}/login`
                     ]);
@@ -201,7 +235,7 @@ export class Header {
 
     get ehSuperAdmin(): boolean {
 
-        return this.usuarioLogado?.perfil ===
+        return this.usuario?.perfil ===
             'SUPER_ADMIN';
 
     }

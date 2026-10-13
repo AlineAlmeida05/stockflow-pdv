@@ -1,11 +1,7 @@
 import { inject } from '@angular/core';
-import {
-    ActivatedRouteSnapshot,
-    CanActivateFn,
-    Router
-} from '@angular/router';
-
+import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { AuthStateService } from '../services/auth-state.service';
 
 export const roleGuard: CanActivateFn = (
     route: ActivatedRouteSnapshot
@@ -14,11 +10,14 @@ export const roleGuard: CanActivateFn = (
     const authService =
         inject(AuthService);
 
+    const authStateService =
+        inject(AuthStateService);
+
     const router =
         inject(Router);
 
     const usuario =
-        authService.usuarioLogado();
+        authStateService.usuario;
 
     if (!usuario) {
 
