@@ -60,7 +60,7 @@ export class ReportFinanceiro {
             },
 
             {
-                title: 'Valor em Fiados',
+                title: 'Valor Recebido',
                 value: this.valorFiados.toLocaleString(
                     'pt-BR',
                     {

@@ -632,43 +632,43 @@ export class Produtos implements OnInit {
               : 'Desativando'} produto...`
           );
 
-        this.produtoService
-          .atualizar({
-            ...produto,
-            ativo: !produto.ativo
-          } as Produto)
-          .subscribe({
+        const request =
+          produto.ativo
+            ? this.produtoService.excluir(produto.id)
+            : this.produtoService.reativar(produto.id);
 
-            next: () => {
+        request.subscribe({
 
-              this.carregarProdutos();
+          next: () => {
 
-              this.cdr.detectChanges();
+            this.carregarProdutos();
 
-              this.alertService.updateToast(
-                loadingToast.id,
-                `Produto ${acao === 'ativar'
-                  ? 'ativado'
-                  : 'desativado'
-                } com sucesso.`,
-                'success'
-              );
+            this.cdr.detectChanges();
 
-            },
+            this.alertService.updateToast(
+              loadingToast.id,
+              `Produto ${acao === 'ativar'
+                ? 'ativado'
+                : 'desativado'
+              } com sucesso.`,
+              'success'
+            );
 
-            error: erro => {
+          },
 
-              this.alertService.updateToast(
-                loadingToast.id,
-                'Erro ao atualizar produto.',
-                'error'
-              );
+          error: erro => {
 
-              console.error(erro);
+            this.alertService.updateToast(
+              loadingToast.id,
+              'Erro ao atualizar produto.',
+              'error'
+            );
 
-            }
+            console.error(erro);
 
-          });
+          }
+
+        });
 
       }
 

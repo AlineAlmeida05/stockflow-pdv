@@ -45,9 +45,6 @@ export class ReportFiados {
     maioresDevedores: any[] = [];
 
     @Input()
-    maiorDevedor: any;
-
-    @Input()
     colunasFiados: any[] = [];
 
     @Input()

@@ -3,35 +3,7 @@
 </app-stat-card-carousel>
 
 <app-report-layout>
-    <div insights>
-        <div class="card">
-            <h2>
-                🏆 Melhor Dia
-            </h2>
-            <p>
-                {{ melhorDiaData }}
-            </p>
-            <strong>
-                {{ melhorDiaValor }}
-            </strong>
-        </div>
-
-        @if (produtoMaisFaturou) {
-        <div class="card">
-            <h2>
-                💰 Produto que Mais Faturou
-            </h2>
-            <p>
-                {{ produtoMaisFaturou.nome }}
-            </p>
-            <strong>
-                {{
-                produtoMaisFaturou.faturamento
-                | currency:'BRL'
-                }}
-            </strong>
-        </div>
-        }
+    <div insights>         
 
         <div class="card">
             <h2>

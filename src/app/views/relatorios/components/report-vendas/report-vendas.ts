@@ -39,15 +39,6 @@ export class ReportVendas {
     topProdutosVendidos: any[] = [];
 
     @Input()
-    produtoMaisFaturou: any;
-
-    @Input()
-    melhorDiaData = '';
-
-    @Input()
-    melhorDiaValor = '';
-
-    @Input()
     evolucaoVendasPorDia: any[] = [];
 
     @Input()
@@ -107,11 +98,6 @@ export class ReportVendas {
                     }
                 ),
                 variant: 'warning'
-            },
-            {
-                title: 'Forma Mais Utilizada',
-                value: this.formaPagamentoMaisUtilizada,
-                variant: 'info'
             }
         ];
     }
