@@ -302,17 +302,7 @@ export class Promocoes implements OnInit {
                     this.pendentes = painel.pendentes;
 
                     this.ativas = painel.ativas;
-
-                    console.log('Pendentes', this.pendentes);
-                    console.log('Ativas', this.ativas);
-                    console.log(
-                        'Painel combinado',
-                        this.promocoesPainel
-                    );
-                    console.log(
-                        'produtosAtivosFiltrados',
-                        this.produtosAtivosFiltrados
-                    );
+                    
                     this.cdr.detectChanges();
 
                 },
@@ -525,10 +515,6 @@ export class Promocoes implements OnInit {
 
                 error: erro => {
 
-                    console.error(
-                        erro
-                    );
-
                     this.alertService.error(
                         'Erro ao ativar promoção.'
                     );
@@ -578,10 +564,6 @@ export class Promocoes implements OnInit {
                 },
 
                 error: erro => {
-
-                    console.error(
-                        erro
-                    );
 
                     this.alertService.error(
                         'Erro ao encerrar promoção.'
@@ -930,11 +912,6 @@ export class Promocoes implements OnInit {
     }
 
     get produtosAtivosFiltrados(): Produto[] {
-
-        console.log(
-            'Ativas painel',
-            this.ativas
-        );
 
         return this.ativas
             .map(item =>

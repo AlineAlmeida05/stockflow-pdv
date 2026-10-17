@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { BrandingService } from './core/services/branding.service';
 import { TenantContextService } from './core/services/tenant-context.service';
 import { ToastComponent } from './shared/components/toast/toast';
+import { AuthStateService } from './core/services/auth-state.service';
 
 @Component({
   selector: 'app-root',
@@ -18,12 +19,16 @@ export class App implements OnInit {
 
   constructor(
     private brandingService: BrandingService,
-    private tenantContextService: TenantContextService
+    private tenantContextService: TenantContextService,
+    private authStateService: AuthStateService
   ) {
     this.brandingService.aplicarTema();
   }
 
   ngOnInit(): void {
+
+    this.authStateService
+      .inicializar();
 
     console.log(
       window.location.pathname

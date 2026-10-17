@@ -183,11 +183,6 @@ export class ExtratoFinanceiro
 
                 next: movimentacoes => {
 
-                    console.log(
-                        'MOVIMENTACOES',
-                        movimentacoes
-                    );
-
                     this.movimentacoes = movimentacoes;
 
                     this.atualizarIndicadores();
