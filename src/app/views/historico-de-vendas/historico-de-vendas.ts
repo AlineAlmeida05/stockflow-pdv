@@ -190,6 +190,8 @@ export class HistoricoDeVendas
 
                     this.vendaSelecionada = vendaDetalhada;
 
+                    this.cdr.detectChanges();
+
                     setTimeout(() => {
 
                         document
@@ -256,6 +258,8 @@ export class HistoricoDeVendas
                     );
 
                     this.carregarVendas();
+
+                    this.cdr.detectChanges();
 
                     this.vendaSelecionada = {
                         ...this.vendaSelecionada!,

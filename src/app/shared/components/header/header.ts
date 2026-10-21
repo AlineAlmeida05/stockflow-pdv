@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, HostListener } from '@angular/core';
+import { Component, EventEmitter, Output, HostListener, ChangeDetectorRef } from '@angular/core';
 import { TenantContextService } from '../../../core/services/tenant-context.service';
 import { BRANDING_CONFIG } from '../../../config/branding.config';
 import { Router } from '@angular/router';
@@ -39,7 +39,8 @@ export class Header {
         private authService: AuthService,
         private router: Router,
         private fb: FormBuilder,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private cdr: ChangeDetectorRef
     ) {
         this.formAlterarSenha =
             this.fb.group({
@@ -168,8 +169,7 @@ export class Header {
                         'success'
                     );
 
-                    const slug =
-                        this.tenantAtual?.slug;
+                    const slug = this.tenantAtual?.slug;
 
                     this.authService.logout();
 

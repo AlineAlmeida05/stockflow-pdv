@@ -312,6 +312,8 @@ export class Usuarios implements OnInit {
 
                         this.limparFormulario();
 
+                        this.cdr.detectChanges();
+
                         this.alertService.updateToast(
                             loadingToast.id,
                             'Usuário atualizado com sucesso.',
@@ -374,6 +376,8 @@ export class Usuarios implements OnInit {
                     this.mostrarFormulario = false;
 
                     this.modoEdicao = false;
+
+                    this.cdr.detectChanges();
 
                     this.alertService.updateToast(
                         loadingToast.id,
@@ -712,6 +716,8 @@ export class Usuarios implements OnInit {
                         next: () => {
 
                             this.carregarUsuarios();
+
+                            this.cdr.detectChanges();
 
                             this.alertService.updateToast(
                                 loadingToast.id,
