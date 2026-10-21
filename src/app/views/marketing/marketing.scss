@@ -163,6 +163,8 @@
 @media (max-width: 768px) {
     .marketing-ai-links {
         grid-template-columns: 1fr;
+        display: flex;
+        justify-content: space-between;
     }
 
     .prompt-header {

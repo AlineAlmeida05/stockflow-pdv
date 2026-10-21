@@ -80,3 +80,25 @@
     color: white;
     border-color: var(--color-success);
 }
+
+@media (max-width: 768px) {
+
+    .abas {
+        width: 95%;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+    }
+
+    .abas::-webkit-scrollbar {
+        display: none;
+    }
+
+    .abas button {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+}
+

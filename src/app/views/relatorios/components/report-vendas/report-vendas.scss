@@ -75,3 +75,13 @@
     padding: 12px 0;
     border-bottom: 1px solid #eee;
 }
+
+@media (max-width: 768px) {
+
+    .indicadores {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+}
