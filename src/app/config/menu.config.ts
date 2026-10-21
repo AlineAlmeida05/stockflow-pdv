@@ -7,10 +7,10 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE',
-      'OPERADOR_CAIXA',
-      'ESTOQUISTA'
+      'Socio',
+      'Gerente',
+      'Operador_Caixa',
+      'Estoquista'
     ]
   },
   {
@@ -19,9 +19,9 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE',
-      'OPERADOR_CAIXA'
+      'Socio',
+      'Gerente',
+      'Operador_Caixa'
     ]
   },
   {
@@ -30,9 +30,9 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE',
-      'OPERADOR_CAIXA'
+      'Socio',
+      'Gerente',
+      'Operador_Caixa'
     ]
   },
   {
@@ -41,9 +41,9 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE',
-      'ESTOQUISTA'
+      'Socio',
+      'Gerente',
+      'Estoquista'
     ]
   },
   {
@@ -52,9 +52,9 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE',
-      'ESTOQUISTA'
+      'Socio',
+      'Gerente',
+      'Estoquista'
     ]
   }, {
     label: 'Entrada de Estoque',
@@ -62,9 +62,9 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE',
-      'ESTOQUISTA'
+      'Socio',
+      'Gerente',
+      'Estoquista'
     ]
   },
   {
@@ -73,9 +73,9 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE',
-      'OPERADOR_CAIXA'
+      'Socio',
+      'Gerente',
+      'Operador_Caixa'
     ]
   },
   {
@@ -84,9 +84,9 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE',
-      'OPERADOR_CAIXA'
+      'Socio',
+      'Gerente',
+      'Operador_Caixa'
     ]
   },
   {
@@ -96,8 +96,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE'
+      'Socio',
+      'Gerente'
     ]
   },
   {
@@ -106,8 +106,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE'
+      'Socio',
+      'Gerente'
     ]
   },
   {
@@ -116,8 +116,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE'
+      'Socio',
+      'Gerente'
     ]
   },
   {
@@ -126,8 +126,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE'
+      'Socio',
+      'Gerente'
     ]
   },
   {
@@ -143,8 +143,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE'
+      'Socio',
+      'Gerente'
     ]
   },
   {
@@ -153,8 +153,16 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE'
+      'Socio',
+      'Gerente'
+    ]
+  },
+  {
+    label: 'Auditoria',
+    route: '/auditoria',
+    perfis: [
+      'SUPER_ADMIN',
+      'PROPRIETARIO'
     ]
   }
 ];

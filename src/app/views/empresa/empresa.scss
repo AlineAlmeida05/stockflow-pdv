@@ -115,3 +115,14 @@
 .status-danger {
     color: var(--color-danger);
 }
+
+@media (max-width: 768px) {
+    .brand-layout {
+        display: block;
+    }
+
+    .brand-logo {
+        display: flex;
+    }
+    
+}

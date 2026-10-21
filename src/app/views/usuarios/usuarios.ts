@@ -312,6 +312,8 @@ export class Usuarios implements OnInit {
 
                         this.limparFormulario();
 
+                        this.cdr.detectChanges();
+
                         this.alertService.updateToast(
                             loadingToast.id,
                             'Usuário atualizado com sucesso.',
@@ -375,6 +377,8 @@ export class Usuarios implements OnInit {
 
                     this.modoEdicao = false;
 
+                    this.cdr.detectChanges();
+
                     this.alertService.updateToast(
                         loadingToast.id,
                         'Usuário criado com sucesso.',
@@ -409,7 +413,7 @@ export class Usuarios implements OnInit {
         this.novoNome = '';
         this.novoEmail = '';
         this.novaSenha = '';
-        this.novoPerfil = 'GERENTE';
+        this.novoPerfil = 'Gerente';
         this.novoAtivo = true;
         this.usuarioEmEdicao = null;
         this.modoEdicao = false;
@@ -565,34 +569,34 @@ export class Usuarios implements OnInit {
 
                 return [
                     'PROPRIETARIO',
-                    'SOCIO',
-                    'GERENTE',
-                    'OPERADOR_CAIXA',
-                    'ESTOQUISTA'
+                    'Socio',
+                    'Gerente',
+                    'Operador_Caixa',
+                    'Estoquista'
                 ];
 
             case 'PROPRIETARIO':
 
                 return [
-                    'SOCIO',
-                    'GERENTE',
-                    'OPERADOR_CAIXA',
-                    'ESTOQUISTA'
+                    'Socio',
+                    'Gerente',
+                    'Operador_Caixa',
+                    'Estoquista'
                 ];
 
-            case 'SOCIO':
+            case 'Socio':
 
                 return [
-                    'GERENTE',
-                    'OPERADOR_CAIXA',
-                    'ESTOQUISTA'
+                    'Gerente',
+                    'Operador_Caixa',
+                    'Estoquista'
                 ];
 
-            case 'GERENTE':
+            case 'Gerente':
 
                 return [
-                    'OPERADOR_CAIXA',
-                    'ESTOQUISTA'
+                    'Operador_Caixa',
+                    'Estoquista'
                 ];
 
             default:
@@ -712,6 +716,8 @@ export class Usuarios implements OnInit {
                         next: () => {
 
                             this.carregarUsuarios();
+
+                            this.cdr.detectChanges();
 
                             this.alertService.updateToast(
                                 loadingToast.id,

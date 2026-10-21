@@ -18,6 +18,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
 import { roleGuard } from './core/guards/role.guard';
 import { ExtratoFinanceiro } from './views/extrato-financeiro/extrato-financeiro';
+import { AuditoriaComponent } from './views/auditoria/auditoria';
 
 export const routes: Routes = [
     {
@@ -46,9 +47,9 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'SOCIO',
-                'GERENTE',
-                'ESTOQUISTA'
+                'Socio',
+                'Gerente',
+                'Estoquista'
             ]
         }
     },
@@ -63,9 +64,9 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'SOCIO',
-                'GERENTE',
-                'OPERADOR_CAIXA'
+                'Socio',
+                'Gerente',
+                'Operador_Caixa'
             ]
         }
     },
@@ -80,9 +81,9 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'SOCIO',
-                'GERENTE',
-                'ESTOQUISTA'
+                'Socio',
+                'Gerente',
+                'Estoquista'
             ]
         }
     },
@@ -97,9 +98,9 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'SOCIO',
-                'GERENTE',
-                'ESTOQUISTA'
+                'Socio',
+                'Gerente',
+                'Estoquista'
             ]
         }
     },
@@ -114,9 +115,9 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'SOCIO',
-                'GERENTE',
-                'OPERADOR_CAIXA'
+                'Socio',
+                'Gerente',
+                'Operador_Caixa'
             ]
         }
     },
@@ -131,9 +132,9 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'SOCIO',
-                'GERENTE',
-                'OPERADOR_CAIXA'
+                'Socio',
+                'Gerente',
+                'Operador_Caixa'
             ]
         }
     },
@@ -148,9 +149,9 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'SOCIO',
-                'GERENTE',
-                'OPERADOR_CAIXA'
+                'Socio',
+                'Gerente',
+                'Operador_Caixa'
             ]
         }
     },
@@ -170,8 +171,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'SOCIO',
-                'GERENTE'
+                'Socio',
+                'Gerente'
             ]
         }
     },
@@ -186,8 +187,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'SOCIO',
-                'GERENTE']
+                'Socio',
+                'Gerente']
         }
     },
     {
@@ -201,8 +202,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'SOCIO',
-                'GERENTE'
+                'Socio',
+                'Gerente'
             ]
         }
     },
@@ -217,8 +218,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'SOCIO',
-                'GERENTE'
+                'Socio',
+                'Gerente'
             ]
         }
     },
@@ -246,8 +247,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'SOCIO',
-                'GERENTE'
+                'Socio',
+                'Gerente'
             ]
         }
     },
@@ -262,8 +263,21 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'SOCIO',
-                'GERENTE']
+                'Socio',
+                'Gerente']
+        }
+    },
+    {
+        path: 'auditoria',
+        component: AuditoriaComponent,
+        canActivate: [
+            authGuard,
+            roleGuard
+        ],
+        data: {
+            perfis: [
+                'SUPER_ADMIN',
+                'PROPRIETARIO']
         }
     }
 

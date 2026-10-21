@@ -1,10 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
 import { Observable } from 'rxjs';
-
 import { environment } from '../../../environments/environment';
-
 import { Venda } from '../models/venda.model';
 
 @Injectable({
@@ -54,6 +51,14 @@ export class VendaService {
 
         return this.http.get<Venda>(
             `${this.apiUrl}/${id}`
+        );
+
+    }
+
+    listarRelatorio(): Observable<Venda[]> {
+
+        return this.http.get<Venda[]>(
+            `${this.apiUrl}/relatorio`
         );
 
     }

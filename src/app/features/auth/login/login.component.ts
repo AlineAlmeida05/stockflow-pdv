@@ -110,8 +110,6 @@ export class LoginComponent implements OnInit {
 
                     this.loading = false;
 
-                    this.cdr.detectChanges();
-
                 })
             )
             .subscribe({
@@ -123,8 +121,6 @@ export class LoginComponent implements OnInit {
                             .setTenant(
                                 this.tenant
                             );
-
-                        this.cdr.detectChanges();
 
                     }
 
@@ -214,16 +210,12 @@ export class LoginComponent implements OnInit {
 
                         this.tenantNaoEncontrado = true;
 
-                        this.cdr.detectChanges();
-
                         return;
                     }                    
 
                     this.tenant = tenant;
 
                     this.aplicarTemaTenant();
-
-                    this.cdr.detectChanges();
 
                 },
 
