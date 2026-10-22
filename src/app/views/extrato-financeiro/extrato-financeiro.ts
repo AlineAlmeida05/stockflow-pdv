@@ -10,6 +10,7 @@ import { SelectInput } from '../../shared/components/select-input/select-input';
 import { ExtratoFinanceiroService } from '../../core/services/extrato-financeiro.service';
 import { IndicadoresExtrato } from '../../core/models/indicadores-extrato.model';
 import { StatCard } from '../../shared/components/stat-card/stat-card';
+import { AuditoriaService } from '../../core/services/auditoria.service';
 
 
 @Component({
@@ -134,7 +135,8 @@ export class ExtratoFinanceiro
 
     constructor(
         private extratoFinanceiroService: ExtratoFinanceiroService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private auditoriaService: AuditoriaService
     ) {
     }
 
@@ -143,6 +145,14 @@ export class ExtratoFinanceiro
         this.carregarMovimentacoes();
 
         this.carregarIndicadores();
+
+        this.auditoriaService
+            .listar()
+            .subscribe({
+                next: response => {
+                    console.log(response);
+                }
+            });
 
     }
 

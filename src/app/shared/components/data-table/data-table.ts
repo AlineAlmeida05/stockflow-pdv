@@ -65,7 +65,7 @@ export class DataTable {
 
     @Input()
     emptyTitle = 'Nenhum registro encontrado';
-
+    
     @Input()
     emptyMessage = 'Ajuste os filtros e tente novamente.';
 

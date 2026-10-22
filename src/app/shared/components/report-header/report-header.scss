@@ -22,4 +22,20 @@
     gap: 12px;
 }
 
+@media (max-width: 768px) {
+
+    [actions] {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .periodo-select {
+        width: 100%;
+    }
+
+}
+
+
+
 

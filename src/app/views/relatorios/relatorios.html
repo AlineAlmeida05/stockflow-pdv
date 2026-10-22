@@ -39,13 +39,22 @@
         </div>
 
         <div actions>
+            <app-select-input
+                label
+                [(value)]="periodoSelecionado"
+                [options]="opcoesPeriodo"
+                class="periodo-select"
+                (valueChange)="alterarPeriodo()">
+            </app-select-input>
             <button
+                class="pdf export-button"
                 type="button"
                 (click)="exportarPdf()">
                 📄 PDF
             </button>
 
             <button
+                class="excel export-button"
                 type="button"
                 (click)="exportarExcel()">
                 📊 Excel
@@ -66,10 +75,10 @@
             [ticketMedio]="ticketMedio"
             [formaPagamentoMaisUtilizada]="formaPagamentoMaisUtilizada"
             [topProdutosVendidos]="topProdutosVendidos"
+            [evolucaoVendasPorDia]="evolucaoVendasPorDia"
             [produtoMaisFaturou]="produtoMaisFaturou"
             [melhorDiaData]="melhorDiaData"
             [melhorDiaValor]="melhorDiaValor"
-            [evolucaoVendasPorDia]="evolucaoVendasPorDia"
             [vendasTabela]="vendasTabela"
             [colunasVendas]="colunasVendas"
             [faturamentoPorPagamento]="faturamentoPorPagamento"

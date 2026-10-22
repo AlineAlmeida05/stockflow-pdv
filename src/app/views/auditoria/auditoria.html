@@ -1,0 +1,98 @@
+<app-main-layout>
+
+    <app-page-title
+        title="Auditoria"
+        subtitle="Acompanhe todas as ações realizadas no sistema.">
+    </app-page-title>
+
+    <app-toolbar>
+
+        <app-select-input
+            label="Entidade"
+            [(value)]="entidadeSelecionada"
+            [options]="entidades">
+        </app-select-input>
+
+        <app-select-input
+            label="Ação"
+            [(value)]="acaoSelecionada"
+            [options]="acoes">
+        </app-select-input>
+
+        <app-select-input
+            label="Período"
+            [(value)]="periodoSelecionado"
+            [options]="periodos">
+        </app-select-input>
+
+        <app-search-input
+            placeholder="Buscar usuário..."
+            [(value)]="textoBusca">
+        </app-search-input>
+
+    </app-toolbar>
+
+    <div class="timeline">
+
+        @if (
+        auditoriasFiltradas.length === 0
+        ) {
+
+        <app-empty-state
+            icon="📋"
+            title="Nenhum registro encontrado"
+            message="Tente alterar os filtros para visualizar resultados.">
+        </app-empty-state>
+
+        } @else {
+
+        @for (
+        auditoria of auditoriasPaginadas;
+        track auditoria.id
+        ) {
+
+        <div class="card auditoria-card">
+
+            <div class="auditoria-topo">
+
+                <strong class="auditoria-usuario">
+                    {{ auditoria.usuarioNome }}
+                </strong>
+
+                <span
+                    class="auditoria-acao"
+                    [class]="getClasseAcao(auditoria.acao)">
+
+                    {{ formatarAcao(auditoria.acao) }}
+
+                </span>
+
+            </div>
+
+            <div class="auditoria-corpo">
+
+                <div class="auditoria-meta">
+
+                    @if (auditoria.tenantNome) {
+
+                    <span class="tenant-nome">{{ auditoria.tenantNome }}</span>
+                    •
+                    }
+                    {{ auditoria.dataHora | date:'dd/MM/yyyy HH:mm' }}
+
+                </div>
+
+                <div class="auditoria-descricao">
+
+                    {{ auditoria.descricao }}
+
+                </div>
+            </div>
+
+        </div>
+
+        }
+        }
+
+    </div>
+</app-main-layout>

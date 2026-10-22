@@ -228,36 +228,50 @@
 }
 
 .promo-progress__remaining {
-    display: block;
-    margin-top: 6px;
-    font-size: .8rem;
-    color: var(--color-gray-600);
+  display: block;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: var(--color-gray-600);
 }
 
 .promo-progress__footer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 8px;
-    font-size: .8rem;
-    color: var(--color-gray-600);
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--color-gray-600);
 }
 
 .promo-progress__bar-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .promo-progress__percent {
-    font-size: .8rem;
-    font-weight: 600;
-    color: var(--color-gray-700);
-    min-width: 36px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-gray-700);
+  min-width: 36px;
 }
 
 .promo-progress__remaining {
-    margin-top: 6px;
-    font-size: .75rem;
-    color: var(--color-gray-500);
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: var(--color-gray-500);
+}
 
+@media (max-width: 768px) {
+  .produto-status {
+    justify-content: flex-end;
+  }
+
+  .desconto-highlight {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-danger {
+    width: 100%;
+  }
 }

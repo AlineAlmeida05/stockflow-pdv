@@ -1,59 +1,252 @@
-<app-stat-card-carousel
-    [cards]="cardsFinanceiro">
-</app-stat-card-carousel>
+<div class="indicadores">
 
-<app-report-layout>
-    <div insights>
-        <div class="card">
+    @for (
+    card of cardsFinanceiro;
+    track card.id
+    ) {
+
+    <div
+        class="indicador-clickable"
+        (click)="selecionarCard(card.id)">
+
+        <app-stat-card
+            [title]="card.title"
+            [value]="card.value"
+            [variant]="card.variant"
+            [active]="selectedSection === card.id">
+        </app-stat-card>
+
+    </div>
+
+    }
+
+</div>
+
+<app-split-panel>
+    <div left>
+        <div
+            class="card resumo-clickable"
+            [class.active]="selectedSection === 'receita-pagamento'"
+            (click)="selectedSection = 'receita-pagamento'">
+
+            <h2>
+                Receita por Forma de Pagamento
+            </h2>
+
+        </div>
+
+        <div
+            class="card resumo-clickable"
+            [class.active]="selectedSection === 'resumo-financeiro'"
+            (click)="selectedSection = 'resumo-financeiro'">
+
+            <h2>
+                Resumo Financeiro
+            </h2>
+
+        </div>
+    </div>
+
+    <div right>
+
+        @if (!selectedSection) {
+
+        <app-empty-state
+            icon="💰"
+            title="Explore os dados"
+            message="Selecione um indicador ou resumo para visualizar os detalhes.">
+        </app-empty-state>
+
+        }
+
+        @if (selectedSection === 'faturamento-total') {
+
+        <div class="report-detail">
+
+            <h2>
+                💰 Faturamento Total
+            </h2>
+
+            <div class="detail-row">
+
+                <span>
+                    Faturamento Total
+                </span>
+
+                <strong>
+                    {{ faturamentoTotal | currency:'BRL' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+        }
+
+        @if (selectedSection === 'valor-fiados') {
+
+        <div class="report-detail">
+
+            <h2>
+                📒 Valor em Fiados
+            </h2>
+
+            <div class="detail-row">
+
+                <span>
+                    Valor em Fiados
+                </span>
+
+                <strong>
+                    {{ valorFiados | currency:'BRL' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+        }
+
+        @if (selectedSection === 'em-aberto') {
+
+        <div class="report-detail">
+
+            <h2>
+                ⚠️ Valor em Aberto
+            </h2>
+
+            <div class="detail-row">
+
+                <span>
+                    Valor em Aberto
+                </span>
+
+                <strong>
+                    {{ valorEmAberto | currency:'BRL' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+        }
+
+        @if (selectedSection === 'receita-realizada') {
+
+        <div class="report-detail">
+
+            <h2>
+                ✅ Receita Realizada
+            </h2>
+
+            <div class="detail-row">
+
+                <span>
+                    Receita Realizada
+                </span>
+
+                <strong>
+                    {{ receitaRealizada | currency:'BRL' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+        }
+
+        @if (selectedSection === 'ticket-medio') {
+
+        <div class="report-detail">
+
+            <h2>
+                🎟️ Ticket Médio
+            </h2>
+
+            <div class="detail-row">
+
+                <span>
+                    Ticket Médio
+                </span>
+
+                <strong>
+                    {{ ticketMedio | currency:'BRL' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+        }
+        @if (selectedSection === 'receita-pagamento') {
+
+        <div class="report-detail">
+
             <h2>
                 💳 Receita por Forma de Pagamento
             </h2>
 
-            @for (
-            forma of faturamentoPorPagamento;
-            track forma.formaPagamento
-            ) {
-            <p>
-                {{ forma.formaPagamento }}
-                -
-                {{
-                forma.valor
-                | currency:'BRL'
-                }}
-            </p>
-            }
+            <div class="card">
+
+                @for (
+                forma of faturamentoPorPagamento;
+                track forma.formaPagamento
+                ) {
+
+                <div class="detail-row">
+
+                    <span>
+                        {{ forma.formaPagamento }}
+                    </span>
+
+                    <strong>
+                        {{ forma.valor | currency:'BRL' }}
+                    </strong>
+
+                </div>
+
+                }
+
+            </div>
+
         </div>
 
-        <div class="card">
+        }
+
+        @if (selectedSection === 'resumo-financeiro') {
+
+        <div class="report-detail">
+
             <h2>
                 💰 Resumo Financeiro
             </h2>
-            <p>
-                Receita Realizada:
-                {{
-                receitaRealizada
-                | currency:'BRL'
-                }}
-            </p>
-            <p>
-                Valor em Aberto:
-                {{
-                valorEmAberto
-                | currency:'BRL'
-                }}
-            </p>
-        </div>
-    </div>
 
-    <div tables>
-        <div class="table-section">
-            <h2>
-                📊 Indicadores Financeiros 
-            </h2>
+            <div class="detail-row">
 
-            <p>
-                Resumo consolidado da situação financeira.
-            </p>
+                <span>
+                    Receita Realizada
+                </span>
+
+                <strong>
+                    {{ receitaRealizada | currency:'BRL' }}
+                </strong>
+
+            </div>
+
+            <div class="detail-row">
+
+                <span>
+                    Valor em Aberto
+                </span>
+
+                <strong>
+                    {{ valorEmAberto | currency:'BRL' }}
+                </strong>
+
+            </div>
+
         </div>
+
+        }
     </div>
-</app-report-layout>
+</app-split-panel>

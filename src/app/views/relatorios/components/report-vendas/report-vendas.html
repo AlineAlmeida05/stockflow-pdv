@@ -1,190 +1,433 @@
-<app-stat-card-carousel
-    [cards]="cardsVendas">
-</app-stat-card-carousel>
+<div class="indicadores">
+    @for (
+    card of cardsVendas;
+    track card.id
+    ) {
 
-<app-report-layout>
-    <div insights>
-        <div class="card">
+    <div
+        class="indicador-clickable"
+        (click)="selecionarCard(card.id)">
+
+        <app-stat-card
+            [title]="card.title"
+            [value]="card.value"
+            [variant]="card.variant"
+            [active]="selectedSection === card.id">
+        </app-stat-card>
+
+    </div>
+
+    }
+
+</div>
+<app-split-panel>
+    <div left>
+        <div
+            class="card resumo-clickable"
+            [class.active]="selectedSection === 'melhor-dia'"
+            (click)="selectedSection = 'melhor-dia'">
             <h2>
-                🏆 Melhor Dia
+                Melhor Dia
             </h2>
-            <p>
-                {{ melhorDiaData }}
-            </p>
-            <strong>
-                {{ melhorDiaValor }}
-            </strong>
         </div>
 
         @if (produtoMaisFaturou) {
-        <div class="card">
+        <div
+            class="card resumo-clickable"
+            [class.active]="selectedSection === 'produto-mais-faturou'"
+            (click)="selectedSection = 'produto-mais-faturou'">
             <h2>
-                💰 Produto que Mais Faturou
+                Produto que Mais Faturou
             </h2>
-            <p>
-                {{ produtoMaisFaturou.nome }}
-            </p>
-            <strong>
-                {{
-                produtoMaisFaturou.faturamento
-                | currency:'BRL'
-                }}
-            </strong>
         </div>
         }
 
-        <div class="card">
+        <div
+            class="card resumo-clickable"
+            [class.active]="selectedSection === 'receita-pagamento'"
+            (click)="selectedSection = 'receita-pagamento'">
             <h2>
-                💳 Receita por Forma de Pagamento
+                Receita por Forma de Pagamento
             </h2>
+        </div>
+
+        <div
+            class="card resumo-clickable"
+            [class.active]="selectedSection === 'evolucao-vendas'"
+            (click)="selectedSection = 'evolucao-vendas'">
+
+            <h2>
+                Evolução das Vendas
+            </h2>
+        </div>
+
+        <div
+            class="card resumo-clickable"
+            [class.active]="selectedSection === 'top-produtos'"
+            (click)="selectedSection = 'top-produtos'">
+            <h2>
+                Top 5 Produtos Vendidos
+            </h2>
+        </div>
+    </div>
+
+    <div right>        
+
+        @if (!selectedSection) {
+
+        <app-empty-state
+            icon="📊"
+            title="Explore os dados"
+            message="Selecione um indicador ou resumo para visualizar os detalhes.">
+        </app-empty-state>
+
+        }
+
+        @if (
+        selectedSection === 'historico-vendas'
+        ) {
+        <div class="report-detail">
+            <h2>
+                📋 Total de Vendas
+            </h2>
+            <div class="card">
+
+                <app-data-table
+                    [columns]="colunasVendas"
+                    [data]="vendasTabelaPaginada">
+                </app-data-table>
+
+                <div class="pagination">
+
+                    <div class="pagination-left">
+
+                        <app-select-input
+                            label
+                            [(value)]="itensPorPagina"
+                            (valueChange)="alterarItensPorPagina()"
+                            [options]="opcoesItensPorPagina">
+                        </app-select-input>
+
+                        <span class="pagination-info">
+
+                            Mostrando
+                            {{ inicioPagina }}
+                            -
+                            {{ fimPagina }}
+                            de
+                            {{ vendasTabela.length }}
+                            registros
+
+                        </span>
+
+                    </div>
+
+                    <div class="pagination-right">
+
+                        <button
+                            class="btn-pagination"
+                            type="button"
+                            (click)="paginaAnterior()"
+                            [disabled]="paginaAtual === 1">
+
+                            Anterior
+
+                        </button>
+
+                        <span class="pagination-page">
+
+                            Página
+                            {{ paginaAtual }}
+                            de
+                            {{ totalPaginas }}
+
+                        </span>
+
+                        <button
+                            class="btn-pagination"
+                            type="button"
+                            (click)="proximaPagina()"
+                            [disabled]="paginaAtual === totalPaginas">
+
+                            Próxima
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        }
+
+        @if (selectedSection === 'faturamento') {
+
+        <div class="report-detail">
+
+            <h2>
+                💰 Faturamento
+            </h2>
+
+            <div class="detail-row">
+                <span>Total Faturado</span>
+                <strong>
+                    {{ faturamentoTotal | currency:'BRL' }}
+                </strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Total de Vendas</span>
+                <strong>
+                    {{ totalVendas }}
+                </strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Ticket Médio</span>
+                <strong>
+                    {{ ticketMedio | currency:'BRL' }}
+                </strong>
+            </div>
+
+        </div>
+
+        }
+
+        @if (selectedSection === 'forma-pagamento') {
+
+        <div class="report-detail">
+
+            <h2>
+                💳 Forma de Pagamento Mais Utilizada
+            </h2>
+
+            <div class="detail-row">
+                <span>Forma Mais Utilizada</span>
+                <strong>
+                    {{ formaPagamentoMaisUtilizada }}
+                </strong>
+            </div>
+
             @for (
             forma of faturamentoPorPagamento;
             track forma.formaPagamento
             ) {
-            <p>
-                {{ forma.formaPagamento }}
-                -
-                {{
-                forma.valor
-                | currency:'BRL'
-                }}
-            </p>
-            }
-        </div>
 
-        <div class="card">
-            <h2>
-                Evolução das Vendas
-            </h2>
-            @if (
-            evolucaoVendasPorDia.length === 0
-            ) {
-            <p>
-                Nenhuma venda encontrada.
-            </p>
-            } @else {
+            <div class="detail-row">
 
-            @for (
-            dia of evolucaoVendasPorDia;
-            track dia.data
-            ) {
-            <p>
-                {{ dia.data }}
-                -
-                {{
-                dia.total
-                | currency:'BRL'
-                }}
-            </p>
-            }
-            }
+                <span>
+                    {{ forma.formaPagamento }}
+                </span>
 
-        </div>
-
-        <div class="card">
-            <h2>
-                Top 5 Produtos Vendidos
-            </h2>
-            @if (
-            topProdutosVendidos.length === 0
-            ) {
-            <p>
-                Nenhuma venda encontrada.
-            </p>
-            } @else {
-
-            @for (
-            produto of topProdutosVendidos;
-            track produto.nome
-            ) {
-            <p>
-                🏆 {{ produto.nome }}
-                -
-                {{ produto.quantidade }} un.
-            </p>
-            }
-            }
-        </div>
-    </div>
-
-    <div tables>
-        <h2>
-            📋 Histórico de Vendas
-        </h2>
-        <div class="report-filters">
-            <div class="field">
-
-                <label>
-                    Forma de Pagamento
-                </label>
-
-                <select
-                    [ngModel]="formaPagamentoSelecionada"
-                    (ngModelChange)="formaPagamentoSelecionadaChange.emit($event)">
-
-                    <option value="todos">
-                        Todos
-                    </option>
-
-                    <option value="dinheiro">
-                        💵 Dinheiro
-                    </option>
-
-                    <option value="pix">
-                        ⚡ PIX
-                    </option>
-
-                    <option value="debito">
-                        💳 Débito
-                    </option>
-
-                    <option value="credito">
-                        🏦 Crédito
-                    </option>
-
-                    <option value="fiado">
-                        📝 Fiado
-                    </option>
-
-                </select>
+                <strong>
+                    {{ forma.valor | currency:'BRL' }}
+                </strong>
 
             </div>
 
-            <div class="field">
-                <label>
-                    Período
-                </label>
-                <select
-                    [ngModel]="periodoSelecionado"
-                    (ngModelChange)="periodoSelecionadoChange.emit($event)">
+            }
 
-                    <option value="todos">
-                        Todos
-                    </option>
+        </div>
 
-                    <option value="hoje">
-                        Hoje
-                    </option>
+        }
 
-                    <option value="ontem">
-                        Ontem
-                    </option>
+        @if (selectedSection === 'ticket-medio') {
 
-                    <option value="7dias">
-                        Últimos 7 dias
-                    </option>
+        <div class="report-detail">
 
-                    <option value="30dias">
-                        Últimos 30 dias
-                    </option>
-                </select>
+            <h2>
+                🎟️ Ticket Médio
+            </h2>
+
+            <div class="detail-row">
+                <span>Ticket Médio</span>
+                <strong>
+                    {{ ticketMedio | currency:'BRL' }}
+                </strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Total de Vendas</span>
+                <strong>
+                    {{ totalVendas }}
+                </strong>
+            </div>
+
+            <div class="detail-row">
+                <span>Faturamento Total</span>
+                <strong>
+                    {{ faturamentoTotal | currency:'BRL' }}
+                </strong>
+            </div>
+
+        </div>
+
+        }
+
+        @if (selectedSection === 'melhor-dia') {
+
+        <div class="report-detail">
+
+            <h2>
+                🏆 Melhor Dia
+            </h2>
+
+            <div class="detail-row">
+
+                <p>
+                    <strong>Data:</strong>
+                    {{ melhorDiaData }}
+                </p>
+            </div>
+            <div class="detail-row">
+                <p>
+                    <strong>Faturamento:</strong>
+                    {{ melhorDiaValor }}
+                </p>
+            </div>
+
+        </div>
+
+        }
+
+        @if (selectedSection === 'receita-pagamento') {
+
+        <div class="report-detail">
+
+            <h2>
+                💳 Receita por Forma de Pagamento
+            </h2>
+
+            <div class="card">
+
+                @for (
+                forma of faturamentoPorPagamento;
+                track forma.formaPagamento
+                ) {
+                <div class="detail-row">
+                    <p>
+                        <strong>
+                            {{ forma.formaPagamento }}
+                        </strong>
+                        -
+                        {{ forma.valor | currency:'BRL' }}
+                    </p>
+                </div>
+                }
+
             </div>
         </div>
-        <div class="card">
-            <app-data-table
-                [columns]="colunasVendas"
-                [data]="vendasTabela">
-            </app-data-table>
+        }
+
+        @if (selectedSection === 'produto-mais-faturou') {
+        <div class="report-detail">
+            <h2>
+                💰 Produto que Mais Faturou
+            </h2>
+
+            <div class="detail-row">
+
+                <span>Produto:</span>
+                <strong>{{ produtoMaisFaturou?.nome }}</strong>
+
+            </div>
+            <div class="detail-row">
+                <p>
+                    <strong>Faturamento:</strong>
+                    {{ produtoMaisFaturou?.faturamento | currency:'BRL' }}
+                </p>
+            </div>
+
         </div>
+        }
+
+        @if (selectedSection === 'evolucao-vendas') {
+
+        <div class="report-detail">
+
+            <h2>
+                📈 Evolução das Vendas
+            </h2>
+
+            <div class="card">
+
+                @if (evolucaoVendasPorDia.length === 0) {
+
+                <app-empty-state
+                    icon="📈"
+                    title="Evolução das Vendas"
+                    message="Nenhuma venda encontrada.">
+                </app-empty-state>
+
+                } @else {
+
+                @for (
+                dia of evolucaoVendasPorDia;
+                track dia.data
+                ) {
+                <div class="detail-row">
+                    <p>
+                        <strong>
+                            {{ dia.data }}
+                        </strong>
+                        -
+                        <span>{{ dia.total | currency:'BRL' }}</span>
+
+                    </p>
+                </div>
+
+                }
+
+                }
+
+            </div>
+        </div>
+
+        }
+
+        @if (selectedSection === 'top-produtos') {
+
+        <div class="report-detail">
+
+            <h2>
+                🏆 Top Produtos Vendidos
+            </h2>
+
+            <div class="card">
+
+                @if (topProdutosVendidos.length === 0) {
+
+                <app-empty-state
+                    icon="🏆"
+                    title="Top Produtos Vendidos"
+                    message="Informações de produtos não disponíveis para o relatório.">
+                </app-empty-state>
+
+                } @else {
+
+                @for (
+                produto of topProdutosVendidos;
+                track produto.nome
+                ) {
+                <div class="detail-row">
+                    <p>
+                        <strong>
+                            {{ produto.nome }}
+                        </strong>
+                        -
+                        <span>{{ produto.quantidade }} un.</span>
+
+                    </p>
+                </div>
+                }
+
+                }
+
+            </div>
+        </div>
+
+        }
+
     </div>
-</app-report-layout>
+</app-split-panel>
