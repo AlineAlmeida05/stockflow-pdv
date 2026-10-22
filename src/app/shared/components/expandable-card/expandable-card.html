@@ -3,6 +3,7 @@
         type="button"
         class="expandable-card__header"
         [disabled]="!collapsible"
+        [attr.aria-expanded]="expanded"
         (click)="toggle()">
         <span>
 
@@ -17,6 +18,7 @@
         </span>
 
         <span
+            aria-hidden="true"
             class="expandable-card__icon"
             [class.expanded]="expanded">
             ▶
@@ -25,8 +27,7 @@
 
     @if (expanded) {
 
-    <div
-        class="expandable-card__content">
+    <div class="expandable-card__content">
 
         <ng-content>
         </ng-content>

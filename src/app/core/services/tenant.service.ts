@@ -11,11 +11,10 @@ import { TenantUpdateRequest } from '../requests/tenant-update-request';
 })
 export class TenantService {
 
-    private readonly http =
-        inject(HttpClient);
+    private readonly http = inject(HttpClient);
 
-    private readonly apiUrl =
-        `${environment.apiUrl}/api/tenants`;
+    private readonly apiUrl = `${environment.apiUrl}/api/tenants`;
+    
 
     listar(): Observable<Tenant[]> {
 

@@ -19,9 +19,17 @@
     obterBadge(item.modulo) > 0
     ) {
 
-    <span class="menu-badge">
-      ⚠️ {{ obterBadge(item.modulo) }}
-    </span>
+    <div class="menu-indicator">
+
+      <span class="menu-badge">
+        {{ obterBadge(item.modulo) }}
+      </span>
+
+      <span class="menu-alert-icon">
+        ⚠️
+      </span>
+      
+    </div>
 
     }
 

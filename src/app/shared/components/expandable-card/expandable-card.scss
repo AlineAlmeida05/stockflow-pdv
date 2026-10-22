@@ -36,3 +36,7 @@
     outline: 2px solid var(--color-secondary);
     outline-offset: 2px;
 }
+
+.expandable-card__header:not(:disabled):hover {
+    color: var(--color-primary);
+}

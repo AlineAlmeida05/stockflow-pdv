@@ -1,12 +1,12 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, DestroyRef, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, } from '@angular/router';
 import { MENU_CONFIG } from '../../config/menu.config';
-import { BRANDING_CONFIG } from '../../config/branding.config';
 import { AuthService } from '../../core/services/auth.service';
 import { OnInit } from '@angular/core';
 import { NotificacaoService } from '../../core/services/notificacao.service';
 import { MenuBadge } from '../../core/models/menu-badge.model';
 import { ChangeDetectorRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-sidebar',
@@ -21,43 +21,49 @@ export class Sidebar implements OnInit {
   @Output()
   closeMenu = new EventEmitter<void>();
 
-  branding = BRANDING_CONFIG;
-
   menu = MENU_CONFIG;
 
   badges: MenuBadge[] = [];
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private authService: AuthService,
     private notificacaoService: NotificacaoService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
 
     this.carregarBadges();
 
+    this.cdr.detectChanges();
+
     this.notificacaoService
       .badgesAtualizados$
+      .pipe(
+        takeUntilDestroyed(
+          this.destroyRef
+        )
+      )
       .subscribe(() => {
 
         this.carregarBadges();
+        this.cdr.detectChanges();
 
       });
 
   }
 
+  fecharMenu(): void {
 
-
-  fecharMenu() {
     this.closeMenu.emit();
+    
   }
 
   get menuFiltrado() {
 
-    const usuario =
-      this.authService
-        .usuarioLogado();
+    const usuario = this.authService.usuarioLogado();
 
     if (!usuario) {
 

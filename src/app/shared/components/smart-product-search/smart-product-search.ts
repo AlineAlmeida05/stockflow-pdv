@@ -10,10 +10,8 @@ import { ChangeDetectorRef } from '@angular/core';
     imports: [
         FormsModule
     ],
-    templateUrl:
-        './smart-product-search.html',
-    styleUrl:
-        './smart-product-search.scss'
+    templateUrl: './smart-product-search.html',
+    styleUrl: './smart-product-search.scss'
 })
 export class SmartProductSearch {
 
@@ -21,12 +19,15 @@ export class SmartProductSearch {
     produtos: Produto[] = [];
 
     @Output()
-    produtoSelecionado =
-        new EventEmitter<Produto>();
+    produtoSelecionado = new EventEmitter<Produto>();
 
     @ViewChild('produtoInput')
     produtoInput?: ElementRef<HTMLInputElement>;
 
+    inputId =
+        `produto-${Math.random()
+            .toString(36)
+            .substring(2, 9)}`;
 
     textoBusca = '';
 
@@ -54,20 +55,17 @@ export class SmartProductSearch {
             .filter(
                 produto =>
 
-                    produto.nome
-                        ?.toLowerCase()
+                    produto.nome?.toLowerCase()
                         .includes(busca)
 
                     ||
 
-                    produto.codigo
-                        ?.toLowerCase()
+                    produto.codigo?.toLowerCase()
                         .includes(busca)
 
                     ||
 
-                    produto.codigoBarras
-                        ?.toLowerCase()
+                    produto.codigoBarras?.toLowerCase()
                         .includes(busca)
             )
             .sort((a, b) =>
@@ -84,11 +82,9 @@ export class SmartProductSearch {
         produto: Produto
     ): void {
 
-        this.textoBusca =
-            produto.nome;
+        this.textoBusca = produto.nome;
 
-        this.mostrarResultados =
-            false;
+        this.mostrarResultados = false;
 
         this.produtoSelecionado.emit(
             produto
@@ -98,16 +94,13 @@ export class SmartProductSearch {
 
     buscar(): void {
 
-        this.mostrarResultados =
-            true;
+        this.mostrarResultados = true;
 
-        const busca =
-            this.textoBusca.trim();
+        const busca = this.textoBusca.trim();
 
         if (!busca) {
 
-            this.mostrarResultados =
-                false;
+            this.mostrarResultados = false;
 
             return;
 
@@ -119,8 +112,7 @@ export class SmartProductSearch {
 
         ) {
 
-            const produto =
-                this.resultados[0];
+            const produto = this.resultados[0];
 
             if (
 
@@ -144,12 +136,10 @@ export class SmartProductSearch {
 
     focar(): void {
 
-        this.produtoInput
-            ?.nativeElement
+        this.produtoInput?.nativeElement
             .focus();
 
-        this.produtoInput
-            ?.nativeElement
+        this.produtoInput?.nativeElement
             .select();
 
     }
@@ -168,8 +158,7 @@ export class SmartProductSearch {
         produto: Produto | undefined
     ): void {
 
-        this.textoBusca =
-            produto?.nome ?? '';
+        this.textoBusca = produto?.nome ?? '';
 
         this.mostrarResultados = false;
 
