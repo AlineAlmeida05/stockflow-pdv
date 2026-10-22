@@ -3,30 +3,6 @@ import { inject } from '@angular/core';
 import { catchError, Observable, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-
-  if (
-    req.url.includes('/api/auth/login') ||
-    req.url.includes('/api/auth/refresh')
-  ) {
-    return next(req);
-  }
-
-  const token = localStorage.getItem('token');
-
-  if (!token) {
-    return next(req);
-  }
-
-  return next(
-    req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-  );
-
-
 export const authInterceptor: HttpInterceptorFn = (
     req: HttpRequest<unknown>,
     next: HttpHandlerFn

@@ -667,7 +667,6 @@ export class Produtos implements OnInit {
             console.error(erro);
             }
 
-          }
 
         });
 
