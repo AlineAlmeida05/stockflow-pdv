@@ -24,6 +24,12 @@ export class SearchInput {
     @ViewChild('searchInput')
     searchInput?: ElementRef<HTMLInputElement>;
 
+    @Input()
+    readonly = false;
+
+    @Input()
+    autofocus = false;
+
     limpar(): void {
 
         this.valueChange.emit('');
@@ -32,12 +38,10 @@ export class SearchInput {
 
     focar(): void {
 
-        this.searchInput
-            ?.nativeElement
+        this.searchInput?.nativeElement
             .focus();
 
-        this.searchInput
-            ?.nativeElement
+        this.searchInput?.nativeElement
             .select();
 
     }

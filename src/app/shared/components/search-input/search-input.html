@@ -5,8 +5,10 @@
     <input
         #searchInput
         type="text"
-        [placeholder]="placeholder"
+        [attr.aria-label]="placeholder"
         [ngModel]="value"
+        [readonly]="readonly"
+        [autofocus]="autofocus"
         (ngModelChange)="valueChange.emit($event)">
 
     @if (value) {
@@ -14,6 +16,7 @@
     <button
         type="button"
         class="clear-button"
+        aria-label="Limpar busca"
         (click)="limpar()">
         ✕
     </button>
