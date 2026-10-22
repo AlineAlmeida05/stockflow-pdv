@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { VendaService } from '../../core/services/venda.service';
 import { FiadoService } from '../../core/services/fiado.service';
@@ -8,8 +7,6 @@ import { ProdutoService } from '../../core/services/produto.service';
 import { Venda } from '../../core/models/venda.model';
 import { Fiado } from '../../core/models/fiado.model';
 import { Produto } from '../../core/models/produto.model';
-import { MovimentacaoEstoque } from '../../core/models/movimentacao-estoque.model';
-import { MovimentacaoEstoqueService } from '../../core/services/movimentacao-estoque.service';
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { StatCardCarousel } from '../../shared/components/stat-card-carousel/stat-card-carousel';
 import { DashboardLayout } from '../../shared/components/dashboard-layout/dashboard-layout';
@@ -29,7 +26,6 @@ import { EmptyState } from '../../shared/components/empty-state/empty-state';
         StatCardCarousel,
         DashboardLayout,
         DashboardChart,
-        FormsModule,
         EmptyState,
         DatePipe
     ],
@@ -44,9 +40,7 @@ export class Dashboard implements OnInit {
 
     produtos: Produto[] = [];
 
-    movimentacoes: MovimentacaoEstoque[] = [];
-
-    dashboard?: DashboardResponse;    
+    dashboard?: DashboardResponse;
 
     resumoGeralSelecionado = '';
 
@@ -55,7 +49,6 @@ export class Dashboard implements OnInit {
     resumoPromocoesSelecionado = '';
 
     resumoProdutosSelecionado = '';
-    
 
     periodoSelecionado:
         'hoje'
@@ -78,7 +71,6 @@ export class Dashboard implements OnInit {
         private vendaService: VendaService,
         private fiadoService: FiadoService,
         private produtoService: ProdutoService,
-        private movimentacaoService: MovimentacaoEstoqueService,
         private dashboardService: DashboardService,
         private cdr: ChangeDetectorRef
     ) { }
@@ -145,26 +137,6 @@ export class Dashboard implements OnInit {
 
             });
 
-        this.movimentacaoService
-            .listar()
-            .subscribe({
-
-                next: movimentacoes => {
-
-                    this.movimentacoes = movimentacoes;
-
-                    this.cdr.detectChanges();
-
-                },
-
-                error: erro => {
-
-                    console.error(erro);
-
-                }
-
-            });
-
         this.carregarDashboard();
 
         this.cdr.detectChanges();
@@ -173,25 +145,12 @@ export class Dashboard implements OnInit {
 
     get promocoesAtivasDetalhes() {
 
-    return this.dashboard
-        ?.promocoesAtivasDetalhes
-        ?? [];
-
-}
-
-    get vendasHoje(): Venda[] {
-
-        const hoje =
-            new Date().toDateString();
-
-        return this.vendas.filter(
-            venda =>
-                new Date(
-                    venda.dataVenda
-                ).toDateString() === hoje
-        );
+        return this.dashboard
+            ?.promocoesAtivasDetalhes
+            ?? [];
 
     }
+
 
     alterarPeriodo(
         periodo:
@@ -202,23 +161,10 @@ export class Dashboard implements OnInit {
             | 'todos'
     ) {
 
-        this.periodoSelecionado =
-            periodo;
+        this.periodoSelecionado = periodo;
 
         this.carregarDashboard();
         this.cdr.detectChanges();
-
-    }
-
-    get totalVendasHoje(): number {
-
-        return this.vendasHoje.length;
-
-    }
-
-    get totalVendasPeriodo(): number {
-
-        return this.vendasFiltradas.length;
 
     }
 
@@ -233,36 +179,6 @@ export class Dashboard implements OnInit {
             0
 
         );
-
-    }
-
-    get faturamentoHoje(): number {
-
-        return this.vendasHoje.reduce(
-            (total, venda) =>
-                total + venda.valorTotal,
-            0
-        );
-
-    }
-
-    get fiadosEmAberto(): number {
-
-        return this.fiados.reduce(
-            (total, fiado) =>
-                total + fiado.valorTotal,
-            0
-        );
-
-    }
-
-    get clientesDevedores(): number {
-
-        return new Set(
-            this.fiados.map(
-                fiado => fiado.clienteId
-            )
-        ).size;
 
     }
 
@@ -299,8 +215,7 @@ export class Dashboard implements OnInit {
 
             case '30dias':
 
-                const trintaDias =
-                    new Date();
+                const trintaDias = new Date();
 
                 trintaDias.setDate(
                     trintaDias.getDate() - 30
@@ -372,18 +287,6 @@ export class Dashboard implements OnInit {
 
     }
 
-    get produtosComEstoqueBaixo(): number {
-
-        return this.produtos
-            .filter(
-                produto =>
-                    produto.estoqueAtual <=
-                    produto.estoqueMinimo
-            )
-            .length;
-
-    }
-
     get produtosSemEstoque() {
 
         return this.produtos
@@ -403,19 +306,6 @@ export class Dashboard implements OnInit {
                     produto.estoqueAtual <=
                     produto.estoqueMinimo
             );
-
-    }
-
-    get vendasPromocionais(): Venda[] {
-
-        return this.vendas.filter(
-            venda =>
-                venda.status !== 'cancelada' &&
-                (venda.itens ?? []).some(
-                    item =>
-                        item.promocaoAplicada
-                )
-        );
 
     }
 
@@ -485,8 +375,7 @@ export class Dashboard implements OnInit {
 
     get vendasChartData() {
 
-        const evolucao =
-            this.dashboard?.evolucaoVendas ?? [];
+        const evolucao = this.dashboard?.evolucaoVendas ?? [];
 
         return {
 
@@ -506,11 +395,9 @@ export class Dashboard implements OnInit {
                             item => item.total
                         ),
 
-                    borderColor:
-                        '#2563eb',
+                    borderColor: '#2563eb',
 
-                    backgroundColor:
-                        'rgba(37,99,235,0.2)',
+                    backgroundColor: 'rgba(37,99,235,0.2)',
 
                     tension: 0.3,
 
@@ -564,12 +451,6 @@ export class Dashboard implements OnInit {
                             }
                         ),
                 variant: 'success' as const
-            },
-
-            {
-                title: 'Vendas Hoje',
-                value: this.totalVendasHoje,
-                variant: 'info' as const
             }
 
         ];
@@ -702,7 +583,7 @@ export class Dashboard implements OnInit {
 
         ];
 
-    }    
+    }
 
     get cardsAtuais() {
 
@@ -806,8 +687,7 @@ export class Dashboard implements OnInit {
 
     get pagamentoChartData() {
 
-        const pagamentos =
-            this.dashboard?.faturamentoPorPagamento ?? [];
+        const pagamentos = this.dashboard?.faturamentoPorPagamento ?? [];
 
         return {
 
@@ -863,8 +743,7 @@ export class Dashboard implements OnInit {
 
     get topProdutosChartData() {
 
-        const produtos =
-            this.dashboard?.topProdutosVendidos ?? [];
+        const produtos = this.dashboard?.topProdutosVendidos ?? [];
 
         return {
 
@@ -877,8 +756,7 @@ export class Dashboard implements OnInit {
 
                 {
 
-                    label:
-                        'Quantidade Vendida',
+                    label: 'Quantidade Vendida',
 
                     data:
                         produtos.map(
@@ -886,8 +764,7 @@ export class Dashboard implements OnInit {
                                 produto.quantidade
                         ),
 
-                    backgroundColor:
-                        '#22c55e'
+                    backgroundColor: '#22c55e'
 
                 }
 
@@ -909,8 +786,7 @@ export class Dashboard implements OnInit {
 
     get fiadosChartData() {
 
-        const evolucao =
-            this.dashboard?.evolucaoFiados ?? [];
+        const evolucao = this.dashboard?.evolucaoFiados ?? [];
 
         return {
 
@@ -930,11 +806,9 @@ export class Dashboard implements OnInit {
                             item => item.total
                         ),
 
-                    borderColor:
-                        '#f59e0b',
+                    borderColor: '#f59e0b',
 
-                    backgroundColor:
-                        'rgba(245,158,11,0.25)',
+                    backgroundColor: 'rgba(245,158,11,0.25)',
 
                     fill: true,
 
@@ -962,8 +836,7 @@ export class Dashboard implements OnInit {
 
     get giroChartData() {
 
-        const produtos =
-            this.dashboard?.giroEstoque ?? [];
+        const produtos = this.dashboard?.giroEstoque ?? [];
 
         return {
 
@@ -983,8 +856,7 @@ export class Dashboard implements OnInit {
                             produto => produto.giro
                         ),
 
-                    backgroundColor:
-                        '#8b5cf6'
+                    backgroundColor: '#8b5cf6'
 
                 }
 
@@ -1024,8 +896,7 @@ export class Dashboard implements OnInit {
 
             case '7dias':
 
-                const seteDias =
-                    new Date();
+                const seteDias = new Date();
 
                 seteDias.setDate(
                     seteDias.getDate() - 7
@@ -1040,8 +911,7 @@ export class Dashboard implements OnInit {
 
             case '30dias':
 
-                const trintaDias =
-                    new Date();
+                const trintaDias = new Date();
 
                 trintaDias.setDate(
                     trintaDias.getDate() - 30
@@ -1122,5 +992,5 @@ export class Dashboard implements OnInit {
             });
 
     }
-    
+
 }

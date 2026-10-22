@@ -14,14 +14,12 @@ describe(
                     {} as never,
                     {} as never,
                     {} as never,
-                    {} as never,
                     {} as never
                 );
 
         });
 
-        it(
-            'deve retornar Hoje para o período hoje',
+        it('deve retornar Hoje para o período hoje',
             () => {
 
                 component.periodoSelecionado =
@@ -36,8 +34,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar 7 dias para o período 7dias',
+        it('deve retornar 7 dias para o período 7dias',
             () => {
 
                 component.periodoSelecionado =
@@ -52,8 +49,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar 30 dias para o período 30dias',
+        it('deve retornar 30 dias para o período 30dias',
             () => {
 
                 component.periodoSelecionado =
@@ -68,8 +64,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar Mês Atual para o período mes',
+        it('deve retornar Mês Atual para o período mes',
             () => {
 
                 component.periodoSelecionado =
@@ -84,8 +79,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar Todos para o período todos',
+        it('deve retornar Todos para o período todos',
             () => {
 
                 component.periodoSelecionado =
@@ -100,8 +94,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar apenas produtos sem estoque',
+        it('deve retornar apenas produtos sem estoque',
             () => {
 
                 component.produtos = [
@@ -125,8 +118,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar apenas produtos com estoque baixo',
+        it('deve retornar apenas produtos com estoque acima de zero e abaixo do mínimo',
             () => {
 
                 component.produtos = [
@@ -153,82 +145,7 @@ describe(
             }
         );
 
-        it(
-            'deve retornar a quantidade correta de clientes devedores',
-            () => {
-
-                component.fiados = [
-                    {
-                        clienteId: '1'
-                    } as never,
-
-                    {
-                        clienteId: '1'
-                    } as never,
-
-                    {
-                        clienteId: '2'
-                    } as never
-                ];
-
-                expect(
-                    component.clientesDevedores
-                ).toBe(2);
-
-            }
-        );
-
-        it(
-            'deve somar corretamente os fiados em aberto',
-            () => {
-
-                component.fiados = [
-                    {
-                        valorTotal: 100
-                    } as never,
-
-                    {
-                        valorTotal: 50
-                    } as never
-                ];
-
-                expect(
-                    component.fiadosEmAberto
-                ).toBe(150);
-
-            }
-        );
-
-        it(
-            'deve retornar a quantidade correta de produtos com estoque baixo',
-            () => {
-
-                component.produtos = [
-                    {
-                        estoqueAtual: 5,
-                        estoqueMinimo: 5
-                    } as never,
-
-                    {
-                        estoqueAtual: 2,
-                        estoqueMinimo: 5
-                    } as never,
-
-                    {
-                        estoqueAtual: 10,
-                        estoqueMinimo: 5
-                    } as never
-                ];
-
-                expect(
-                    component.produtosComEstoqueBaixo
-                ).toBe(2);
-
-            }
-        );
-
-        it(
-            'deve formatar PIX corretamente',
+        it('deve formatar PIX corretamente',
             () => {
 
                 expect(
@@ -242,8 +159,7 @@ describe(
             }
         );
 
-        it(
-            'deve formatar crédito corretamente',
+        it('deve formatar crédito corretamente',
             () => {
 
                 expect(
@@ -256,7 +172,5 @@ describe(
 
             }
         );
-
-
     }
 );
