@@ -1,12 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { EventEmitter, Output } from '@angular/core';
 import { ActionIcons } from '../action-icons/action-icons';
+import { EmptyState } from '../empty-state/empty-state';
 
 @Component({
     selector: 'app-data-table',
     standalone: true,
     imports: [
-        ActionIcons
+        ActionIcons,
+        EmptyState
     ],
     templateUrl: './data-table.html',
     styleUrl: './data-table.scss',
@@ -20,6 +22,12 @@ export class DataTable {
         type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle' | 'progress';
         align?: 'left' | 'center' | 'right';
         badgeVariantField?: string;
+        cellClass?: string;
+        cellClassFn?: (row: unknown) => string;
+        toggleActiveValue?: string;
+        toggleActiveLabel?: string;
+        toggleInactiveLabel?: string;
+        badgeClassFn?: (row: unknown) => string;
     }[] = [];
 
     @Input()
@@ -41,8 +49,7 @@ export class DataTable {
     delete = new EventEmitter<unknown>();
 
     @Output()
-    rowClick =
-        new EventEmitter<unknown>();
+    rowClick = new EventEmitter<unknown>();
 
     @Input()
     actionsHeader = 'Ações';
@@ -51,31 +58,25 @@ export class DataTable {
     clickableRows = false;
 
     @Output()
-    toggle = new EventEmitter
+    toggle = new EventEmitter;
 
-    obterVariantStatus(
-        status: string
-    ): 'success' | 'warning' | 'danger' {
+    @Input()
+    trackByField = 'id';
 
-        switch (status) {
+    @Input()
+    emptyTitle = 'Nenhum registro encontrado';
 
-            case 'GERENTE':
-            case 'Ativo':
-                return 'success';
+    @Input()
+    emptyMessage = 'Ajuste os filtros e tente novamente.';
 
-            case 'OPERADOR_CAIXA':
-                return 'warning';
+    @Input()
+    emptyIcon = '📋';
 
-            case 'ESTOQUISTA':
-            case 'Inativo':
-                return 'danger';
+    @Input()
+    loading = false;
 
-            default:
-                return 'success';
-
-        }
-
-    }
+    @Input()
+    rowClassFn?: (row: unknown) => string;
 
     formatCurrency(
         value: unknown
@@ -128,33 +129,6 @@ export class DataTable {
 
     }
 
-    getBadgeClass(
-        value: string
-    ): string {
-
-        switch (value) {
-
-            case 'Ativo':
-            case 'Em Dia':
-            case 'Em Estoque':
-                return 'status-success';
-
-            case 'Atenção':
-            case 'Devedor':
-                return 'status-warning';
-
-            case 'Inativo':
-            case 'Inadimplente':
-            case 'Crítico':
-                return 'status-danger';
-
-            default:
-                return '';
-
-        }
-
-    }
-
     getProgressValue(
         value: string
     ): number {
@@ -183,6 +157,18 @@ export class DataTable {
         }
 
         return 'progress-success';
+
+    }
+
+    trackRow(
+        index: number,
+        row: Record<string, unknown>
+    ): unknown {
+
+        return (
+            row[this.trackByField]
+            ?? index
+        );
 
     }
 }

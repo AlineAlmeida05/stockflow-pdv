@@ -23,13 +23,31 @@
         </thead>
 
         <tbody>
-            @if (!data.length) {
+            @if (loading) {
+
+            <tr>
+                <td
+                    class="table-loading"
+                    [attr.colspan]="showActions ? columns.length + 1 : columns.length">
+
+                    Carregando...
+
+                </td>
+            </tr>
+
+            } @else if (!data.length) {
 
             <tr>
                 <td
                     class="table-empty"
                     [attr.colspan]="showActions ? columns.length + 1 : columns.length">
-                    Nenhum registro encontrado.
+
+                    <app-empty-state
+                        [icon]="emptyIcon"
+                        [title]="emptyTitle"
+                        [message]="emptyMessage">
+                    </app-empty-state>
+
                 </td>
             </tr>
 
@@ -37,15 +55,13 @@
 
             @for (
             row of data;
-            track $index;
+            track trackRow($index, $any(row));
             ) {
             <tr
                 [class.table-row-clickable]="clickableRows"
                 [class.table-row-inativo]="$any(row).ativo === false"
-                (click)="rowClick.emit(row)" [class.table-row-critico]="
-                    $any(row).statusEstoque === 'Crítico' ||
-                    $any(row).statusEstoque === 'Sem Estoque'
-                ">
+                [class]="rowClassFn?.(row)"
+                (click)="rowClick.emit(row)">
                 @for (
                 column of columns;
                 track column.field
@@ -54,14 +70,11 @@
                 <td
                     [class.text-center]="column.align === 'center'"
                     [class.text-right]="column.align === 'right'"
-                    [class.table-cell-product]="column.field === 'produtoNome'"
-                    [class.table-cell-subtotal]="column.field === 'subtotal'">
+                    [class]="column.cellClass ?? column.cellClassFn?.(row)">
                     @if (column.type === 'badge') {
 
                     <span
-                        [class]="getBadgeClass(
-        $any(row)[column.field]
-    )">
+                        [class]="column.badgeClassFn?.(row)">
 
                         {{ $any(row)[column.field] }}
 
@@ -69,32 +82,8 @@
 
                     } @else if (column.type === 'currency') {
 
-                    <span
-                        [class.preco-original-riscado]="
-                            column.field === 'precoVenda' &&
-                            $any(row).precoPromocional > 0
-                        "
-                        [class.preco-promocional]="
-                            column.field === 'precoPromocional' &&
-                            $any(row).precoPromocional > 0
-                        ">
-
-                        <span
-                            [class.saldo-positivo]="
-        column.field === 'saldoDevedor' &&
-        $any(row)[column.field] <= 0
-    "
-                            [class.saldo-negativo]="
-        column.field === 'saldoDevedor' &&
-        $any(row)[column.field] > 0
-    ">
-                            {{
-                            formatCurrency(
-                            $any(row)[column.field]
-                            )
-                            }}
-                        </span>
-
+                    <span>
+                        {{ formatCurrency( $any(row)[column.field]) }}
                     </span>
 
                     } @else if (column.type === 'date') {
@@ -115,15 +104,18 @@
                         <div
                             class="toggle-switch"
                             [class.toggle-ativo]="
-                                $any(row)[column.field] === 'Ativo'
-                            ">
+    $any(row)[column.field] ===
+    (column.toggleActiveValue ?? 'Ativo')
+">
 
                             <span
                                 class="toggle-slider"
                                 [attr.data-text]="
-                                $any(row)[column.field] === 'Ativo'
-                                    ? 'Ativo'
-                                    : 'Inativo'">
+    $any(row)[column.field] ===
+    (column.toggleActiveValue ?? 'Ativo')
+        ? (column.toggleActiveLabel ?? 'Ativo')
+        : (column.toggleInactiveLabel ?? 'Inativo')
+">
                             </span>
 
                         </div>

@@ -63,8 +63,9 @@ export class EntradaDeEstoque implements OnInit {
     colunasProdutos: {
         field: string;
         header: string;
-        type?: | 'text' | 'badge' | 'currency' | 'date';
-        align: 'left' | 'right' | "center"
+        type?: 'text' | 'badge' | 'currency' | 'date';
+        align: 'left' | 'right' | 'center';
+        badgeClassFn?: (row: unknown) => string;
     }[] = [
             {
                 field: 'nome',
@@ -86,7 +87,30 @@ export class EntradaDeEstoque implements OnInit {
                 field: 'statusEstoque',
                 header: 'Status',
                 type: 'badge',
-                align: 'right'
+                align: 'right',
+                badgeClassFn: (row: unknown) => {
+
+                    const produto = row as {
+                        statusEstoque?: string;
+                    };
+
+                    switch (produto.statusEstoque) {
+
+                        case 'Em Estoque':
+                            return 'status-success';
+
+                        case 'Atenção':
+                            return 'status-warning';
+
+                        case 'Crítico':
+                        case 'Sem Estoque':
+                            return 'status-danger';
+
+                        default:
+                            return '';
+                    }
+
+                }
             }
         ];
 
@@ -99,11 +123,13 @@ export class EntradaDeEstoque implements OnInit {
         | 'currency'
         | 'date';
         align?: 'left' | 'right' | 'center';
+        cellClass?: string;
     }[] = [
             {
                 field: 'produtoNome',
                 header: 'Produto',
-                align: 'left'
+                align: 'left',
+                cellClass: 'table-cell-product'
             },
             {
                 field: 'precoCompra',
@@ -583,4 +609,17 @@ export class EntradaDeEstoque implements OnInit {
         this.limparFormulario();
 
     }
+
+    rowClassFn = (row: unknown): string => {
+        const produto = row as {
+            statusEstoque?: string;
+        };
+
+        return (
+            produto.statusEstoque === 'Crítico' ||
+            produto.statusEstoque === 'Sem Estoque'
+        )
+            ? 'table-row-critico'
+            : '';
+    };
 }

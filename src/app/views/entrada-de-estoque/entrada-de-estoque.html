@@ -172,6 +172,7 @@
                     [columns]="colunasProdutos"
                     [data]="produtosTabela"
                     [clickableRows]="true"
+                    [rowClassFn]="rowClassFn"
                     (rowClick)="selecionarProdutoDaTabela($event)">
                 </app-data-table>
             </app-expandable-card>

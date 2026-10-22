@@ -59,6 +59,9 @@ export class Clientes implements OnInit {
         header: string;
         type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle';
         align?: 'left' | 'center' | 'right';
+        cellClass?: string;
+        cellClassFn?: (row: unknown) => string;
+        badgeClassFn?: (row: unknown) => string;
     }[] = [
             {
                 field: 'nome',
@@ -68,13 +71,43 @@ export class Clientes implements OnInit {
                 field: 'saldoDevedor',
                 header: 'Saldo',
                 type: 'currency',
-                align: 'center'
+                align: 'center',
+                cellClassFn: (row: unknown) => {
+
+                    const cliente = row as Cliente;
+
+                    return (cliente.saldoDevedor ?? 0) > 0
+                        ? 'saldo-negativo'
+                        : 'saldo-positivo';
+
+                }
             },
             {
                 field: 'status',
                 header: 'Status',
                 type: 'badge',
-                align: 'center'
+                align: 'center',
+                badgeClassFn: (row: unknown) => {
+
+                    const cliente = row as Cliente;
+
+                    switch (cliente.status) {
+
+                        case 'Em Dia':
+                            return 'status-success';
+
+                        case 'Devedor':
+                            return 'status-warning';
+
+                        case 'Inadimplente':
+                        case 'Limite Excedido':
+                            return 'status-danger';
+
+                        default:
+                            return '';
+                    }
+
+                }
             },
             {
                 field: 'controle',
@@ -660,5 +693,6 @@ export class Clientes implements OnInit {
         return this.formatarMoeda(valor);
 
     }
+
 
 }

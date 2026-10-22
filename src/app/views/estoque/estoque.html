@@ -90,7 +90,8 @@
     <div class="card">
         <app-data-table
             [columns]="colunasEstoque"
-            [data]="produtosEstoque">
+            [data]="produtosEstoque"
+            [rowClassFn]="rowClassFn">
         </app-data-table>
     </div>
     }
