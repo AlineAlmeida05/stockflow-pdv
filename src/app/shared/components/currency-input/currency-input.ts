@@ -1,24 +1,12 @@
-import {
-    Component,
-    EventEmitter,
-    Input,
-    Output,
-    OnInit,
-    OnChanges
-} from '@angular/core';
-
-import { FormsModule } from '@angular/forms';
+import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
     selector: 'app-currency-input',
-    standalone: true,
-    imports: [
-        FormsModule
-    ],
+    standalone: true,    
     templateUrl: './currency-input.html',
     styleUrl: './currency-input.scss'
 })
-export class CurrencyInput implements OnInit {
+export class CurrencyInput implements OnInit, OnChanges {
 
     displayValue = '';
 
@@ -41,6 +29,20 @@ export class CurrencyInput implements OnInit {
     ngOnInit(): void {
 
         this.atualizarDisplay();
+
+    }
+
+    ngOnChanges(
+        changes: SimpleChanges
+    ): void {
+
+        if (
+            changes['value']
+        ) {
+
+            this.atualizarDisplay();
+
+        }
 
     }
 
@@ -72,8 +74,7 @@ export class CurrencyInput implements OnInit {
         event: Event
     ): void {
 
-        const input =
-            event.target as HTMLInputElement;
+        const input = event.target as HTMLInputElement;
 
         const numeros =
             input.value.replace(
@@ -93,8 +94,7 @@ export class CurrencyInput implements OnInit {
 
         }
 
-        const valor =
-            Number(numeros) / 100;
+        const valor = Number(numeros) / 100;
 
         this.value = valor;
 

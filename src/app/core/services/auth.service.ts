@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
 import { Observable, tap } from 'rxjs';
-
 import { UsuarioLogado } from '../models/usuario-logado.model';
 import { STORAGE_KEYS } from '../constants/storage.constants';
 import { LoginRequest } from '../models/login-request.model';
@@ -14,8 +12,7 @@ import { environment } from '../../../environments/environment';
 })
 export class AuthService {
 
-    private readonly API =
-        `${environment.apiUrl}/api/auth`;
+    private readonly API = `${environment.apiUrl}/api/auth`;
 
     constructor(
         private http: HttpClient

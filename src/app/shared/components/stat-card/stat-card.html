@@ -1,6 +1,10 @@
 <div
     class="stat-card"
-    [class]="'stat-card ' + variant"
+    [class.primary]="variant === 'primary'"
+    [class.success]="variant === 'success'"
+    [class.warning]="variant === 'warning'"
+    [class.danger]="variant === 'danger'"
+    [class.info]="variant === 'info'"
     [class.stat-card--active]="active"
     role="status">
     <h3>

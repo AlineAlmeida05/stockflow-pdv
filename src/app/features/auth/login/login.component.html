@@ -26,8 +26,7 @@
                     Tenant não encontrado
                 </h2>
                 <p>
-                    A empresa informada não existe
-                    ou está inativa.
+                    A empresa informada não existe ou está inativa.
                 </p>
                 <button
                     type="button"
@@ -51,6 +50,7 @@
                     <input
                         id="email"
                         type="email"
+                        autocomplete="username"
                         formControlName="email"
                         [class.field-invalid]="
                             form.get('email')?.touched &&
@@ -82,7 +82,7 @@
                             id="senha"
                             [type]="mostrarSenha ? 'text' : 'password'"
                             formControlName="senha"
-                            formControlName="senha"
+                            autocomplete="current-password"
                             [class.field-invalid]="
                             form.get('senha')?.touched &&
                             form.get('senha')?.invalid">
@@ -111,7 +111,7 @@
                     <button
                         type="submit"
                         class="btn btn-primary"
-                        [disabled]="loading">
+                        [disabled]="loading || form.invalid">
                         @if (loading) {
                         Entrando...
                         } @else {

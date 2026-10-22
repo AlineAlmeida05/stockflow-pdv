@@ -1,19 +1,23 @@
-<div class="select-input">
+<div
+    class="select-input"
+    [class.select-input--sm]="size === 'sm'"
+    [class.select-input--md]="size === 'md'"
+    [class.select-input--lg]="size === 'lg'">
 
     @if (label) {
 
-    <label>
+    <label [for]="inputId">
         {{ label }}
     </label>
 
     }
 
     <select
+        [id]="inputId"
         #selectInput
+        [disabled]="disabled"
         [ngModel]="value"
-        (ngModelChange)="
-            valueChange.emit($event)">
-
+        (ngModelChange)="valueChange.emit($event)">
         @if (placeholder) {
 
         <option value>

@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-
 import { StatCard } from '../stat-card/stat-card';
 
 @Component({
@@ -19,10 +18,11 @@ export class StatCardCarousel {
         title: string;
         value: string | number;
         variant:
-            | 'info'
-            | 'success'
-            | 'warning'
-            | 'danger';
+        | 'primary'
+        | 'info'
+        | 'success'
+        | 'warning'
+        | 'danger';
     }[] = [];
 
 }

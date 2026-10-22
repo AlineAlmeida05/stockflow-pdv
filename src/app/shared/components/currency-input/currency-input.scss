@@ -1,45 +1,41 @@
 .currency-input {
     display: flex;
-
     flex-direction: column;
-
     gap: 6px;
 }
 
 .currency-input__wrapper {
     display: flex;
-
     align-items: center;
-
     border: 1px solid var(--color-gray-300);
-
     border-radius: 8px;
-
     background: var(--color-white);
-
     overflow: hidden;
 }
 
 .currency-input__wrapper span {
     padding: 0 12px;
-
     color: var(--color-gray-500);
-
     font-weight: 600;
-
     border-right: 1px solid var(--color-gray-300);
 }
 
 .currency-input__wrapper input {
     flex: 1;
-
     border: none;
-
     padding: 12px;
 }
 
 .currency-input__wrapper input:focus {
     outline: none;
+}
+
+.currency-input__wrapper:focus-within {
     border-color: var(--color-secondary);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-secondary) 15%, transparent);
+    box-shadow: 0 0 0 3px
+        color-mix(
+            in srgb,
+            var(--color-secondary) 15%,
+            transparent
+        );
 }

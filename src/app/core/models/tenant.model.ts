@@ -34,6 +34,8 @@ export interface Tenant {
 
     corSecundaria?: string;
 
+    slogan?: string;
+
     marketingIaHabilitado?: boolean;
 
     deliveryHabilitado?: boolean;

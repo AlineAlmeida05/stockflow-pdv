@@ -12,6 +12,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition:
+        transform 0.15s ease,
+        background-color 0.15s ease;
+}
+
+.action-btn:hover {
+    transform: scale(1.05);
 }
 
 .edit-btn {
@@ -22,4 +29,9 @@
 .delete-btn {
     background: rgba(239, 68, 68, 0.12);
     color: var(--color-danger);
+}
+
+.action-btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
 }

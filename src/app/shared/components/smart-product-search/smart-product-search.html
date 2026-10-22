@@ -1,10 +1,11 @@
 <div class="field">
 
-    <label>
+    <label [for]="inputId">
         Produto
     </label>
 
     <input
+        [id]="inputId"
         #produtoInput
         type="text"
         placeholder="Código, código de barras ou nome"
@@ -18,7 +19,9 @@
     resultados.length > 0
     ) {
 
-    <div class="resultados">
+    <div
+        class="resultados"
+        role="listbox">
 
         @for (
         produto of resultados;
@@ -26,6 +29,7 @@
         ) {
 
         <button
+            role="option"
             type="button"
             (click)="selecionarProduto(produto)">
 

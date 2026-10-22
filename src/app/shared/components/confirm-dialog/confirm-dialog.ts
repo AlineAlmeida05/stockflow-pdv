@@ -20,8 +20,7 @@ export class ConfirmDialog {
         public confirmDialogService: ConfirmDialogService
     ) { }
 
-    @HostListener('document:keydown.escape')
-    onEscape(): void {
+    @HostListener('document:keydown.escape')onEscape(): void {
 
         if (
             !this.confirmDialogService.currentDialog
@@ -34,9 +33,7 @@ export class ConfirmDialog {
 
     confirmar(): void {
 
-        const dialog =
-            this.confirmDialogService
-                .currentDialog;
+        const dialog = this.confirmDialogService.currentDialog;
 
         if (!dialog) {
             return;
@@ -84,12 +81,9 @@ export class ConfirmDialog {
 
     }
 
-
     get confirmButtonText(): string {
 
-        const dialog =
-            this.confirmDialogService
-                .currentDialog;
+        const dialog = this.confirmDialogService.currentDialog;
 
         if (dialog?.confirmText) {
             return dialog.confirmText;
