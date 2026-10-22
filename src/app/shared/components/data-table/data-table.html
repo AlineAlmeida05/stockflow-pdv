@@ -88,11 +88,7 @@
 
                     } @else if (column.type === 'date') {
 
-                    {{
-                    formatDate(
-                    $any(row)[column.field]
-                    )
-                    }}
+                    {{ formatDate( $any(row)[column.field] ) }}
 
                     } @else if (column.type === 'toggle') {
 
@@ -103,19 +99,15 @@
 
                         <div
                             class="toggle-switch"
-                            [class.toggle-ativo]="
-    $any(row)[column.field] ===
-    (column.toggleActiveValue ?? 'Ativo')
-">
+                            [class.toggle-ativo]="$any(row)[column.field] 
+                            ===(column.toggleActiveValue ?? 'Ativo')">
 
                             <span
                                 class="toggle-slider"
-                                [attr.data-text]="
-    $any(row)[column.field] ===
-    (column.toggleActiveValue ?? 'Ativo')
-        ? (column.toggleActiveLabel ?? 'Ativo')
-        : (column.toggleInactiveLabel ?? 'Inativo')
-">
+                                [attr.data-text]="$any(row)[column.field] === 
+                                (column.toggleActiveValue ?? 'Ativo')
+                                ? (column.toggleActiveLabel ?? 'Ativo')
+                                : (column.toggleInactiveLabel ?? 'Inativo')">
                             </span>
 
                         </div>
@@ -129,15 +121,9 @@
 
                             <div
                                 class="table-progress__fill"
-                                [class]="
-        'table-progress__fill ' +
-        getProgressClass(
-            $any(row)[column.field]
-        )
-    "
-                                [style.width.%]="getProgressValue(
-        $any(row)[column.field]
-    )">
+                                [class]="'table-progress__fill ' +
+                                getProgressClass( $any(row)[column.field])"
+                                [style.width.%]="getProgressValue($any(row)[column.field])">
                             </div>
 
                         </div>
@@ -152,9 +138,7 @@
 
                     } @else {
 
-                    {{
-                    $any(row)[column.field]
-                    }}
+                    {{ $any(row)[column.field]}}
 
                     }
 

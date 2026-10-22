@@ -1,0 +1,189 @@
+<div class="modal-backdrop">
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <h3>
+                Alterar Senha
+            </h3>
+
+            <button
+                type="button"
+                class="modal-close"
+                (click)="fecharModal()">
+                ✕
+            </button>
+        </div>
+        <form
+            [formGroup]="formAlterarSenha">
+
+            <div class="field">
+
+                <label>
+                    Senha Atual
+                </label>
+
+                <div class="password-input">
+
+                    <input
+                        [type]="mostrarSenhaAtual ? 'text' : 'password'"
+                        formControlName="senhaAtual">
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        (click)="mostrarSenhaAtual = !mostrarSenhaAtual">
+
+                        {{ mostrarSenhaAtual ? '🙈' : '👁️' }}
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="field">
+
+                <label>
+                    Nova Senha
+                </label>
+
+                <div class="password-input">
+
+                    <input
+                        [type]="mostrarNovaSenha ? 'text' : 'password'"
+                        formControlName="novaSenha">
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        (click)="mostrarNovaSenha = !mostrarNovaSenha">
+
+                        {{ mostrarNovaSenha ? '🙈' : '👁️' }}
+
+                    </button>
+
+                </div>
+
+                <small class="password-hint">
+                    A senha deve conter:
+                </small>
+
+                <div class="password-rules">
+
+                    <div
+                        class="password-rule"
+                        [class.valid]="possuiMinimoCaracteres">
+
+                        {{ possuiMinimoCaracteres ? '✓' : '✗' }} Mínimo de 8
+                        caracteres
+
+                    </div>
+
+                    <div
+                        class="password-rule"
+                        [class.valid]="possuiMaiuscula">
+
+                        {{ possuiMaiuscula ? '✓' : '✗' }} Uma letra maiúscula
+
+                    </div>
+
+                    <div
+                        class="password-rule"
+                        [class.valid]="possuiMinuscula">
+
+                        {{ possuiMinuscula ? '✓' : '✗' }} Uma letra minúscula
+
+                    </div>
+
+                    <div
+                        class="password-rule"
+                        [class.valid]="possuiNumero">
+
+                        {{ possuiNumero ? '✓' : '✗' }} Um número
+
+                    </div>
+
+                    <div
+                        class="password-rule"
+                        [class.valid]="possuiEspecial">
+
+                        {{ possuiEspecial ? '✓' : '✗' }} Um caractere especial
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="field">
+
+                <label>
+                    Confirmar Nova Senha
+                </label>
+
+                <div class="password-input">
+
+                    <input
+                        [type]="mostrarConfirmacaoSenha ? 'text' : 'password'"
+                        formControlName="confirmarSenha">
+
+                    <button
+                        type="button"
+                        class="password-toggle"
+                        (click)="mostrarConfirmacaoSenha = !mostrarConfirmacaoSenha">
+
+                        {{ mostrarConfirmacaoSenha ? '🙈' : '👁️' }}
+
+                    </button>
+
+                </div>
+
+                @if (
+                formAlterarSenha.value.confirmarSenha
+                ) {
+
+                <div
+                    class="password-match"
+                    [class.valid]="senhasConferem"
+                    [class.invalid]="!senhasConferem">
+
+                    {{ senhasConferem
+                    ? '✓ As senhas conferem'
+                    : '✗ As senhas não conferem'
+                    }}
+
+                </div>
+
+                }
+
+            </div>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    (click)="fecharModal()">
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    (click)="salvarSenha()"
+                    [disabled]="salvandoSenha || formAlterarSenha.invalid || !senhasConferem">
+
+                    @if (salvandoSenha) {
+                    Salvando...
+                    } @else {
+                    Salvar
+                    }
+
+                </button>
+            </div>
+        </form>
+
+    </div>
+
+</div>
