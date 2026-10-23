@@ -16,6 +16,11 @@ import { CurrencyInput } from '../../shared/components/currency-input/currency-i
 import { ClienteResumo } from '../../core/models/cliente-resumo.model';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 import { SmartProductSearch } from '../../shared/components/smart-product-search/smart-product-search';
+import { ItemCarrinho } from '../../core/models/item-carrinho.model';
+import { VendaRequest, FormaPagamento } from '../../core/models/venda-request.model';
+import { FORMA_PAGAMENTO_LABELS, FORMA_PAGAMENTO_PADRAO, FormaPagamentoTela } from '../../core/models/forma-pagamento.model';
+import { CarrinhoTabelaItem } from '../../core/models/carrinho-tabela-item.model';
+import { StatusEstoque } from '../../core/models/estoque-status.model';
 
 @Component({
     selector: 'app-nova-venda',
@@ -43,22 +48,9 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
     resumoCliente?: ClienteResumo;
 
-    carrinho: {
-        produto: Produto;
-        precoUnitario: number;
-        quantidade: number;
-        subtotal: number;
-        promocaoAplicada?: boolean;
-    }[] = [];
+    carrinho: ItemCarrinho[] = [];
 
-    formaPagamento:
-        | 'Selecione...'
-        | 'pix'
-        | 'dinheiro'
-        | 'debito'
-        | 'credito'
-        | 'fiado'
-        = 'Selecione...';
+    formaPagamento: FormaPagamentoTela = FORMA_PAGAMENTO_PADRAO;
 
     clientes: Cliente[] = [];
 
@@ -129,6 +121,7 @@ export class NovaVenda implements OnInit, AfterViewInit {
     ) { }
 
     ngOnInit(): void {
+
         this.carregarProdutos();
 
         this.carregarClientes();
@@ -148,31 +141,22 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
     }
 
-    get quantidadeTotalItens(): number {
-
-        return this.carrinho.reduce(
-            (total, item) =>
-                total + item.quantidade,
-            0
-        );
-
-    }
-
     get produtoSelecionado(): Produto | undefined {
 
         return this.produtos.find(
+
             produto => produto.id === this.produtoSelecionadoId
+
         );
         
 
     }
 
-    get statusEstoque(): 'alto' | 'medio' | 'baixo' {
+    get statusEstoque(): StatusEstoque {
 
         if (!this.produtoSelecionado) {
 
             return 'alto';
-
         }
 
         if (
@@ -229,8 +213,6 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
                     this.clientes = clientes;
 
-                    this.cdr.detectChanges();
-
                 },
 
                 error: erro => {
@@ -279,10 +261,9 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
             }
 
-            const produto =
-                this.produtos.find(
-                    p => p.id === this.produtoSelecionadoId
-                );
+            const produto = this.produtos.find(
+                p => p.id === this.produtoSelecionadoId
+            );
 
             if (!produto) {
 
@@ -299,15 +280,12 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
             }
 
-            const itemExistente =
-                this.carrinho.find(
-                    item =>
-                        item.produto.id === produto.id
-                );
+            const itemExistente = this.carrinho.find(
+                item =>
+                    item.produto.id === produto.id
+            );
 
-            const quantidadeTotal =
-                (itemExistente?.quantidade ?? 0) +
-                this.quantidade;
+            const quantidadeTotal = (itemExistente?.quantidade ?? 0) + this.quantidade;
 
             if (
                 quantidadeTotal >
@@ -325,9 +303,9 @@ export class NovaVenda implements OnInit, AfterViewInit {
             }
 
             const precoAplicado =
-                produto.promocaoAtiva
-                    ? produto.precoPromocional!
-                    : produto.precoVenda;
+                this.obterPrecoAplicado(
+                    produto
+                );
 
             if (itemExistente) {
 
@@ -356,7 +334,7 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
             setTimeout(() => {
 
-                this.smartProductSearch?.focar();
+                this.focarProduto();
 
             });
 
@@ -368,10 +346,9 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
     removerItem(produtoId: string): void {
 
-        this.carrinho =
-            this.carrinho.filter(
-                item => item.produto.id !== produtoId
-            );
+        this.carrinho = this.carrinho.filter(
+            item => item.produto.id !== produtoId
+        );
 
     }
 
@@ -383,9 +360,17 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
         this.finalizandoVenda = true;
 
+        if (!this.validarVenda()) {
+            return;
+        }
+
+        this.salvarVenda();
+    }
+
+    private validarVenda(): boolean {
+
         if (
-            !this.formaPagamento
-            ||
+            !this.formaPagamento ||
             this.formaPagamento === 'Selecione...'
         ) {
 
@@ -395,8 +380,7 @@ export class NovaVenda implements OnInit, AfterViewInit {
                 'Selecione uma forma de pagamento.'
             );
 
-
-            return;
+            return false;
         }
 
         if (
@@ -414,8 +398,7 @@ export class NovaVenda implements OnInit, AfterViewInit {
                     'Valor recebido insuficiente.'
                 );
 
-
-                return;
+                return false;
             }
         }
 
@@ -423,13 +406,12 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
             this.finalizandoVenda = false;
 
-            return;
+            return false;
         }
 
-
         if (
-            this.formaPagamento === 'fiado' &&
-            !this.clienteSelecionadoId
+            this.formaPagamento === 'fiado'
+            && !this.clienteSelecionadoId
         ) {
 
             this.finalizandoVenda = false;
@@ -438,13 +420,12 @@ export class NovaVenda implements OnInit, AfterViewInit {
                 'Selecione um cliente para vender fiado.'
             );
 
-            return;
-
+            return false;
         }
 
         if (
-            this.formaPagamento === 'fiado' &&
-            this.resumoCliente?.status === 'Inadimplente'
+            this.formaPagamento === 'fiado'
+            && this.resumoCliente?.status === 'Inadimplente'
         ) {
 
             this.finalizandoVenda = false;
@@ -453,14 +434,13 @@ export class NovaVenda implements OnInit, AfterViewInit {
                 'Cliente inadimplente. Venda fiado não permitida.'
             );
 
-            return;
-
+            return false;
         }
 
         if (
-            this.formaPagamento === 'fiado' &&
-            this.resumoCliente &&
-            this.total >
+            this.formaPagamento === 'fiado'
+            && this.resumoCliente
+            && this.total >
             this.resumoCliente.creditoDisponivel
         ) {
 
@@ -468,7 +448,7 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
             this.alertService.error(
                 `Limite de crédito insuficiente.
-        Disponível: ${this.resumoCliente.creditoDisponivel
+                    Disponível: ${this.resumoCliente.creditoDisponivel
                     .toLocaleString(
                         'pt-BR',
                         {
@@ -479,13 +459,10 @@ export class NovaVenda implements OnInit, AfterViewInit {
                 }`
             );
 
-            return;
-
+            return false;
         }
 
-        this.salvarVenda();
-
-
+        return true;
     }
 
     get clienteBloqueadoFiado(): boolean {
@@ -560,7 +537,7 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
     }
 
-    get carrinhoTabela() {
+    get carrinhoTabela(): CarrinhoTabelaItem[] {
 
         return this.carrinho.map(
             item => ({
@@ -573,10 +550,9 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
                 precoVenda: item.produto.precoVenda,
 
-                precoPromocional:
-                    item.promocaoAplicada
-                        ? item.precoUnitario
-                        : 0,
+                precoPromocional: item.promocaoAplicada
+                    ? item.precoUnitario
+                    : 0,
 
                 subtotal: item.subtotal
 
@@ -589,18 +565,13 @@ export class NovaVenda implements OnInit, AfterViewInit {
         row: unknown
     ): void {
 
-        const item =
-            row as {
-                produtoId: string;
-                produtoNome: string;
-            };
+        const item = row as CarrinhoTabelaItem;
 
         this.confirmDialogService.open({
 
             title: 'Remover Item',
 
-            message:
-                `Deseja remover "${item.produtoNome}" do carrinho?`,
+            message: `Deseja remover "${item.produtoNome}" do carrinho?`,
 
             type: 'danger',
 
@@ -617,23 +588,18 @@ export class NovaVenda implements OnInit, AfterViewInit {
                 this.alertService.success(
                     `"${item.produtoNome}" removido do carrinho.`
                 );
-
             }
-
         });
-
     }
 
     focarQuantidade(): void {
 
         setTimeout(() => {
 
-            this.quantidadeInput
-                ?.nativeElement
+            this.quantidadeInput?.nativeElement
                 .focus();
 
-            this.quantidadeInput
-                ?.nativeElement
+            this.quantidadeInput?.nativeElement
                 .select();
 
         });
@@ -653,8 +619,7 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
                 return total + (
                     (item.produto.precoVenda -
-                        item.precoUnitario)
-                    * item.quantidade
+                        item.precoUnitario) * item.quantidade
                 );
 
             },
@@ -708,7 +673,7 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
             event.preventDefault();
 
-            this.smartProductSearch?.focar();
+            this.focarProduto();
 
             return;
         }
@@ -727,8 +692,7 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
     focarPagamento(): void {
 
-        this.formaPagamentoSelect
-            ?.nativeElement
+        this.formaPagamentoSelect?.nativeElement
             .focus();
 
     }
@@ -752,8 +716,6 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
                     this.resumoCliente = resumo;
 
-                    this.cdr.detectChanges();
-
                 },
 
                 error: erro => {
@@ -767,27 +729,8 @@ export class NovaVenda implements OnInit, AfterViewInit {
     }
 
     private salvarVenda(): void {
-        const vendaRequest = {
 
-            formaPagamento: this.formaPagamento,
-
-            clienteId: this.clienteSelecionadoId || null,
-
-            valorRecebido: this.valorRecebido,
-
-            itens:
-                this.carrinho.map(
-                    item => ({
-
-                        produtoId:
-                            item.produto.id,
-
-                        quantidade:
-                            item.quantidade
-
-                    })
-                )
-        };
+        const vendaRequest = this.criarVendaRequest();
 
         this.vendaService
             .salvar(vendaRequest)
@@ -803,28 +746,12 @@ export class NovaVenda implements OnInit, AfterViewInit {
                         'Venda concluída com sucesso.'
                     );
 
-                    this.carrinho = [];
-
-                    this.formaPagamento = 'Selecione...';
-
-                    this.produtoSelecionadoId = '';
-
-                    this.quantidade = null;
-
-                    this.valorRecebido = null;
-
-                    this.smartProductSearch?.limpar();
+                    this.limparVenda();
 
                     this.carregarProdutos();
 
-                    this.resumoCliente = undefined;
-                    this.clienteSelecionadoId = '';
-
-                    this.smartProductSearch?.focar();
-
+                    this.focarProduto();
                 },
-
-
 
                 error: erro => {
 
@@ -849,37 +776,84 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
     get formaPagamentoDescricao(): string {
 
-        switch (this.formaPagamento) {
+        if (
+            this.formaPagamento === FORMA_PAGAMENTO_PADRAO
+        ) {
 
-            case 'pix':
-                return 'PIX';
-
-            case 'dinheiro':
-                return 'Dinheiro';
-
-            case 'debito':
-                return 'Débito';
-
-            case 'credito':
-                return 'Crédito';
-
-            case 'fiado':
-                return 'Fiado';
-
-            default:
-                return 'Não informado';
-
+            return 'Não informado';
         }
 
+        return FORMA_PAGAMENTO_LABELS[
+            this.formaPagamento
+        ];
     }
 
     ngAfterViewInit(): void {
 
         setTimeout(() => {
 
-            this.smartProductSearch?.focar();
+            this.focarProduto();
 
         });
 
+    }
+
+    private obterPrecoAplicado(
+        produto: Produto
+    ): number {
+
+        return produto.promocaoAtiva
+            ? produto.precoPromocional!
+            : produto.precoVenda;
+    }
+
+    private criarVendaRequest(): VendaRequest {
+
+        return {
+
+            formaPagamento: this.formaPagamento as FormaPagamento,
+
+            clienteId: this.clienteSelecionadoId || null,
+
+            valorRecebido: this.valorRecebido,
+
+            itens: this.carrinho.map(
+                item => ({
+
+                    produtoId: item.produto.id,
+
+                    quantidade: item.quantidade
+                })
+            )
+        };
+    }
+
+    private limparVenda(): void {
+
+        this.carrinho = [];
+
+        this.formaPagamento = FORMA_PAGAMENTO_PADRAO;
+
+        this.produtoSelecionadoId = '';
+
+        this.quantidade = null;
+
+        this.valorRecebido = null;
+
+        this.limparCliente();
+
+        this.smartProductSearch?.limpar();
+    }
+
+    private focarProduto(): void {
+
+        this.smartProductSearch?.focar();
+    }
+
+    private limparCliente(): void {
+
+        this.resumoCliente = undefined;
+
+        this.clienteSelecionadoId = '';
     }
 }

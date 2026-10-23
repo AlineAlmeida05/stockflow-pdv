@@ -10,11 +10,9 @@ import { environment } from '../../../environments/environment';
 })
 export class ProdutoService {
 
-  private readonly http =
-    inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
-  private readonly apiUrl =
-    `${environment.apiUrl}/api/produtos`;
+  private readonly apiUrl = `${environment.apiUrl}/api/produtos`;
 
   listar(): Observable<Produto[]> {
 

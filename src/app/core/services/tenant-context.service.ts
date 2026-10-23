@@ -13,8 +13,7 @@ export class TenantContextService {
         private tenantService: TenantService
     ) {
 
-        const tenantSalvo =
-            localStorage.getItem(
+        const tenantSalvo = localStorage.getItem(
                 'tenantAtivo'
             );
 
@@ -33,13 +32,11 @@ export class TenantContextService {
 
     }
 
-    private tenantSubject =
-        new BehaviorSubject<Tenant | null>(
+    private tenantSubject = new BehaviorSubject<Tenant | null>(
             null
         );
 
-    readonly tenant$ =
-        this.tenantSubject.asObservable();
+    readonly tenant$ = this.tenantSubject.asObservable();
 
     setTenant(
         tenant: Tenant
@@ -64,8 +61,7 @@ export class TenantContextService {
             tenant
         );
 
-        document.title =
-            tenant.nome;
+        document.title = tenant.nome;
 
     }
 

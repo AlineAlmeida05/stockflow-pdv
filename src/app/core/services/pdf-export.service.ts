@@ -12,8 +12,7 @@ export class PdfExportService {
         nomeArquivo: string
     ): Promise<void> {
 
-        const canvas =
-            await html2canvas(elemento, {
+        const canvas = await html2canvas(elemento, {
                 scale: 2
             });
 
@@ -29,8 +28,7 @@ export class PdfExportService {
 
         const larguraPdf = 210;
 
-        const alturaPdf =
-            (canvas.height * larguraPdf)
+        const alturaPdf = (canvas.height * larguraPdf)
             / canvas.width;
 
         pdf.setFontSize(18);

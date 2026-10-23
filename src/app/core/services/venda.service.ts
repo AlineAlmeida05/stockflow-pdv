@@ -3,17 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Venda } from '../models/venda.model';
+import { VendaRequest } from '../models/venda-request.model';
 
 @Injectable({
     providedIn: 'root'
 })
 export class VendaService {
 
-    private readonly http =
-        inject(HttpClient);
+    private readonly http = inject(HttpClient);
 
-    private readonly apiUrl =
-        `${environment.apiUrl}/api/vendas`;
+    private readonly apiUrl = `${environment.apiUrl}/api/vendas`;
 
     listar(): Observable<Venda[]> {
 
@@ -23,7 +22,7 @@ export class VendaService {
     }
 
     salvar(
-        venda: unknown
+        venda: VendaRequest
     ): Observable<Venda> {
 
         return this.http.post<Venda>(

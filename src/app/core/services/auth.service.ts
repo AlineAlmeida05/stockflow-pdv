@@ -62,7 +62,9 @@ export class AuthService {
     }
 
     estaAutenticado(): boolean {
+
         return this.usuarioLogado() !== null;
+
     }
 
     rotaInicial(): string {
@@ -99,7 +101,9 @@ export class AuthService {
     }): Observable<void> {
 
         return this.http.put<void>(
+
             `${environment.apiUrl}/api/usuarios/alterar-senha`,
+            
             request
         );
 

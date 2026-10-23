@@ -15,8 +15,7 @@ import { PromocaoPainel } from '../models/promocao-painel.model';
 export class PromocaoService {
 
 
-    private readonly apiUrl =
-        `${environment.apiUrl}/api/promocoes`;
+    private readonly apiUrl = `${environment.apiUrl}/api/promocoes`;
 
     constructor(
         private http: HttpClient

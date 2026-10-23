@@ -12,6 +12,10 @@ import { FormsModule } from '@angular/forms';
 import { SelectInput } from '../../shared/components/select-input/select-input';
 
 
+type ProdutoEstoque = Produto & {
+    statusEstoque: string;
+    nivelEstoque: string;
+};
 @Component({
     selector: 'app-estoque',
     standalone: true,
@@ -133,7 +137,7 @@ export class Estoque implements OnInit {
             });
     }
 
-    get produtosEstoque(): unknown[] {
+    get produtosEstoque(): ProdutoEstoque[] {
 
         return this.produtosFiltrados.map(
             produto => ({
@@ -141,21 +145,9 @@ export class Estoque implements OnInit {
                 ...produto,
 
                 statusEstoque:
-                    produto.estoqueAtual === 0
-
-                        ? 'Sem Estoque'
-
-                        : produto.estoqueAtual <=
-                            produto.estoqueMinimo
-
-                            ? 'Crítico'
-
-                            : produto.estoqueAtual <=
-                                produto.estoqueMinimo * 2
-
-                                ? 'Atenção'
-
-                                : 'Em Estoque',
+                    this.obterDescricaoStatusEstoque(
+                        produto
+                    ),
 
                 nivelEstoque:
                     produto.estoqueMinimo === 0
@@ -181,13 +173,12 @@ export class Estoque implements OnInit {
         return this.produtos.filter(
             produto => {
 
-                const atendeBusca =
-                    produto.nome
-                        .toLowerCase()
-                        .includes(
-                            this.textoBusca
-                                .toLowerCase()
-                        );
+                const atendeBusca = produto.nome
+                    .toLowerCase()
+                    .includes(
+                        this.textoBusca
+                            .toLowerCase()
+                    );
 
                 if (!atendeBusca) {
                     return false;
@@ -197,13 +188,17 @@ export class Estoque implements OnInit {
                     return true;
                 }
 
+                const status = this.obterStatusEstoque(
+                    produto
+                );
+
                 if (
                     this.filtroStatus === 'baixo'
                 ) {
 
                     return (
-                        produto.estoqueAtual <=
-                        produto.estoqueMinimo
+                        status === 'baixo' ||
+                        status === 'sem-estoque'
                     );
 
                 }
@@ -213,17 +208,13 @@ export class Estoque implements OnInit {
                 ) {
 
                     return (
-                        produto.estoqueAtual >
-                        produto.estoqueMinimo &&
-                        produto.estoqueAtual <=
-                        produto.estoqueMinimo * 2
+                        status === 'atencao'
                     );
 
                 }
 
                 return (
-                    produto.estoqueAtual >
-                    produto.estoqueMinimo * 2
+                    status === 'normal'
                 );
 
             }
@@ -238,19 +229,31 @@ export class Estoque implements OnInit {
     }
 
     get totalEmEstoque(): number {
+
         return this.produtos.filter(
             produto =>
-                produto.estoqueAtual >
-                produto.estoqueMinimo * 2
+                this.obterStatusEstoque(
+                    produto
+                ) === 'normal'
         ).length;
+
     }
 
     get totalBaixo(): number {
 
         return this.produtos.filter(
-            produto =>
-                produto.estoqueAtual <=
-                produto.estoqueMinimo
+            produto => {
+
+                const status = this.obterStatusEstoque(
+                    produto
+                );
+
+                return (
+                    status === 'baixo' ||
+                    status === 'sem-estoque'
+                );
+
+            }
         ).length;
 
     }
@@ -259,10 +262,9 @@ export class Estoque implements OnInit {
 
         return this.produtos.filter(
             produto =>
-                produto.estoqueAtual >
-                produto.estoqueMinimo &&
-                produto.estoqueAtual <=
-                produto.estoqueMinimo * 2
+                this.obterStatusEstoque(
+                    produto
+                ) === 'atencao'
         ).length;
 
     }
@@ -272,6 +274,76 @@ export class Estoque implements OnInit {
     ): void {
 
         this.filtroStatus = filtro;
+
+    }
+
+    rowClassFn = (row: unknown): string => {
+
+        const produto = row as ProdutoEstoque;
+
+        return (
+            produto.statusEstoque === 'Crítico' ||
+            produto.statusEstoque === 'Sem Estoque'
+        )
+            ? 'table-row-critico'
+            : '';
+
+    };
+
+    private obterStatusEstoque(
+        produto: Produto
+    ):
+        'normal'
+        | 'atencao'
+        | 'baixo'
+        | 'sem-estoque' {
+
+        if (
+            produto.estoqueAtual === 0
+        ) {
+            return 'sem-estoque';
+        }
+
+        if (
+            produto.estoqueAtual <=
+            produto.estoqueMinimo
+        ) {
+            return 'baixo';
+        }
+
+        if (
+            produto.estoqueAtual <=
+            produto.estoqueMinimo * 2
+        ) {
+            return 'atencao';
+        }
+
+        return 'normal';
+    }
+
+    private obterDescricaoStatusEstoque(
+        produto: Produto
+    ): string {
+
+        switch (
+        this.obterStatusEstoque(
+            produto
+        )
+        ) {
+
+            case 'sem-estoque':
+                return 'Sem Estoque';
+
+            case 'baixo':
+                return 'Crítico';
+
+            case 'atencao':
+                return 'Atenção';
+
+            default:
+                return 'Em Estoque';
+
+        }
 
     }
 

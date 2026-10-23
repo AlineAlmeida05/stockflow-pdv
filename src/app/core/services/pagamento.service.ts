@@ -12,11 +12,9 @@ import { Pagamento } from '../models/pagamento.model';
 })
 export class PagamentoService {
 
-  private readonly http =
-    inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
-  private readonly apiUrl =
-    `${environment.apiUrl}/api/pagamentos`;
+  private readonly apiUrl = `${environment.apiUrl}/api/pagamentos`;
 
   listar(): Observable<Pagamento[]> {
 

@@ -51,7 +51,7 @@ export class DataTable {
     clickableRows = false;
 
     @Output()
-    toggle = new EventEmitter
+    toggle = new EventEmitter<any>();
 
     obterVariantStatus(
         status: string
@@ -81,8 +81,7 @@ export class DataTable {
         value: unknown
     ): string {
 
-        const numberValue =
-            Number(value);
+        const numberValue = Number(value);
 
         if (isNaN(numberValue)) {
 
@@ -169,10 +168,9 @@ export class DataTable {
         value: string
     ): string {
 
-        const percentual =
-            Number(
-                value.replace('%', '')
-            ) || 0;
+        const percentual = Number(
+            value.replace('%', '')
+        ) || 0;
 
         if (percentual <= 25) {
             return 'progress-danger';

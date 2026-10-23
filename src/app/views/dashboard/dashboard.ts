@@ -151,7 +151,6 @@ export class Dashboard implements OnInit {
 
     }
 
-
     alterarPeriodo(
         periodo:
             'hoje'
@@ -184,76 +183,10 @@ export class Dashboard implements OnInit {
 
     get fiadosFiltrados(): Fiado[] {
 
-        const hoje = new Date();
-
-        switch (this.periodoSelecionado) {
-
-            case 'hoje':
-
-                return this.fiados.filter(
-                    fiado =>
-                        new Date(
-                            fiado.dataLancamento
-                        ).toDateString()
-                        === hoje.toDateString()
-                );
-
-            case '7dias':
-
-                const seteDias = new Date();
-
-                seteDias.setDate(
-                    seteDias.getDate() - 7
-                );
-
-                return this.fiados.filter(
-                    fiado =>
-                        new Date(
-                            fiado.dataLancamento
-                        ) >= seteDias
-                );
-
-            case '30dias':
-
-                const trintaDias = new Date();
-
-                trintaDias.setDate(
-                    trintaDias.getDate() - 30
-                );
-
-                return this.fiados.filter(
-                    fiado =>
-                        new Date(
-                            fiado.dataLancamento
-                        ) >= trintaDias
-                );
-
-            case 'mes':
-
-                return this.fiados.filter(
-                    fiado => {
-
-                        const data =
-                            new Date(
-                                fiado.dataLancamento
-                            );
-
-                        return (
-                            data.getMonth()
-                            === hoje.getMonth()
-                            &&
-                            data.getFullYear()
-                            === hoje.getFullYear()
-                        );
-
-                    }
-                );
-
-            default:
-
-                return this.fiados;
-
-        }
+        return this.filtrarPorPeriodo(
+            this.fiados,
+            fiado => fiado.dataLancamento
+        );
 
     }
 
@@ -878,78 +811,10 @@ export class Dashboard implements OnInit {
 
     get vendasFiltradas(): Venda[] {
 
-        const hoje = new Date();
-
-        switch (
-        this.periodoSelecionado
-        ) {
-
-            case 'hoje':
-
-                return this.vendas.filter(
-                    venda =>
-                        new Date(
-                            venda.dataVenda
-                        ).toDateString()
-                        === hoje.toDateString()
-                );
-
-            case '7dias':
-
-                const seteDias = new Date();
-
-                seteDias.setDate(
-                    seteDias.getDate() - 7
-                );
-
-                return this.vendas.filter(
-                    venda =>
-                        new Date(
-                            venda.dataVenda
-                        ) >= seteDias
-                );
-
-            case '30dias':
-
-                const trintaDias = new Date();
-
-                trintaDias.setDate(
-                    trintaDias.getDate() - 30
-                );
-
-                return this.vendas.filter(
-                    venda =>
-                        new Date(
-                            venda.dataVenda
-                        ) >= trintaDias
-                );
-
-            case 'mes':
-
-                return this.vendas.filter(
-                    venda => {
-
-                        const data =
-                            new Date(
-                                venda.dataVenda
-                            );
-
-                        return (
-                            data.getMonth()
-                            === hoje.getMonth()
-                            &&
-                            data.getFullYear()
-                            === hoje.getFullYear()
-                        );
-
-                    }
-                );
-
-            default:
-
-                return this.vendas;
-
-        }
+        return this.filtrarPorPeriodo(
+            this.vendas,
+            venda => venda.dataVenda
+        );
 
     }
 
@@ -991,6 +856,77 @@ export class Dashboard implements OnInit {
 
             });
 
+    }
+
+    private filtrarPorPeriodo<T>(
+        itens: T[],
+        obterData: (item: T) => string
+    ): T[] {
+
+        const hoje = new Date();
+
+        switch (this.periodoSelecionado) {
+
+            case 'hoje':
+                return itens.filter(
+                    item =>
+                        new Date(
+                            obterData(item)
+                        ).toDateString()
+                        === hoje.toDateString()
+                );
+
+            case '7dias':
+                const seteDias = new Date();
+
+                seteDias.setDate(
+                    seteDias.getDate() - 7
+                );
+
+                return itens.filter(
+                    item =>
+                        new Date(
+                            obterData(item)
+                        ) >= seteDias
+                );
+
+            case '30dias':
+                const trintaDias = new Date();
+
+                trintaDias.setDate(
+                    trintaDias.getDate() - 30
+                );
+
+                return itens.filter(
+                    item =>
+                        new Date(
+                            obterData(item)
+                        ) >= trintaDias
+                );
+
+            case 'mes':
+                return itens.filter(
+                    item => {
+
+                        const data =
+                            new Date(
+                                obterData(item)
+                            );
+
+                        return (
+                            data.getMonth()
+                            === hoje.getMonth()
+                            &&
+                            data.getFullYear()
+                            === hoje.getFullYear()
+                        );
+
+                    }
+                );
+
+            default:
+                return itens;
+        }
     }
 
 }

@@ -10,11 +10,9 @@ import { environment } from '../../../environments/environment';
 })
 export class MarketingApiService {
 
-    private readonly http =
-        inject(HttpClient);
+    private readonly http = inject(HttpClient);
 
-    private readonly API =
-    `${environment.apiUrl}/api/marketing/campaigns`;
+    private readonly API = `${environment.apiUrl}/api/marketing/campaigns`;
 
     listar(): Observable<
         MarketingCampaignResponse[]
