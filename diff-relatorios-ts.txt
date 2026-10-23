@@ -1,0 +1,492 @@
+diff --git a/src/app/views/relatorios/relatorios.ts b/src/app/views/relatorios/relatorios.ts
+index 4883808..f4f5b79 100644
+--- a/src/app/views/relatorios/relatorios.ts
++++ b/src/app/views/relatorios/relatorios.ts
+@@ -18,7 +18,6 @@ import { ReportFinanceiro } from './components/report-financeiro/report-financei
+ import { PdfExportService } from '../../core/services/pdf-export.service';
+ import { ExcelExportService } from '../../core/services/excel-export.service';
+ import { AlertService } from '../../core/services/alert.service';
+-import { SelectInput } from '../../shared/components/select-input/select-input';
+ 
+ @Component({
+     selector: 'app-relatorios',
+@@ -31,8 +30,7 @@ import { SelectInput } from '../../shared/components/select-input/select-input';
+         ReportEstoque,
+         ReportHeader,
+         ReportFiados,
+-        ReportFinanceiro,
+-        SelectInput
++        ReportFinanceiro
+     ],
+     templateUrl: './relatorios.html',
+     styleUrl: './relatorios.scss'
+@@ -89,6 +87,7 @@ export class Relatorios
+         | 'badge'
+         | 'currency'
+         | 'date';
++        badgeClassFn?: (row: unknown) => string;
+     }[] = [
+             {
+                 field: 'nome',
+@@ -105,7 +104,29 @@ export class Relatorios
+             {
+                 field: 'statusEstoque',
+                 header: 'Status',
+-                type: 'badge'
++                type: 'badge',
++                badgeClassFn: (row: unknown) => {
++
++                    const produto = row as {
++                        statusEstoque?: string;
++                    };
++
++                    switch (produto.statusEstoque) {
++
++                        case 'Em Estoque':
++                            return 'status-success';
++
++                        case 'Atenção':
++                            return 'status-warning';
++
++                        case 'Baixo':
++                        case 'Sem Estoque':
++                            return 'status-danger';
++
++                        default:
++                            return '';
++                    }
++                }
+             }
+         ];
+ 
+@@ -144,6 +165,7 @@ export class Relatorios
+         | 'badge'
+         | 'currency'
+         | 'date';
++        badgeClassFn?: (row: unknown) => string;
+     }[] = [
+             {
+                 field: 'clienteNome',
+@@ -156,7 +178,28 @@ export class Relatorios
+             {
+                 field: 'status',
+                 header: 'Status',
+-                type: 'badge'
++                type: 'badge',
++                badgeClassFn: (row: unknown) => {
++
++                    const fiado = row as {
++                        status?: string;
++                    };
++
++                    switch (fiado.status) {
++
++                        case 'quitado':
++                            return 'status-success';
++
++                        case 'parcial':
++                            return 'status-warning';
++
++                        case 'pendente':
++                            return 'status-danger';
++
++                        default:
++                            return '';
++                    }
++                }
+             }
+         ];
+ 
+@@ -167,30 +210,6 @@ export class Relatorios
+         | 'financeiro'
+         = 'vendas';
+ 
+-    opcoesPeriodo = [
+-        {
+-            label: 'Todos',
+-            value: 'todos'
+-        },
+-        {
+-            label: 'Hoje',
+-            value: 'hoje'
+-        },
+-        {
+-            label: 'Ontem',
+-            value: 'ontem'
+-        },
+-        {
+-            label: 'Últimos 7 dias',
+-            value: '7dias'
+-        },
+-        {
+-            label: 'Últimos 30 dias',
+-            value: '30dias'
+-        }
+-    ];
+-
+-
+     @ViewChild('reportContent')
+     reportContent!: ElementRef<HTMLElement>;
+ 
+@@ -208,13 +227,12 @@ export class Relatorios
+     ngOnInit(): void {
+ 
+         this.vendaService
+-            .listarRelatorio()
++            .listar()
+             .subscribe({
+                 next: vendas => {
+ 
+-                    this.vendas = vendas;
+-
+-                    this.cdr.detectChanges();
++                    this.vendas =
++                        vendas;
+ 
+                 },
+ 
+@@ -251,9 +269,8 @@ export class Relatorios
+ 
+                 next: movimentacoes => {
+ 
+-                    this.movimentacoes = movimentacoes;
+-
+-                    this.cdr.detectChanges();
++                    this.movimentacoes =
++                        movimentacoes;
+ 
+                 },
+ 
+@@ -271,9 +288,8 @@ export class Relatorios
+ 
+                 next: fiados => {
+ 
+-                    this.fiados = fiados;
+-
+-                    this.cdr.detectChanges();
++                    this.fiados =
++                        fiados;
+ 
+                 },
+ 
+@@ -286,6 +302,7 @@ export class Relatorios
+                 }
+ 
+             });
++
+     }
+ 
+     get totalVendas(): number {
+@@ -343,12 +360,6 @@ export class Relatorios
+ 
+     }
+ 
+-    alterarPeriodo(): void {
+-
+-        this.cdr.detectChanges();
+-
+-    }
+-
+     get vendasFiltradas(): Venda[] {
+ 
+         const hoje =
+@@ -427,23 +438,21 @@ export class Relatorios
+ 
+     get vendasRelatorio(): Venda[] {
+ 
+-        let vendas = this.vendasFiltradas
+-            .filter(venda =>
+-                venda.status === 'finalizada'
+-            );
+-
+         if (
+-            this.formaPagamentoSelecionada !== 'todos'
++            this.formaPagamentoSelecionada ===
++            'todos'
+         ) {
+ 
+-            vendas = vendas.filter(
+-                venda =>
+-                    venda.formaPagamento ===
+-                    this.formaPagamentoSelecionada
+-            );
++            return this.vendasFiltradas;
++
+         }
+ 
+-        return vendas;
++        return this.vendasFiltradas.filter(
++            venda =>
++                venda.formaPagamento ===
++                this.formaPagamentoSelecionada
++        );
++
+     }
+ 
+     get topProdutosVendidos() {
+@@ -458,7 +467,7 @@ export class Relatorios
+ 
+         for (const venda of this.vendasRelatorio) {
+ 
+-            for (const item of (venda.itens ?? [])) {
++            for (const item of venda.itens) {
+ 
+                 const atual =
+                     ranking.get(
+@@ -660,7 +669,7 @@ export class Relatorios
+ 
+         for (const venda of this.vendasRelatorio) {
+ 
+-            for (const item of (venda.itens ?? [])) {
++            for (const item of venda.itens) {
+ 
+                 const atual =
+                     ranking.get(
+@@ -1001,7 +1010,7 @@ export class Relatorios
+ 
+     get valorEmAberto(): number {
+ 
+-        return this.fiadosFiltrados
++        return this.fiados
+             .filter(
+                 fiado =>
+                     fiado.status === 'pendente'
+@@ -1016,7 +1025,7 @@ export class Relatorios
+ 
+     get totalPendentes(): number {
+ 
+-        return this.fiadosFiltrados.filter(
++        return this.fiados.filter(
+             fiado =>
+                 fiado.status === 'pendente'
+         ).length;
+@@ -1025,7 +1034,7 @@ export class Relatorios
+ 
+     get totalPagos(): number {
+ 
+-        return this.fiadosFiltrados.filter(
++        return this.fiados.filter(
+             fiado =>
+                 fiado.status === 'quitado'
+         ).length;
+@@ -1036,7 +1045,7 @@ export class Relatorios
+ 
+         return new Set(
+ 
+-            this.fiadosFiltrados
++            this.fiados
+                 .filter(
+                     fiado =>
+                         fiado.status === 'pendente'
+@@ -1060,7 +1069,7 @@ export class Relatorios
+             }
+         >();
+ 
+-        this.fiadosFiltrados
++        this.fiados
+             .filter(
+                 fiado =>
+                     fiado.status === 'pendente'
+@@ -1105,7 +1114,7 @@ export class Relatorios
+ 
+     get ultimosFiados() {
+ 
+-        return [...this.fiadosFiltrados]
++        return [...this.fiados]
+             .sort(
+                 (a, b) =>
+                     new Date(
+@@ -1144,7 +1153,7 @@ export class Relatorios
+ 
+     get totalParciais(): number {
+ 
+-        return this.fiadosFiltrados.filter(
++        return this.fiados.filter(
+             fiado =>
+                 fiado.status === 'parcial'
+         ).length;
+@@ -1172,7 +1181,7 @@ export class Relatorios
+             number
+         >();
+ 
+-        for (const fiado of this.fiadosFiltrados) {
++        for (const fiado of this.fiados) {
+ 
+             const data =
+                 new Date(
+@@ -1218,7 +1227,7 @@ export class Relatorios
+ 
+     get valorFiados(): number {
+ 
+-        return this.fiadosFiltrados.reduce(
++        return this.fiados.reduce(
+             (total, fiado) =>
+                 total + fiado.valorTotal,
+             0
+@@ -1241,7 +1250,7 @@ export class Relatorios
+             number
+         >();
+ 
+-        for (const venda of this.vendasRelatorio) {
++        for (const venda of this.vendas) {
+ 
+             const atual =
+                 ranking.get(
+@@ -1277,7 +1286,11 @@ export class Relatorios
+ 
+         await this.pdfExportService.export(
+             this.reportContent.nativeElement,
+-            `relatorio-${this.abaSelecionada}-${this.getPeriodoExportacao()}-${this.getDataExportacao()}`
++            `relatorio-${this.abaSelecionada
++            }-${new Date()
++                .toISOString()
++                .split('T')[0]
++            }`
+         );
+ 
+         this.alertService.success(
+@@ -1286,7 +1299,14 @@ export class Relatorios
+ 
+     }
+ 
+-    exportarExcel(): void {       
++    exportarExcel(): void {
++
++        const dataAtual =
++            new Date()
++                .toLocaleDateString(
++                    'pt-BR'
++                )
++                .replaceAll('/', '-');
+ 
+         // ABA VENDAS
+ 
+@@ -1366,7 +1386,7 @@ export class Relatorios
+ 
+                 ],
+ 
+-                `relatorio-vendas-${this.getPeriodoExportacao()}-${this.getDataExportacao()}`
++                `relatorio-vendas-${this.getDataExportacao()}`
+ 
+             );
+ 
+@@ -1486,7 +1506,7 @@ export class Relatorios
+ 
+                 ],
+ 
+-                `relatorio-estoque-${this.getPeriodoExportacao()}-${this.getDataExportacao()}`
++                `relatorio-estoque-${this.getDataExportacao()}`
+ 
+             );
+ 
+@@ -1582,7 +1602,7 @@ export class Relatorios
+ 
+                 ],
+ 
+-                `relatorio-fiados-${this.getPeriodoExportacao()}-${this.getDataExportacao()}`
++                `relatorio-fiados-${this.getDataExportacao()}`
+ 
+             );
+ 
+@@ -1670,7 +1690,7 @@ export class Relatorios
+ 
+                 ],
+ 
+-                `relatorio-financeiro-${this.getPeriodoExportacao()}-${this.getDataExportacao()}`
++                `relatorio-financeiro-${this.getDataExportacao()}`
+ 
+             );
+ 
+@@ -1722,91 +1742,4 @@ export class Relatorios
+ 
+     }
+ 
+-    get fiadosFiltrados(): Fiado[] {
+-
+-        const hoje = new Date();
+-
+-        switch (this.periodoSelecionado) {
+-
+-            case 'hoje':
+-                return this.fiados.filter(
+-                    fiado =>
+-                        new Date(
+-                            fiado.dataLancamento
+-                        ).toDateString() ===
+-                        hoje.toDateString()
+-                );
+-
+-            case 'ontem':
+-                const ontem = new Date();
+-
+-                ontem.setDate(
+-                    ontem.getDate() - 1
+-                );
+-
+-                return this.fiados.filter(
+-                    fiado =>
+-                        new Date(
+-                            fiado.dataLancamento
+-                        ).toDateString() ===
+-                        ontem.toDateString()
+-                );
+-
+-            case '7dias':
+-                const seteDias = new Date();
+-
+-                seteDias.setDate(
+-                    seteDias.getDate() - 7
+-                );
+-
+-                return this.fiados.filter(
+-                    fiado =>
+-                        new Date(
+-                            fiado.dataLancamento
+-                        ) >= seteDias
+-                );
+-
+-            case '30dias':
+-                const trintaDias = new Date();
+-
+-                trintaDias.setDate(
+-                    trintaDias.getDate() - 30
+-                );
+-
+-                return this.fiados.filter(
+-                    fiado =>
+-                        new Date(
+-                            fiado.dataLancamento
+-                        ) >= trintaDias
+-                );
+-
+-            default:
+-                return this.fiados;
+-
+-        }
+-
+-    }
+-
+-    private getPeriodoExportacao(): string {
+-
+-        const mapa = {
+-
+-            todos: 'todos',
+-
+-            hoje: 'hoje',
+-
+-            ontem: 'ontem',
+-
+-            '7dias': '7-dias',
+-
+-            '30dias': '30-dias'
+-
+-        };
+-
+-        return mapa[
+-            this.periodoSelecionado as keyof typeof mapa
+-        ];
+-
+-    }
+-
+ }
+\ No newline at end of file
