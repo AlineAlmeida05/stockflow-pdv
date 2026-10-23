@@ -68,14 +68,11 @@ export class Usuarios implements OnInit {
 
     textoBusca = '';
 
+
     colunasUsuarios: {
         field: string;
         header: string;
         type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle';
-        align?: 'left' | 'center' | 'right';
-        cellClass?: string;
-        cellClassFn?: (row: unknown) => string;
-        badgeClassFn?: (row: unknown) => string;
     }[] = [
             {
                 field: 'nome',
@@ -84,30 +81,7 @@ export class Usuarios implements OnInit {
             {
                 field: 'perfil',
                 header: 'Perfil',
-                type: 'badge',
-                badgeClassFn: (row: unknown) => {
-
-                    const usuario = row as Usuario;
-
-                    switch (usuario.perfil) {
-
-                        case 'SUPER_ADMIN':
-                        case 'PROPRIETARIO':
-                            return 'status-danger';
-
-                        case 'SOCIO':
-                        case 'GERENTE':
-                            return 'status-warning';
-
-                        case 'OPERADOR_CAIXA':
-                        case 'ESTOQUISTA':
-                            return 'status-success';
-
-                        default:
-                            return '';
-                    }
-
-                }
+                type: 'badge'
             },
             {
                 field: 'status',

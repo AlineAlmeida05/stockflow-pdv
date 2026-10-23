@@ -75,12 +75,10 @@ export class NovaVenda implements OnInit, AfterViewInit {
         header: string;
         type?: | 'text' | 'badge' | 'currency' | 'date';
         align?: 'left' | 'right' | 'center';
-        cellClass?: string;
     }[] = [
             {
                 field: 'produtoNome',
-                header: 'Produto',
-                cellClass: 'table-cell-product'
+                header: 'Produto'
             },
             {
                 field: 'quantidade',
@@ -165,7 +163,7 @@ export class NovaVenda implements OnInit, AfterViewInit {
         return this.produtos.find(
             produto => produto.id === this.produtoSelecionadoId
         );
-
+        
 
     }
 

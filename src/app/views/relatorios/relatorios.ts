@@ -89,7 +89,6 @@ export class Relatorios
         | 'badge'
         | 'currency'
         | 'date';
-        badgeClassFn?: (row: unknown) => string;
     }[] = [
             {
                 field: 'nome',
@@ -106,29 +105,7 @@ export class Relatorios
             {
                 field: 'statusEstoque',
                 header: 'Status',
-                type: 'badge',
-                badgeClassFn: (row: unknown) => {
-
-                    const produto = row as {
-                        statusEstoque?: string;
-                    };
-
-                    switch (produto.statusEstoque) {
-
-                        case 'Em Estoque':
-                            return 'status-success';
-
-                        case 'Atenção':
-                            return 'status-warning';
-
-                        case 'Baixo':
-                        case 'Sem Estoque':
-                            return 'status-danger';
-
-                        default:
-                            return '';
-                    }
-                }
+                type: 'badge'
             }
         ];
 
@@ -167,7 +144,6 @@ export class Relatorios
         | 'badge'
         | 'currency'
         | 'date';
-        badgeClassFn?: (row: unknown) => string;
     }[] = [
             {
                 field: 'clienteNome',
@@ -180,28 +156,7 @@ export class Relatorios
             {
                 field: 'status',
                 header: 'Status',
-                type: 'badge',
-                badgeClassFn: (row: unknown) => {
-
-                    const fiado = row as {
-                        status?: string;
-                    };
-
-                    switch (fiado.status) {
-
-                        case 'quitado':
-                            return 'status-success';
-
-                        case 'parcial':
-                            return 'status-warning';
-
-                        case 'pendente':
-                            return 'status-danger';
-
-                        default:
-                            return '';
-                    }
-                }
+                type: 'badge'
             }
         ];
 
