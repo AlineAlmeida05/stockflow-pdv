@@ -13,6 +13,7 @@ import { AlertService } from '../../core/services/alert.service';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 import { ExpandableCard } from '../../shared/components/expandable-card/expandable-card';
 import { ChangeDetectorRef } from '@angular/core';
+import { FORMA_PAGAMENTO_OPTIONS } from '../../core/models/forma-pagamento.model';
 
 @Component({
     selector: 'app-historico-de-vendas',
@@ -55,27 +56,7 @@ export class HistoricoDeVendas
             value: '',
             label: 'Todas'
         },
-        {
-            value: 'pix',
-            label: 'PIX'
-        },
-        {
-            value: 'dinheiro',
-            label: 'Dinheiro'
-        },
-        {
-            value: 'debito',
-            label: 'Débito'
-        },
-        {
-            value: 'credito',
-            label: 'Crédito'
-        },
-        {
-            value: 'fiado',
-            label: 'Fiado'
-        }
-
+        ...FORMA_PAGAMENTO_OPTIONS
     ];
 
     opcoesStatus = [
