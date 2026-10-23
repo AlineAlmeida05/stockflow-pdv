@@ -1,95 +1,322 @@
-<app-stat-card-carousel
-    [cards]="cardsFiados">
-</app-stat-card-carousel>
+<div class="indicadores">
 
-<app-report-layout>
+    @for (
+    card of cardsFiados;
+    track card.id
+    ) {
 
-    <div insights>
+    <div
+        class="indicador-clickable"
+        (click)="selecionarCard(card.id)">
 
-        <div class="card">
-
-            <h2>
-                📒 Maiores Devedores
-            </h2>
-
-            @if (
-            maioresDevedores.length === 0
-            ) {
-
-            <p>
-                Nenhum cliente devedor.
-            </p>
-
-            } @else {
-
-            @for (
-            cliente of maioresDevedores;
-            track cliente.nome
-            ) {
-
-            <p>
-
-                {{ cliente.nome }}
-
-                -
-
-                {{
-                cliente.total
-                | currency:'BRL'
-                }}
-
-            </p>
-
-            }
-
-            }
-
-        </div>
-
-        @if (maiorDevedor) {
-
-        <div class="card">
-
-            <h2>
-                🏆 Maior Devedor
-            </h2>
-
-            <p>
-                {{ maiorDevedor.nome }}
-            </p>
-
-            <strong>
-
-                {{
-                maiorDevedor.total
-                | currency:'BRL'
-                }}
-
-            </strong>
-
-        </div>
-
-        }
+        <app-stat-card
+            [title]="card.title"
+            [value]="card.value"
+            [variant]="card.variant"
+            [active]="selectedSection === card.id">
+        </app-stat-card>
 
     </div>
 
-    <div tables>
+    }
+
+</div>
+
+<app-split-panel>
+
+    <div left>
+
+        <div
+            class="card resumo-clickable"
+            [class.active]="selectedSection === 'maiores-devedores'"
+            (click)="selectedSection = 'maiores-devedores'">
+
+            <h2>
+                Maiores Devedores
+            </h2>
+
+        </div>
+
+        <div
+            class="card resumo-clickable"
+            [class.active]="selectedSection === 'ultimo-lancamento'"
+            (click)="selectedSection = 'ultimo-lancamento'">
+
+            <h2>
+                Últimos Lançamentos
+            </h2>
+
+        </div>
+
+    </div>
+
+    <div right>
 
         <div class="table-section">
 
-            <h2>
-                📒 Últimos Lançamentos
-            </h2>
+            @if (!selectedSection) {
 
-            <div class="card">
-                <app-data-table
-                    [columns]="colunasFiados"
-                    [data]="fiadosTabela">
-                </app-data-table>
+            <app-empty-state
+                icon="📒"
+                title="Explore os dados"
+                message="Selecione um indicador ou resumo para visualizar os detalhes.">
+            </app-empty-state>
+
+            }
+
+            @if (selectedSection === 'valor-aberto') {
+
+            <div class="report-detail">
+
+                <h2>
+                    💰 Valor em Aberto
+                </h2>
+
+                <div class="detail-row">
+
+                    <span>
+                        Valor em Aberto
+                    </span>
+
+                    <strong>
+                        {{ valorEmAberto | currency:'BRL' }}
+                    </strong>
+
+                </div>
+
             </div>
+
+            }
+
+            @if (selectedSection === 'pendentes') {
+
+            <div class="report-detail">
+
+                <h2>
+                    ⏳ Fiados Pendentes
+                </h2>
+
+                <div class="detail-row">
+
+                    <span>
+                        Total de Pendentes
+                    </span>
+
+                    <strong>
+                        {{ totalPendentes }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+            }
+
+            @if (selectedSection === 'pagos') {
+
+            <div class="report-detail">
+
+                <h2>
+                    ✅ Fiados Pagos
+                </h2>
+
+                <div class="detail-row">
+
+                    <span>
+                        Total de Pagos
+                    </span>
+
+                    <strong>
+                        {{ totalPagos }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+            }
+
+            @if (selectedSection === 'clientes') {
+
+            <div class="report-detail">
+
+                <h2>
+                    👥 Clientes Devedores
+                </h2>
+
+                <div class="detail-row">
+
+                    <span>
+                        Clientes Devedores
+                    </span>
+
+                    <strong>
+                        {{ clientesDevedores }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+            }
+
+            @if (selectedSection === 'parciais') {
+
+            <div class="report-detail">
+
+                <h2>
+                    📑 Pagamentos Parciais
+                </h2>
+
+                <div class="detail-row">
+
+                    <span>
+                        Total de Parciais
+                    </span>
+
+                    <strong>
+                        {{ totalParciais }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+            }
+
+            @if (selectedSection === 'maiores-devedores') {
+
+            <div class="report-detail">
+
+                <h2>
+                    📒 Maiores Devedores
+                </h2>
+
+                <div class="card">
+
+                    @if (
+                    maioresDevedores.length === 0
+                    ) {
+
+                    <app-empty-state
+                        icon="📒"
+                        title="Devedores"
+                        message="Nenhum cliente devedor.">
+                    </app-empty-state>
+
+                    } @else {
+
+                    @for (
+                    cliente of maioresDevedores;
+                    track cliente.nome
+                    ) {
+
+                    <p>
+
+                        {{ cliente.nome }}
+
+                        -
+
+                        {{
+                        cliente.total
+                        | currency:'BRL'
+                        }}
+
+                    </p>
+
+                    }
+
+                    }
+
+                </div>
+
+            </div>
+
+            }
+
+            @if (selectedSection === 'ultimo-lancamento') {
+
+            <div class="report-detail">
+
+                <h2>
+                    📒 Últimos Lançamentos
+                </h2>
+
+                <div class="card">
+
+                    <app-data-table
+                        [columns]="colunasFiados"
+                        [data]="fiadosTabelaPaginada">
+                    </app-data-table>
+
+                    <div class="pagination">
+
+                        <div class="pagination-left">
+
+                            <app-select-input
+                                label
+                                [(value)]="itensPorPagina"
+                                (valueChange)="alterarItensPorPagina()"
+                                [options]="opcoesItensPorPagina">
+                            </app-select-input>
+
+                            <span class="pagination-info">
+
+                                Mostrando
+                                {{ inicioPagina }}
+                                -
+                                {{ fimPagina }}
+                                de
+                                {{ fiadosTabela.length }}
+                                registros
+
+                            </span>
+
+                        </div>
+
+                        <div class="pagination-right">
+
+                            <button
+                                class="btn-pagination"
+                                type="button"
+                                (click)="paginaAnterior()"
+                                [disabled]="paginaAtual === 1">
+
+                                Anterior
+
+                            </button>
+
+                            <span class="pagination-page">
+
+                                Página
+                                {{ paginaAtual }}
+                                de
+                                {{ totalPaginas }}
+
+                            </span>
+
+                            <button
+                                class="btn-pagination"
+                                type="button"
+                                (click)="proximaPagina()"
+                                [disabled]="paginaAtual === totalPaginas">
+
+                                Próxima
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            }
 
         </div>
 
     </div>
 
-</app-report-layout>
+</app-split-panel>

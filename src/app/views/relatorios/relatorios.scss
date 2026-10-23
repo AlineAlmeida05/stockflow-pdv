@@ -40,3 +40,65 @@
 .indicadores-carrossel::-webkit-scrollbar-thumb {
     border-radius: 999px;
 }
+
+.periodo-select {
+    width: 180px;
+}
+
+[actions] {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.export-button {
+    height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--color-gray-300);
+    border-radius: 8px;
+    background: var(--color-white);
+    cursor: pointer;
+    transition: all .2s ease;
+    font-weight: 500;
+    font-weight: 900;
+}
+
+.export-button:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: white;
+}
+
+.pdf {
+    background-color: var(--color-danger);
+    color: white;
+    border-color: var(--color-danger);
+}
+
+.excel {
+    background-color: var(--color-success);
+    color: white;
+    border-color: var(--color-success);
+}
+
+@media (max-width: 768px) {
+
+    .abas {
+        width: 95%;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+    }
+
+    .abas::-webkit-scrollbar {
+        display: none;
+    }
+
+    .abas button {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+}
+

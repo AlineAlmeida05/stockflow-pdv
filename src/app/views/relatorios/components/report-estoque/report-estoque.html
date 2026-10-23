@@ -1,175 +1,355 @@
-<app-stat-card-carousel
-    [cards]="cardsEstoque">
-</app-stat-card-carousel>
+<div class="indicadores">
 
-<app-report-layout>
-    <div insights>
-        <div class="card">
+    @for (
+    card of cardsEstoque;
+    track card.id
+    ) {
+
+    <div
+        class="indicador-clickable"
+        (click)="selecionarCard(card.id)">
+
+        <app-stat-card
+            [title]="card.title"
+            [value]="card.value"
+            [variant]="card.variant"
+            [active]="selectedSection === card.id">
+        </app-stat-card>
+
+    </div>
+
+    }
+
+</div>
+
+<app-split-panel>
+    <div left>
+        <div
+            class="card resumo-clickable"
+            [class.active]="selectedSection === 'sem-movimentacao'"
+            (click)="selectedSection = 'sem-movimentacao'">
+
+            <h2>
+                Produtos Sem Movimentação
+            </h2>
+
+        </div>
+
+        <div
+            class="card resumo-clickable"
+            [class.active]="selectedSection === 'reposicao'"
+            (click)="selectedSection = 'reposicao'">
+            <h2>
+                Sugestões de Reposição
+            </h2>
+        </div>
+
+        <div
+            class="card resumo-clickable"
+            [class.active]="selectedSection === 'giro-estoque'"
+            (click)="selectedSection = 'giro-estoque'">
+
+            <h2>
+                Giro de Estoque
+            </h2>
+
+        </div>
+    </div>
+
+    <div right>
+        @if (!selectedSection) {
+
+        <app-empty-state
+            icon="📦"
+            title="Explore os dados"
+            message="Selecione um indicador ou resumo para visualizar os detalhes.">
+        </app-empty-state>
+
+        }
+
+        @if (selectedSection === 'sem-movimentacao') {
+
+        <div class="report-detail">
+
             <h2>
                 📦 Produtos Sem Movimentação
             </h2>
 
-            @if (
-            produtosSemMovimentacao.length === 0
-            ) {
-            <p>
-                Todos os produtos possuem movimentação.
-            </p>
+            <div class="card">
 
-            } @else {
+                @if (
+                produtosSemMovimentacao.length === 0
+                ) {
 
-            @for (
-            produto of produtosSemMovimentacao;
-            track produto.id
-            ) {
-            <p>
-                {{ produto.nome }}
-            </p>
-            }
+                <p>
+                    Todos os produtos possuem movimentação.
+                </p>
 
-            }
+                } @else {
+
+                @for (
+                produto of produtosSemMovimentacao;
+                track produto.id
+                ) {
+
+                <p>
+                    {{ produto.nome }}
+                </p>
+
+                }
+
+                }
+
+            </div>
+
         </div>
 
-        <div class="card">
+        }
+
+        @if (selectedSection === 'reposicao') {
+
+        <div class="report-detail">
+
             <h2>
                 📦 Sugestões de Reposição
             </h2>
 
-            @if (
-            sugestoesReposicao.length === 0
-            ) {
-            <p>
-                Nenhum produto precisa de reposição.
-            </p>
+            <div class="card">
 
-            } @else {
+                @if (
+                sugestoesReposicao.length === 0
+                ) {
+                <app-empty-state
+                    icon="📦"
+                    title="Explore os dados"
+                    message="Nenhum produto precisa de reposição.">
+                </app-empty-state>
 
-            @for (
-            produto of sugestoesReposicao;
-            track produto.id
-            ) {
-            <p>
-                <strong>
-                    {{ produto.nome }}
-                </strong>
-                <br>
-                Atual:
-                {{ produto.estoqueAtual }}
-                |
-                Mínimo:
-                {{ produto.estoqueMinimo }}
-                |
-                Comprar:
-                {{ produto.quantidadeReposicao }}
-            </p>
-            }
-            }
+                } @else {
 
-        </div>
+                @for (
+                produto of sugestoesReposicao;
+                track produto.id
+                ) {
 
-        <div class="card">
-            <h2>
-                📉 Produtos com Menor Giro
-            </h2>
+                <p>
+                    <strong>
+                        {{ produto.nome }}
+                    </strong>
 
-            @if (
-            produtosMenorGiro.length === 0
-            ) {
+                    <br>
 
-            <p>
-                Nenhum produto encontrado.
-            </p>
+                    Atual:
+                    {{ produto.estoqueAtual }}
 
-            } @else {
+                    |
 
-            @for (
-            produto of produtosMenorGiro;
-            track produto.nome
-            ) {
+                    Mínimo:
+                    {{ produto.estoqueMinimo }}
 
-            <p>
+                    |
 
-                {{ produto.nome }}
+                    Comprar:
+                    {{ produto.quantidadeReposicao }}
+                </p>
 
-                -
+                }
 
-                {{ produto.giro }}%
+                }
 
-            </p>
-
-            }
-
-            }
+            </div>
 
         </div>
 
-        <div class="card">
+        }
+
+        @if (selectedSection === 'estoque-atual') {
+
+        <div class="report-detail">
 
             <h2>
-                🚀 Produtos com Maior Giro
+                📦 Produtos Estoque Atual
             </h2>
 
-            @if (
-            produtosMaiorGiro.length === 0
-            ) {
-
-            <p>
-                Nenhum produto encontrado.
-            </p>
-
-            } @else {
-
-            @for (
-            produto of produtosMaiorGiro;
-            track produto.nome
-            ) {
-
-            <p>
-
-                {{ produto.nome }}
-
-                -
-
-                {{ produto.giro }}%
-
-            </p>
-
-            }
-
-            }
-
-        </div>
-    </div>
-
-    <div tables>
-        <div class="table-section">
-            <h2>
-                📦 Estoque Atual
-            </h2>
             <p>
                 Situação atual dos produtos cadastrados.
             </p>
+
             <div class="card">
+
                 <app-data-table
                     [columns]="colunasEstoque"
-                    [data]="produtosTabela">
+                    [data]="produtosTabelaPaginada">
                 </app-data-table>
+
+                <div class="pagination">
+
+                    <div class="pagination-left">
+
+                        <app-select-input
+                            label
+                            [(value)]="itensPorPagina"
+                            (valueChange)="alterarItensPorPagina()"
+                            [options]="opcoesItensPorPagina">
+                        </app-select-input>
+
+                        <span class="pagination-info">
+
+                            Mostrando
+                            {{ inicioPagina }}
+                            -
+                            {{ fimPagina }}
+                            de
+                            {{ produtosTabela.length }}
+                            registros
+
+                        </span>
+
+                    </div>
+
+                    <div class="pagination-right">
+
+                        <button
+                            class="btn-pagination"
+                            type="button"
+                            (click)="paginaAnterior()"
+                            [disabled]="paginaAtual === 1">
+
+                            Anterior
+
+                        </button>
+
+                        <span class="pagination-page">
+
+                            Página
+                            {{ paginaAtual }}
+                            de
+                            {{ totalPaginas }}
+
+                        </span>
+
+                        <button
+                            class="btn-pagination"
+                            type="button"
+                            (click)="proximaPagina()"
+                            [disabled]="paginaAtual === totalPaginas">
+
+                            Próxima
+
+                        </button>
+
+                    </div>
+
+                </div>
+
             </div>
+
         </div>
 
-        <div class="table-section">
+        }
+
+        @if (selectedSection === 'giro-estoque') {
+
+        <div class="report-detail">
+
             <h2>
                 📊 Giro de Estoque
             </h2>
+
             <p>
                 Comparativo entre entradas e saídas dos produtos.
             </p>
+
             <div class="card">
+
                 <app-data-table
                     [columns]="colunasGiroEstoque"
                     [data]="produtosGiroEstoque">
                 </app-data-table>
+
             </div>
+
         </div>
+
+        }
+
+        @if (selectedSection === 'sem-estoque') {
+
+        <div class="report-detail">
+
+            <h2>
+                📦 Produtos Sem Estoque
+            </h2>
+
+            <div class="card">
+
+                @if (produtosSemEstoque.length === 0) {
+
+                <app-empty-state
+                    icon="📦"
+                    title="Produtos"
+                    message="Nenhum produto sem estoque.">
+                </app-empty-state>
+
+                } @else {
+
+                @for (
+                produto of produtosSemEstoque;
+                track produto.id
+                ) {
+
+                <p>
+                    {{ produto.nome }}
+                </p>
+
+                }
+
+                }
+
+            </div>
+
+        </div>
+
+        }
+
+        @if (selectedSection === 'estoque-baixo') {
+
+        <div class="report-detail">
+
+            <h2>
+                ⚠️ Produtos com Estoque Baixo
+            </h2>
+
+            <div class="card">
+
+                @if (produtosEstoqueBaixo.length === 0) {
+
+                <app-empty-state
+                    icon="📦"
+                    title="Produtos"
+                    message="Nenhum produto com estoque baixo.">
+                </app-empty-state>
+
+                } @else {
+
+                @for (
+                produto of produtosEstoqueBaixo;
+                track produto.id
+                ) {
+
+                <p>
+                    {{ produto.nome }}
+                </p>
+
+                }
+
+                }
+
+            </div>
+
+        </div>
+
+        }
+
     </div>
-</app-report-layout>
+</app-split-panel>
