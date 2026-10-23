@@ -59,9 +59,6 @@ export class Clientes implements OnInit {
         header: string;
         type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle';
         align?: 'left' | 'center' | 'right';
-        cellClass?: string;
-        cellClassFn?: (row: unknown) => string;
-        badgeClassFn?: (row: unknown) => string;
     }[] = [
             {
                 field: 'nome',
@@ -71,43 +68,13 @@ export class Clientes implements OnInit {
                 field: 'saldoDevedor',
                 header: 'Saldo',
                 type: 'currency',
-                align: 'center',
-                cellClassFn: (row: unknown) => {
-
-                    const cliente = row as Cliente;
-
-                    return (cliente.saldoDevedor ?? 0) > 0
-                        ? 'saldo-negativo'
-                        : 'saldo-positivo';
-
-                }
+                align: 'center'
             },
             {
                 field: 'status',
                 header: 'Status',
                 type: 'badge',
-                align: 'center',
-                badgeClassFn: (row: unknown) => {
-
-                    const cliente = row as Cliente;
-
-                    switch (cliente.status) {
-
-                        case 'Em Dia':
-                            return 'status-success';
-
-                        case 'Devedor':
-                            return 'status-warning';
-
-                        case 'Inadimplente':
-                        case 'Limite Excedido':
-                            return 'status-danger';
-
-                        default:
-                            return '';
-                    }
-
-                }
+                align: 'center'
             },
             {
                 field: 'controle',
@@ -221,6 +188,8 @@ export class Clientes implements OnInit {
                             'Cliente atualizado com sucesso.'
                         );
 
+                        this.cdr.detectChanges();
+
                     },
 
                     error: erro => {
@@ -261,6 +230,8 @@ export class Clientes implements OnInit {
                             'Cliente cadastrado com sucesso.'
                         );
 
+                        this.cdr.detectChanges();
+
                     },
 
                     error: erro => {
@@ -288,6 +259,8 @@ export class Clientes implements OnInit {
                 next: () => {
 
                     this.carregarClientes();
+
+                    this.cdr.detectChanges();
 
                     this.alertService.success(
                         'Cliente excluído com sucesso.'
@@ -604,6 +577,8 @@ export class Clientes implements OnInit {
 
                                 this.carregarClientes();
 
+                                this.cdr.detectChanges();
+
                                 this.alertService.success(
                                     'Cliente inativado com sucesso.'
                                 );
@@ -651,6 +626,8 @@ export class Clientes implements OnInit {
 
                                 this.carregarClientes();
 
+                                this.cdr.detectChanges();
+
                                 this.alertService.success(
                                     'Cliente reativado com sucesso.'
                                 );
@@ -693,6 +670,5 @@ export class Clientes implements OnInit {
         return this.formatarMoeda(valor);
 
     }
-
 
 }

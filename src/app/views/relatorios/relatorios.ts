@@ -208,7 +208,7 @@ export class Relatorios
     ngOnInit(): void {
 
         this.vendaService
-            .listar()
+            .listarRelatorio()
             .subscribe({
                 next: vendas => {
 

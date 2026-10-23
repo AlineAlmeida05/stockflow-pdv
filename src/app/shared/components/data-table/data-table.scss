@@ -67,6 +67,16 @@ tbody tr:hover {
     background-color: var(--color-gray-100);
 }
 
+.preco-original-riscado {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+.preco-promocional {
+    color: var(--color-success);
+    font-weight: 600;
+}
+
 .toggle-switch {
     position: relative;
     display: inline-block;
@@ -124,8 +134,23 @@ tbody tr:hover {
     gap: 8px;
 }
 
+.toggle-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
 .toggle-slider::after {
     content: attr(data-text);
+}
+
+.saldo-positivo {
+    color: var(--color-success);
+    font-weight: 600;
+}
+
+.saldo-negativo {
+    color: var(--color-danger);
+    font-weight: 600;
 }
 
 .status-em-dia {
@@ -175,6 +200,10 @@ tbody tr:hover {
 .table-cell-product {
     font-weight: 700;
     color: var(--color-primary);
+}
+
+.table-cell-subtotal {
+    font-weight: 700;
 }
 
 .status-success {
@@ -230,15 +259,4 @@ tbody tr:hover {
 
 .progress-danger {
     background: var(--color-danger);
-}
-
-.table-empty {
-    padding: 2rem;
-}
-
-.table-loading {
-    text-align: center;
-    padding: 2rem;
-    color: var(--color-gray-500);
-    font-style: italic;
 }

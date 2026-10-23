@@ -40,9 +40,8 @@ export class Estoque implements OnInit {
     colunasEstoque: {
         field: string;
         header: string;
-        type?: 'text' | 'badge' | 'currency' | 'date' | 'progress';
+        type?: | 'text' | 'badge' | 'currency' | 'date' | 'progress';
         align: 'left' | 'right' | 'center';
-        badgeClassFn?: (row: unknown) => string;
     }[] = [
             {
                 field: 'nome',
@@ -75,30 +74,7 @@ export class Estoque implements OnInit {
                 field: 'statusEstoque',
                 header: 'Status',
                 type: 'badge',
-                align: 'right',
-                badgeClassFn: (row: unknown) => {
-
-                    const produto = row as {
-                        statusEstoque?: string;
-                    };
-
-                    switch (produto.statusEstoque) {
-
-                        case 'Em Estoque':
-                            return 'status-success';
-
-                        case 'Atenção':
-                            return 'status-warning';
-
-                        case 'Crítico':
-                        case 'Sem Estoque':
-                            return 'status-danger';
-
-                        default:
-                            return '';
-                    }
-
-                }
+                align: 'right'
             }
         ];
 
@@ -126,7 +102,6 @@ export class Estoque implements OnInit {
     ) { }
 
     ngOnInit(): void {
-
         this.carregarProdutos();
     }
 
@@ -299,18 +274,5 @@ export class Estoque implements OnInit {
         this.filtroStatus = filtro;
 
     }
-
-    rowClassFn = (row: unknown): string => {
-        const produto = row as {
-            statusEstoque?: string;
-        };
-
-        return (
-            produto.statusEstoque === 'Crítico' ||
-            produto.statusEstoque === 'Sem Estoque'
-        )
-            ? 'table-row-critico'
-            : '';
-    };
 
 }

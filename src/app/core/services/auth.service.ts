@@ -80,14 +80,14 @@ export class AuthService {
 
             case 'SUPER_ADMIN':
             case 'PROPRIETARIO':
-            case 'SOCIO':
-            case 'GERENTE':
+            case 'Socio':
+            case 'Gerente':
                 return '/dashboard';
 
-            case 'OPERADOR_CAIXA':
+            case 'Operador_Caixa':
                 return '/nova-venda';
 
-            case 'ESTOQUISTA':
+            case 'Estoquista':
                 return '/estoque';
 
             default:

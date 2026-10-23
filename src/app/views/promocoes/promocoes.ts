@@ -278,8 +278,7 @@ export class Promocoes implements OnInit {
 
                 next: promocoes => {
 
-                    this.promocoes =
-                        promocoes;
+                    this.promocoes = promocoes;
 
                     this.cdr.detectChanges();
 
@@ -302,17 +301,7 @@ export class Promocoes implements OnInit {
                     this.pendentes = painel.pendentes;
 
                     this.ativas = painel.ativas;
-
-                    console.log('Pendentes', this.pendentes);
-                    console.log('Ativas', this.ativas);
-                    console.log(
-                        'Painel combinado',
-                        this.promocoesPainel
-                    );
-                    console.log(
-                        'produtosAtivosFiltrados',
-                        this.produtosAtivosFiltrados
-                    );
+                    
                     this.cdr.detectChanges();
 
                 },
