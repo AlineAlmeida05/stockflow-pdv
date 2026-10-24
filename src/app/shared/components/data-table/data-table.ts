@@ -15,12 +15,15 @@ export class DataTable {
 
     @Input()
     columns: {
-        field: string;
-        header: string;
-        type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle' | 'progress';
-        align?: 'left' | 'center' | 'right';
-        badgeVariantField?: string;
-    }[] = [];
+    field: string;
+    header: string;
+    type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle' | 'progress';
+    align?: 'left' | 'center' | 'right';
+    badgeVariantField?: string;
+    toggleActiveValue?: string;
+    toggleActiveLabel?: string;
+    toggleInactiveLabel?: string;
+}[] = [];
 
     @Input()
     data: unknown[] = [];
