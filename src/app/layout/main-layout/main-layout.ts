@@ -19,11 +19,7 @@ import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-di
 
 export class MainLayout {
 
-  menuAberto = false;
-
-  constructor() {
-
-  }
+  menuAberto = false;  
 
 
   alternarMenu(): void {

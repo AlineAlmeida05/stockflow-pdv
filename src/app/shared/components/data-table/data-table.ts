@@ -2,6 +2,25 @@ import { Component, Input } from '@angular/core';
 import { EventEmitter, Output } from '@angular/core';
 import { ActionIcons } from '../action-icons/action-icons';
 
+type TableColumn = {
+    field: string;
+    header: string;
+    type?:
+    | 'text'
+    | 'badge'
+    | 'currency'
+    | 'date'
+    | 'toggle'
+    | 'progress';
+    align?:
+    | 'left'
+    | 'center'
+    | 'right';
+    badgeVariantField?: string;
+    toggleActiveValue?: string;
+    toggleActiveLabel?: string;
+    toggleInactiveLabel?: string;
+};
 @Component({
     selector: 'app-data-table',
     standalone: true,
@@ -14,16 +33,7 @@ import { ActionIcons } from '../action-icons/action-icons';
 export class DataTable {
 
     @Input()
-    columns: {
-    field: string;
-    header: string;
-    type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle' | 'progress';
-    align?: 'left' | 'center' | 'right';
-    badgeVariantField?: string;
-    toggleActiveValue?: string;
-    toggleActiveLabel?: string;
-    toggleInactiveLabel?: string;
-}[] = [];
+    columns: TableColumn[] = [];
 
     @Input()
     data: unknown[] = [];
@@ -44,8 +54,7 @@ export class DataTable {
     delete = new EventEmitter<unknown>();
 
     @Output()
-    rowClick =
-        new EventEmitter<unknown>();
+    rowClick = new EventEmitter<unknown>();
 
     @Input()
     actionsHeader = 'Ações';
@@ -132,7 +141,11 @@ export class DataTable {
 
     getBadgeClass(
         value: string
-    ): string {
+    ):
+        | 'status-success'
+        | 'status-warning'
+        | 'status-danger'
+        | '' {
 
         switch (value) {
 
@@ -161,19 +174,22 @@ export class DataTable {
         value: string
     ): number {
 
-        return Number(
-            value.replace('%', '')
-        ) || 0;
+        return this.obterPercentual(
+            value
+        );
 
     }
 
     getProgressClass(
         value: string
-    ): string {
+    ):
+        | 'progress-success'
+        | 'progress-warning'
+        | 'progress-danger' {
 
-        const percentual = Number(
-            value.replace('%', '')
-        ) || 0;
+        const percentual = this.obterPercentual(
+            value
+        );
 
         if (percentual <= 25) {
             return 'progress-danger';
@@ -184,6 +200,16 @@ export class DataTable {
         }
 
         return 'progress-success';
+
+    }
+
+    private obterPercentual(
+        value: string
+    ): number {
+
+        return Number(
+            value.replace('%', '')
+        ) || 0;
 
     }
 }

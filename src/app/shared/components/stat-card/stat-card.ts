@@ -8,14 +8,14 @@ import { Component, Input } from '@angular/core';
 })
 export class StatCard {
 
-    @Input()
-    title = '';
+    @Input({ required: true })
+    title!: string;
 
     @Input()
     subtitle = '';
 
-    @Input()
-    value: string | number | null = '';
+    @Input({ required: true })
+    value!: string | number;
 
     @Input()
     variant: 'primary' | 'success' | 'warning' | 'danger' | 'info' = 'primary';

@@ -7,6 +7,7 @@ import { NotificacaoService } from '../../core/services/notificacao.service';
 import { MenuBadge } from '../../core/models/menu-badge.model';
 import { ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MenuItem } from '../../core/models/menu-item.model';
 
 @Component({
   selector: 'app-sidebar',
@@ -23,18 +24,22 @@ export class Sidebar implements OnInit {
 
   menu = MENU_CONFIG;
 
+  menuFiltrado: MenuItem[] = [];
+
   badges: MenuBadge[] = [];
 
   private destroyRef = inject(DestroyRef);
 
   constructor(
-  private authService: AuthService,
-  private notificacaoService: NotificacaoService,
-  private cdr: ChangeDetectorRef,
-) { }
+    private authService: AuthService,
+    private notificacaoService: NotificacaoService,
+    private cdr: ChangeDetectorRef,
+  ) { }
 
   ngOnInit(): void {
 
+    this.carregarMenu();
+    
     this.carregarBadges();
 
     this.cdr.detectChanges();
@@ -49,34 +54,38 @@ export class Sidebar implements OnInit {
       .subscribe(() => {
 
         this.carregarBadges();
+
         this.cdr.detectChanges();
 
       });
 
   }
 
-  fecharMenu(): void {
-
-  this.closeMenu.emit();
-
-}
-
-  get menuFiltrado() {
+  private carregarMenu(): void {
 
     const usuario = this.authService.usuarioLogado();
 
     if (!usuario) {
 
-      return [];
+      this.menuFiltrado = [];
+
+      return;
 
     }
 
-    return this.menu.filter(
-      item =>
-        item.perfis.includes(
-          usuario.perfil
-        )
-    );
+    this.menuFiltrado =
+      this.menu.filter(
+        item =>
+          item.perfis.includes(
+            usuario.perfil
+          )
+      );
+
+  }
+
+  fecharMenu(): void {
+
+    this.closeMenu.emit();
 
   }
 
@@ -84,11 +93,10 @@ export class Sidebar implements OnInit {
     modulo?: string
   ): number {
 
-    const badge =
-      this.badges.find(
-        badge =>
-          badge.modulo === modulo
-      );
+    const badge = this.badges.find(
+      badge =>
+        badge.modulo === modulo
+    );
 
     return badge?.totalPendencias ?? 0;
 

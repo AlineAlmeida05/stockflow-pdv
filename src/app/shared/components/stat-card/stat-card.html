@@ -7,15 +7,26 @@
     [class.info]="variant === 'info'"
     [class.stat-card--active]="active"
     role="status">
+
     <h3>
+        
         {{ title }}
+
     </h3>
+
     <strong>
+
         {{ value }}
+
     </strong>
+
     @if (subtitle) {
+
     <p>
+
         {{ subtitle }}
+
     </p>
+    
     }
 </div>

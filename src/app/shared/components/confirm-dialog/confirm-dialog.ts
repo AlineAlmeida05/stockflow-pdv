@@ -3,6 +3,11 @@ import { AsyncPipe, NgClass } from '@angular/common';
 import { ConfirmDialogService } from '../../../core/services/confirm-dialog.service';
 import { HostListener } from '@angular/core';
 
+
+type DialogType =
+    'danger'
+    | 'warning'
+    | 'info';
 @Component({
     selector: 'app-confirm-dialog',
     standalone: true,
@@ -20,7 +25,8 @@ export class ConfirmDialog {
         public confirmDialogService: ConfirmDialogService
     ) { }
 
-    @HostListener('document:keydown.escape')onEscape(): void {
+    @HostListener('document:keydown.escape')
+    onEscape(): void {
 
         if (
             !this.confirmDialogService.currentDialog
@@ -51,7 +57,7 @@ export class ConfirmDialog {
 
     }
 
-    get dialogType(): string {
+    get dialogType(): DialogType {
 
         return (
             this.confirmDialogService
@@ -63,47 +69,43 @@ export class ConfirmDialog {
 
     get dialogIcon(): string {
 
-        switch (this.dialogType) {
-
-            case 'danger':
-                return '🗑️';
-
-            case 'warning':
-                return '⚠️';
-
-            case 'info':
-                return 'ℹ️';
-
-            default:
-                return '⚠️';
-
-        }
+        return this.dialogIcons[
+            this.dialogType
+        ];
 
     }
 
+
+    private readonly dialogIcons:
+        Record<DialogType, string> = {
+
+            danger: '🗑️',
+            warning: '⚠️',
+            info: 'ℹ️'
+
+        };
+
     get confirmButtonText(): string {
 
-        const dialog = this.confirmDialogService.currentDialog;
+        const dialog =
+            this.confirmDialogService.currentDialog;
 
         if (dialog?.confirmText) {
             return dialog.confirmText;
         }
 
-        switch (dialog?.type) {
-
-            case 'danger':
-                return 'Excluir';
-
-            case 'warning':
-                return 'Continuar';
-
-            case 'info':
-                return 'Confirmar';
-
-            default:
-                return 'Confirmar';
-
-        }
+        return this.defaultButtonTexts[
+            this.dialogType
+        ];
 
     }
+
+    private readonly defaultButtonTexts:
+        Record<DialogType, string> = {
+
+            danger: 'Excluir',
+            warning: 'Continuar',
+            info: 'Confirmar'
+
+        };
 }

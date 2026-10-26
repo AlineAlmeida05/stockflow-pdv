@@ -25,7 +25,7 @@ export class EmpresaComponent implements OnInit {
     constructor(
         private empresaService: EmpresaService,
         public tenantContextService: TenantContextService,
-        private cd: ChangeDetectorRef
+        private cdr: ChangeDetectorRef
     ) { }
 
     empresa!: Empresa;
@@ -40,7 +40,7 @@ export class EmpresaComponent implements OnInit {
 
                     this.empresa = empresa;
 
-                    this.cd.detectChanges();
+                    this.cdr.detectChanges();
 
                 },
 

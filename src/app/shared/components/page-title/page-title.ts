@@ -7,8 +7,8 @@ import { Component, Input } from '@angular/core';
     styleUrl: './page-title.scss'
 })
 export class PageTitle {
-
-    @Input()
+    
+    @Input({ required: true })
     title = '';
 
     @Input()

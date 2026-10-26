@@ -2,6 +2,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AlertService } from '../../../core/services/alert.service';
 
+type ToastType =
+    | 'success'
+    | 'error'
+    | 'warning'
+    | 'info'
+    | 'loading';
+
 @Component({
     selector: 'app-toast',
     standalone: true,
@@ -20,23 +27,22 @@ export class ToastComponent {
 
 
     getIcon(
-        type: string
+        type: ToastType
     ): string {
 
-        switch (type) {
-
-            case 'success': return '✅';
-
-            case 'error': return '❌';
-
-            case 'warning': return '⚠️';
-
-            case 'loading': return '🔄';
-
-            default: return 'ℹ️';
-
-        }
+        return this.icons[type];
 
     }
+
+    private readonly icons:
+        Record<ToastType, string> = {
+
+            success: '✅',
+            error: '❌',
+            warning: '⚠️',
+            info: 'ℹ️',
+            loading: '🔄'
+
+        };
 
 }

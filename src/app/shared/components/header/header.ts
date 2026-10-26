@@ -20,7 +20,7 @@ export class Header {
     toggleMenu = new EventEmitter<void>();
 
     @ViewChild('profileMenu')
-    profileMenu?: ElementRef;
+    profileMenu?: ElementRef<HTMLElement>;
 
     menuPerfilAberto = false;
 
@@ -61,7 +61,7 @@ export class Header {
         this.authService.logout();
 
         this.router.navigate([
-            '/login'
+            '/stockflowpdv/login'
         ]);
 
     }
@@ -79,14 +79,9 @@ export class Header {
 
     }
 
-    get usuario() {
-        return this.usuarioLogado;
-    }
-
     get usuarioLogado() {
 
-        return this.authService
-            .usuarioLogado();
+        return this.authService.usuarioLogado();
 
     }
 
@@ -119,15 +114,16 @@ export class Header {
     @HostListener('document:click', ['$event'])
     onClickOutside(event: Event): void {
 
+        const target = event.target as Node | null;
+
         if (
             this.profileMenu &&
-            !this.profileMenu.nativeElement.contains(event.target)
+            target &&
+            !this.profileMenu.nativeElement.contains(
+                target
+            )
         ) {
-
-            console.log('fora');
-
             this.menuPerfilAberto = false;
-
         }
 
     }

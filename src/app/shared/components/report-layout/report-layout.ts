@@ -7,4 +7,5 @@ import { Component } from '@angular/core';
     styleUrl: './report-layout.scss'
 })
 export class ReportLayout {
+    
 }

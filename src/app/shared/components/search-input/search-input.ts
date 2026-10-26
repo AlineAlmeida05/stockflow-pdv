@@ -38,11 +38,10 @@ export class SearchInput {
 
     focar(): void {
 
-        this.searchInput?.nativeElement
-            .focus();
+        const input = this.searchInput?.nativeElement;
 
-        this.searchInput?.nativeElement
-            .select();
+        input?.focus();
+        input?.select();
 
     }
 }

@@ -7,22 +7,18 @@ export const roleGuard: CanActivateFn = (
     route: ActivatedRouteSnapshot
 ) => {
 
-    const authService =
-        inject(AuthService);
+    const authService = inject(AuthService);
 
-    const authStateService =
-        inject(AuthStateService);
+    const authStateService = inject(AuthStateService);
 
-    const router =
-        inject(Router);
+    const router = inject(Router);
 
-    const usuario =
-        authStateService.usuario;
+    const usuario = authStateService.usuario;
 
     if (!usuario) {
 
         router.navigate([
-            '/stockflow/login'
+            '/stockflowpdv/login'
         ]);
 
         return false;
@@ -35,8 +31,7 @@ export const roleGuard: CanActivateFn = (
         return true;
     }
 
-    const permitido =
-        perfisPermitidos.includes(
+    const permitido = perfisPermitidos.includes(
             usuario.perfil
         );
 

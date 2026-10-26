@@ -24,10 +24,11 @@ export class SmartProductSearch {
     @ViewChild('produtoInput')
     produtoInput?: ElementRef<HTMLInputElement>;
 
-    inputId =
-        `produto-${Math.random()
-            .toString(36)
-            .substring(2, 9)}`;
+    resultados: Produto[] = [];
+
+    readonly inputId = `produto-${Math.random()
+        .toString(36)
+        .slice(2, 9)}`;
 
     textoBusca = '';
 
@@ -37,7 +38,7 @@ export class SmartProductSearch {
         private cdr: ChangeDetectorRef
     ) { }
 
-    get resultados(): Produto[] {
+    private atualizarResultados(): void {
 
         const busca =
             this.textoBusca
@@ -45,36 +46,31 @@ export class SmartProductSearch {
                 .toLowerCase();
 
         if (!busca) {
-
-            return [];
-
+            this.resultados = [];
+            return;
         }
 
-        return this.produtos
-            .filter(produto => produto.ativo)
-            .filter(
-                produto =>
-
-                    produto.nome?.toLowerCase()
-                        .includes(busca)
-
-                    ||
-
-                    produto.codigo?.toLowerCase()
-                        .includes(busca)
-
-                    ||
-
-                    produto.codigoBarras?.toLowerCase()
-                        .includes(busca)
-            )
-            .sort((a, b) =>
-                a.nome.localeCompare(
-                    b.nome,
-                    'pt-BR'
+        this.resultados =
+            this.produtos
+                .filter(produto => produto.ativo)
+                .filter(
+                    produto =>
+                        produto.nome?.toLowerCase()
+                            .includes(busca)
+                        ||
+                        produto.codigo?.toLowerCase()
+                            .includes(busca)
+                        ||
+                        produto.codigoBarras?.toLowerCase()
+                            .includes(busca)
                 )
-            )
-            .slice(0, 10);
+                .sort((a, b) =>
+                    a.nome.localeCompare(
+                        b.nome,
+                        'pt-BR'
+                    )
+                )
+                .slice(0, 10);
 
     }
 
@@ -97,6 +93,8 @@ export class SmartProductSearch {
         this.mostrarResultados = true;
 
         const busca = this.textoBusca.trim();
+
+        this.atualizarResultados();
 
         if (!busca) {
 
@@ -136,11 +134,10 @@ export class SmartProductSearch {
 
     focar(): void {
 
-        this.produtoInput?.nativeElement
-            .focus();
+        const input = this.produtoInput?.nativeElement;
 
-        this.produtoInput?.nativeElement
-            .select();
+        input?.focus();
+        input?.select();
 
     }
 
@@ -159,6 +156,8 @@ export class SmartProductSearch {
     ): void {
 
         this.textoBusca = produto?.nome ?? '';
+
+        this.resultados = [];
 
         this.mostrarResultados = false;
 

@@ -2,10 +2,13 @@
     class="empty-state"
     role="status">
 
-    <div 
-        class="empty-state__icon">
+    @if (icon) {
+
+    <div class="empty-state__icon">
         {{ icon }}
     </div>
+
+    }
 
     @if (title) {
 

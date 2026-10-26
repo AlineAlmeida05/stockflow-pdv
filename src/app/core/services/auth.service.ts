@@ -39,9 +39,15 @@ export class AuthService {
     }
 
     logout(): void {
+
         localStorage.removeItem(
             STORAGE_KEYS.USUARIO_LOGADO
         );
+
+        localStorage.removeItem(
+            'token'
+        );
+
     }
 
     usuarioLogado(): UsuarioLogado | null {
@@ -72,7 +78,7 @@ export class AuthService {
         const usuario = this.usuarioLogado();
 
         if (!usuario) {
-            return '/login';
+            return '/stockflowpdv/login';
         }
 
         switch (usuario.perfil) {
@@ -103,7 +109,7 @@ export class AuthService {
         return this.http.put<void>(
 
             `${environment.apiUrl}/api/usuarios/alterar-senha`,
-            
+
             request
         );
 

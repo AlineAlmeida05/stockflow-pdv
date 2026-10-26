@@ -1,6 +1,17 @@
 import { Component, Input } from '@angular/core';
 import { StatCard } from '../stat-card/stat-card';
 
+type StatCardItem = {
+    title: string;
+    value: string | number;
+    variant:
+    | 'primary'
+    | 'info'
+    | 'success'
+    | 'warning'
+    | 'danger';
+};
+
 @Component({
     selector: 'app-stat-card-carousel',
     standalone: true,
@@ -14,15 +25,6 @@ import { StatCard } from '../stat-card/stat-card';
 export class StatCardCarousel {
 
     @Input()
-    cards: {
-        title: string;
-        value: string | number;
-        variant:
-        | 'primary'
-        | 'info'
-        | 'success'
-        | 'warning'
-        | 'danger';
-    }[] = [];
+    cards: StatCardItem[] = [];
 
 }

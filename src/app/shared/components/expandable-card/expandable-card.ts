@@ -8,15 +8,14 @@ import { Component, Input, EventEmitter, Output } from '@angular/core';
 })
 export class ExpandableCard {
 
-    @Input()
-    title = '';
+    @Input({ required: true })
+    title!: string;
 
     @Input()
     expanded = false;
 
     @Output()
-    expandedChange =
-        new EventEmitter<boolean>();
+    expandedChange = new EventEmitter<boolean>();
 
     @Input()
     collapsible = true;

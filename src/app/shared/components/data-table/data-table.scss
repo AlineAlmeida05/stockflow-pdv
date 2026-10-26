@@ -23,12 +23,6 @@
     overflow-x: auto;
 }
 
-.table thead {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
 .table thead th {
     position: sticky;
     top: 0;
@@ -132,11 +126,6 @@ tbody tr:hover {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-}
-
-.toggle-label {
-    font-size: 0.875rem;
-    font-weight: 600;
 }
 
 .toggle-slider::after {

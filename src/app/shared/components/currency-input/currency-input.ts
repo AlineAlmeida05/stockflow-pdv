@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChange
 
 @Component({
     selector: 'app-currency-input',
-    standalone: true,    
+    standalone: true,
     templateUrl: './currency-input.html',
     styleUrl: './currency-input.scss'
 })
@@ -20,11 +20,11 @@ export class CurrencyInput implements OnInit, OnChanges {
     value: number | null = null;
 
     @Output()
-    valueChange =
-        new EventEmitter<
+    valueChange = new EventEmitter<
             number | null
         >();
 
+    protected readonly inputId = crypto.randomUUID();
 
     ngOnInit(): void {
 
@@ -33,15 +33,13 @@ export class CurrencyInput implements OnInit, OnChanges {
     }
 
     ngOnChanges(
+
         changes: SimpleChanges
+
     ): void {
 
-        if (
-            changes['value']
-        ) {
-
+        if (changes['value']) {
             this.atualizarDisplay();
-
         }
 
     }
@@ -58,15 +56,7 @@ export class CurrencyInput implements OnInit, OnChanges {
             return;
 
         }
-
-        this.displayValue =
-            this.value.toLocaleString(
-                'pt-BR',
-                {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }
-            );
+        this.displayValue = this.formatarValor(this.value);
 
     }
 
@@ -76,8 +66,7 @@ export class CurrencyInput implements OnInit, OnChanges {
 
         const input = event.target as HTMLInputElement;
 
-        const numeros =
-            input.value.replace(
+        const numeros = input.value.replace(
                 /\D/g,
                 ''
             );
@@ -98,17 +87,24 @@ export class CurrencyInput implements OnInit, OnChanges {
 
         this.value = valor;
 
-        this.displayValue =
-            valor.toLocaleString(
-                'pt-BR',
-                {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }
-            );
+        this.displayValue = this.formatarValor(valor);
 
         this.valueChange.emit(
             valor
+        );
+
+    }
+
+    private formatarValor(
+        valor: number
+    ): string {
+
+        return valor.toLocaleString(
+            'pt-BR',
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
         );
 
     }

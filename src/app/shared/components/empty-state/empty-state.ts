@@ -14,7 +14,7 @@ export class EmptyState {
     @Input()
     icon = '';
 
-    @Input()
-    message = '';
+    @Input({ required: true })
+    message!: string;
 
 }

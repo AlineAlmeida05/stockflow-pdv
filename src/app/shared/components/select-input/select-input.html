@@ -7,7 +7,9 @@
     @if (label) {
 
     <label [for]="inputId">
+
         {{ label }}
+
     </label>
 
     }
@@ -20,8 +22,10 @@
         (ngModelChange)="valueChange.emit($event)">
         @if (placeholder) {
 
-        <option value>
+        <option value="">
+
             {{ placeholder }}
+
         </option>
 
         }
@@ -33,7 +37,9 @@
 
         <option
             [value]="option.value">
+
             {{ option.label }}
+
         </option>
         }
 

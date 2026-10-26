@@ -20,5 +20,7 @@ export class ActionIcons {
     @Output()
     delete = new EventEmitter<void>();
 
+    @Input()
+    deleteLabel = 'Excluir';
 
 }

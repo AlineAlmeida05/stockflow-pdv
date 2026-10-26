@@ -22,10 +22,6 @@
     transition: all 0.2s ease;
 }
 
-.sidebar-link:hover {
-    background: var(--color-gray-100);
-}
-
 .sidebar-link--active {
     background: var(--color-primary);
     color: var(--color-white);

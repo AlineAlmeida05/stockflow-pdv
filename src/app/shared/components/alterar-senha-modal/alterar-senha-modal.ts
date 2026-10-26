@@ -21,7 +21,7 @@ export class AlterarSenhaModal {
     @Output()
     fechar = new EventEmitter<void>();
 
-    formAlterarSenha!: FormGroup;
+    formAlterarSenha: FormGroup;
 
     salvandoSenha = false;
 
@@ -30,7 +30,6 @@ export class AlterarSenhaModal {
     mostrarNovaSenha = false;
 
     mostrarConfirmacaoSenha = false;
-
 
     constructor(
         private fb: FormBuilder,
@@ -76,6 +75,8 @@ export class AlterarSenhaModal {
 
     salvarSenha(): void {
 
+        const form = this.formAlterarSenha.getRawValue();
+
         if (this.formAlterarSenha.invalid) {
 
             this.formAlterarSenha.markAllAsTouched();
@@ -115,7 +116,10 @@ export class AlterarSenhaModal {
                         'success'
                     );
 
-                    const slug = this.tenantAtual?.slug;
+                    const slug =
+                        this.tenantContextService
+                            .tenantAtual
+                            ?.slug;
 
                     this.authService.logout();
 
@@ -144,14 +148,6 @@ export class AlterarSenhaModal {
                 }
 
             });
-
-    }
-
-    get tenantAtual() {
-
-        return this
-            .tenantContextService
-            .tenantAtual;
 
     }
 

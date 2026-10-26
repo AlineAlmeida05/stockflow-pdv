@@ -21,13 +21,14 @@
 
             <div class="field">
 
-                <label>
+                <label for="senhaAtual">
                     Senha Atual
                 </label>
 
                 <div class="password-input">
 
                     <input
+                        id="senhaAtual"
                         [type]="mostrarSenhaAtual ? 'text' : 'password'"
                         formControlName="senhaAtual">
 
@@ -46,13 +47,14 @@
 
             <div class="field">
 
-                <label>
+                <label for="novaSenha">
                     Nova Senha
                 </label>
 
                 <div class="password-input">
 
                     <input
+                        id="novaSenha"
                         [type]="mostrarNovaSenha ? 'text' : 'password'"
                         formControlName="novaSenha">
 
@@ -118,13 +120,14 @@
 
             <div class="field">
 
-                <label>
+                <label for="confirmarSenha">
                     Confirmar Nova Senha
                 </label>
 
                 <div class="password-input">
 
                     <input
+                        id="confirmarSenha"
                         [type]="mostrarConfirmacaoSenha ? 'text' : 'password'"
                         formControlName="confirmarSenha">
 
@@ -147,11 +150,8 @@
                     class="password-match"
                     [class.valid]="senhasConferem"
                     [class.invalid]="!senhasConferem">
-
-                    {{ senhasConferem
-                    ? '✓ As senhas conferem'
-                    : '✗ As senhas não conferem'
-                    }}
+ 
+                    {{ senhasConferem ? '✓ As senhas conferem' : '✗ As senhas não conferem' }}
 
                 </div>
 

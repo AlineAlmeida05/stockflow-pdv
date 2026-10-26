@@ -1,7 +1,3 @@
-.modal-backdrop {
-    position: fixed;
-}
-
 .modal {
     background: white;
 }
@@ -71,10 +67,6 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-}
-
-.password-rules li {
-    margin-bottom: 0.25rem;
 }
 
 .password-rule {

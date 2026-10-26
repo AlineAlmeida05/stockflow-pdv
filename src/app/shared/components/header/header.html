@@ -3,7 +3,9 @@
   <button
     type="button"
     class="menu-toggle"
+    aria-label="Abrir menu"
     (click)="alternarMenu()">
+
     ☰
   </button>
 
@@ -16,8 +18,7 @@
     <div>
 
       <h2>
-        {{ ehSuperAdmin ? tenantAtual?.nome || branding.nomeExibicao :
-        branding.nomeExibicao }}
+        {{ ehSuperAdmin ? tenantAtual?.nome || branding.nomeExibicao : branding.nomeExibicao }}
       </h2>
 
       <p>
@@ -37,6 +38,7 @@
         class="btn btn-secondary profile-button"
         (click)="alternarMenuPerfil()"
         [attr.aria-expanded]="menuPerfilAberto"
+        aria-label="Menu do usuário"
         aria-haspopup="true">
 
         <div class="profile-button__content">
@@ -46,7 +48,7 @@
           </span>
 
           <span class="profile-button__role">
-            Perfil: {{ usuario?.perfil }}
+            Perfil: {{ usuarioLogado?.perfil }}
           </span>
 
         </div>
@@ -64,7 +66,7 @@
         <div class="profile-dropdown__info">
 
           <small>
-            Email: {{ usuario?.email }}
+            Email: {{ usuarioLogado?.email }}
           </small>
 
         </div>

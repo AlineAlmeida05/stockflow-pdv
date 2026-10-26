@@ -32,9 +32,9 @@ export class LoginComponent implements OnInit {
 
     mostrarSenha = false;
 
-    titulo = 'StockFlow PDV';
+    readonly titulo = 'StockFlow PDV';
 
-    slogan = 'Controle total do seu negócio';
+    readonly slogan = 'Controle total do seu negócio';
 
     tenant: Tenant | null = null;
 
@@ -99,10 +99,9 @@ export class LoginComponent implements OnInit {
 
         this.loading = true;
 
-        const loadingToast =
-            this.alertService.loading(
-                'Entrando...'
-            );
+        const loadingToast = this.alertService.loading(
+            'Entrando...'
+        );
 
         const request = {
 
@@ -122,7 +121,7 @@ export class LoginComponent implements OnInit {
                 })
             )
             .subscribe({
-                next: usuario => {
+                next: () => {
 
                     if (this.tenant) {
 

@@ -1,5 +1,11 @@
 import { Component, Input } from '@angular/core';
 
+type BadgeVariant =
+    | 'success'
+    | 'warning'
+    | 'danger'
+    | 'info';
+
 @Component({
     selector: 'app-status-badge',
     standalone: true,
@@ -8,8 +14,8 @@ import { Component, Input } from '@angular/core';
 })
 export class StatusBadge {
 
-    @Input()
-    text = '';
+    @Input({ required: true })
+    text!: string;
 
     @Input()
     icon = '';
@@ -18,18 +24,9 @@ export class StatusBadge {
     autoVariant = false;
 
     @Input()
-    variant:
-        | 'success'
-        | 'warning'
-        | 'danger'
-        | 'info'
-        = 'info';
+    variant: BadgeVariant = 'info';
 
-    get resolvedVariant():
-        'success'
-        | 'warning'
-        | 'danger'
-        | 'info' {
+    get resolvedVariant(): BadgeVariant {
 
         if (!this.autoVariant) {
 
@@ -37,59 +34,58 @@ export class StatusBadge {
 
         }
 
-        const value =
-            this.text.toLowerCase();
+        const value = this.text.toLowerCase();
 
         if (
-            value.includes('ativo')
-            ||
-            value.includes('finalizada')
-            ||
-            value.includes('em dia')
-            ||
-            value.includes('recente')
-            ||
-            value.includes('giro alto')
+            this.successValues.some(
+                item => value.includes(item)
+            )
         ) {
-
             return 'success';
-
         }
 
         if (
-            value.includes('atenção')
-            ||
-            value.includes('média')
-            ||
-            value.includes('pendente')
-            ||
-            value.includes('giro médio')
+            this.warningValues.some(
+                item => value.includes(item)
+            )
         ) {
-
             return 'warning';
-
         }
 
         if (
-            value.includes('cancelada')
-            ||
-            value.includes('crítico')
-            ||
-            value.includes('inadimplente')
-            ||
-            value.includes('produto parado')
-            ||
-            value.includes('giro baixo')
-            ||
-            value.includes('alta')
+            this.dangerValues.some(
+                item => value.includes(item)
+            )
         ) {
-
             return 'danger';
-
         }
 
         return 'info';
 
     }
+
+    private readonly successValues: string[]  = [
+        'ativo',
+        'finalizada',
+        'em dia',
+        'recente',
+        'giro alto'
+    ];
+
+    private readonly warningValues: string[]  = [
+        'atenção',
+        'média',
+        'pendente',
+        'giro médio'
+    ];
+
+    private readonly dangerValues: string[]  = [
+        'cancelada',
+        'crítico',
+        'inadimplente',
+        'produto parado',
+        'giro baixo',
+        'alta'
+    ];
 
 }

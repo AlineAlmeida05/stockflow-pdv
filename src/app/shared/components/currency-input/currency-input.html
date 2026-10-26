@@ -1,14 +1,22 @@
 <div class="currency-input">
+
     @if (label) {
-    <label>
+
+    <label [for]="inputId">
+
         {{ label }}
+
     </label>
+
     }
     <div class="currency-input__wrapper">
-        <span>
+
+        <span aria-hidden="true">
             R$
         </span>
+
         <input
+            [id]="inputId"
             type="text"
             [value]="displayValue"
             (input)="onInput($event)"
