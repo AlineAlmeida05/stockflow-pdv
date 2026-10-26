@@ -37,11 +37,15 @@ export class SelectInput {
     }[] = [];
 
     @Output()
-    valueChange =
-        new EventEmitter<string>();
+    valueChange = new EventEmitter<string>();
 
     @Input()
     size: 'sm' | 'md' | 'lg' = 'md';
+
+    inputId =
+        `select-${Math.random()
+            .toString(36)
+            .substring(2, 9)}`;
 
     focar(): void {
 

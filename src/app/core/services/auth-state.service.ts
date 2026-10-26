@@ -42,25 +42,12 @@ export class AuthStateService {
             return;
         }
 
-        this.authService
-            .me()
-            .subscribe({
-                next: usuario => {
+        const usuario =
+            this.authService.usuarioLogado();
 
-                    this.usuarioSubject.next(
-                        usuario
-                    );
-
-                },
-                error: () => {
-
-                    this.usuarioSubject.next(
-                        null
-                    );
-
-                }
-            });
-
+        this.usuarioSubject.next(
+            usuario
+        );
     }
 
     limpar(): void {

@@ -10,8 +10,7 @@ import { Subject } from 'rxjs';
 })
 export class NotificacaoService {
 
-    private readonly apiUrl =
-        `${environment.apiUrl}/api/notificacoes`;
+    private readonly apiUrl = `${environment.apiUrl}/api/notificacoes`;
 
     constructor(
         private http: HttpClient
@@ -24,11 +23,9 @@ export class NotificacaoService {
         );
     }
 
-    private readonly badgesAtualizados =
-        new Subject<void>();
+    private readonly badgesAtualizados = new Subject<void>();
 
-    badgesAtualizados$ =
-        this.badgesAtualizados.asObservable();
+    badgesAtualizados$ = this.badgesAtualizados.asObservable();
 
     notificarAtualizacaoBadges(): void {
 

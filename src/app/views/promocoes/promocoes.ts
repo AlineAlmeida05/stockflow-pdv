@@ -278,8 +278,7 @@ export class Promocoes implements OnInit {
 
                 next: promocoes => {
 
-                    this.promocoes =
-                        promocoes;
+                    this.promocoes = promocoes;
 
                     this.cdr.detectChanges();
 

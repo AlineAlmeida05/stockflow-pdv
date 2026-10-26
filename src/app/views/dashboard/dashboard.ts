@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { VendaService } from '../../core/services/venda.service';
 import { FiadoService } from '../../core/services/fiado.service';
@@ -8,8 +7,6 @@ import { ProdutoService } from '../../core/services/produto.service';
 import { Venda } from '../../core/models/venda.model';
 import { Fiado } from '../../core/models/fiado.model';
 import { Produto } from '../../core/models/produto.model';
-import { MovimentacaoEstoque } from '../../core/models/movimentacao-estoque.model';
-import { MovimentacaoEstoqueService } from '../../core/services/movimentacao-estoque.service';
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { StatCardCarousel } from '../../shared/components/stat-card-carousel/stat-card-carousel';
 import { DashboardLayout } from '../../shared/components/dashboard-layout/dashboard-layout';
@@ -19,25 +16,6 @@ import { DashboardService } from '../../core/services/dashboard.service';
 import { DashboardResponse } from '../../core/models/dashboard-response.model';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 
-
-type CardVariant =
-    | 'info'
-    | 'success'
-    | 'warning'
-    | 'danger';
-
-interface DashboardCard {
-    title: string;
-    value: string | number;
-    variant: CardVariant;
-}
-
-type PeriodoDashboard =
-    | 'hoje'
-    | '7dias'
-    | '30dias'
-    | 'mes'
-    | 'todos';
 @Component({
     selector: 'app-dashboard',
     standalone: true,
@@ -48,7 +26,6 @@ type PeriodoDashboard =
         StatCardCarousel,
         DashboardLayout,
         DashboardChart,
-        FormsModule,
         EmptyState,
         DatePipe
     ],
@@ -63,8 +40,6 @@ export class Dashboard implements OnInit {
 
     produtos: Produto[] = [];
 
-    movimentacoes: MovimentacaoEstoque[] = [];
-
     dashboard?: DashboardResponse;
 
     resumoGeralSelecionado = '';
@@ -75,7 +50,13 @@ export class Dashboard implements OnInit {
 
     resumoProdutosSelecionado = '';
 
-    periodoSelecionado: PeriodoDashboard = 'hoje';
+    periodoSelecionado:
+        'hoje'
+        | '7dias'
+        | '30dias'
+        | 'mes'
+        | 'todos'
+        = 'hoje';
 
     abaSelecionada:
         'geral'
@@ -90,7 +71,6 @@ export class Dashboard implements OnInit {
         private vendaService: VendaService,
         private fiadoService: FiadoService,
         private produtoService: ProdutoService,
-        private movimentacaoService: MovimentacaoEstoqueService,
         private dashboardService: DashboardService,
         private cdr: ChangeDetectorRef
     ) { }
@@ -157,127 +137,56 @@ export class Dashboard implements OnInit {
 
             });
 
-        this.movimentacaoService
-            .listar()
-            .subscribe({
-
-                next: movimentacoes => {
-
-                    this.movimentacoes = movimentacoes;
-
-                    this.cdr.detectChanges();
-
-                },
-
-                error: erro => {
-
-                    console.error(erro);
-
-                }
-
-            });
-
         this.carregarDashboard();
 
         this.cdr.detectChanges();
 
     }
 
-    private criarCard(
-        title: string,
-        value: string | number,
-        variant: CardVariant
-    ): DashboardCard {
+    get promocoesAtivasDetalhes() {
 
-        return {
-            title,
-            value,
-            variant
-        };
-
-    }
-
-    private formatarMoeda(
-        valor: number
-    ): string {
-
-        return valor.toLocaleString(
-            'pt-BR',
-            {
-                style: 'currency',
-                currency: 'BRL'
-            }
-        );
-
-    }
-
-    private estaNoPeriodo(
-        data: Date
-    ): boolean {
-
-        const hoje = new Date();
-
-        switch (this.periodoSelecionado) {
-
-            case 'hoje':
-                return (
-                    data.toDateString() ===
-                    hoje.toDateString()
-                );
-
-            case '7dias':
-                return (
-                    hoje.getTime() -
-                    data.getTime()
-                ) <= 7 * 24 * 60 * 60 * 1000;
-
-            case '30dias':
-                return (
-                    hoje.getTime() -
-                    data.getTime()
-                ) <= 30 * 24 * 60 * 60 * 1000;
-
-            case 'mes':
-                return (
-                    data.getMonth() === hoje.getMonth()
-                    &&
-                    data.getFullYear() === hoje.getFullYear()
-                );
-
-            default:
-                return true;
-        }
-    }
-
-    private carregarDashboard(): void {
-
-        this.dashboardService
-            .obterDashboard(
-                this.periodoSelecionado
-            )
-            .subscribe({
-
-                next: dashboard => {
-
-                    this.dashboard = dashboard;
-
-                    this.cdr.detectChanges();
-
-                }
-
-            });
+        return this.dashboard
+            ?.promocoesAtivasDetalhes
+            ?? [];
 
     }
 
     alterarPeriodo(
-        periodo: PeriodoDashboard
-    ): void {
+        periodo:
+            'hoje'
+            | '7dias'
+            | '30dias'
+            | 'mes'
+            | 'todos'
+    ) {
 
         this.periodoSelecionado = periodo;
 
         this.carregarDashboard();
-        
         this.cdr.detectChanges();
+
+    }
+
+    get faturamentoPeriodo(): number {
+
+        return this.vendasFiltradas.reduce(
+
+            (total, venda) =>
+
+                total + venda.valorTotal,
+
+            0
+
+        );
+
+    }
+
+    get fiadosFiltrados(): Fiado[] {
+
+        return this.filtrarPorPeriodo(
+            this.fiados,
+            fiado => fiado.dataLancamento
+        );
 
     }
 
@@ -311,145 +220,6 @@ export class Dashboard implements OnInit {
 
     }
 
-    giroChartOptions = {
-
-        responsive: true,
-
-        maintainAspectRatio: false,
-
-        indexAxis: 'y' as const
-
-    };
-
-    pagamentoChartOptions: ChartConfiguration['options'] = {
-
-        responsive: true,
-
-        maintainAspectRatio: false,
-
-        plugins: {
-
-            legend: {
-
-                position: 'bottom'
-
-            }
-
-        }
-
-    };
-
-    get totalProdutosAtivos(): number {
-        return this.produtos.filter(
-            produto => produto.ativo
-        ).length;
-    }
-
-    get totalProdutosInativos(): number {
-        return this.produtos.filter(
-            produto => !produto.ativo
-        ).length;
-    }
-
-    get promocoesAtivasDetalhes() {
-
-        return this.dashboard
-            ?.promocoesAtivasDetalhes
-            ?? [];
-
-    }
-
-    get vendasHoje(): Venda[] {
-
-        const hoje =
-            new Date().toDateString();
-
-        return this.vendas.filter(
-            venda =>
-                new Date(
-                    venda.dataVenda
-                ).toDateString() === hoje
-        );
-
-    }    
-
-    get totalVendasHoje(): number {
-
-        return this.vendasHoje.length;
-
-    }
-
-    get totalVendasPeriodo(): number {
-
-        return this.vendasFiltradas.length;
-
-    }
-
-    get faturamentoPeriodo(): number {
-
-        return this.vendasFiltradas.reduce(
-
-            (total, venda) =>
-
-                total + venda.valorTotal,
-
-            0
-
-        );
-
-    }
-
-    get faturamentoHoje(): number {
-
-        return this.vendasHoje.reduce(
-            (total, venda) =>
-                total + venda.valorTotal,
-            0
-        );
-
-    }
-
-    get fiadosEmAberto(): number {
-
-        return this.fiados.reduce(
-            (total, fiado) =>
-                total + fiado.valorTotal,
-            0
-        );
-
-    }
-
-    get clientesDevedores(): number {
-
-        return new Set(
-            this.fiados.map(
-                fiado => fiado.clienteId
-            )
-        ).size;
-
-    }
-
-    get fiadosFiltrados() {
-        return this.fiados.filter(
-            fiado =>
-                this.estaNoPeriodo(
-                    new Date(fiado.dataLancamento)
-                )
-        );
-    }    
-
-    get produtosComEstoqueBaixo(): number {
-
-        return this.produtos
-            .filter(
-                produto =>
-                    produto.estoqueAtual <=
-                    produto.estoqueMinimo
-            )
-            .length;
-
-    }
-
     get produtosSemEstoque() {
 
         return this.produtos
@@ -469,19 +239,6 @@ export class Dashboard implements OnInit {
                     produto.estoqueAtual <=
                     produto.estoqueMinimo
             );
-
-    }
-
-    get vendasPromocionais(): Venda[] {
-
-        return this.vendas.filter(
-            venda =>
-                venda.status !== 'cancelada' &&
-                (venda.itens ?? []).some(
-                    item =>
-                        item.promocaoAplicada
-                )
-        );
 
     }
 
@@ -551,8 +308,7 @@ export class Dashboard implements OnInit {
 
     get vendasChartData() {
 
-        const evolucao =
-            this.dashboard?.evolucaoVendas ?? [];
+        const evolucao = this.dashboard?.evolucaoVendas ?? [];
 
         return {
 
@@ -572,11 +328,9 @@ export class Dashboard implements OnInit {
                             item => item.total
                         ),
 
-                    borderColor:
-                        '#2563eb',
+                    borderColor: '#2563eb',
 
-                    backgroundColor:
-                        'rgba(37,99,235,0.2)',
+                    backgroundColor: 'rgba(37,99,235,0.2)',
 
                     tension: 0.3,
 
@@ -602,141 +356,169 @@ export class Dashboard implements OnInit {
 
     }
 
-    get cardsGeral(): DashboardCard[] {
+    get cardsGeral() {
 
         return this.cardsDashboard;
 
     }
 
-    get cardsVendas(): DashboardCard[] {
-
-        return [
-            this.criarCard(
-                `Vendas (${this.descricaoPeriodo})`,
-                this.dashboard?.totalVendas ?? 0,
-                'info'
-            ),
-
-            this.criarCard(
-                'Faturamento',
-                this.formatarMoeda(
-                    this.dashboard?.faturamento ?? 0
-                ),
-                'success'
-            ),
-
-            this.criarCard(
-                'Vendas Hoje',
-                this.totalVendasHoje,
-                'info'
-            )
-        ];
-
-    }
-
-    get cardsEstoque(): DashboardCard[] {
-
-        return [
-            this.criarCard(
-                'Produtos',
-                this.dashboard?.totalProdutos ?? 0,
-                'info'
-            ),
-
-            this.criarCard(
-                'Estoque Baixo',
-                this.dashboard?.produtosComEstoqueBaixo ?? 0,
-                'warning'
-            ),
-
-            this.criarCard(
-                'Sem Estoque',
-                this.dashboard?.produtosSemEstoque ?? 0,
-                'danger'
-            )
-        ];
-
-    }
-
-    get cardsFinanceiro(): DashboardCard[] {
+    get cardsVendas() {
 
         return [
 
-            this.criarCard(
-                'Fiados em Aberto',
-                this.formatarMoeda(
-                    this.dashboard?.fiadosEmAberto ?? 0
-                ),
-                'warning'
-            ),
+            {
+                title: `Vendas (${this.descricaoPeriodo})`,
+                value: this.dashboard?.totalVendas ?? 0,
+                variant: 'info' as const
+            },
 
-            this.criarCard(
-                'Clientes Devedores',
-                this.dashboard?.clientesDevedores ?? 0,
-                'danger'
-            ),
-
-            this.criarCard(
-                'Faturamento',
-                this.formatarMoeda(
-                    this.dashboard?.faturamento ?? 0
-                ),
-                'success'
-            )
+            {
+                title: 'Faturamento',
+                value:
+                    (this.dashboard?.faturamento ?? 0)
+                        .toLocaleString(
+                            'pt-BR',
+                            {
+                                style: 'currency',
+                                currency: 'BRL'
+                            }
+                        ),
+                variant: 'success' as const
+            }
 
         ];
 
     }
 
-    get cardsPromocoes(): DashboardCard[] {
+    get cardsEstoque() {
 
         return [
-            this.criarCard(
-                'Promoções Ativas',
-                this.dashboard?.promocoesAtivas ?? 0,
-                'info'
-            ),
 
-            this.criarCard(
-                'Vendas Promocionais',
-                this.totalVendasPromocionais,
-                'success'
-            ),
+            {
+                title: 'Produtos',
+                value: this.dashboard?.totalProdutos ?? 0,
+                variant: 'info' as const
+            },
 
-            this.criarCard(
-                'Promoções Eficientes',
-                this.totalPromocoesEficientes,
-                'success'
-            )
+            {
+                title: 'Estoque Baixo',
+                value: this.dashboard?.produtosComEstoqueBaixo ?? 0,
+                variant: 'warning' as const
+            },
+
+            {
+                title: 'Sem Estoque',
+                value: this.dashboard?.produtosSemEstoque ?? 0,
+                variant: 'danger' as const
+            }
+
         ];
 
     }
 
-    get cardsProdutos(): DashboardCard[] {
+    get cardsFinanceiro() {
 
         return [
-            this.criarCard(
-                'Produtos',
-                this.produtos.length,
-                'info'
-            ),
 
-            this.criarCard(
-                'Ativos',
-                this.totalProdutosAtivos,
-                'success'
-            ),
+            {
+                title: 'Fiados em Aberto',
+                value: (this.dashboard?.fiadosEmAberto ?? 0)
+                    .toLocaleString(
+                        'pt-BR',
+                        {
+                            style: 'currency',
+                            currency: 'BRL'
+                        }
+                    ),
+                variant: 'warning' as const
+            },
 
-            this.criarCard(
-                'Inativos',
-                this.totalProdutosInativos,
-                'warning'
-            )
+            {
+                title: 'Clientes Devedores',
+                value: this.dashboard?.clientesDevedores ?? 0,
+                variant: 'danger' as const
+            },
+
+            {
+                title: 'Faturamento',
+                value: (this.dashboard?.faturamento ?? 0)
+                    .toLocaleString(
+                        'pt-BR',
+                        {
+                            style: 'currency',
+                            currency: 'BRL'
+                        }
+                    ),
+                variant: 'success' as const
+            }
+
         ];
 
     }
 
-    get cardsAtuais(): DashboardCard[] {
+    get cardsPromocoes() {
+
+        return [
+
+            {
+                title: 'Promoções Ativas',
+                value: this.dashboard?.promocoesAtivas ?? 0,
+                variant: 'info' as const
+            },
+
+            {
+                title: 'Vendas Promocionais',
+                value: this.totalVendasPromocionais,
+                variant: 'success' as const
+            },
+
+            {
+                title: 'Promoções Eficientes',
+                value: this.totalPromocoesEficientes,
+                variant: 'success' as const
+            }
+
+        ];
+
+    }
+
+    get cardsProdutos() {
+
+        const produtosAtivos =
+            this.produtos.filter(
+                produto => produto.ativo
+            ).length;
+
+        const produtosInativos =
+            this.produtos.filter(
+                produto => !produto.ativo
+            ).length;
+
+        return [
+
+            {
+                title: 'Produtos',
+                value: this.produtos.length,
+                variant: 'info' as const
+            },
+
+            {
+                title: 'Ativos',
+                value: produtosAtivos,
+                variant: 'success' as const
+            },
+
+            {
+                title: 'Inativos',
+                value: produtosInativos,
+                variant: 'warning' as const
+            }
+
+        ];
+
+    }
+
+    get cardsAtuais() {
 
         switch (
         this.abaSelecionada
@@ -770,49 +552,67 @@ export class Dashboard implements OnInit {
 
     }
 
-    get cardsDashboard(): DashboardCard[] {
+    get cardsDashboard(): {
+        title: string;
+        value: string | number;
+        variant:
+        | 'info'
+        | 'success'
+        | 'warning'
+        | 'danger';
+    }[] {
 
         return [
 
-            this.criarCard(
-                `Vendas (${this.descricaoPeriodo})`,
-                this.dashboard?.totalVendas ?? 0,
-                'info'
-            ),
+            {
+                title: `Vendas (${this.descricaoPeriodo})`,
+                value: this.dashboard?.totalVendas ?? 0,
+                variant: 'info'
+            },
 
-            this.criarCard(
-                'Faturamento',
-                this.formatarMoeda(
-                    this.dashboard?.faturamento ?? 0
-                ),
-                'success'
-            ),
+            {
+                title: 'Faturamento',
+                value: (this.dashboard?.faturamento ?? 0)
+                    .toLocaleString(
+                        'pt-BR',
+                        {
+                            style: 'currency',
+                            currency: 'BRL'
+                        }
+                    ),
+                variant: 'success'
+            },
 
-            this.criarCard(
-                'Fiados em Aberto',
-                this.formatarMoeda(
-                    this.dashboard?.fiadosEmAberto ?? 0
-                ),
-                'warning'
-            ),
+            {
+                title: 'Fiados em Aberto',
+                value: (this.dashboard?.fiadosEmAberto ?? 0)
+                    .toLocaleString(
+                        'pt-BR',
+                        {
+                            style: 'currency',
+                            currency: 'BRL'
+                        }
+                    ),
+                variant: 'warning'
+            },
 
-            this.criarCard(
-                'Produtos',
-                this.dashboard?.totalProdutos ?? 0,
-                'info'
-            ),
+            {
+                title: 'Produtos',
+                value: this.dashboard?.totalProdutos ?? 0,
+                variant: 'info'
+            },
 
-            this.criarCard(
-                'Clientes Devedores',
-                this.dashboard?.clientesDevedores ?? 0,
-                'danger'
-            ),
+            {
+                title: 'Clientes Devedores',
+                value: this.dashboard?.clientesDevedores ?? 0,
+                variant: 'danger'
+            },
 
-            this.criarCard(
-                'Baixo',
-                this.dashboard?.produtosComEstoqueBaixo ?? 0,
-                'warning'
-            )
+            {
+                title: 'Baixo',
+                value: this.dashboard?.produtosComEstoqueBaixo ?? 0,
+                variant: 'warning'
+            }
 
         ];
 
@@ -820,8 +620,7 @@ export class Dashboard implements OnInit {
 
     get pagamentoChartData() {
 
-        const pagamentos =
-            this.dashboard?.faturamentoPorPagamento ?? [];
+        const pagamentos = this.dashboard?.faturamentoPorPagamento ?? [];
 
         return {
 
@@ -855,12 +654,29 @@ export class Dashboard implements OnInit {
 
         };
 
-    }    
+    }
+
+    pagamentoChartOptions: ChartConfiguration['options'] = {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        plugins: {
+
+            legend: {
+
+                position: 'bottom'
+
+            }
+
+        }
+
+    };
 
     get topProdutosChartData() {
 
-        const produtos =
-            this.dashboard?.topProdutosVendidos ?? [];
+        const produtos = this.dashboard?.topProdutosVendidos ?? [];
 
         return {
 
@@ -873,8 +689,7 @@ export class Dashboard implements OnInit {
 
                 {
 
-                    label:
-                        'Quantidade Vendida',
+                    label: 'Quantidade Vendida',
 
                     data:
                         produtos.map(
@@ -882,8 +697,7 @@ export class Dashboard implements OnInit {
                                 produto.quantidade
                         ),
 
-                    backgroundColor:
-                        '#22c55e'
+                    backgroundColor: '#22c55e'
 
                 }
 
@@ -905,8 +719,7 @@ export class Dashboard implements OnInit {
 
     get fiadosChartData() {
 
-        const evolucao =
-            this.dashboard?.evolucaoFiados ?? [];
+        const evolucao = this.dashboard?.evolucaoFiados ?? [];
 
         return {
 
@@ -926,11 +739,9 @@ export class Dashboard implements OnInit {
                             item => item.total
                         ),
 
-                    borderColor:
-                        '#f59e0b',
+                    borderColor: '#f59e0b',
 
-                    backgroundColor:
-                        'rgba(245,158,11,0.25)',
+                    backgroundColor: 'rgba(245,158,11,0.25)',
 
                     fill: true,
 
@@ -958,8 +769,7 @@ export class Dashboard implements OnInit {
 
     get giroChartData() {
 
-        const produtos =
-            this.dashboard?.giroEstoque ?? [];
+        const produtos = this.dashboard?.giroEstoque ?? [];
 
         return {
 
@@ -979,8 +789,7 @@ export class Dashboard implements OnInit {
                             produto => produto.giro
                         ),
 
-                    backgroundColor:
-                        '#8b5cf6'
+                    backgroundColor: '#8b5cf6'
 
                 }
 
@@ -988,15 +797,25 @@ export class Dashboard implements OnInit {
 
         };
 
-    }    
+    }
 
-    get vendasFiltradas() {
-        return this.vendas.filter(
-            venda =>
-                this.estaNoPeriodo(
-                    new Date(venda.dataVenda)
-                )
+    giroChartOptions = {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        indexAxis: 'y' as const
+
+    };
+
+    get vendasFiltradas(): Venda[] {
+
+        return this.filtrarPorPeriodo(
+            this.vendas,
+            venda => venda.dataVenda
         );
+
     }
 
     get descricaoPeriodo(): string {
@@ -1016,6 +835,97 @@ export class Dashboard implements OnInit {
 
             default:
                 return 'Todos';
+        }
+    }
+
+    private carregarDashboard() {
+
+        this.dashboardService
+            .obterDashboard(
+                this.periodoSelecionado
+            )
+            .subscribe({
+
+                next: dashboard => {
+
+                    this.dashboard = dashboard;
+
+                    this.cdr.detectChanges();
+
+                }
+
+            });
+
+    }
+
+    private filtrarPorPeriodo<T>(
+        itens: T[],
+        obterData: (item: T) => string
+    ): T[] {
+
+        const hoje = new Date();
+
+        switch (this.periodoSelecionado) {
+
+            case 'hoje':
+                return itens.filter(
+                    item =>
+                        new Date(
+                            obterData(item)
+                        ).toDateString()
+                        === hoje.toDateString()
+                );
+
+            case '7dias':
+                const seteDias = new Date();
+
+                seteDias.setDate(
+                    seteDias.getDate() - 7
+                );
+
+                return itens.filter(
+                    item =>
+                        new Date(
+                            obterData(item)
+                        ) >= seteDias
+                );
+
+            case '30dias':
+                const trintaDias = new Date();
+
+                trintaDias.setDate(
+                    trintaDias.getDate() - 30
+                );
+
+                return itens.filter(
+                    item =>
+                        new Date(
+                            obterData(item)
+                        ) >= trintaDias
+                );
+
+            case 'mes':
+                return itens.filter(
+                    item => {
+
+                        const data =
+                            new Date(
+                                obterData(item)
+                            );
+
+                        return (
+                            data.getMonth()
+                            === hoje.getMonth()
+                            &&
+                            data.getFullYear()
+                            === hoje.getFullYear()
+                        );
+
+                    }
+                );
+
+            default:
+                return itens;
         }
     }
 

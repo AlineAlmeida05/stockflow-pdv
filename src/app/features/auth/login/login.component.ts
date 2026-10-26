@@ -1,5 +1,5 @@
-import { Observable, tap, finalize } from 'rxjs';
-import { Component } from '@angular/core';
+import { finalize } from 'rxjs';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
@@ -10,6 +10,8 @@ import { ActivatedRoute } from '@angular/router';
 import { TenantService } from '../../../core/services/tenant.service';
 import { OnInit } from '@angular/core';
 import { TenantContextService } from '../../../core/services/tenant-context.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Tenant } from '../../../core/models/tenant.model';
 
 @Component({
     selector: 'app-login',
@@ -34,13 +36,20 @@ export class LoginComponent implements OnInit {
 
     slogan = 'Controle total do seu negócio';
 
-    tenant: any = null;
+    tenant: Tenant | null = null;
 
     tenantNaoEncontrado = false;
+
+    private destroyRef = inject(DestroyRef);
 
     ngOnInit(): void {
 
         this.route.paramMap
+            .pipe(
+                takeUntilDestroyed(
+                    this.destroyRef
+                )
+            )
             .subscribe(() => {
 
                 this.carregarTenant();
@@ -110,8 +119,6 @@ export class LoginComponent implements OnInit {
 
                     this.loading = false;
 
-                    this.cdr.detectChanges();
-
                 })
             )
             .subscribe({
@@ -123,8 +130,6 @@ export class LoginComponent implements OnInit {
                             .setTenant(
                                 this.tenant
                             );
-
-                        this.cdr.detectChanges();
 
                     }
 
@@ -155,15 +160,13 @@ export class LoginComponent implements OnInit {
 
     alternarSenha(): void {
 
-        this.mostrarSenha =
-            !this.mostrarSenha;
+        this.mostrarSenha = !this.mostrarSenha;
 
     }
 
     get sloganExibicao(): string {
 
-        const sloganTenant =
-            this.tenant?.slogan?.trim();
+        const sloganTenant = this.tenant?.slogan?.trim();
 
         return sloganTenant || this.slogan;
 
@@ -177,12 +180,14 @@ export class LoginComponent implements OnInit {
 
         document.documentElement.style.setProperty(
             '--login-primary',
-            this.tenant.corPrimaria || 'var(--color-primary)'
+            this.tenant.corPrimaria
+            || 'var(--color-primary)'
         );
 
         document.documentElement.style.setProperty(
             '--login-secondary',
-            this.tenant.corSecundaria || 'var(--color-secondary)'
+            this.tenant.corSecundaria
+            || 'var(--color-secondary)'
         );
 
     }
@@ -201,9 +206,7 @@ export class LoginComponent implements OnInit {
 
         this.tenant = null;
 
-        this.slug =
-            this.route.snapshot.paramMap.get('slug')
-            ?? '';
+        this.slug = this.route.snapshot.paramMap.get('slug') ?? '';
 
         this.tenantService
             .buscarPorSlug(this.slug)
@@ -214,16 +217,12 @@ export class LoginComponent implements OnInit {
 
                         this.tenantNaoEncontrado = true;
 
-                        this.cdr.detectChanges();
-
                         return;
-                    }                    
+                    }
 
                     this.tenant = tenant;
 
                     this.aplicarTemaTenant();
-
-                    this.cdr.detectChanges();
 
                 },
 
@@ -236,8 +235,8 @@ export class LoginComponent implements OnInit {
                     }
                     if (erro.status === 0) {
 
-                        console.log(
-                            'Backend indisponível'
+                        this.alertService.error(
+                            'Não foi possível conectar ao servidor.'
                         );
 
                     }

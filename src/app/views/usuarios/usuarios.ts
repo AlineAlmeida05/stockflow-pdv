@@ -18,57 +18,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { UsuarioCreateRequest } from '../../core/requests/usuario-create-request';
 import { UsuarioUpdateRequest } from '../../core/requests/usuario-update-request';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
-import { AuthStateService } from '../../core/services/auth-state.service';
 
-
-const COLUNAS_USUARIOS: {
-    field: string;
-    header: string;
-    type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle';
-}[] = [
-        {
-            field: 'nome',
-            header: 'Nome'
-        },
-        {
-            field: 'perfil',
-            header: 'Perfil',
-            type: 'badge'
-        },
-        {
-            field: 'status',
-            header: 'Controle',
-            type: 'toggle'
-        }
-    ];
-
-const PERFIS_DISPONIVEIS: Record<string, string[]> = {
-    SUPER_ADMIN: [
-        'PROPRIETARIO',
-        'SOCIO',
-        'GERENTE',
-        'OPERADOR_CAIXA',
-        'ESTOQUISTA'
-    ],
-
-    PROPRIETARIO: [
-        'SOCIO',
-        'GERENTE',
-        'OPERADOR_CAIXA',
-        'ESTOQUISTA'
-    ],
-
-    SOCIO: [
-        'GERENTE',
-        'OPERADOR_CAIXA',
-        'ESTOQUISTA'
-    ],
-
-    GERENTE: [
-        'OPERADOR_CAIXA',
-        'ESTOQUISTA'
-    ]
-};
 @Component({
     selector: 'app-usuarios',
     standalone: true,
@@ -118,7 +68,27 @@ export class Usuarios implements OnInit {
 
     textoBusca = '';
 
-    colunasUsuarios = COLUNAS_USUARIOS;
+
+    colunasUsuarios: {
+        field: string;
+        header: string;
+        type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle';
+    }[] = [
+            {
+                field: 'nome',
+                header: 'Nome'
+            },
+            {
+                field: 'perfil',
+                header: 'Perfil',
+                type: 'badge'
+            },
+            {
+                field: 'status',
+                header: 'Controle',
+                type: 'toggle'
+            }
+        ];
 
     constructor(
         private usuarioService: UsuarioService,
@@ -126,8 +96,7 @@ export class Usuarios implements OnInit {
         private tenantService: TenantService,
         private authService: AuthService,
         private cdr: ChangeDetectorRef,
-        private confirmDialogService: ConfirmDialogService,
-        private authStateService: AuthStateService
+        private confirmDialogService: ConfirmDialogService
     ) { }
 
     ngOnInit(): void {
@@ -143,8 +112,8 @@ export class Usuarios implements OnInit {
     carregarUsuarios(): void {
 
         const usuario =
-            this.authStateService
-                .usuario
+            this.authService
+                .usuarioLogado();
 
         if (!usuario) {
             return;
@@ -204,34 +173,51 @@ export class Usuarios implements OnInit {
 
     }
 
-    private obterTenantSelecionado():
-        Tenant | undefined {
+    get usuariosTabela(): unknown[] {
 
-        if (this.ehSuperAdmin) {
+        return this.usuarios.map(
+            usuario => ({
 
-            return this.tenants.find(
-                tenant =>
-                    tenant.id ===
-                    this.tenantCadastroId
-            );
+                ...usuario,
 
-        }
+                status:
+                    usuario.ativo
+                        ? 'Ativo'
+                        : 'Inativo'
 
-        const usuarioLogado =
-            this.authStateService
-                .usuario
-
-        return this.tenants.find(
-            tenant =>
-                tenant.id ===
-                usuarioLogado?.tenantId
+            })
         );
 
     }
 
-    private validarFormulario(
-        tenant?: Tenant
-    ): boolean {
+    salvarUsuario(): void {
+
+
+        let tenant: Tenant | undefined;
+
+        if (this.ehSuperAdmin) {
+
+            tenant =
+                this.tenants.find(
+                    tenant =>
+                        tenant.id ===
+                        this.tenantCadastroId
+                );
+
+        } else {
+
+            const usuarioLogado =
+                this.authService
+                    .usuarioLogado();
+
+            tenant =
+                this.tenants.find(
+                    tenant =>
+                        tenant.id ===
+                        usuarioLogado?.tenantId
+                );
+
+        }
 
         if (!tenant) {
 
@@ -239,7 +225,8 @@ export class Usuarios implements OnInit {
                 'Selecione um tenant.'
             );
 
-            return false;
+            return;
+
         }
 
         if (!tenant.id) {
@@ -248,7 +235,8 @@ export class Usuarios implements OnInit {
                 'Tenant inválido.'
             );
 
-            return false;
+            return;
+
         }
 
         if (!this.novoNome.trim()) {
@@ -257,7 +245,8 @@ export class Usuarios implements OnInit {
                 'Informe o nome do usuário.'
             );
 
-            return false;
+            return;
+
         }
 
         if (!this.novoEmail.trim()) {
@@ -266,7 +255,7 @@ export class Usuarios implements OnInit {
                 'Informe o e-mail do usuário.'
             );
 
-            return false;
+            return;
         }
 
         if (
@@ -278,106 +267,82 @@ export class Usuarios implements OnInit {
                 'Informe a senha.'
             );
 
-            return false;
+            return;
+
         }
 
-        return true;
-    }
+        if (this.usuarioEmEdicao?.id) {
 
-    private montarRequestAtualizacao(
-        tenantId: string
-    ): UsuarioUpdateRequest {
+            this.salvando = true;
 
-        return {
-            nome: this.novoNome,
-            email: this.novoEmail,
-            senha: this.novaSenha,
-            perfil: this.novoPerfil,
-            ativo: this.novoAtivo,
-            tenantId
-        };
+            const loadingToast =
+                this.alertService.loading(
+                    'Atualizando usuário...'
+                );
 
-    }
+            const request: UsuarioUpdateRequest = {
 
-    private montarRequestCriacao(
-        tenantId: string
-    ): UsuarioCreateRequest {
+                nome: this.novoNome,
 
-        return {
-            nome: this.novoNome,
-            email: this.novoEmail,
-            senha: this.novaSenha,
-            perfil: this.novoPerfil,
-            tenantId
-        };
+                email: this.novoEmail,
 
-    }
+                senha: this.novaSenha,
 
-    private atualizarUsuario(
-        usuarioId: string,
-        tenantId: string
-    ): void {
+                perfil: this.novoPerfil,
 
-        this.salvando = true;
+                ativo: this.novoAtivo,
 
-        const loadingToast =
-            this.alertService.loading(
-                'Atualizando usuário...'
-            );
+                tenantId: tenant.id
 
-        const request =
-            this.montarRequestAtualizacao(
-                tenantId
-            );
+            };
 
-        this.usuarioService
-            .atualizar(
-                usuarioId,
-                request
-            )
-            .subscribe({
+            this.usuarioService
+                .atualizar(
+                    this.usuarioEmEdicao.id,
+                    request
+                )
 
-                next: () => {
+                .subscribe({
 
-                    this.salvando = false;
+                    next: () => {
 
-                    this.carregarUsuarios();
+                        this.salvando = false;
 
-                    this.limparFormulario();
+                        this.carregarUsuarios();
 
-                    this.cdr.detectChanges();
+                        this.limparFormulario();
 
-                    this.alertService.updateToast(
-                        loadingToast.id,
-                        'Usuário atualizado com sucesso.',
-                        'success'
-                    );
+                        this.cdr.detectChanges();
 
-                },
+                        this.alertService.updateToast(
+                            loadingToast.id,
+                            'Usuário atualizado com sucesso.',
+                            'success'
+                        );
 
-                error: erro => {
+                    },
 
-                    this.salvando = false;
+                    error: erro => {
 
-                    this.alertService.updateToast(
-                        loadingToast.id,
-                        'Erro ao atualizar usuário.',
-                        'error'
-                    );
+                        this.salvando = false;
 
-                    console.error(
-                        erro
-                    );
+                        this.alertService.updateToast(
+                            loadingToast.id,
+                            'Erro ao atualizar usuário.',
+                            'error'
+                        );
 
-                }
+                        console.error(
+                            erro
+                        );
 
-            });
+                    }
 
-    }
+                });
 
-    private criarUsuario(
-        tenantId: string
-    ): void {
+            return;
+
+        }
 
         this.salvando = true;
 
@@ -386,10 +351,15 @@ export class Usuarios implements OnInit {
                 'Criando usuário...'
             );
 
-        const request =
-            this.montarRequestCriacao(
-                tenantId
-            );
+        const request: UsuarioCreateRequest = {
+
+            nome: this.novoNome,
+            email: this.novoEmail,
+            senha: this.novaSenha,
+            perfil: this.novoPerfil,
+            tenantId: tenant.id
+
+        };
 
         this.usuarioService
             .salvar(request)
@@ -438,69 +408,12 @@ export class Usuarios implements OnInit {
 
     }
 
-    private montarRequestAlteracaoStatus(
-        usuario: Usuario
-    ): UsuarioUpdateRequest {
-
-        return {
-            nome: usuario.nome,
-            email: usuario.email,
-            senha: '',
-            perfil: usuario.perfil,
-            ativo: !usuario.ativo,
-            tenantId: usuario.tenantId!
-        };
-
-    }
-
-    private preencherFormularioUsuario(
-        usuario: Usuario
-    ): void {
-
-        this.usuarioEmEdicao = usuario;
-        this.novoNome = usuario.nome;
-        this.novoEmail = usuario.email;
-        this.novaSenha = '';
-        this.novoPerfil = usuario.perfil;
-        this.novoAtivo = usuario.ativo;
-        this.mostrarFormulario = true;
-        this.tenantCadastroId = usuario.tenantId ?? '';
-
-    }
-
-    salvarUsuario(): void {
-
-        const tenant = this.obterTenantSelecionado();
-
-        if (!this.validarFormulario(tenant)) {
-            return;
-        }
-
-        const tenantId = tenant!.id!;
-
-        if (this.usuarioEmEdicao?.id) {
-
-            this.atualizarUsuario(
-                this.usuarioEmEdicao.id,
-                tenantId
-            );
-
-            return;
-
-        }
-
-        this.criarUsuario(
-            tenantId
-        );
-
-    }
-
     limparFormulario(): void {
 
         this.novoNome = '';
         this.novoEmail = '';
         this.novaSenha = '';
-        this.novoPerfil = 'GERENTE';
+        this.novoPerfil = 'Gerente';
         this.novoAtivo = true;
         this.usuarioEmEdicao = null;
         this.modoEdicao = false;
@@ -515,13 +428,15 @@ export class Usuarios implements OnInit {
             usuario as Usuario;
 
         this.modoVisualizacao = false;
-
-        this.preencherFormularioUsuario(
-            usuarioSelecionado
-        );
-
+        this.usuarioEmEdicao = usuarioSelecionado;
+        this.novoNome = usuarioSelecionado.nome;
+        this.novoEmail = usuarioSelecionado.email;
+        this.novaSenha = '';
+        this.novoPerfil = usuarioSelecionado.perfil;
+        this.novoAtivo = usuarioSelecionado.ativo;
+        this.mostrarFormulario = true;
         this.modoEdicao = true;
-
+        this.tenantCadastroId = usuarioSelecionado.tenantId ?? '';
     }
 
     novoUsuario(): void {
@@ -537,6 +452,31 @@ export class Usuarios implements OnInit {
         this.modoEdicao = false;
         this.usuarioEmEdicao = null;
         this.limparFormulario();
+    }
+
+    get usuariosFiltrados(): unknown[] {
+
+        const filtro =
+            this.textoBusca
+                .toLowerCase()
+                .trim();
+
+        return this.usuariosTabela.filter(
+
+            usuario =>
+
+                !filtro ||
+
+                String(
+                    (usuario as any).nome
+                )
+                    .toLowerCase()
+                    .includes(
+                        filtro
+                    )
+
+        );
+
     }
 
     carregarTenants(): void {
@@ -606,6 +546,67 @@ export class Usuarios implements OnInit {
 
     }
 
+    get ehSuperAdmin(): boolean {
+
+        const usuario =
+            this.authService.usuarioLogado();
+
+        return usuario?.perfil ===
+            'SUPER_ADMIN';
+
+    }
+
+    get perfisDisponiveis(): string[] {
+
+        const perfil =
+            this.authService
+                .usuarioLogado()
+                ?.perfil;
+
+        switch (perfil) {
+
+            case 'SUPER_ADMIN':
+
+                return [
+                    'PROPRIETARIO',
+                    'Socio',
+                    'Gerente',
+                    'Operador_Caixa',
+                    'Estoquista'
+                ];
+
+            case 'PROPRIETARIO':
+
+                return [
+                    'Socio',
+                    'Gerente',
+                    'Operador_Caixa',
+                    'Estoquista'
+                ];
+
+            case 'Socio':
+
+                return [
+                    'Gerente',
+                    'Operador_Caixa',
+                    'Estoquista'
+                ];
+
+            case 'Gerente':
+
+                return [
+                    'Operador_Caixa',
+                    'Estoquista'
+                ];
+
+            default:
+
+                return [];
+
+        }
+
+    }
+
     visualizarUsuario(
         usuario: unknown
     ): void {
@@ -613,12 +614,15 @@ export class Usuarios implements OnInit {
         const usuarioSelecionado =
             usuario as Usuario;
 
-        this.preencherFormularioUsuario(
-            usuarioSelecionado
-        );
-
+        this.usuarioEmEdicao = usuarioSelecionado;
+        this.novoNome = usuarioSelecionado.nome;
+        this.novoEmail = usuarioSelecionado.email;
+        this.novaSenha = '';
+        this.novoPerfil = usuarioSelecionado.perfil;
+        this.novoAtivo = usuarioSelecionado.ativo;
+        this.mostrarFormulario = true;
         this.modoVisualizacao = true;
-
+        this.tenantCadastroId = usuarioSelecionado.tenantId ?? '';
     }
 
     obterNomeTenant(
@@ -692,10 +696,15 @@ export class Usuarios implements OnInit {
                             : 'Desativando'} usuário...`
                     );
 
-                const request =
-                    this.montarRequestAlteracaoStatus(
-                        usuario
-                    );
+                const request: UsuarioUpdateRequest = {
+
+                    nome: usuario.nome,
+                    email: usuario.email,
+                    senha: '',
+                    perfil: usuario.perfil,
+                    ativo: !usuario.ativo,
+                    tenantId: usuario.tenantId!
+                };
 
                 this.usuarioService
                     .atualizar(
@@ -707,6 +716,8 @@ export class Usuarios implements OnInit {
                         next: () => {
 
                             this.carregarUsuarios();
+
+                            this.cdr.detectChanges();
 
                             this.alertService.updateToast(
                                 loadingToast.id,
@@ -738,72 +749,6 @@ export class Usuarios implements OnInit {
         });
 
 
-
-    }
-
-    get usuariosTabela(): unknown[] {
-
-        return this.usuarios.map(
-            usuario => ({
-
-                ...usuario,
-
-                status:
-                    usuario.ativo
-                        ? 'Ativo'
-                        : 'Inativo'
-
-            })
-        );
-
-    }
-
-    get usuariosFiltrados(): unknown[] {
-
-        const filtro =
-            this.textoBusca
-                .toLowerCase()
-                .trim();
-
-        return this.usuariosTabela.filter(
-
-            usuario =>
-
-                !filtro ||
-
-                String(
-                    (usuario as any).nome
-                )
-                    .toLowerCase()
-                    .includes(
-                        filtro
-                    )
-
-        );
-
-    }
-
-    get ehSuperAdmin(): boolean {
-
-        const usuario =
-            this.authStateService
-                .usuario
-
-        return usuario?.perfil ===
-            'SUPER_ADMIN';
-
-    }
-
-    get perfisDisponiveis(): string[] {
-
-        const perfil =
-            this.authStateService
-                .usuario
-                ?.perfil;
-
-        return PERFIS_DISPONIVEIS[
-            perfil ?? ''
-        ] ?? [];
 
     }
 

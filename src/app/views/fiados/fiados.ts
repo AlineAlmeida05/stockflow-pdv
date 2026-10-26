@@ -238,8 +238,7 @@ export class Fiados implements OnInit {
 
                 next: pagamentos => {
 
-                    this.pagamentos =
-                        pagamentos;
+                    this.pagamentos = pagamentos;
 
                     this.cdr.detectChanges();
 
@@ -275,8 +274,7 @@ export class Fiados implements OnInit {
 
                 next: resumo => {
 
-                    this.clienteResumo =
-                        resumo;
+                    this.clienteResumo = resumo;
 
                     this.cdr.detectChanges();
 

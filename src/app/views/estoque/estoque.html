@@ -1,24 +1,31 @@
 <app-main-layout>
+
     <app-page-title
         title="Estoque"
         subtitle="Acompanhe os níveis de estoque e identifique produtos com baixo saldo.">
     </app-page-title>
 
     <app-toolbar>
+
         <div class="toolbar-field">
+
             <app-search-input
                 placeholder="Buscar produto..."
                 [(value)]="textoBusca">
             </app-search-input>
+
         </div>
 
         <div class="toolbar-field">
+
             <app-select-input
                 placeholder="Todos os níveis"
                 [(value)]="filtroStatus"
                 [options]="statusOptions">
             </app-select-input>
+
         </div>
+
     </app-toolbar>
 
     <div class="estoque-resumo">
@@ -33,6 +40,7 @@
                 [value]="totalProdutos"
                 variant="info">
             </app-stat-card>
+
         </div>
 
         <div
@@ -65,12 +73,15 @@
             class="estoque-card"
             [class.estoque-card--active]="filtroStatus === 'baixo'"
             (click)="selecionarFiltro('baixo')">
+
             <app-stat-card
                 title="Crítico"
                 [value]="totalBaixo"
                 variant="danger">
             </app-stat-card>
+
         </div>
+
     </div>
 
     @if (
@@ -88,10 +99,14 @@
     produtosFiltrados.length > 0
     ) {
     <div class="card">
+
         <app-data-table
             [columns]="colunasEstoque"
             [data]="produtosEstoque">
         </app-data-table>
+
     </div>
+
     }
+
 </app-main-layout>

@@ -10,8 +10,7 @@ import { DashboardResponse } from '../models/dashboard-response.model';
 })
 export class DashboardService {
 
-    private readonly apiUrl =
-        `${environment.apiUrl}/api/dashboard`;
+    private readonly apiUrl =  `${environment.apiUrl}/api/dashboard`;
 
     constructor(
         private http: HttpClient

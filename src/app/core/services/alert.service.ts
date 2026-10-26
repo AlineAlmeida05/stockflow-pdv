@@ -9,11 +9,9 @@ export class AlertService {
 
     private toasts: Toast[] = [];
 
-    private toastsSubject =
-        new BehaviorSubject<Toast[]>([]);
+    private toastsSubject = new BehaviorSubject<Toast[]>([]);
 
-    readonly toasts$ =
-        this.toastsSubject.asObservable();
+    readonly toasts$ = this.toastsSubject.asObservable();
 
     private nextId = 1;
 
@@ -31,8 +29,7 @@ export class AlertService {
 
             type,
 
-            autoClose:
-                type !== 'loading'
+            autoClose: type !== 'loading'
 
         };
 

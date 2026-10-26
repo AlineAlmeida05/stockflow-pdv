@@ -64,15 +64,14 @@
             [totalVendas]="totalVendas"
             [faturamentoTotal]="faturamentoTotal"
             [ticketMedio]="ticketMedio"
+            [formaPagamentoMaisUtilizada]="formaPagamentoMaisUtilizada"
             [topProdutosVendidos]="topProdutosVendidos"
             [evolucaoVendasPorDia]="evolucaoVendasPorDia"
             [vendasTabela]="vendasTabela"
             [colunasVendas]="colunasVendas"
             [faturamentoPorPagamento]="faturamentoPorPagamento"
             [formaPagamentoSelecionada]="formaPagamentoSelecionada"
-            (formaPagamentoSelecionadaChange)="alterarFormaPagamento($event)"
-            [periodoSelecionado]="periodoSelecionado"
-            (periodoSelecionadoChange)="alterarPeriodo($event)">
+            (formaPagamentoSelecionadaChange)="formaPagamentoSelecionada = $event">
         </app-report-vendas>
 
         }
@@ -107,7 +106,8 @@
             [totalPendentes]="totalPendentes"
             [totalPagos]="totalPagos"
             [clientesDevedores]="clientesDevedores"
-            [maioresDevedores]="maioresDevedores"            
+            [totalParciais]="totalParciais"
+            [maioresDevedores]="maioresDevedores"
             [colunasFiados]="colunasFiados"
             [fiadosTabela]="fiadosTabela">
         </app-report-fiados>

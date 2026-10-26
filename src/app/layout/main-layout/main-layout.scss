@@ -24,7 +24,7 @@
   .sidebar-backdrop {
     display: block;
     position: fixed;
-    top: 130px;
+    top: var(--header-height);
     left: 240px;
     right: 0;
     bottom: 0;

@@ -15,12 +15,15 @@ export class DataTable {
 
     @Input()
     columns: {
-        field: string;
-        header: string;
-        type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle' | 'progress';
-        align?: 'left' | 'center' | 'right';
-        badgeVariantField?: string;
-    }[] = [];
+    field: string;
+    header: string;
+    type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle' | 'progress';
+    align?: 'left' | 'center' | 'right';
+    badgeVariantField?: string;
+    toggleActiveValue?: string;
+    toggleActiveLabel?: string;
+    toggleInactiveLabel?: string;
+}[] = [];
 
     @Input()
     data: unknown[] = [];
@@ -51,7 +54,7 @@ export class DataTable {
     clickableRows = false;
 
     @Output()
-    toggle = new EventEmitter
+    toggle = new EventEmitter<any>();
 
     obterVariantStatus(
         status: string
@@ -59,14 +62,14 @@ export class DataTable {
 
         switch (status) {
 
-            case 'GERENTE':
+            case 'Gerente':
             case 'Ativo':
                 return 'success';
 
-            case 'OPERADOR_CAIXA':
+            case 'Operador_Caixa':
                 return 'warning';
 
-            case 'ESTOQUISTA':
+            case 'Estoquista':
             case 'Inativo':
                 return 'danger';
 
@@ -81,8 +84,7 @@ export class DataTable {
         value: unknown
     ): string {
 
-        const numberValue =
-            Number(value);
+        const numberValue = Number(value);
 
         if (isNaN(numberValue)) {
 
@@ -169,10 +171,9 @@ export class DataTable {
         value: string
     ): string {
 
-        const percentual =
-            Number(
-                value.replace('%', '')
-            ) || 0;
+        const percentual = Number(
+            value.replace('%', '')
+        ) || 0;
 
         if (percentual <= 25) {
             return 'progress-danger';

@@ -12,6 +12,13 @@ import { ConfirmDialogService } from '../../core/services/confirm-dialog.service
 import { AlertService } from '../../core/services/alert.service';
 import { ChangeDetectorRef } from '@angular/core';
 
+
+type ProdutoTabela =
+  Omit<Produto, 'precoPromocional'> & {
+    status: string;
+    precoPromocional: number | '-';
+  };
+
 @Component({
   selector: 'app-produtos',
   standalone: true,
@@ -60,8 +67,6 @@ export class Produtos implements OnInit {
 
   salvandoProduto = false;
 
-  produtoSelecionado: Produto | null = null;
-
   colunasProdutos: {
     field: string;
     header: string;
@@ -99,7 +104,9 @@ export class Produtos implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
     this.carregarProdutos();
+
   }
 
   carregarProdutos(): void {
@@ -110,7 +117,7 @@ export class Produtos implements OnInit {
 
         next: produtos => {
 
-          this.produtos = [...produtos];
+          this.produtos = produtos;
 
           this.cdr.detectChanges();
 
@@ -172,9 +179,7 @@ export class Produtos implements OnInit {
       this.salvandoProduto = true;
 
       this.alertService.info(
-        this.produtoEditandoId
-          ? 'Atualizando produto...'
-          : 'Cadastrando produto...'
+        'Atualizando produto...'
       );
 
       this.produtoService
@@ -194,26 +199,15 @@ export class Produtos implements OnInit {
 
           next: () => {
 
-            this.salvandoProduto = false;
-
-            this.limparFormulario();
-
-            this.carregarProdutos();
-
-            this.cdr.detectChanges();
-
-            this.alertService.success(
+            this.finalizarSucesso(
               'Produto atualizado com sucesso.'
             );
 
           },
           error: erro => {
 
-            this.salvandoProduto = false;
-
-            console.error(erro);
-
-            this.alertService.error(
+            this.finalizarErro(
+              erro,
               'Erro ao atualizar produto.'
             );
 
@@ -255,27 +249,16 @@ export class Produtos implements OnInit {
 
           next: () => {
 
-            this.salvandoProduto = false;
-
-            this.limparFormulario();
-
-            this.carregarProdutos();
-
-            this.cdr.detectChanges();
-
-            this.alertService.success(
-              'Produto cadastrado com sucesso.'
+            this.finalizarSucesso(
+              'Produto atualizado com sucesso.'
             );
 
           },
           error: erro => {
 
-            this.salvandoProduto = false;
-
-            console.error(erro);
-
-            this.alertService.error(
-              'Erro ao salvar produto.'
+            this.finalizarErro(
+              erro,
+              'Erro ao atualizar produto.'
             );
 
           }
@@ -283,16 +266,6 @@ export class Produtos implements OnInit {
         });
 
     }
-
-    this.nome = '';
-    this.categoria = '';
-    this.codigoBarras = '';
-    this.precoVenda = 0;
-    this.estoqueMinimo = 0;
-    this.produtoEditandoId = null;
-    this.estoqueAtual = 0;
-    this.dataCadastro = '';
-    this.mostrarFormulario = false;
 
   }
 
@@ -314,8 +287,7 @@ export class Produtos implements OnInit {
 
       title: 'Inativar Produto',
 
-      message:
-        'Deseja realmente inativar este produto? O histórico será preservado.',
+      message: 'Deseja realmente inativar este produto? O histórico será preservado.',
 
       type: 'warning',
 
@@ -371,7 +343,7 @@ export class Produtos implements OnInit {
 
   }
 
-  get produtosTabela(): unknown[] {
+  get produtosTabela(): ProdutoTabela[] {
 
     return this.produtosFiltrados.map(
       produto => ({
@@ -396,41 +368,19 @@ export class Produtos implements OnInit {
 
   novoProduto(): void {
 
+    this.limparFormulario();
+
     this.modoVisualizacao = false;
 
     this.mostrarFormulario = true;
-
-    this.produtoEditandoId = null;
-
-    this.nome = '';
-
-    this.categoria = '';
-
-    this.codigoBarras = '';
-
-    this.precoVenda = 0;
-
-    this.estoqueMinimo = 0;
 
   }
 
   cancelarEdicao(): void {
 
+    this.limparFormulario();
+
     this.modoVisualizacao = false;
-
-    this.mostrarFormulario = false;
-
-    this.produtoEditandoId = null;
-
-    this.nome = '';
-
-    this.categoria = '';
-
-    this.codigoBarras = '';
-
-    this.precoVenda = 0;
-
-    this.estoqueMinimo = 0;
 
   }
 
@@ -452,8 +402,7 @@ export class Produtos implements OnInit {
 
       title: 'Reativar Produto',
 
-      message:
-        'Deseja realmente reativar este produto?',
+      message: 'Deseja realmente reativar este produto?',
 
       type: 'info',
 
@@ -498,25 +447,10 @@ export class Produtos implements OnInit {
     this.codigoBarras = '';
     this.precoVenda = 0;
     this.estoqueMinimo = 0;
-
     this.produtoEditandoId = null;
-
     this.estoqueAtual = 0;
-
     this.dataCadastro = '';
-
     this.mostrarFormulario = false;
-
-  }
-
-  produtoDeleteIcon(
-    produto: Produto
-  ): string {
-
-    return produto.ativo
-      ? '⏸️'
-      : '▶️';
-
   }
 
   visualizarProduto(
@@ -526,35 +460,25 @@ export class Produtos implements OnInit {
     const produtoSelecionado =
       produto as Produto;
 
-    this.produtoEditandoId =
-      produtoSelecionado.id;
+    this.produtoEditandoId = produtoSelecionado.id;
 
-    this.nome =
-      produtoSelecionado.nome;
+    this.nome = produtoSelecionado.nome;
 
-    this.categoria =
-      produtoSelecionado.categoria;
+    this.categoria = produtoSelecionado.categoria;
 
-    this.codigo =
-      produtoSelecionado.codigo ?? '';
+    this.codigo = produtoSelecionado.codigo ?? '';
 
-    this.codigoBarras =
-      produtoSelecionado.codigoBarras;
+    this.codigoBarras = produtoSelecionado.codigoBarras;
 
-    this.precoVenda =
-      produtoSelecionado.precoVenda;
+    this.precoVenda = produtoSelecionado.precoVenda;
 
-    this.estoqueAtual =
-      produtoSelecionado.estoqueAtual;
+    this.estoqueAtual = produtoSelecionado.estoqueAtual;
 
-    this.estoqueMinimo =
-      produtoSelecionado.estoqueMinimo;
+    this.estoqueMinimo = produtoSelecionado.estoqueMinimo;
 
-    this.produtoAtivo =
-      produtoSelecionado.ativo;
+    this.produtoAtivo = produtoSelecionado.ativo;
 
-    this.dataCadastro =
-      produtoSelecionado.dataCadastro;
+    this.dataCadastro = produtoSelecionado.dataCadastro;
 
     this.mostrarFormulario = true;
 
@@ -673,6 +597,35 @@ export class Produtos implements OnInit {
       }
 
     });
+
+  }
+
+  private finalizarSucesso(
+    mensagem: string
+  ): void {
+
+    this.salvandoProduto = false;
+
+    this.limparFormulario();
+
+    this.carregarProdutos();
+
+    this.cdr.detectChanges();
+
+    this.alertService.success(mensagem);
+
+  }
+
+  private finalizarErro(
+    erro: unknown,
+    mensagem: string
+  ): void {
+
+    this.salvandoProduto = false;
+
+    console.error(erro);
+
+    this.alertService.error(mensagem);
 
   }
 }

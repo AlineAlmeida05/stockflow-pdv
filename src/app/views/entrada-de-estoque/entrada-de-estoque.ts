@@ -17,6 +17,10 @@ import { SmartProductSearch } from '../../shared/components/smart-product-search
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 import { MovimentacaoEstoqueRequest } from '../../core/models/movimentacao-estoque-request.model';
 
+type ProdutoTabela = Produto & {
+    statusEstoque: string;
+};
+
 @Component({
     selector: 'app-entrada-de-estoque',
     standalone: true,
@@ -138,8 +142,11 @@ export class EntradaDeEstoque implements OnInit {
     ) { }
 
     ngOnInit(): void {
+
         this.carregarProdutos();
+
         this.carregarMovimentacoes();
+
     }
 
     carregarProdutos(): void {
@@ -182,9 +189,7 @@ export class EntradaDeEstoque implements OnInit {
 
         }
 
-        const quantidade =
-
-            this.quantidade ?? 0;
+        const quantidade = this.quantidade ?? 0;
 
         if (
             !this.quantidade ||
@@ -199,9 +204,7 @@ export class EntradaDeEstoque implements OnInit {
 
         }
 
-        const precoCompra =
-
-            this.precoCompra ?? 0;
+        const precoCompra = this.precoCompra ?? 0;
 
         if (
             !this.precoCompra ||
@@ -216,10 +219,9 @@ export class EntradaDeEstoque implements OnInit {
 
         }
 
-        const produto =
-            this.produtos.find(
-                p => p.id === this.produtoSelecionadoId
-            );
+        const produto = this.produtos.find(
+            p => p.id === this.produtoSelecionadoId
+        );
 
         if (!produto) {
             return;
@@ -240,8 +242,7 @@ export class EntradaDeEstoque implements OnInit {
 
                 title: 'Confirmar Entrada',
 
-                message:
-                    `Confirma a entrada de ${quantidade} unidades do produto "${produto.nome}"?`,
+                message: `Confirma a entrada de ${quantidade} unidades do produto "${produto.nome}"?`,
 
                 type: 'warning',
 
@@ -287,75 +288,29 @@ export class EntradaDeEstoque implements OnInit {
 
     }
 
-    get produtosTabela(): unknown[] {
+    get produtosTabela(): ProdutoTabela[] {
 
         return this.produtosFiltrados.map(
             produto => ({
-
                 ...produto,
 
                 statusEstoque:
-                    produto.estoqueAtual === 0
-
-                        ? 'Sem Estoque'
-
-                        : produto.estoqueAtual <=
-                            produto.estoqueMinimo
-
-                            ? 'Crítico'
-
-                            : produto.estoqueAtual <=
-                                produto.estoqueMinimo * 2
-
-                                ? 'Atenção'
-
-                                : 'Em Estoque',
-
-
+                    this.obterDescricaoStatusEstoque(
+                        produto
+                    ),
             })
-
         );
 
-
     }
 
-    get produtoOptions() {
-
-        return [
-
-            {
-                value: '',
-                label: 'Selecione um produto'
-            },
-
-            ...this.produtos.map(
-                produto => ({
-                    value: produto.id,
-                    label: produto.nome
-                })
-            )
-
-        ];
-
-    }
 
     selecionarProduto(
         produto: Produto
     ): void {
 
-        this.produtoSelecionadoId =
-            produto.id;
+        this.produtoSelecionadoId = produto.id;
 
-        this.produtoSelecionado =
-            produto;
-
-    }
-
-    obterNomeProdutoSelecionado(): string {
-
-        return this.produtos.find(
-            p => p.id === this.produtoSelecionadoId
-        )?.nome ?? '';
+        this.produtoSelecionado = produto;
 
     }
 
@@ -369,8 +324,9 @@ export class EntradaDeEstoque implements OnInit {
 
         return this.produtosFiltrados.filter(
             produto =>
-                produto.estoqueAtual >
-                produto.estoqueMinimo * 2
+                this.obterStatusEstoque(
+                    produto
+                ) === 'normal'
         ).length;
 
     }
@@ -379,10 +335,9 @@ export class EntradaDeEstoque implements OnInit {
 
         return this.produtosFiltrados.filter(
             produto =>
-                produto.estoqueAtual >
-                produto.estoqueMinimo &&
-                produto.estoqueAtual <=
-                produto.estoqueMinimo * 2
+                this.obterStatusEstoque(
+                    produto
+                ) === 'atencao'
         ).length;
 
     }
@@ -391,14 +346,14 @@ export class EntradaDeEstoque implements OnInit {
 
         return this.produtosFiltrados.filter(
             produto =>
-                produto.estoqueAtual > 0 &&
-                produto.estoqueAtual <=
-                produto.estoqueMinimo
+                this.obterStatusEstoque(
+                    produto
+                ) === 'critico'
         ).length;
 
     }
 
-    get movimentacoesRecentes(): unknown[] {
+    get movimentacoesRecentes(): MovimentacaoEstoque[] {
 
         return this.movimentacoes
             .filter(
@@ -422,7 +377,9 @@ export class EntradaDeEstoque implements OnInit {
 
         return this.produtosFiltrados.filter(
             produto =>
-                produto.estoqueAtual === 0
+                this.obterStatusEstoque(
+                    produto
+                ) === 'sem-estoque'
         ).length;
 
     }
@@ -537,14 +494,11 @@ export class EntradaDeEstoque implements OnInit {
         produto: unknown
     ): void {
 
-        const produtoSelecionado =
-            produto as Produto;
+        const produtoSelecionado = produto as Produto;
 
-        this.produtoSelecionadoId =
-            produtoSelecionado.id;
+        this.produtoSelecionadoId = produtoSelecionado.id;
 
-        this.produtoSelecionado =
-            produtoSelecionado;
+        this.produtoSelecionado = produtoSelecionado;
 
         setTimeout(() => {
 
@@ -581,6 +535,76 @@ export class EntradaDeEstoque implements OnInit {
     cancelar(): void {
 
         this.limparFormulario();
+
+    }
+
+    rowClassFn = (row: unknown): string => {
+
+        const produto = row as ProdutoTabela;
+
+        return (
+            produto.statusEstoque === 'Crítico' ||
+            produto.statusEstoque === 'Sem Estoque'
+        )
+            ? 'table-row-critico'
+            : '';
+    };
+
+    private obterStatusEstoque(
+        produto: Produto
+    ):
+        'normal'
+        | 'atencao'
+        | 'critico'
+        | 'sem-estoque' {
+
+        if (
+            produto.estoqueAtual === 0
+        ) {
+            return 'sem-estoque';
+        }
+
+        if (
+            produto.estoqueAtual <=
+            produto.estoqueMinimo
+        ) {
+            return 'critico';
+        }
+
+        if (
+            produto.estoqueAtual <=
+            produto.estoqueMinimo * 2
+        ) {
+            return 'atencao';
+        }
+
+        return 'normal';
+
+    }
+
+    obterDescricaoStatusEstoque(
+        produto: Produto
+    ): string {
+
+        switch (
+        this.obterStatusEstoque(
+            produto
+        )
+        ) {
+
+            case 'sem-estoque':
+                return 'Sem Estoque';
+
+            case 'critico':
+                return 'Crítico';
+
+            case 'atencao':
+                return 'Atenção';
+
+            default:
+                return 'Em Estoque';
+
+        }
 
     }
 }

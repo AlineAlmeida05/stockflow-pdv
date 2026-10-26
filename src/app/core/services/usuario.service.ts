@@ -11,8 +11,7 @@ import { UsuarioUpdateRequest } from '../requests/usuario-update-request';
 })
 export class UsuarioService {
 
-    private readonly apiUrl =
-        `${environment.apiUrl}/api/usuarios`;
+    private readonly apiUrl = `${environment.apiUrl}/api/usuarios`;
 
     constructor(
         private http: HttpClient

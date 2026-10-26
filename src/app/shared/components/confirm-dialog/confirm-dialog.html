@@ -9,6 +9,9 @@ as dialog
 
     <div
         class="dialog"
+        role="dialog"
+        aria-modal="true"
+        [attr.aria-labelledby]="'dialog-title'"
         (click)="$event.stopPropagation()">
 
         <div
@@ -19,7 +22,7 @@ as dialog
                 {{ dialogIcon }}
             </span>
 
-            <h2>
+            <h2 id="dialog-title">
                 {{ dialog.title }}
             </h2>
 

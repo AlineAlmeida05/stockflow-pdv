@@ -13,6 +13,10 @@ import { AlertService } from '../../core/services/alert.service';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 import { ExpandableCard } from '../../shared/components/expandable-card/expandable-card';
 import { ChangeDetectorRef } from '@angular/core';
+import { FORMA_PAGAMENTO_ICONS, FORMA_PAGAMENTO_OPTIONS, FORMA_PAGAMENTO_PADRAO, FormaPagamentoTela } from '../../core/models/forma-pagamento.model';
+import { VENDA_STATUS_LABELS, VendaStatus } from '../../core/models/venda-status.model';
+import { FormaPagamento } from '../../core/models/venda-request.model';
+import { HistoricoCard } from '../../core/models/historico-card.model';
 
 @Component({
     selector: 'app-historico-de-vendas',
@@ -48,34 +52,14 @@ export class HistoricoDeVendas
 
     motivoCancelamento = '';
 
-    filtroStatus = '';
+    filtroStatus: VendaStatus | '' = '';
 
     opcoesPagamento = [
         {
             value: '',
             label: 'Todas'
         },
-        {
-            value: 'pix',
-            label: 'PIX'
-        },
-        {
-            value: 'dinheiro',
-            label: 'Dinheiro'
-        },
-        {
-            value: 'debito',
-            label: 'Débito'
-        },
-        {
-            value: 'credito',
-            label: 'Crédito'
-        },
-        {
-            value: 'fiado',
-            label: 'Fiado'
-        }
-
+        ...FORMA_PAGAMENTO_OPTIONS
     ];
 
     opcoesStatus = [
@@ -110,12 +94,10 @@ export class HistoricoDeVendas
 
         return this.vendas.filter(venda => {
 
-            const pagamentoOk =
-                !this.filtroPagamento ||
+            const pagamentoOk = !this.filtroPagamento ||
                 venda.formaPagamento === this.filtroPagamento;
 
-            const statusOk =
-                !this.filtroStatus ||
+            const statusOk = !this.filtroStatus ||
                 venda.status === this.filtroStatus;
 
             return pagamentoOk && statusOk;
@@ -182,59 +164,14 @@ export class HistoricoDeVendas
         venda: Venda
     ): void {
 
-        this.vendaService
-            .buscarPorId(venda.id)
-            .subscribe({
-
-                next: vendaDetalhada => {
-
-                    this.vendaSelecionada = vendaDetalhada;
-
-                    setTimeout(() => {
-
-                        document
-                            .querySelector(
-                                '.detalhes-panel'
-                            )
-                            ?.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-
-                    });
-
-                    this.mostrarCancelamento = false;
-
-                    this.motivoCancelamento = '';
-
-                },
-
-                error: erro => {
-
-                    console.error(
-                        erro
-                    );
-
-                    this.alertService.error(
-                        'Erro ao carregar detalhes da venda.'
-                    );
-
-                }
-
-            });
-
+        this.carregarDetalhesVenda(
+            venda.id
+        );
     }
 
     executarCancelamento(): void {
 
-        if (
-            !this.motivoCancelamento.trim()
-        ) {
-
-            this.alertService.warning(
-                'Informe o motivo do cancelamento.'
-            );
-
+        if (!this.validarCancelamento()) {
             return;
         }
 
@@ -257,16 +194,9 @@ export class HistoricoDeVendas
 
                     this.carregarVendas();
 
-                    this.vendaSelecionada = {
-                        ...this.vendaSelecionada!,
-                        status: 'cancelada',
-                        motivoCancelamento:
-                            this.motivoCancelamento
-                    };
+                    this.atualizarVendaCancelada();
 
-                    this.mostrarCancelamento = false;
-
-                    this.motivoCancelamento = '';
+                    this.limparCancelamento();
 
                 },
 
@@ -287,15 +217,8 @@ export class HistoricoDeVendas
 
     }
 
-    get cardsHistorico(): {
-        title: string;
-        value: string | number;
-        variant:
-        | 'info'
-        | 'success'
-        | 'warning'
-        | 'danger';
-    }[] {
+    get cardsHistorico():
+        HistoricoCard[] {
 
         return [
 
@@ -351,7 +274,7 @@ export class HistoricoDeVendas
     }
 
     obterVariantStatus(
-        status: string
+        status: VendaStatus
     ): 'success' | 'danger' {
 
         return status === 'cancelada'
@@ -366,12 +289,7 @@ export class HistoricoDeVendas
             return;
         }
 
-        if (!this.motivoCancelamento.trim()) {
-
-            this.alertService.warning(
-                'Informe o motivo do cancelamento.'
-            );
-
+        if (!this.validarCancelamento()) {
             return;
         }
 
@@ -379,8 +297,8 @@ export class HistoricoDeVendas
 
             title: 'Cancelar Venda',
 
-            message:
-                `Deseja realmente cancelar a venda de ${this.vendaSelecionada.valorTotal.toLocaleString(
+            message: `Deseja realmente cancelar a venda de ${this.vendaSelecionada.valorTotal
+                .toLocaleString(
                     'pt-BR',
                     {
                         style: 'currency',
@@ -403,13 +321,12 @@ export class HistoricoDeVendas
     }
 
     obterTextoStatus(
-        status: string
+        status: VendaStatus
     ): string {
 
-        return status === 'cancelada'
-            ? 'Cancelada'
-            : 'Finalizada';
-
+        return VENDA_STATUS_LABELS[
+            status
+        ];
     }
 
     carregarVendas(): void {
@@ -458,48 +375,111 @@ export class HistoricoDeVendas
     }
 
     obterIconePagamento(
-        formaPagamento: string
+        formaPagamento: FormaPagamento | FormaPagamentoTela
     ): string {
 
-        switch (formaPagamento) {
-
-            case 'pix':
-                return '📱';
-
-            case 'dinheiro':
-                return '💵';
-
-            case 'debito':
-            case 'credito':
-                return '💳';
-
-            case 'fiado':
-                return '📒';
-
-            default:
-                return '';
-
+        if (formaPagamento === FORMA_PAGAMENTO_PADRAO) {
+            return '';
         }
 
+        return FORMA_PAGAMENTO_ICONS[
+            formaPagamento
+        ];
     }
 
     podeCancelarVenda(
         venda: Venda
     ): boolean {
 
-        const dataVenda =
-            new Date(venda.dataVenda);
+        const dataVenda = new Date(venda.dataVenda);
 
-        const agora =
-            new Date();
+        const agora = new Date();
 
-        const limite =
-            24 * 60 * 60 * 1000;
+        const limite = 24 * 60 * 60 * 1000;
 
         return (
             agora.getTime() -
             dataVenda.getTime()
         ) <= limite;
 
+    }
+
+    private limparCancelamento(): void {
+
+        this.mostrarCancelamento = false;
+
+        this.motivoCancelamento = '';
+    }
+
+    private validarCancelamento(): boolean {
+
+        if (!this.motivoCancelamento.trim()) {
+
+            this.alertService.warning(
+                'Informe o motivo do cancelamento.'
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private carregarDetalhesVenda(
+        vendaId: string
+    ): void {
+
+        this.vendaService
+            .buscarPorId(vendaId)
+            .subscribe({
+
+                next: vendaDetalhada => {
+
+                    this.vendaSelecionada = vendaDetalhada;
+
+                    setTimeout(() => {
+
+                        document
+                            .querySelector(
+                                '.detalhes-panel'
+                            )
+                            ?.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+
+                    });
+
+                    this.limparCancelamento();
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        erro
+                    );
+
+                    this.alertService.error(
+                        'Erro ao carregar detalhes da venda.'
+                    );
+
+                }
+
+            });
+    }
+
+    private atualizarVendaCancelada(): void {
+
+        if (!this.vendaSelecionada) {
+            return;
+        }
+
+        this.vendaSelecionada = {
+            ...this.vendaSelecionada,
+            status: 'cancelada',
+            motivoCancelamento:
+                this.motivoCancelamento
+        };
     }
 }

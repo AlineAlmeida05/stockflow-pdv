@@ -29,8 +29,7 @@ export class ConfirmDialogService {
             ConfirmDialogData | null
         >(null);
 
-    dialog$ =
-        this.dialogSubject.asObservable();
+    dialog$ = this.dialogSubject.asObservable();
 
     open(
         dialog: ConfirmDialogData

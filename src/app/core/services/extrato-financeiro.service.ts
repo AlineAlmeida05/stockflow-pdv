@@ -10,11 +10,9 @@ import { IndicadoresExtrato } from '../models/indicadores-extrato.model';
 })
 export class ExtratoFinanceiroService {
 
-    private readonly http =
-        inject(HttpClient);
+    private readonly http = inject(HttpClient);
 
-    private readonly apiUrl =
-        `${environment.apiUrl}/api/extrato-financeiro`;
+    private readonly apiUrl = `${environment.apiUrl}/api/extrato-financeiro`;
 
     listar():
         Observable<

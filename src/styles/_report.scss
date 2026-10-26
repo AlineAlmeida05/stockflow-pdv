@@ -1,0 +1,112 @@
+.indicador-clickable {
+    cursor: pointer;
+}
+
+.indicadores {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.resumo-clickable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.resumo-clickable h2 {
+    font-size: 1.3em;
+}
+.resumo-clickable:hover {
+    transform: translateY(-2px);
+}
+
+.resumo-clickable.active {
+    border: 2px solid var(--color-primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.report-detail {
+    background: var(--color-white);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.report-detail h2 {
+    margin-bottom: 16px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.pagination-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.pagination-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.pagination-info {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.pagination-page {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.btn-pagination {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    background: white;
+    cursor: pointer;
+}
+
+.btn-pagination:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .pagination {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pagination-left,
+    .pagination-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .export-button {
+        flex: 1;
+    }
+
+    .resumo-clickable h2 {
+        font-size: 1.1em;
+    }
+}

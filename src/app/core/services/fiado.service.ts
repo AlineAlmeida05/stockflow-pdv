@@ -12,11 +12,9 @@ import { Fiado } from '../models/fiado.model';
 })
 export class FiadoService {
 
-    private readonly http =
-        inject(HttpClient);
+    private readonly http = inject(HttpClient);
 
-    private readonly apiUrl =
-        `${environment.apiUrl}/api/fiados`;
+    private readonly apiUrl = `${environment.apiUrl}/api/fiados`;
 
     listar(): Observable<Fiado[]> {
 

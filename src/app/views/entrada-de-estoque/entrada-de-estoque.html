@@ -62,17 +62,7 @@
                         <div>
                             Status:
                             <strong>
-                                {{
-                                produtoSelecionado.estoqueAtual === 0
-                                ? 'Sem Estoque'
-                                : produtoSelecionado.estoqueAtual <=
-                                produtoSelecionado.estoqueMinimo
-                                ? 'Crítico'
-                                : produtoSelecionado.estoqueAtual <=
-                                produtoSelecionado.estoqueMinimo * 2
-                                ? 'Atenção'
-                                : 'Em Estoque'
-                                }}
+                                {{ obterDescricaoStatusEstoque( produtoSelecionado)}}
                             </strong>
                         </div>
 

@@ -11,11 +11,9 @@ import { environment } from '../../../environments/environment';
 })
 export class EmpresaService {
 
-    private readonly http =
-        inject(HttpClient);
+    private readonly http = inject(HttpClient);
 
-    private readonly apiUrl =
-        `${environment.apiUrl}/api/empresa`;
+    private readonly apiUrl = `${environment.apiUrl}/api/empresa`;
 
     obter(): Observable<Empresa> {
 

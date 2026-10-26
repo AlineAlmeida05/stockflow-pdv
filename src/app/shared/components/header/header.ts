@@ -1,21 +1,15 @@
-import { Component, EventEmitter, Output, HostListener, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Output, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { TenantContextService } from '../../../core/services/tenant-context.service';
 import { BRANDING_CONFIG } from '../../../config/branding.config';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FormBuilder } from '@angular/forms';
-import { FormGroup } from '@angular/forms';
-import { Validators } from '@angular/forms';
-import { AlertService } from '../../../core/services/alert.service';
-import { AuthStateService } from '../../../core/services/auth-state.service';
-
+import { AlterarSenhaModal } from '../alterar-senha-modal/alterar-senha-modal';
 
 @Component({
     selector: 'app-header',
     standalone: true,
     imports: [
-        ReactiveFormsModule
+        AlterarSenhaModal
     ],
     templateUrl: './header.html',
     styleUrl: './header.scss'
@@ -25,13 +19,12 @@ export class Header {
     @Output()
     toggleMenu = new EventEmitter<void>();
 
+    @ViewChild('profileMenu')
+    profileMenu?: ElementRef;
+
     menuPerfilAberto = false;
 
     modalAlterarSenhaAberto = false;
-
-    formAlterarSenha!: FormGroup;
-
-    salvandoSenha = false;
 
     branding = BRANDING_CONFIG;
 
@@ -39,31 +32,7 @@ export class Header {
         public tenantContextService: TenantContextService,
         private authService: AuthService,
         private router: Router,
-        private fb: FormBuilder,
-        private alertService: AlertService,
-        private authStateService: AuthStateService,
-        private cdr: ChangeDetectorRef
     ) {
-        this.formAlterarSenha =
-            this.fb.group({
-
-                senhaAtual: [
-                    '',
-                    Validators.required
-                ],
-
-                novaSenha: [
-                    '',
-                    Validators.required
-                ],
-
-                confirmarSenha: [
-                    '',
-                    Validators.required
-                ]
-
-            });
-
     }
 
     get tenantAtual() {
@@ -89,43 +58,11 @@ export class Header {
 
     sair(): void {
 
-        this.authService
-            .logout()
-            .subscribe({
+        this.authService.logout();
 
-                next: () => {
-
-                    localStorage.removeItem(
-                        'token'
-                    );
-
-                    this.cdr.detectChanges();
-
-                    this.authStateService
-                        .limpar();
-
-                    this.router.navigate([
-                        '/login'
-                    ]);
-
-                },
-
-                error: () => {
-
-                    localStorage.removeItem(
-                        'token'
-                    );
-
-                    this.authStateService
-                        .limpar();
-
-                    this.router.navigate([
-                        '/login'
-                    ]);
-
-                }
-
-            });
+        this.router.navigate([
+            '/login'
+        ]);
 
     }
 
@@ -137,19 +74,25 @@ export class Header {
 
     get primeiroNome(): string {
 
-        return this.usuario?.nome
+        return this.usuarioLogado?.nome
             ?.split(' ')[0] ?? '';
 
     }
 
     get usuario() {
-        return this.authStateService.usuario;
+        return this.usuarioLogado;
+    }
+
+    get usuarioLogado() {
+
+        return this.authService
+            .usuarioLogado();
+
     }
 
     alternarMenuPerfil(): void {
 
-        this.menuPerfilAberto =
-            !this.menuPerfilAberto;
+        this.menuPerfilAberto = !this.menuPerfilAberto;
 
     }
 
@@ -165,78 +108,27 @@ export class Header {
 
         this.modalAlterarSenhaAberto = false;
 
-        this.formAlterarSenha.reset();
-
-    }
-
-    salvarSenha(): void {
-
-        if (this.formAlterarSenha.invalid) {
-
-            this.formAlterarSenha.markAllAsTouched();
-
-            return;
-
-        }
-
-        this.salvandoSenha = true;
-
-        const loadingToast =
-            this.alertService.loading(
-                'Alterando senha...'
-            );
-
-        this.authService
-            .alterarSenha(
-                this.formAlterarSenha.value
-            )
-            .subscribe({
-
-                next: () => {
-
-                    this.alertService.updateToast(
-                        loadingToast.id,
-                        'Senha alterada com sucesso. Faça login novamente.',
-                        'success'
-                    );
-
-                    const slug =
-                        this.tenantAtual?.slug;
-
-                    this.authService.logout();
-
-                    this.cdr.detectChanges();
-
-                    this.router.navigate([
-                        `/${slug}/login`
-                    ]);
-
-                },
-
-                error: (erro) => {
-
-                    const mensagem =
-                        erro?.error?.message
-                        || 'Não foi possível alterar a senha.';
-
-                    this.alertService.updateToast(
-                        loadingToast.id,
-                        mensagem,
-                        'error'
-                    );
-
-                    this.salvandoSenha = false;
-
-                }
-
-            });
-
     }
 
     get ehSuperAdmin(): boolean {
 
-        return this.usuario?.perfil ===
-            'SUPER_ADMIN';
+        return this.usuarioLogado?.perfil === 'SUPER_ADMIN';
+
+    }
+
+    @HostListener('document:click', ['$event'])
+    onClickOutside(event: Event): void {
+
+        if (
+            this.profileMenu &&
+            !this.profileMenu.nativeElement.contains(event.target)
+        ) {
+
+            console.log('fora');
+
+            this.menuPerfilAberto = false;
+
+        }
 
     }
 }

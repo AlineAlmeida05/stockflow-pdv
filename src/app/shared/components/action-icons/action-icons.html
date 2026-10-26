@@ -2,6 +2,8 @@
 <button
     class="action-btn edit-btn"
     type="button"
+    aria-label="Editar"
+    title="Editar"
     (click)="edit.emit()">
     ✏️
 </button>
@@ -10,6 +12,10 @@
 <button
     class="action-btn delete-btn"
     type="button"
+    aria-label="Excluir"
+    title="Excluir"
     (click)="delete.emit()">
+
     {{ deleteIcon }}
+
 </button>

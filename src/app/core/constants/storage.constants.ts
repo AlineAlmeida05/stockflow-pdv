@@ -1,3 +1,4 @@
 export const STORAGE_KEYS = {
-  TOKEN: 'stockflow.token'
+    TOKEN: 'token',
+    USUARIO_LOGADO: 'usuarioLogado'
 };

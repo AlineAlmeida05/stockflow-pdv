@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 import * as XLSX from 'xlsx';
 
 @Injectable({
@@ -15,8 +14,7 @@ export class ExcelExportService {
         nomeArquivo: string
     ): void {
 
-        const workbook =
-            XLSX.utils.book_new();
+        const workbook = XLSX.utils.book_new();
 
         sheets.forEach(sheet => {
 
@@ -44,8 +42,7 @@ export class ExcelExportService {
 
             }));
 
-            worksheet['!cols'] =
-                colunas;
+            worksheet['!cols'] = colunas;
 
             worksheet['!freeze'] = {
                 xSplit: 0,

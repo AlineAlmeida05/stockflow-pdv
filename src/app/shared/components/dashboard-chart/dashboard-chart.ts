@@ -7,19 +7,14 @@ Chart.register(
     ...registerables
 );
 
-
 @Component({
     selector: 'app-dashboard-chart',
     standalone: true,
-
     imports: [
         BaseChartDirective,
     ],
-    templateUrl:
-        './dashboard-chart.html',
-
-    styleUrl:
-        './dashboard-chart.scss'
+    templateUrl: './dashboard-chart.html',
+    styleUrl: './dashboard-chart.scss'
 })
 export class DashboardChart {
 
@@ -31,7 +26,10 @@ export class DashboardChart {
         = 'line';
 
     @Input()
-    chartData!: ChartConfiguration['data'];
+    chartData: ChartConfiguration['data'] = {
+        labels: [],
+        datasets: []
+    };
 
     @Input()
     chartOptions?: ChartConfiguration['options'];
