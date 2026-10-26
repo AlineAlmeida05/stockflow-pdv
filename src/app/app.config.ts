@@ -3,13 +3,15 @@ import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { routes } from './app.routes';
+import { authRefreshInterceptor } from './core/interceptors/auth-refresh.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(
       withInterceptors([
-        authInterceptor
+        authInterceptor,
+        authRefreshInterceptor
       ])
     )
   ]

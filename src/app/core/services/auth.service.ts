@@ -5,6 +5,7 @@ import { UsuarioLogado } from '../models/usuario-logado.model';
 import { STORAGE_KEYS } from '../constants/storage.constants';
 import { LoginRequest } from '../models/login-request.model';
 import { environment } from '../../../environments/environment';
+import { RefreshTokenResponse } from '../models/refresh-token-response.model';
 
 
 @Injectable({
@@ -31,21 +32,28 @@ export class AuthService {
                         JSON.stringify(usuario)
                     );
                     localStorage.setItem(
-                        'token',
+                        STORAGE_KEYS.TOKEN,
                         usuario.token
                     );
+
                 })
             );
     }
 
-    logout(): void {
+    logout(): Observable<void> {
 
-        localStorage.removeItem(
-            STORAGE_KEYS.USUARIO_LOGADO
+        return this.http.post<void>(
+            `${this.API}/logout`,
+            {}
         );
 
-        localStorage.removeItem(
-            'token'
+    }
+
+    refreshToken(): Observable<RefreshTokenResponse> {
+
+        return this.http.post<RefreshTokenResponse>(
+            `${this.API}/refresh`,
+            {}
         );
 
     }
@@ -114,4 +122,17 @@ export class AuthService {
         );
 
     }
+
+    limparSessao(): void {
+
+        localStorage.removeItem(
+            STORAGE_KEYS.USUARIO_LOGADO
+        );
+
+        localStorage.removeItem(
+            STORAGE_KEYS.TOKEN
+        );
+
+    }
+
 }

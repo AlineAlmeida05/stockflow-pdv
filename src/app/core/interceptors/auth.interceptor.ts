@@ -1,13 +1,21 @@
 import { HttpInterceptorFn } from '@angular/common/http';
+import { STORAGE_KEYS } from '../constants/storage.constants';
 
 export const authInterceptor:
     HttpInterceptorFn =
     (req, next) => {
 
-        const token =
-            localStorage.getItem(
-                'token'
-            );
+        if (
+            req.url.includes('/auth/refresh')
+        ) {
+
+            return next(req);
+
+        }
+
+        const token = localStorage.getItem(
+            STORAGE_KEYS.TOKEN
+        );
 
         if (!token) {
             return next(req);

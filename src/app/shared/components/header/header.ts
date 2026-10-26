@@ -58,11 +58,30 @@ export class Header {
 
     sair(): void {
 
-        this.authService.logout();
+        this.authService
+            .logout()
+            .subscribe({
+                next: () => {
 
-        this.router.navigate([
-            '/stockflowpdv/login'
-        ]);
+                    this.authService
+                        .limparSessao();
+
+                    this.router.navigate([
+                        '/stockflowpdv/login'
+                    ]);
+
+                },
+                error: () => {
+
+                    this.authService
+                        .limparSessao();
+
+                    this.router.navigate([
+                        '/stockflowpdv/login'
+                    ]);
+
+                }
+            });
 
     }
 
