@@ -2,7 +2,8 @@ export interface MovimentacaoFinanceira {
 
     tipo:
         | 'fiado'
-        | 'pagamento';
+        | 'pagamento'
+        | 'venda';
 
     clienteNome: string;
 
@@ -13,5 +14,7 @@ export interface MovimentacaoFinanceira {
     usuarioNome?: string;
 
     formaPagamento?: string;
+
+    status?: string;
 
 }
