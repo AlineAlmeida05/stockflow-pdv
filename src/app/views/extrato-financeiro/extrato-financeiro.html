@@ -70,12 +70,17 @@
 
                     <strong>
 
-                        {{movimentacao.tipo === 'fiado'
-                        ? movimentacao.clienteNome
-                        : movimentacao.formaPagamento?.toUpperCase()
-                        }}
+                        {{ movimentacao.tipo === 'fiado'? movimentacao.clienteNome : movimentacao.formaPagamento?.toUpperCase()}}
 
                     </strong>
+
+                    @if (movimentacao.status === 'cancelada') {
+
+                    <div class="status-cancelado">
+                        CANCELADA
+                    </div>
+
+                    }
 
                     <div class="movimentacao-meta">
 
