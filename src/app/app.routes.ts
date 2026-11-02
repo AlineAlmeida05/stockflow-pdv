@@ -19,6 +19,8 @@ import { guestGuard } from './core/guards/guest.guard';
 import { roleGuard } from './core/guards/role.guard';
 import { ExtratoFinanceiro } from './views/extrato-financeiro/extrato-financeiro';
 import { AuditoriaComponent } from './views/auditoria/auditoria';
+import { ForgotPassword } from './features/auth/forgot-password/forgot-password';
+import { ResetPassword } from './features/auth/reset-password/reset-password';
 
 export const routes: Routes = [
     {
@@ -35,6 +37,14 @@ export const routes: Routes = [
         path: ':slug/login',
         component: LoginComponent,
         canActivate: [guestGuard]
+    },
+    {
+        path: 'esqueci-minha-senha',
+        component: ForgotPassword
+    },
+    {
+        path: 'reset-password',
+        component: ResetPassword
     },
     {
         path: 'produtos',
@@ -279,7 +289,7 @@ export const routes: Routes = [
                 'SUPER_ADMIN',
                 'PROPRIETARIO']
         }
-    }
+    },
 
 
 ];

@@ -12,12 +12,14 @@ import { OnInit } from '@angular/core';
 import { TenantContextService } from '../../../core/services/tenant-context.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Tenant } from '../../../core/models/tenant.model';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-login',
     standalone: true,
     imports: [
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        RouterLink
     ],
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
@@ -194,7 +196,7 @@ export class LoginComponent implements OnInit {
     voltar(): void {
 
         this.router.navigate([
-            '/stockflowpdv/login'
+            `/${this.slug}/login`
         ]);
 
     }
