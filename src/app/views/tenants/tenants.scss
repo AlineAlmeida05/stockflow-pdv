@@ -10,6 +10,7 @@
 .formulario-acoes {
   display: flex;
   gap: 12px;
+  margin-top: 20px;
 }
 
 .secao-tenants {
@@ -36,6 +37,81 @@
 
 app-search-input {
   min-width: 400px;
+}
+
+.tenant-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 12px;
+  margin-bottom: 20px;
+  color: var(--color-gray-500);
+  font-size: 14px;
+}
+
+.tenant-section {
+  margin-top: 20px;
+}
+
+.tenant-section h4 {
+  margin-bottom: 12px;
+}
+
+.tenant-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.tenant-item span {
+  font-size: 12px;
+  color: var(--color-gray-500);
+}
+
+.tenant-item strong {
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.field.compact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field.compact label {
+  font-size: 12px;
+  color: var(--color-gray-500);
+  margin-bottom: 0;
+}
+
+.tenant-tabs {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0 24px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.btn-tab {
+  background: transparent;
+  border: none;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-gray-500);
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.btn-tab:hover {
+  color: var(--color-primary);
+}
+
+.btn-tab.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
 }
 
 @media (max-width: 768px) {

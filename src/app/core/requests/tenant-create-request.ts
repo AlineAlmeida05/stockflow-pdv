@@ -22,4 +22,18 @@ export interface TenantCreateRequest {
 
     corSecundaria?: string;
 
+    razaoSocial?: string;
+
+    cnpj?: string;
+
+    telefone?: string;
+
+    endereco?: string;
+
+    uf?: string;
+
+    marketingIaHabilitado?: boolean;
+
+    deliveryHabilitado?: boolean;
+
 }
