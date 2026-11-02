@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-
 import { Tenant } from '../models/tenant.model';
 import { TenantService } from './tenant.service';
 
@@ -174,8 +173,7 @@ export class TenantContextService {
 
         }
 
-        favicon.href =
-            tenant.faviconUrl;
+        favicon.href = tenant.faviconUrl;
 
     }
 

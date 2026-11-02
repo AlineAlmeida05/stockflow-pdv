@@ -4,8 +4,9 @@ import { PageTitle } from '../../shared/components/page-title/page-title';
 import { Empresa } from '../../core/models/empresa.model';
 import { EmpresaService } from '../../core/services/empresa.service';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
-import { TenantContextService } from '../../core/services/tenant-context.service';
 import { DatePipe } from '@angular/common';
+import { TenantContextService } from '../../core/services/tenant-context.service';
+import { BRANDING_CONFIG } from '../../config/branding.config';
 
 @Component({
     selector: 'app-empresa',
@@ -24,11 +25,13 @@ export class EmpresaComponent implements OnInit {
 
     constructor(
         private empresaService: EmpresaService,
-        public tenantContextService: TenantContextService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        public tenantContextService: TenantContextService
     ) { }
 
     empresa!: Empresa;
+
+    branding = BRANDING_CONFIG;
 
     ngOnInit(): void {
 
@@ -58,11 +61,7 @@ export class EmpresaComponent implements OnInit {
     }
 
     get tenantAtual() {
-
-        return this
-            .tenantContextService
-            .tenantAtual;
-
+        return this.tenantContextService.tenantAtual;
     }
 
 }

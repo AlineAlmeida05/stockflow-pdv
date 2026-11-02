@@ -1,8 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
 import { Observable } from 'rxjs';
-
 import { Empresa } from '../models/empresa.model';
 import { environment } from '../../../environments/environment';
 
@@ -19,17 +17,6 @@ export class EmpresaService {
 
         return this.http.get<Empresa>(
             this.apiUrl
-        );
-
-    }
-
-    atualizar(
-        empresa: Empresa
-    ): Observable<Empresa> {
-
-        return this.http.put<Empresa>(
-            this.apiUrl,
-            empresa
         );
 
     }
