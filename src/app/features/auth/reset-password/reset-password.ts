@@ -19,6 +19,10 @@ export class ResetPassword implements OnInit {
 
   loading = false;
 
+  mostrarNovaSenha = false;
+
+  mostrarConfirmarSenha = false;
+
   token = '';
 
   tokenValido = false;
@@ -133,7 +137,7 @@ export class ResetPassword implements OnInit {
           this.loading = false;
 
           this.alertService.success(
-            'Senha alterada com sucesso.'
+            'Senha alterada com sucesso. Faça login com sua nova senha.'
           );
 
           this.cdr.detectChanges();
@@ -156,6 +160,32 @@ export class ResetPassword implements OnInit {
 
         }
       });
+
+  }
+
+  solicitarNovoLink(): void {
+
+    this.router.navigate(
+      ['/esqueci-minha-senha'],
+      {
+        queryParams: {
+          slug: this.slug
+        }
+      }
+    );
+
+  }
+
+  toggleNovaSenha(): void {
+
+    this.mostrarNovaSenha =
+      !this.mostrarNovaSenha;
+
+  }
+
+  toggleConfirmarSenha(): void {
+
+    this.mostrarConfirmarSenha = !this.mostrarConfirmarSenha;
 
   }
 
