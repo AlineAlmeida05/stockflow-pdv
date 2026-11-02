@@ -31,10 +31,12 @@ export class BrandingService {
     }
 
     obterNomeEmpresa(): string {
+        
         return BRANDING_CONFIG.nomeExibicao;
     }
 
     obterLogo(): string {
+
         return BRANDING_CONFIG.logo;
     }
 }
