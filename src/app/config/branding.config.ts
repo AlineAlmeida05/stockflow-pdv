@@ -8,16 +8,10 @@ export const BRANDING_CONFIG = {
 
     favicon: 'images/favicon-stockflow-pdv.png',
 
-    mostrarMarcaStockFlow: true,
-
     cores: {
-
         primaria: '#1E3A5F',
-
         secundaria: '#00B894',
-
         terciaria: '#F5F7FA'
-
     }
 
 };

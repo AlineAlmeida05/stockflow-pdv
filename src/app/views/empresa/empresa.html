@@ -24,7 +24,7 @@
                         </span>
 
                         <strong>
-                            {{ tenantAtual?.nome || '-' }}
+                            {{ empresa?.nomeFantasia || '-' }}
                         </strong>
 
                     </div>
@@ -36,7 +36,7 @@
                         </span>
 
                         <strong>
-                            {{ tenantAtual?.razaoSocial || '-' }}
+                            {{ empresa?.razaoSocial || '-' }}
                         </strong>
 
                     </div>
@@ -48,7 +48,7 @@
                         </span>
 
                         <strong>
-                            {{ tenantAtual?.cnpj || '-' }}
+                            {{ empresa?.cnpj || '-' }}
                         </strong>
 
                     </div>
@@ -60,7 +60,7 @@
                         </span>
 
                         <strong>
-                            {{ tenantAtual?.responsavel || '-' }}
+                            {{ empresa?.proprietario || '-' }}
                         </strong>
 
                     </div>
@@ -72,7 +72,7 @@
                         </span>
 
                         <strong>
-                            {{ tenantAtual?.telefone || '-' }}
+                            {{ empresa?.telefone || '-' }}
                         </strong>
 
                     </div>
@@ -84,7 +84,7 @@
                         </span>
 
                         <strong>
-                            {{ tenantAtual?.email || '-' }}
+                            {{ empresa?.email || '-' }}
                         </strong>
 
                     </div>
@@ -96,9 +96,9 @@
                         </span>
 
                         <strong>
-                            {{ tenantAtual?.cidade || '-' }}
+                            {{ empresa?.cidade || '-' }}
                             -
-                            {{ tenantAtual?.uf || '-' }}
+                            {{ empresa?.uf || '-' }}
                         </strong>
 
                     </div>
@@ -110,7 +110,7 @@
                         </span>
 
                         <strong>
-                            {{ tenantAtual?.endereco || '-' }}
+                            {{ empresa?.endereco || '-' }}
                         </strong>
 
                     </div>
@@ -133,13 +133,13 @@
 
                     <div class="brand-layout">
 
-                        @if (tenantAtual?.logoUrl) {
+                        @if (empresa?.logoUrl) {
 
                         <div class="brand-logo">
 
                             <img
-                                [src]="tenantAtual?.logoUrl"
-                                [alt]="tenantAtual?.nome">
+                                [src]="empresa?.logoUrl"
+                                [alt]="empresa?.nomeFantasia">
 
                         </div>
 
@@ -155,13 +155,11 @@
 
                                 <div
                                     class="brand-color__preview"
-                                    [style.background]="
-                        tenantAtual?.corPrimaria
-                    ">
+                                    [style.background]="empresa?.corPrimaria">
                                 </div>
 
                                 <strong>
-                                    {{ tenantAtual?.corPrimaria || '-' }}
+                                    {{ empresa?.corPrimaria || '-' }}
                                 </strong>
 
                             </div>
@@ -174,13 +172,11 @@
 
                                 <div
                                     class="brand-color__preview"
-                                    [style.background]="
-                        tenantAtual?.corSecundaria
-                    ">
+                                    [style.background]="empresa?.corSecundaria">
                                 </div>
 
                                 <strong>
-                                    {{ tenantAtual?.corSecundaria || '-' }}
+                                    {{ empresa?.corSecundaria || '-' }}
                                 </strong>
 
                             </div>
@@ -273,6 +269,60 @@
                             {{
                             tenantAtual?.criadoEm
                             | date:'dd/MM/yyyy'
+                            }}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="dashboard-panel">
+
+                <h2>
+                    Informações do Sistema
+                </h2>
+
+                <div class="company-info">
+
+                    <div class="company-info__item">
+
+                        <span>
+                            Slogan
+                        </span>
+
+                        <strong>
+                            {{empresa?.slogan || branding.slogan}}
+                        </strong>
+
+                    </div>
+
+                    <div class="company-info__item">
+
+                        <span>
+                            Versão do Sistema
+                        </span>
+
+                        <strong>
+                            {{ empresa?.versaoSistema || '-' }}
+                        </strong>
+
+                    </div>
+
+                    <div class="company-info__item">
+
+                        <span>
+                            Data de Implantação
+                        </span>
+
+                        <strong>
+
+                            {{
+                            empresa?.dataImplantacao
+                            ? (empresa!.dataImplantacao | date:'dd/MM/yyyy')
+                            : '-'
                             }}
 
                         </strong>
