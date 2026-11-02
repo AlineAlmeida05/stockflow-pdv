@@ -18,11 +18,11 @@
     <div>
 
       <h2>
-        {{ ehSuperAdmin ? tenantAtual?.nome || branding.nomeExibicao : branding.nomeExibicao }}
+        {{ tenantAtual?.nome || branding.nomeExibicao }}
       </h2>
 
       <p>
-        {{ branding.slogan }}
+        {{ tenantAtual?.slogan || branding.slogan }}
       </p>
 
     </div>

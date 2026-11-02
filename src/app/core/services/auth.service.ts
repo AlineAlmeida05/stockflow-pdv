@@ -6,7 +6,7 @@ import { STORAGE_KEYS } from '../constants/storage.constants';
 import { LoginRequest } from '../models/login-request.model';
 import { environment } from '../../../environments/environment';
 import { RefreshTokenResponse } from '../models/refresh-token-response.model';
-
+import { map } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -58,6 +58,36 @@ export class AuthService {
 
     }
 
+    forgotPassword(
+        email: string,
+        slug: string
+    ): Observable<void> {
+
+        return this.http.post<void>(
+            `${this.API}/forgot-password`,
+            {
+                email,
+                slug
+            }
+        );
+
+    }
+
+    resetPassword(
+        token: string,
+        novaSenha: string
+    ): Observable<void> {
+
+        return this.http.post<void>(
+            `${this.API}/reset-password`,
+            {
+                token,
+                novaSenha
+            }
+        );
+
+    }
+
     usuarioLogado(): UsuarioLogado | null {
 
         const dados = localStorage.getItem(
@@ -93,14 +123,14 @@ export class AuthService {
 
             case 'SUPER_ADMIN':
             case 'PROPRIETARIO':
-            case 'Socio':
-            case 'Gerente':
+            case 'SOCIO':
+            case 'GERENTE':
                 return '/dashboard';
 
-            case 'Operador_Caixa':
+            case 'OPERADOR_CAIXA':
                 return '/nova-venda';
 
-            case 'Estoquista':
+            case 'ESTOQUISTA':
                 return '/estoque';
 
             default:
@@ -131,6 +161,23 @@ export class AuthService {
 
         localStorage.removeItem(
             STORAGE_KEYS.TOKEN
+        );
+
+    }
+
+    validarToken(
+        token: string
+    ): Observable<{ valido: boolean }> {
+
+        return this.http.get<{
+            valido: boolean
+        }>(
+            `${this.API}/reset-password/validar`,
+            {
+                params: {
+                    token
+                }
+            }
         );
 
     }

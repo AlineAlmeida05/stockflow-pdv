@@ -41,12 +41,12 @@
 }
 
 .field-invalid {
-    border-color: var(--color-danger) !important;
+    border-color: var(--color-danger);
 }
 
 .field-invalid:focus {
-    border-color: var(--color-danger) !important;
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 15%, transparent) !important;
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 15%, transparent);
 }
 
 .btn:disabled {
@@ -102,6 +102,21 @@
     background: transparent;
     cursor: pointer;
     font-size: 1rem;
+}
+
+.forgot-password {
+    text-align: right;
+    margin-top: 0.5rem;
+}
+
+.forgot-password a {
+    font-size: 0.875rem;
+    text-decoration: none;
+    color: var(--login-primary, var(--color-primary));
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
 }
 
 @media (max-width: 768px) {

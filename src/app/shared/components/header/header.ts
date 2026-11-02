@@ -66,8 +66,12 @@ export class Header {
                     this.authService
                         .limparSessao();
 
+                    const slug =
+                        this.tenantAtual?.slug
+                        ?? 'stockflowpdv';
+
                     this.router.navigate([
-                        '/stockflowpdv/login'
+                        `/${slug}/login`
                     ]);
 
                 },
@@ -76,8 +80,12 @@ export class Header {
                     this.authService
                         .limparSessao();
 
+                    const slug =
+                        this.tenantAtual?.slug
+                        ?? 'stockflowpdv';
+
                     this.router.navigate([
-                        '/stockflowpdv/login'
+                        `/${slug}/login`
                     ]);
 
                 }
