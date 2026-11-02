@@ -57,6 +57,20 @@ export class Tenants implements OnInit {
 
     novaCidade = '';
 
+    novaRazaoSocial = '';
+
+    novoCnpj = '';
+
+    novoTelefone = '';
+
+    novoEndereco = '';
+
+    novoUf = '';
+
+    novoMarketingIaHabilitado = false;
+
+    novoDeliveryHabilitado = false;
+
     salvando = false;
 
     tenantEditando: Tenant | null = null;
@@ -70,6 +84,11 @@ export class Tenants implements OnInit {
     textoBusca = '';
 
     novoAtivo = true;
+
+    abaSelecionada:
+        'informacoes'
+        | 'configuracoes'
+        = 'informacoes';
 
     colunasTenants: {
         field: string;
@@ -118,23 +137,55 @@ export class Tenants implements OnInit {
         this.novoEmail = '';
         this.novaCidade = '';
         this.novoAtivo = true;
-
+        this.novaRazaoSocial = '';
+        this.novoCnpj = '';
+        this.novoTelefone = '';
+        this.novoEndereco = '';
+        this.novoUf = '';
+        this.novoMarketingIaHabilitado = false;
+        this.novoDeliveryHabilitado = false;
     }
 
     private obterDadosTenant() {
 
         return {
+
             nome: this.novoNome,
-            slug: this.novoSlug,
-            codigoTenant: this.novoCodigoTenant,
-            logoUrl: this.novoLogoUrl,
-            faviconUrl: this.novoFaviconUrl,
-            corPrimaria: this.novaCorPrimaria,
-            corSecundaria: this.novaCorSecundaria,
+
+            razaoSocial: this.novaRazaoSocial,
+
+            cnpj: this.novoCnpj,
+
             responsavel: this.novoResponsavel,
+
             email: this.novoEmail,
+
+            telefone: this.novoTelefone,
+
+            endereco: this.novoEndereco,
+
             cidade: this.novaCidade,
-            ativo: this.novoAtivo
+
+            uf: this.novoUf,
+
+            ativo: this.novoAtivo,
+
+            slug: this.novoSlug,
+
+            codigoTenant: this.novoCodigoTenant,
+
+            logoUrl: this.novoLogoUrl,
+
+            faviconUrl: this.novoFaviconUrl,
+
+            corPrimaria: this.novaCorPrimaria,
+
+            corSecundaria: this.novaCorSecundaria,
+
+            marketingIaHabilitado: this.novoMarketingIaHabilitado,
+
+            deliveryHabilitado: this.novoDeliveryHabilitado
+
         };
 
     }
@@ -154,6 +205,13 @@ export class Tenants implements OnInit {
         this.novoEmail = tenant.email ?? '';
         this.novaCidade = tenant.cidade ?? '';
         this.novoAtivo = tenant.ativo ?? true;
+        this.novaRazaoSocial = tenant.razaoSocial ?? '';
+        this.novoCnpj = tenant.cnpj ?? '';
+        this.novoTelefone = tenant.telefone ?? '';
+        this.novoEndereco = tenant.endereco ?? '';
+        this.novoUf = tenant.uf ?? '';
+        this.novoMarketingIaHabilitado = tenant.marketingIaHabilitado ?? false;
+        this.novoDeliveryHabilitado = tenant.deliveryHabilitado ?? false;
 
     }
 
@@ -327,8 +385,7 @@ export class Tenants implements OnInit {
                 'Atualizando tenant...'
             );
 
-        const request: TenantUpdateRequest =
-            this.obterDadosTenant();
+        const request: TenantUpdateRequest = this.obterDadosTenant();
 
         this.atualizarTenantExistente(
             this.tenantEditando.id,
@@ -469,17 +526,19 @@ export class Tenants implements OnInit {
         tenant: Tenant
     ): void {
 
-        this.tenantEditando = tenant;
-        this.mostrarFormulario = true;
-        this.modoVisualizacao = true;
-        this.modoEdicao = false;
-        this.preencherFormulario(
-            tenant
+        if (!tenant.id) {
+            return;
+        }
+
+        this.carregarTenantPorId(
+            tenant.id
         );
 
     }
 
     habilitarEdicao(): void {
+
+        this.abaSelecionada = 'informacoes';
 
         this.modoVisualizacao = false;
 
@@ -563,6 +622,53 @@ export class Tenants implements OnInit {
 
             }
         });
+
+    }
+
+    private carregarTenantPorId(
+        id: string
+    ): void {
+
+        this.tenantService
+            .buscarPorId(id)
+            .subscribe({
+
+                next: tenant => {
+
+                    this.tenantEditando =
+                        tenant;
+
+                    this.preencherFormulario(
+                        tenant
+                    );
+
+                    this.mostrarFormulario =
+                        true;
+
+                    this.modoVisualizacao =
+                        true;
+
+                    this.modoEdicao =
+                        false;
+
+                    this.cdr.detectChanges();
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        'Erro ao carregar tenant:',
+                        erro
+                    );
+
+                    this.alertService.error(
+                        'Erro ao carregar dados do tenant.'
+                    );
+
+                }
+
+            });
 
     }
 

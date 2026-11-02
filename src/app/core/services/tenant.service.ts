@@ -14,7 +14,7 @@ export class TenantService {
     private readonly http = inject(HttpClient);
 
     private readonly apiUrl = `${environment.apiUrl}/api/tenants`;
-    
+
 
     listar(): Observable<Tenant[]> {
 
@@ -63,6 +63,16 @@ export class TenantService {
 
         return this.http.get<Tenant>(
             `${this.apiUrl}/slug/${slug}`
+        );
+
+    }
+
+    buscarPorId(
+        id: string
+    ): Observable<Tenant> {
+
+        return this.http.get<Tenant>(
+            `${this.apiUrl}/${id}`
         );
 
     }

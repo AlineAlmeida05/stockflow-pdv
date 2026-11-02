@@ -6,20 +6,27 @@
     </app-page-title>
 
     <app-toolbar>
+
         <button
             class="btn btn-primary"
             type="button"
             (click)="novoTenant()">
+
             + Cadastrar Tenant
+
         </button>
+
         <app-search-input
             placeholder="Buscar tenant..."
             [(value)]="textoBusca">
         </app-search-input>
+
     </app-toolbar>
 
     <app-split-panel>
+
         <div left>
+
             @if (!mostrarFormulario) {
 
             <app-empty-state
@@ -27,216 +34,554 @@
                 title="Nenhum tenant em edição"
                 message="Clique em '+ Cadastrar Tenant' para criar um novo tenant ou selecione um tenant para visualizar os detalhes.">
             </app-empty-state>
+
             }
 
             @if (mostrarFormulario) {
-            <div class="card formulario-tenant">
-                <div class="formulario">
-                    <h3>
-                        {{
-                        !tenantEditando
-                        ? 'Cadastrar Tenant'
-                        : modoVisualizacao
-                        ? 'Tenant'
-                        : 'Editar Tenant'
-                        }}
-                    </h3>
 
-                    @if (tenantEditando) {
-                    <p class="formulario-tenant__subtitle">
-                        {{ tenantEditando.nome }}
-                    </p>
+            @if (modoVisualizacao) {
 
-                    }
-                    <div class="field">
-                        <label>
-                            Nome
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="Nome"
-                            [(ngModel)]="novoNome"
-                            [readonly]="modoVisualizacao"
-                            (input)="gerarSlug(); gerarCodigoTenant()">
-                    </div>
+            <div class="tenant-header">
 
-                    <div class="field">
-                        <label>
-                            Slug
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="adega-fulano"
-                            [(ngModel)]="novoSlug"
-                            readonly>
-                    </div>
+                <h3>
+                    Detalhes do Tenant
+                </h3>
 
-                    <div class="field">
-                        <label>
-                            Código do Tenant
-                        </label>
-
-                        <input
-                            type="text"
-                            placeholder="SIN"
-                            [(ngModel)]="novoCodigoTenant"
-                            readonly>
-                    </div>
-
-                    <div class="field">
-                        <label>
-                            Responsável
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="Responsável"
-                            [readonly]="modoVisualizacao"
-                            [(ngModel)]="novoResponsavel">
-                    </div>
-
-                    <div class="field">
-                        <label>
-                            Email
-                        </label>
-                        <input
-                            type="email"
-                            [readonly]="modoVisualizacao"
-                            placeholder="Email"
-                            [(ngModel)]="novoEmail">
-                    </div>
-
-                    <div class="field">
-                        <label>
-                            Cidade
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="Cidade"
-                            [readonly]="modoVisualizacao"
-                            [(ngModel)]="novaCidade">
-                    </div>
-
-                    <div class="field">
-                        <label>
-                            Logo URL
-                        </label>
-
-                        <input
-                            type="text"
-                            [(ngModel)]="novoLogoUrl">
-                    </div>
-
-                    <div class="field">
-                        <label>
-                            Favicon URL
-                        </label>
-
-                        <input
-                            type="text"
-                            [(ngModel)]="novoFaviconUrl">
-                    </div>
-                    <div class="field">
-                        <label>
-                            Cor Primária
-                        </label>
-
-                        <input
-                            type="text"
-                            placeholder="#AAAAAA"
-                            [(ngModel)]="novaCorPrimaria">
-                    </div>
-
-                    <div class="field">
-                        <label>
-                            Cor Secundária
-                        </label>
-
-                        <input
-                            type="text"
-                            placeholder="#000000"
-                            [(ngModel)]="novaCorSecundaria">
-                    </div>
-                    <div class="field">
-
-                        <label>
-                            Status
-                        </label>
-
-                        <select
-                            [(ngModel)]="novoAtivo">
-                            <option [ngValue]="true">
-                                Ativo
-                            </option>
-
-                            <option [ngValue]="false">
-                                Inativo
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="formulario-acoes">
-
-                        @if (modoVisualizacao) {
-
-                        <button
-                            class="btn btn-primary"
-                            type="button"
-                            (click)="habilitarEdicao()">
-                            Editar
-                        </button>
-
-                        <button
-                            class="btn btn-secondary"
-                            type="button"
-                            (click)="cancelarEdicao()">
-                            Fechar
-                        </button>
-
-                        } @else {
-
-                        @if (modoEdicao) {
-
-                        <button
-                            class="btn btn-primary"
-                            type="button"
-                            [disabled]="salvando"
-                            (click)="atualizarTenant()">
-                            {{
-                            salvando
-                            ? 'Salvando...'
-                            : 'Salvar Alterações'
-                            }}
-                        </button>
-
-                        } @else {
-
-                        <button
-                            class="btn btn-primary"
-                            type="button"
-                            [disabled]="salvando"
-                            (click)="salvarTenant()">
-                            {{
-                            salvando
-                            ? 'Salvando...'
-                            : 'Cadastrar Tenant'
-                            }}
-                        </button>
-
-                        }
-
-                        <button
-                            class="btn btn-secondary"
-                            type="button"
-                            (click)="cancelarEdicao()">
-                            Cancelar
-                        </button>
-
-                        }
-
-                    </div>
-                </div>
             </div>
+
+            <div class="tenant-tabs">
+
+                <button
+                    class="btn-tab"
+                    [class.active]="abaSelecionada === 'informacoes'"
+                    (click)="abaSelecionada='informacoes'">
+
+                    Informações
+
+                </button>
+
+                <button
+                    class="btn-tab"
+                    [class.active]="abaSelecionada === 'configuracoes'"
+                    (click)="abaSelecionada='configuracoes'">
+
+                    Configurações
+
+                </button>
+
+            </div>
+
+            @if (abaSelecionada === 'informacoes') {
+
+            <div class="tenant-section">
+
+                <h4>
+                    Dados Empresariais
+                </h4>
+
+                <div class="tenant-item">
+
+                    <span>Nome</span>
+
+                    <strong>
+
+                        {{ tenantEditando?.nome || '-' }}
+
+                    </strong>
+
+                </div>
+
+                <div class="tenant-item">
+
+                    <span>Razão Social</span>
+
+                    <strong>
+
+                        {{ tenantEditando?.razaoSocial || '-' }}
+
+                    </strong>
+
+                </div>
+
+                <div class="tenant-item">
+
+                    <span>CNPJ</span>
+
+                    <strong>
+
+                        {{ tenantEditando?.cnpj || '-' }}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+            <div class="tenant-section">
+
+                <h4>
+                    Contato
+                </h4>
+
+                <div class="tenant-item">
+
+                    <span>Responsável</span>
+
+                    <strong>
+
+                        {{ tenantEditando?.responsavel || '-' }}
+
+                    </strong>
+
+                </div>
+
+                <div class="tenant-item">
+
+                    <span>Email</span>
+
+                    <strong>
+
+                        {{ tenantEditando?.email || '-' }}
+
+                    </strong>
+
+                </div>
+
+                <div class="tenant-item">
+
+                    <span>Telefone</span>
+
+                    <strong>
+
+                        {{ tenantEditando?.telefone || '-' }}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+            <div class="tenant-section">
+
+                <h4>
+                    Endereço
+                </h4>
+
+                <div class="tenant-item">
+
+                    <span>Endereço</span>
+
+                    <strong>
+
+                        {{ tenantEditando?.endereco || '-' }}
+
+                    </strong>
+
+                </div>
+
+                <div class="tenant-item">
+                    <span>Cidade / UF</span>
+                    <strong>
+                        {{ tenantEditando?.cidade || '-' }}
+                        /
+                        {{ tenantEditando?.uf || '-' }}
+                    </strong>
+                </div>
+
+            </div>
+
             }
+
+            @if (abaSelecionada === 'configuracoes') {
+
+            <h4>Branding</h4>
+
+            <div class="tenant-item">
+                <span>Logo</span>
+                <strong>
+                    {{ tenantEditando?.logoUrl || '-' }}
+                </strong>
+            </div>
+
+            <div class="tenant-item">
+                <span>Cor Primária</span>
+                <strong>
+                    {{ tenantEditando?.corPrimaria || '-' }}
+                </strong>
+            </div>
+
+            <div class="tenant-item">
+                <span>Cor Secundária</span>
+                <strong>
+                    {{ tenantEditando?.corSecundaria || '-' }}
+                </strong>
+            </div>
+
+            <div class="tenant-section">
+
+                <h4>
+                    Recursos
+                </h4>
+
+                <div class="tenant-item">
+                    <span>Marketing IA</span>
+
+                    <strong>
+                        {{
+                        tenantEditando?.marketingIaHabilitado
+                        ? '✅ Habilitado'
+                        : '❌ Desabilitado'
+                        }}
+                    </strong>
+                </div>
+
+                <div class="tenant-item">
+                    <span>Delivery</span>
+
+                    <strong>
+                        {{
+                        tenantEditando?.deliveryHabilitado
+                        ? '✅ Habilitado'
+                        : '❌ Desabilitado'
+                        }}
+                    </strong>
+                </div>
+
+            </div>
+
+            <h4>Status</h4>
+
+            <div class="tenant-item">
+                <span>Status</span>
+
+                <strong>
+                    {{
+                    tenantEditando?.ativo
+                    ? '✅ Ativo'
+                    : '❌ Inativo'
+                    }}
+                </strong>
+            </div>
+
+            }
+
+            <div class="formulario-acoes">
+
+                <button
+                    class="btn btn-primary"
+                    (click)="habilitarEdicao()">
+
+                    Editar
+
+                </button>
+
+                <button
+                    class="btn btn-secondary"
+                    (click)="cancelarEdicao()">
+
+                    Fechar
+
+                </button>
+
+            </div>
+
+            }
+            @else {
+
+            <div class="tenant-tabs">
+
+                <button
+                    class="btn-tab"
+                    [class.active]="abaSelecionada === 'informacoes'"
+                    (click)="abaSelecionada='informacoes'">
+
+                    Informações
+
+                </button>
+
+                <button
+                    class="btn-tab"
+                    [class.active]="abaSelecionada === 'configuracoes'"
+                    (click)="abaSelecionada='configuracoes'">
+
+                    Configurações
+
+                </button>
+
+            </div>
+
+            @if (abaSelecionada === 'informacoes') {
+
+            <div class="field compact">
+
+                <label>
+                    Nome
+                </label>
+
+                <input
+                    type="text"
+                    placeholder="Nome"
+                    [(ngModel)]="novoNome"
+                    [readonly]="modoVisualizacao"
+                    (input)="gerarSlug(); gerarCodigoTenant()">
+            </div>
+
+            <h4>Dados Empresariais</h4>
+
+            <div class="field compact">
+
+                <label>
+                    Razão Social
+                </label>
+
+                <input
+                    type="text"
+                    [readonly]="modoVisualizacao"
+                    [(ngModel)]="novaRazaoSocial">
+            </div>
+
+            <div class="field compact">
+
+                <label>
+                    CNPJ
+                </label>
+
+                <input
+                    type="text"
+                    [readonly]="modoVisualizacao"
+                    [(ngModel)]="novoCnpj">
+            </div>
+
+            <div class="field compact">
+
+                <label>
+                    Responsável
+                </label>
+
+                <input
+                    type="text"
+                    placeholder="Responsável"
+                    [readonly]="modoVisualizacao"
+                    [(ngModel)]="novoResponsavel">
+            </div>
+
+            <div class="field compact">
+
+                <label>
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    [readonly]="modoVisualizacao"
+                    placeholder="Email"
+                    [(ngModel)]="novoEmail">
+            </div>
+
+            <div class="field compact">
+
+                <label>
+                    Telefone
+                </label>
+
+                <input
+                    type="text"
+                    [readonly]="modoVisualizacao"
+                    [(ngModel)]="novoTelefone">
+            </div>
+
+            <div class="field compact">
+
+                <label>
+                    Cidade
+                </label>
+
+                <input
+                    type="text"
+                    placeholder="Cidade"
+                    [readonly]="modoVisualizacao"
+                    [(ngModel)]="novaCidade">
+            </div>
+
+            <h4>Endereço</h4>
+
+            <div class="field compact">
+
+                <label>
+                    Endereço
+                </label>
+
+                <input
+                    type="text"
+                    [readonly]="modoVisualizacao"
+                    [(ngModel)]="novoEndereco">
+            </div>
+
+            <div class="field compact">
+
+                <label>
+                    UF
+                </label>
+
+                <input
+                    type="text"
+                    maxlength="2"
+                    [readonly]="modoVisualizacao"
+                    [(ngModel)]="novoUf">
+            </div>
+
+            }
+
+            @if (abaSelecionada === 'configuracoes') {
+
+            <div class="field compact">
+
+                <label>
+                    Slug
+                </label>
+
+                <input
+                    type="text"
+                    placeholder="adega-fulano"
+                    [(ngModel)]="novoSlug"
+                    readonly>
+            </div>
+
+            <div class="field compact">
+
+                <label>
+                    Código do Tenant
+                </label>
+
+                <input
+                    type="text"
+                    placeholder="SIN"
+                    [(ngModel)]="novoCodigoTenant"
+                    readonly>
+            </div>
+
+            <div class="field compact">
+
+                <label>
+                    Logo URL
+                </label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="novoLogoUrl">
+            </div>
+
+            <div class="field compact">
+
+                <label>
+                    Favicon URL
+                </label>
+
+                <input
+                    type="text"
+                    [(ngModel)]="novoFaviconUrl">
+            </div>
+
+            <div class="field compact">
+
+                <label>
+                    Cor Primária
+                </label>
+
+                <input
+                    type="text"
+                    placeholder="#AAAAAA"
+                    [(ngModel)]="novaCorPrimaria">
+            </div>
+
+            <div class="field compact">
+
+                <label>
+                    Cor Secundária
+                </label>
+
+                <input
+                    type="text"
+                    placeholder="#000000"
+                    [(ngModel)]="novaCorSecundaria">
+            </div>
+
+            <h4>Recursos</h4>
+
+            <div class="field compact">
+
+                <label>
+
+                    <input
+                        type="checkbox"
+                        [disabled]="modoVisualizacao"
+                        [(ngModel)]="novoMarketingIaHabilitado">
+
+                    Marketing IA
+
+                </label>
+
+            </div>
+
+            <div class="field compact">
+
+                <label>
+
+                    <input
+                        type="checkbox"
+                        [disabled]="modoVisualizacao"
+                        [(ngModel)]="novoDeliveryHabilitado">
+
+                    Delivery
+
+                </label>
+
+            </div>
+
+            <div class="field compact">
+
+                <label>
+                    Status
+                </label>
+
+                <select
+                    [(ngModel)]="novoAtivo">
+                    <option [ngValue]="true">
+                        Ativo
+                    </option>
+
+                    <option [ngValue]="false">
+                        Inativo
+                    </option>
+                </select>
+            </div>
+
+            }
+
+            <div class="formulario-acoes">
+
+                <button
+                    class="btn btn-primary"
+                    (click)="habilitarEdicao()">
+
+                    Editar
+
+                </button>
+
+                <button
+                    class="btn btn-secondary"
+                    (click)="cancelarEdicao()">
+
+                    Fechar
+
+                </button>
+
+            </div>
+
+            }
+
+            }
+
         </div>
 
         <div right>
@@ -271,5 +616,7 @@
             </div>
             }
         </div>
+
     </app-split-panel>
+
 </app-main-layout>
