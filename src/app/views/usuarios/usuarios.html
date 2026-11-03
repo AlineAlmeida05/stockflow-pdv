@@ -6,19 +6,26 @@
     </app-page-title>
 
     <app-toolbar>
+
         <button
             class="btn btn-primary"
             (click)="novoUsuario()">
+
             {{'+ Cadastrar Usuário' }}
+
         </button>
+
         <app-search-input
             placeholder="Buscar usuário..."
             [(value)]="textoBusca">
         </app-search-input>
+
     </app-toolbar>
 
     <app-split-panel>
+
         <div left>
+
             @if (!mostrarFormulario) {
 
             <app-empty-state
@@ -26,10 +33,15 @@
                 title="Nenhum usuário em edição"
                 message="Clique em '+ Cadastrar Usuário' para criar um novo usuário ou selecione um usuário para visualizar os detalhes.">
             </app-empty-state>
+
             }
+
             @if (mostrarFormulario) {
+
             <div class="card formulario-usuario">
+
                 <div class="formulario">
+
                     <h3>
                         {{
                         !usuarioEmEdicao
@@ -41,30 +53,40 @@
                     </h3>
 
                     <div class="field">
+
                         <label>
                             Nome
                         </label>
+
                         <input
                             type="text"
                             placeholder="Nome"
                             [(ngModel)]="novoNome"
                             [readonly]="modoVisualizacao">
+
                     </div>
+
                     <div class="field">
+
                         <label>
+
                             Email
+
                         </label>
+
                         <input
                             type="email"
                             autocomplete="off"
                             placeholder="Email"
                             [(ngModel)]="novoEmail"
                             [readonly]="modoVisualizacao">
+
                     </div>
 
                     @if (!modoVisualizacao && !modoEdicao) {
 
                     <div class="field">
+
                         <label>
                             Senha
                         </label>
@@ -74,6 +96,7 @@
                             autocomplete="off"
                             placeholder="Senha"
                             [(ngModel)]="novaSenha">
+
                     </div>
 
                     }
@@ -92,7 +115,7 @@
                             [disabled]="modoVisualizacao || modoEdicao">
 
                             <option value>
-                                Todos os Tenants
+                                Selecione um tenant
                             </option>
 
                             @for (
@@ -102,20 +125,29 @@
 
                             <option
                                 [value]="tenant.id">
+
                                 {{ tenant.nome }}
+
                             </option>
+
                             }
+
                         </select>
+
                     </div>
 
                     }
+
                     <div class="field">
+
                         <label>
                             Perfil
                         </label>
+
                         <select
                             [(ngModel)]="novoPerfil"
                             [disabled]="modoVisualizacao">
+
                             @for (
                             perfil of perfisDisponiveis;
                             track perfil
@@ -123,14 +155,19 @@
 
                             <option
                                 [value]="perfil">
-                                {{ perfil }}
+
+                                {{ perfisLabel[perfil] }}
+
                             </option>
 
                             }
+
                         </select>
+
                     </div>
 
                     <div class="field">
+
                         <label>
                             Status
                         </label>
@@ -139,7 +176,9 @@
                             type="text"
                             [value]="novoAtivo ? 'Ativo' : 'Inativo'"
                             readonly>
+
                     </div>
+
                     <div class="formulario-acoes">
 
                         @if (modoVisualizacao) {
@@ -148,14 +187,18 @@
                             class="btn btn-primary"
                             type="button"
                             (click)="habilitarEdicao()">
+
                             Editar
+
                         </button>
 
                         <button
                             class="btn btn-secondary"
                             type="button"
                             (click)="cancelarEdicao()">
+
                             Fechar
+
                         </button>
 
                         } @else {
@@ -188,18 +231,23 @@
         </div>
 
         <div right>
+
             <div class="secao-usuarios">
+
                 <h2>
                     Usuários Cadastrados
                 </h2>
+
                 <p>
                     Consulte, edite e exclua usuários cadastrados.
                 </p>
+
             </div>
 
             @if (ehSuperAdmin) {
 
             <div class="field">
+
                 <label>
                     Tenant
                 </label>
@@ -209,7 +257,7 @@
                     (ngModelChange)="filtrarPorTenant($event)">
 
                     <option value>
-                        Todos os Tenants
+                        Selecione um tenant
                     </option>
 
                     @for (
@@ -226,6 +274,7 @@
                 </select>
 
             </div>
+
             }
 
             @if (usuarios.length === 0) {
@@ -239,6 +288,7 @@
             } @else {
 
             <div class="card">
+
                 <app-data-table
                     [columns]="colunasUsuarios"
                     [data]="usuariosFiltrados"
@@ -247,9 +297,13 @@
                     (toggle)="alternarStatusUsuario($event)"
                     (rowClick)="visualizarUsuario($event)">
                 </app-data-table>
+
             </div>
 
             }
+
         </div>
+
     </app-split-panel>
+
 </app-main-layout>
