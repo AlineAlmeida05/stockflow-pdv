@@ -142,20 +142,15 @@ export class AuditoriaComponent implements OnInit {
                                 .toLowerCase()
                         );
 
-                const atendeEntidade =
-                    this.entidadeSelecionada === 'todas'
+                const atendeEntidade = this.entidadeSelecionada === 'todas'
                     ||
                     auditoria.entidade === this.entidadeSelecionada;
 
-                const atendeAcao =
-                    this.acaoSelecionada === 'todas'
+                const atendeAcao = this.acaoSelecionada === 'todas'
                     ||
                     auditoria.acao === this.acaoSelecionada;
 
-                const atendePeriodo =
-                    this.auditoriaDentroPeriodo(
-                        auditoria.dataHora
-                    );
+                const atendePeriodo = this.auditoriaDentroPeriodo(auditoria.dataHora );
 
                 return (
                     atendeBusca
@@ -349,6 +344,90 @@ export class AuditoriaComponent implements OnInit {
         }
 
         return '';
+    }
+
+    get totalPaginas(): number {
+
+        return Math.max(
+            1,
+            Math.ceil(
+                this.auditoriasFiltradas.length
+                /
+                Number(this.itensPorPagina)
+            )
+        );
+
+    }
+
+    proximaPagina(): void {
+
+        if (
+            this.paginaAtual <
+            this.totalPaginas
+        ) {
+
+            this.paginaAtual++;
+
+        }
+
+    }
+
+    paginaAnterior(): void {
+
+        if (
+            this.paginaAtual > 1
+        ) {
+
+            this.paginaAtual--;
+
+        }
+
+    }
+
+    reiniciarPaginacao(): void {
+
+        this.paginaAtual = 1;
+
+    }
+
+    alterarItensPorPagina(): void {
+
+        this.paginaAtual = 1;
+
+    }
+
+    get inicioPagina(): number {
+
+        return this.auditoriasFiltradas.length === 0
+
+            ? 0
+
+            : (
+                (
+                    this.paginaAtual - 1
+                )
+                *
+                Number(
+                    this.itensPorPagina
+                )
+            ) + 1;
+
+    }
+
+    get fimPagina(): number {
+
+        return Math.min(
+
+            this.paginaAtual
+            *
+            Number(
+                this.itensPorPagina
+            ),
+
+            this.auditoriasFiltradas.length
+
+        );
+
     }
 
 }

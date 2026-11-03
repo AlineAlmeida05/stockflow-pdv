@@ -10,24 +10,28 @@
         <app-select-input
             label="Entidade"
             [(value)]="entidadeSelecionada"
+            (valueChange)="reiniciarPaginacao()"
             [options]="entidades">
         </app-select-input>
 
         <app-select-input
             label="Ação"
             [(value)]="acaoSelecionada"
+            (valueChange)="reiniciarPaginacao()"
             [options]="acoes">
         </app-select-input>
 
         <app-select-input
             label="Período"
             [(value)]="periodoSelecionado"
+            (valueChange)="reiniciarPaginacao()"
             [options]="periodos">
         </app-select-input>
 
         <app-search-input
             placeholder="Buscar usuário..."
-            [(value)]="textoBusca">
+            [(value)]="textoBusca"
+            (valueChange)="reiniciarPaginacao()">
         </app-search-input>
 
     </app-toolbar>
@@ -95,4 +99,78 @@
         }
 
     </div>
+
+    @if (
+    auditoriasFiltradas.length > 0
+    ) {
+
+    <div class="pagination">
+
+        <div class="pagination-left">
+
+            <app-select-input
+                label="Registros"
+                [(value)]="itensPorPagina"
+                (valueChange)="alterarItensPorPagina()"
+                [options]="opcoesItensPorPagina">
+            </app-select-input>
+
+            <span class="pagination-info">
+
+                Mostrando
+
+                {{ inicioPagina }}
+
+                -
+
+                {{ fimPagina }}
+
+                de
+
+                {{ auditoriasFiltradas.length }}
+
+                registros
+
+            </span>
+
+        </div>
+
+        <div class="pagination-right">
+
+            <button
+                class="btn"
+                type="button"
+                (click)="paginaAnterior()"
+                [disabled]="paginaAtual === 1">
+
+                Anterior
+
+            </button>
+
+            <span class="pagination-page">
+
+                Página
+
+                {{ paginaAtual }}
+
+                de
+
+                {{ totalPaginas }}
+
+            </span>
+
+            <button
+                class="btn"
+                type="button"
+                (click)="proximaPagina()"
+                [disabled]="paginaAtual ===totalPaginas">
+
+                Próxima
+
+            </button>
+
+        </div>
+    </div>
+    }
+
 </app-main-layout>
