@@ -71,7 +71,7 @@ export class DataTable {
 
         switch (status) {
 
-            case 'Gerente':
+            case 'GERENTE':
             case 'Ativo':
                 return 'success';
 

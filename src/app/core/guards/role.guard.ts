@@ -4,15 +4,13 @@ import { AuthService } from '../services/auth.service';
 import { AuthStateService } from '../services/auth-state.service';
 
 export const roleGuard: CanActivateFn = (
+
     route: ActivatedRouteSnapshot
 ) => {
 
     const authService = inject(AuthService);
-
     const authStateService = inject(AuthStateService);
-
     const router = inject(Router);
-
     const usuario = authStateService.usuario;
 
     if (!usuario) {
@@ -24,23 +22,29 @@ export const roleGuard: CanActivateFn = (
         return false;
     }
 
-    const perfisPermitidos =
-        route.data?.['perfis'] as string[];
+    const perfisPermitidos = route.data?.['perfis'] as string[];
 
     if (!perfisPermitidos?.length) {
+
         return true;
+
     }
 
     const permitido = perfisPermitidos.includes(
+
             usuario.perfil
+
         );
 
     if (permitido) {
+
         return true;
     }
 
     router.navigate([
+
         authService.rotaInicial()
+        
     ]);
 
     return false;

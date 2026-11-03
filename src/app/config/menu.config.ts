@@ -7,8 +7,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'Socio',
-      'Gerente',
+      'SOCIO',
+      'GERENTE',
       'Operador_Caixa',
       'Estoquista'
     ]
@@ -19,8 +19,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'Socio',
-      'Gerente',
+      'SOCIO',
+      'GERENTE',
       'Operador_Caixa'
     ]
   },
@@ -30,8 +30,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'Socio',
-      'Gerente',
+      'SOCIO',
+      'GERENTE',
       'Operador_Caixa'
     ]
   },
@@ -41,8 +41,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'Socio',
-      'Gerente',
+      'SOCIO',
+      'GERENTE',
       'Estoquista'
     ]
   },
@@ -52,8 +52,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'Socio',
-      'Gerente',
+      'SOCIO',
+      'GERENTE',
       'Estoquista'
     ]
   }, {
@@ -62,8 +62,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'Socio',
-      'Gerente',
+      'SOCIO',
+      'GERENTE',
       'Estoquista'
     ]
   },
@@ -73,8 +73,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'Socio',
-      'Gerente',
+      'SOCIO',
+      'GERENTE',
       'Operador_Caixa'
     ]
   },
@@ -84,8 +84,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'Socio',
-      'Gerente',
+      'SOCIO',
+      'GERENTE',
       'Operador_Caixa'
     ]
   },
@@ -96,8 +96,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'Socio',
-      'Gerente'
+      'SOCIO',
+      'GERENTE'
     ]
   },
   {
@@ -106,8 +106,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'Socio',
-      'Gerente'
+      'SOCIO',
+      'GERENTE'
     ]
   },
   {
@@ -116,8 +116,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'Socio',
-      'Gerente'
+      'SOCIO',
+      'GERENTE'
     ]
   },
   {
@@ -126,8 +126,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'Socio',
-      'Gerente'
+      'SOCIO',
+      'GERENTE'
     ]
   },
   {
@@ -143,8 +143,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'Socio',
-      'Gerente'
+      'SOCIO',
+      'GERENTE'
     ]
   },
   {
@@ -153,8 +153,8 @@ export const MENU_CONFIG: MenuItem[] = [
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',
-      'Socio',
-      'Gerente'
+      'SOCIO',
+      'GERENTE'
     ]
   },
   {

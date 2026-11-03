@@ -15,6 +15,9 @@ import { TenantContextService } from '../../core/services/tenant-context.service
 import { TenantCreateRequest } from '../../core/requests/tenant-create-request';
 import { TenantUpdateRequest } from '../../core/requests/tenant-update-request';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
+import { ImpersonacaoService } from '../../core/services/impersonacao.service';
+import { AuthStateService } from '../../core/services/auth-state.service';
+import { STORAGE_KEYS } from '../../core/constants/storage.constants';
 
 @Component({
     selector: 'app-tenants',
@@ -115,7 +118,9 @@ export class Tenants implements OnInit {
         private alertService: AlertService,
         private cdr: ChangeDetectorRef,
         private tenantContextService: TenantContextService,
-        private confirmDialogService: ConfirmDialogService
+        private confirmDialogService: ConfirmDialogService,
+        private impersonacaoService: ImpersonacaoService,
+        private authStateService: AuthStateService
     ) { }
 
     ngOnInit(): void {
@@ -151,39 +156,22 @@ export class Tenants implements OnInit {
         return {
 
             nome: this.novoNome,
-
             razaoSocial: this.novaRazaoSocial,
-
             cnpj: this.novoCnpj,
-
             responsavel: this.novoResponsavel,
-
             email: this.novoEmail,
-
             telefone: this.novoTelefone,
-
             endereco: this.novoEndereco,
-
             cidade: this.novaCidade,
-
             uf: this.novoUf,
-
             ativo: this.novoAtivo,
-
             slug: this.novoSlug,
-
             codigoTenant: this.novoCodigoTenant,
-
             logoUrl: this.novoLogoUrl,
-
             faviconUrl: this.novoFaviconUrl,
-
             corPrimaria: this.novaCorPrimaria,
-
             corSecundaria: this.novaCorSecundaria,
-
             marketingIaHabilitado: this.novoMarketingIaHabilitado,
-
             deliveryHabilitado: this.novoDeliveryHabilitado
 
         };
@@ -216,8 +204,10 @@ export class Tenants implements OnInit {
     }
 
     private criarTenant(
+
         request: TenantCreateRequest,
         loadingToast: ReturnType<AlertService['loading']>
+
     ): void {
 
         this.tenantService
@@ -261,9 +251,11 @@ export class Tenants implements OnInit {
     }
 
     private atualizarTenantExistente(
+
         tenantId: string,
         request: TenantUpdateRequest,
         loadingToast: ReturnType<AlertService['loading']>
+
     ): void {
         this.tenantService
             .atualizar(
@@ -271,7 +263,6 @@ export class Tenants implements OnInit {
                 request
             )
             .subscribe({
-
                 next: (tenantAtualizado) => {
 
                     this.tenants =
@@ -330,8 +321,7 @@ export class Tenants implements OnInit {
                 'Criando tenant...'
             );
 
-        const request: TenantCreateRequest =
-            this.obterDadosTenant();
+        const request: TenantCreateRequest = this.obterDadosTenant();
 
         this.criarTenant(
             request,
@@ -539,9 +529,7 @@ export class Tenants implements OnInit {
     habilitarEdicao(): void {
 
         this.abaSelecionada = 'informacoes';
-
         this.modoVisualizacao = false;
-
         this.modoEdicao = true;
 
     }
@@ -592,7 +580,6 @@ export class Tenants implements OnInit {
                         atualizado
                     )
                     .subscribe({
-
                         next: () => {
 
                             this.alertService.updateToast(
@@ -635,21 +622,17 @@ export class Tenants implements OnInit {
 
                 next: tenant => {
 
-                    this.tenantEditando =
-                        tenant;
+                    this.tenantEditando = tenant;
 
                     this.preencherFormulario(
                         tenant
                     );
 
-                    this.mostrarFormulario =
-                        true;
+                    this.mostrarFormulario = true;
 
-                    this.modoVisualizacao =
-                        true;
+                    this.modoVisualizacao = true;
 
-                    this.modoEdicao =
-                        false;
+                    this.modoEdicao = false;
 
                     this.cdr.detectChanges();
 
@@ -664,6 +647,56 @@ export class Tenants implements OnInit {
 
                     this.alertService.error(
                         'Erro ao carregar dados do tenant.'
+                    );
+
+                }
+
+            });
+
+    }
+
+    impersonarTenant(
+        tenant: Tenant
+    ): void {
+
+        if (!tenant.id) {
+            return;
+        }
+
+        const loading =
+            this.alertService.loading(
+                'Iniciando impersonação...'
+            );
+
+        this.impersonacaoService
+            .impersonar(tenant.id)
+            .subscribe({
+
+                next: resposta => {
+
+                    localStorage.setItem(
+                        STORAGE_KEYS.TOKEN,
+                        resposta.token
+                    );
+
+                    this.authStateService.inicializar();
+
+                    this.alertService.updateToast(
+                        loading.id,
+                        'Impersonação iniciada com sucesso.',
+                        'success'
+                    );
+
+                    window.location.reload();
+
+                },
+
+                error: () => {
+
+                    this.alertService.updateToast(
+                        loading.id,
+                        'Erro ao iniciar impersonação.',
+                        'error'
                     );
 
                 }
