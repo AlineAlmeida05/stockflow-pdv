@@ -14,4 +14,6 @@ export interface UsuarioLogado {
 
     token: string;
 
+    impersonando?: boolean;
+
 }

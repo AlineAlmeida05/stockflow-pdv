@@ -572,7 +572,7 @@ describe('Usuarios', () => {
         }
     );
 
-    it('deve retornar perfis para socio',
+    it('deve retornar perfis para SOCIO',
         () => {
 
             authServiceMock.usuarioLogado
@@ -591,7 +591,7 @@ describe('Usuarios', () => {
         }
     );
 
-    it('deve retornar perfis para gerente',
+    it('deve retornar perfis para GERENTE',
         () => {
 
             authServiceMock.usuarioLogado

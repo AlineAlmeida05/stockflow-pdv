@@ -68,7 +68,6 @@ export class Usuarios implements OnInit {
 
     textoBusca = '';
 
-
     colunasUsuarios: {
         field: string;
         header: string;
@@ -79,7 +78,7 @@ export class Usuarios implements OnInit {
                 header: 'Nome'
             },
             {
-                field: 'perfil',
+                field: 'perfilLabel',
                 header: 'Perfil',
                 type: 'badge'
             },
@@ -111,6 +110,15 @@ export class Usuarios implements OnInit {
 
     carregarUsuarios(): void {
 
+        if (this.tenantSelecionadoId) {
+
+        this.filtrarPorTenant(
+            this.tenantSelecionadoId
+        );
+
+        return;
+
+    }
         const usuario =
             this.authService
                 .usuarioLogado();
@@ -180,6 +188,11 @@ export class Usuarios implements OnInit {
 
                 ...usuario,
 
+                perfilLabel:
+                    this.perfisLabel[
+                    usuario.perfil
+                    ] ?? usuario.perfil,
+
                 status:
                     usuario.ativo
                         ? 'Ativo'
@@ -191,7 +204,6 @@ export class Usuarios implements OnInit {
     }
 
     salvarUsuario(): void {
-
 
         let tenant: Tenant | undefined;
 
@@ -413,7 +425,7 @@ export class Usuarios implements OnInit {
         this.novoNome = '';
         this.novoEmail = '';
         this.novaSenha = '';
-        this.novoPerfil = 'Gerente';
+        this.novoPerfil = 'GERENTE';
         this.novoAtivo = true;
         this.usuarioEmEdicao = null;
         this.modoEdicao = false;
@@ -424,8 +436,7 @@ export class Usuarios implements OnInit {
         usuario: unknown
     ): void {
 
-        const usuarioSelecionado =
-            usuario as Usuario;
+        const usuarioSelecionado = usuario as Usuario;
 
         this.modoVisualizacao = false;
         this.usuarioEmEdicao = usuarioSelecionado;
@@ -509,8 +520,7 @@ export class Usuarios implements OnInit {
         tenantId: string
     ): void {
 
-        this.tenantSelecionadoId =
-            tenantId;
+        this.tenantSelecionadoId = tenantId;
 
         if (!tenantId) {
 
@@ -548,8 +558,7 @@ export class Usuarios implements OnInit {
 
     get ehSuperAdmin(): boolean {
 
-        const usuario =
-            this.authService.usuarioLogado();
+        const usuario = this.authService.usuarioLogado();
 
         return usuario?.perfil ===
             'SUPER_ADMIN';
@@ -569,34 +578,34 @@ export class Usuarios implements OnInit {
 
                 return [
                     'PROPRIETARIO',
-                    'Socio',
-                    'Gerente',
-                    'Operador_Caixa',
-                    'Estoquista'
+                    'SOCIO',
+                    'GERENTE',
+                    'OPERADOR_CAIXA',
+                    'ESTOQUISTA'
                 ];
 
             case 'PROPRIETARIO':
 
                 return [
-                    'Socio',
-                    'Gerente',
-                    'Operador_Caixa',
-                    'Estoquista'
+                    'SOCIO',
+                    'GERENTE',
+                    'OPERADOR_CAIXA',
+                    'ESTOQUISTA'
                 ];
 
-            case 'Socio':
+            case 'SOCIO':
 
                 return [
-                    'Gerente',
-                    'Operador_Caixa',
-                    'Estoquista'
+                    'GERENTE',
+                    'OPERADOR_CAIXA',
+                    'ESTOQUISTA'
                 ];
 
-            case 'Gerente':
+            case 'GERENTE':
 
                 return [
-                    'Operador_Caixa',
-                    'Estoquista'
+                    'OPERADOR_CAIXA',
+                    'ESTOQUISTA'
                 ];
 
             default:
@@ -611,8 +620,7 @@ export class Usuarios implements OnInit {
         usuario: unknown
     ): void {
 
-        const usuarioSelecionado =
-            usuario as Usuario;
+        const usuarioSelecionado = usuario as Usuario;
 
         this.usuarioEmEdicao = usuarioSelecionado;
         this.novoNome = usuarioSelecionado.nome;
@@ -751,5 +759,13 @@ export class Usuarios implements OnInit {
 
 
     }
+
+    readonly perfisLabel: Record<string, string> = {
+        PROPRIETARIO: 'Proprietário',
+        SOCIO: 'Sócio',
+        GERENTE: 'Gerente',
+        OPERADOR_CAIXA: 'Operador Caixa',
+        ESTOQUISTA: 'Estoquista'
+    };
 
 }

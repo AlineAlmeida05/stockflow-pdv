@@ -57,8 +57,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'Socio',
-                'Gerente',
+                'SOCIO',
+                'GERENTE',
                 'Estoquista'
             ]
         }
@@ -74,8 +74,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'Socio',
-                'Gerente',
+                'SOCIO',
+                'GERENTE',
                 'Operador_Caixa'
             ]
         }
@@ -91,8 +91,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'Socio',
-                'Gerente',
+                'SOCIO',
+                'GERENTE',
                 'Estoquista'
             ]
         }
@@ -108,8 +108,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'Socio',
-                'Gerente',
+                'SOCIO',
+                'GERENTE',
                 'Estoquista'
             ]
         }
@@ -125,8 +125,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'Socio',
-                'Gerente',
+                'SOCIO',
+                'GERENTE',
                 'Operador_Caixa'
             ]
         }
@@ -142,8 +142,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'Socio',
-                'Gerente',
+                'SOCIO',
+                'GERENTE',
                 'Operador_Caixa'
             ]
         }
@@ -159,8 +159,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'Socio',
-                'Gerente',
+                'SOCIO',
+                'GERENTE',
                 'Operador_Caixa'
             ]
         }
@@ -181,8 +181,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'Socio',
-                'Gerente'
+                'SOCIO',
+                'GERENTE'
             ]
         }
     },
@@ -197,8 +197,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'Socio',
-                'Gerente']
+                'SOCIO',
+                'GERENTE']
         }
     },
     {
@@ -212,8 +212,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'Socio',
-                'Gerente'
+                'SOCIO',
+                'GERENTE'
             ]
         }
     },
@@ -228,8 +228,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'Socio',
-                'Gerente'
+                'SOCIO',
+                'GERENTE'
             ]
         }
     },
@@ -257,8 +257,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'Socio',
-                'Gerente'
+                'SOCIO',
+                'GERENTE'
             ]
         }
     },
@@ -273,8 +273,8 @@ export const routes: Routes = [
             perfis: [
                 'SUPER_ADMIN',
                 'PROPRIETARIO',
-                'Socio',
-                'Gerente']
+                'SOCIO',
+                'GERENTE']
         }
     },
     {
