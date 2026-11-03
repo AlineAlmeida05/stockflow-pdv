@@ -22,7 +22,6 @@ export class App implements OnInit {
     private tenantContextService: TenantContextService,
     private authStateService: AuthStateService
   ) {
-    this.brandingService.aplicarTema();
   }
 
   ngOnInit(): void {

@@ -133,17 +133,13 @@
 
                     <div class="brand-layout">
 
-                        @if (empresa?.logoUrl) {
-
                         <div class="brand-logo">
 
                             <img
-                                [src]="empresa?.logoUrl"
-                                [alt]="empresa?.nomeFantasia">
+                                [src]="logoEmpresa"
+                                [alt]="empresa?.nomeFantasia || branding.nomeExibicao">
 
                         </div>
-
-                        }
 
                         <div class="brand-colors">
 
