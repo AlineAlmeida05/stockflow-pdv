@@ -71,10 +71,8 @@
                         </label>
 
                         <input
-                            type="text"
-                            [value]="modoVisualizacao
-                                    ? formatarMoeda(clienteSelecionado?.limiteCredito)
-                                    : limiteCredito"
+                            type="number"
+                            [(ngModel)]="limiteCredito"
                             [readonly]="modoVisualizacao">
                     </div>
 
@@ -140,12 +138,15 @@
 
                     @if (modoVisualizacao) {
 
+                        @if (clienteSelecionado?.ativo) {
+
                     <button
                         class="btn btn-primary"
                         type="button"
                         (click)="habilitarEdicao()">
                         Editar
                     </button>
+                }
 
                     <button
                         class="btn btn-secondary"

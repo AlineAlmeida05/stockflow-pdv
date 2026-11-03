@@ -250,7 +250,7 @@ export class Clientes implements OnInit {
 
     }
 
-    excluirCliente(id: string): void {
+    inativarCliente(id: string): void {
 
         this.clienteService
             .excluir(id)
@@ -263,7 +263,7 @@ export class Clientes implements OnInit {
                     this.cdr.detectChanges();
 
                     this.alertService.success(
-                        'Cliente excluído com sucesso.'
+                        'Cliente inativado com sucesso.'
                     );
 
                 },
@@ -364,18 +364,18 @@ export class Clientes implements OnInit {
 
         this.confirmDialogService.open({
 
-            title: 'Excluir Cliente',
+            title: 'Inativar Cliente',
 
             message:
                 `Deseja realmente excluir o cliente "${cliente.nome}"?`,
 
             type: 'danger',
 
-            confirmText: 'Excluir',
+            confirmText: 'Inativar',
 
             onConfirm: () => {
 
-                this.excluirCliente(cliente.id);
+                this.inativarCliente(cliente.id);
 
             }
 
@@ -486,9 +486,18 @@ export class Clientes implements OnInit {
 
     habilitarEdicao(): void {
 
-        this.modoVisualizacao = false;
+    if (!this.clienteSelecionado?.ativo) {
 
+        this.alertService.warning(
+            'Clientes inativos não podem ser editados.'
+        );
+
+        return;
     }
+
+    this.modoVisualizacao = false;
+
+}
 
     formatarData(
         data?: string
