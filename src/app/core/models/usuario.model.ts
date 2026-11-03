@@ -1,5 +1,3 @@
-import { Tenant } from './tenant.model';
-
 export interface Usuario {
 
     id?: string;
