@@ -12,7 +12,9 @@
     (click)="fecharMenu()">
 
     <span class="sidebar-link__label">
+
       {{ item.label }}
+
     </span>
 
     @if (
@@ -24,7 +26,9 @@
       <span
         class="menu-badge"
         aria-label="Pendências">
+
         {{ obterBadge(item.modulo) }}
+        
       </span>
 
       <span

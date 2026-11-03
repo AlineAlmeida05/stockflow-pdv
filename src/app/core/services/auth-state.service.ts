@@ -13,8 +13,7 @@ export class AuthStateService {
             null
         );
 
-    readonly usuario$ =
-        this.usuarioSubject.asObservable();
+    readonly usuario$ = this.usuarioSubject.asObservable();
 
     get usuario(): UsuarioLogado | null {
 
@@ -42,8 +41,7 @@ export class AuthStateService {
             return;
         }
 
-        const usuario =
-            this.authService.usuarioLogado();
+        const usuario = this.authService.usuarioLogado();
 
         this.usuarioSubject.next(
             usuario

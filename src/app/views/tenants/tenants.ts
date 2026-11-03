@@ -679,13 +679,16 @@ export class Tenants implements OnInit {
                         resposta.token
                     );
 
-                    this.authStateService.inicializar();
-
-                    this.alertService.updateToast(
-                        loading.id,
-                        'Impersonação iniciada com sucesso.',
-                        'success'
+                    this.tenantContextService.setTenant(
+                        tenant
                     );
+
+                    localStorage.setItem(
+                        'impersonando',
+                        'true'
+                    );
+
+                    this.authStateService.inicializar();
 
                     window.location.reload();
 

@@ -61,7 +61,24 @@ export class EmpresaComponent implements OnInit {
     }
 
     get tenantAtual() {
+
         return this.tenantContextService.tenantAtual;
+    }
+
+    get logoEmpresa(): string {
+
+        return this.empresa?.logoUrl || this.branding.logo;
+
+    }
+
+    get corPrimaria(): string {
+
+        return this.empresa?.corPrimaria || this.branding.cores.primaria;
+    }
+
+    get corSecundaria(): string {
+        
+        return this.empresa?.corSecundaria || this.branding.cores.secundaria;
     }
 
 }

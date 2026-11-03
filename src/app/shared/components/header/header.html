@@ -30,6 +30,19 @@
 
   <div class="header-actions">
 
+    @if (estaImpersonando) {
+
+    <button
+      type="button"
+      class="btn btn-warning"
+      (click)="encerrarImpersonacao()">
+
+      Encerrar Impersonação
+
+    </button>
+
+    }
+
     <div
       class="profile-menu"
       #profileMenu>

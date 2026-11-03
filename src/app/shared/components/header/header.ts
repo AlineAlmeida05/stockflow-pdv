@@ -4,6 +4,7 @@ import { BRANDING_CONFIG } from '../../../config/branding.config';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { AlterarSenhaModal } from '../alterar-senha-modal/alterar-senha-modal';
+import { ImpersonacaoService } from '../../../core/services/impersonacao.service';
 
 @Component({
     selector: 'app-header',
@@ -32,6 +33,7 @@ export class Header {
         public tenantContextService: TenantContextService,
         private authService: AuthService,
         private router: Router,
+        private impersonacaoService: ImpersonacaoService
     ) {
     }
 
@@ -63,8 +65,7 @@ export class Header {
             .subscribe({
                 next: () => {
 
-                    this.authService
-                        .limparSessao();
+                    this.authService.limparSessao();
 
                     const slug =
                         this.tenantAtual?.slug
@@ -77,8 +78,7 @@ export class Header {
                 },
                 error: () => {
 
-                    this.authService
-                        .limparSessao();
+                    this.authService.limparSessao();
 
                     const slug =
                         this.tenantAtual?.slug
@@ -154,4 +154,43 @@ export class Header {
         }
 
     }
+
+    get estaImpersonando(): boolean {
+
+        return localStorage.getItem(
+            'impersonando'
+        ) === 'true';
+
+    }
+
+    encerrarImpersonacao(): void {
+
+        this.impersonacaoService
+            .encerrarImpersonacao()
+            .subscribe({
+
+                next: resposta => {
+
+                    localStorage.setItem(
+                        'token',
+                        resposta.token
+                    );
+
+                    localStorage.removeItem(
+                        'impersonando'
+                    );
+
+                    localStorage.removeItem(
+                        'tenantAtivo'
+                    );
+
+                    window.location.reload();
+
+                }
+
+            });
+
+    }
+
+
 }
