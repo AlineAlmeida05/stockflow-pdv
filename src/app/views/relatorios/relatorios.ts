@@ -190,9 +190,6 @@ export class Relatorios
                         case 'quitado':
                             return 'status-success';
 
-                        case 'parcial':
-                            return 'status-warning';
-
                         case 'pendente':
                             return 'status-danger';
 
@@ -231,8 +228,7 @@ export class Relatorios
             .subscribe({
                 next: vendas => {
 
-                    this.vendas =
-                        vendas;
+                    this.vendas = vendas;
 
                 },
 
@@ -269,8 +265,7 @@ export class Relatorios
 
                 next: movimentacoes => {
 
-                    this.movimentacoes =
-                        movimentacoes;
+                    this.movimentacoes = movimentacoes;
 
                 },
 
@@ -288,8 +283,7 @@ export class Relatorios
 
                 next: fiados => {
 
-                    this.fiados =
-                        fiados;
+                    this.fiados = fiados;
 
                 },
 
@@ -362,8 +356,7 @@ export class Relatorios
 
     get vendasFiltradas(): Venda[] {
 
-        const hoje =
-            new Date();
+        const hoje = new Date();
 
         switch (
         this.periodoSelecionado
@@ -381,8 +374,7 @@ export class Relatorios
 
             case 'ontem':
 
-                const ontem =
-                    new Date();
+                const ontem = new Date();
 
                 ontem.setDate(
                     ontem.getDate() - 1
@@ -398,8 +390,7 @@ export class Relatorios
 
             case '7dias':
 
-                const seteDias =
-                    new Date();
+                const seteDias = new Date();
 
                 seteDias.setDate(
                     seteDias.getDate() - 7
@@ -414,8 +405,7 @@ export class Relatorios
 
             case '30dias':
 
-                const trintaDias =
-                    new Date();
+                const trintaDias = new Date();
 
                 trintaDias.setDate(
                     trintaDias.getDate() - 30
@@ -686,11 +676,9 @@ export class Relatorios
                     ranking.set(
                         item.produtoId,
                         {
-                            nome:
-                                item.produtoNome,
+                            nome: item.produtoNome,
 
-                            faturamento:
-                                item.subtotal
+                            faturamento: item.subtotal
                         }
                     );
 
@@ -725,8 +713,7 @@ export class Relatorios
 
     get produtosSemVendaNoPeriodo() {
 
-        const produtosVendidos =
-            new Set<string>();
+        const produtosVendidos = new Set<string>();
 
         for (const venda of this.vendasRelatorio) {
 
@@ -823,8 +810,7 @@ export class Relatorios
 
     get produtosSemMovimentacao() {
 
-        const produtosMovimentados =
-            new Set<string>();
+        const produtosMovimentados = new Set<string>();
 
         for (
             const movimentacao of
@@ -1083,19 +1069,16 @@ export class Relatorios
 
                 if (atual) {
 
-                    atual.total +=
-                        fiado.valorTotal;
+                    atual.total += fiado.valorTotal;
 
                 } else {
 
                     ranking.set(
                         fiado.clienteId,
                         {
-                            nome:
-                                fiado.clienteNome,
+                            nome: fiado.clienteNome,
 
-                            total:
-                                fiado.valorTotal
+                            total: fiado.valorTotal
                         }
                     );
 
@@ -1151,15 +1134,6 @@ export class Relatorios
 
     }
 
-    get totalParciais(): number {
-
-        return this.fiados.filter(
-            fiado =>
-                fiado.status === 'parcial'
-        ).length;
-
-    }
-
     get maiorDevedor() {
 
         if (
@@ -1190,8 +1164,7 @@ export class Relatorios
                     'pt-BR'
                 );
 
-            const totalAtual =
-                agrupado.get(data) ?? 0;
+            const totalAtual = agrupado.get(data) ?? 0;
 
             agrupado.set(
                 data,
@@ -1363,13 +1336,12 @@ export class Relatorios
                             venda.formaPagamento
                         ),
 
-                    Itens:
-                        venda.quantidadeItens,
+                    Itens: venda.quantidadeItens,
 
-                    Valor:
-                        venda.valorTotal
+                    Valor: venda.valorTotal
 
                 }));
+
             this.excelExportService.exportSheets(
 
                 [
@@ -1457,17 +1429,13 @@ export class Relatorios
 
                     .map(produto => ({
 
-                        Produto:
-                            produto.nome,
+                        Produto: produto.nome,
 
-                        'Estoque Atual':
-                            produto.estoqueAtual,
+                        'Estoque Atual': produto.estoqueAtual,
 
-                        'Estoque Mínimo':
-                            produto.estoqueMinimo,
+                        'Estoque Mínimo': produto.estoqueMinimo,
 
-                        Status:
-                            produto.statusEstoque
+                        Status: produto.statusEstoque
 
                     }));
 
@@ -1538,10 +1506,6 @@ export class Relatorios
                 {
                     Indicador: 'Clientes Devedores',
                     Valor: this.clientesDevedores
-                },
-                {
-                    Indicador: 'Pagamentos Parciais',
-                    Valor: this.totalParciais
                 }
 
             ];
@@ -1557,14 +1521,11 @@ export class Relatorios
 
                     .map(fiado => ({
 
-                        Cliente:
-                            fiado.clienteNome,
+                        Cliente: fiado.clienteNome,
 
-                        Valor:
-                            fiado.valorTotal,
+                        Valor: fiado.valorTotal,
 
-                        Status:
-                            fiado.status
+                        Status: fiado.status
 
                     }));
 
@@ -1572,11 +1533,9 @@ export class Relatorios
                 this.maioresDevedores.map(
                     cliente => ({
 
-                        Cliente:
-                            cliente.nome,
+                        Cliente: cliente.nome,
 
-                        Total:
-                            cliente.total
+                        Total: cliente.total
 
                     })
                 );
@@ -1669,8 +1628,7 @@ export class Relatorios
                                 pagamento.formaPagamento
                             ),
 
-                        Valor:
-                            pagamento.valor
+                        Valor: pagamento.valor
 
                     }));
 

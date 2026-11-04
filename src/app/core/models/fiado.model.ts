@@ -14,7 +14,6 @@ export interface Fiado {
 
     status:
     | 'pendente'
-    | 'parcial'
     | 'quitado';
 
     observacao?: string;
