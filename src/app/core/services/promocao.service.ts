@@ -1,19 +1,16 @@
 import { Injectable } from '@angular/core';
-
 import { HttpClient } from '@angular/common/http';
-
 import { Observable } from 'rxjs';
-
 import { Promocao } from '../models/promocao.model';
 import { environment } from '../../../environments/environment';
-import { ProdutoPromocao } from '../models/produto-promocao.model';
 import { PromocaoPainel } from '../models/promocao-painel.model';
+import { PromocaoDisponivel } from '../models/PromocaoDisponivel.model ';
 
 @Injectable({
     providedIn: 'root'
 })
-export class PromocaoService {
 
+export class PromocaoService {
 
     private readonly apiUrl = `${environment.apiUrl}/api/promocoes`;
 
@@ -66,18 +63,22 @@ export class PromocaoService {
         );
     }
 
-    listarPromocoes() {
-        return this.http.get<Promocao[]>(
-            `${this.apiUrl}/promocoes/ativas`
-        );
-    }    
-
     listarPainel() {
 
         return this.http.get<
             PromocaoPainel
         >(
             `${this.apiUrl}/painel`
+        );
+
+    }
+
+    existePromocao() {
+
+        return this.http.get<
+            PromocaoDisponivel
+        >(
+            `${this.apiUrl}/existe`
         );
 
     }

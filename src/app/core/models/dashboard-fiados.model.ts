@@ -2,6 +2,8 @@ export interface DashboardFiados {
 
     resumo: {
 
+        valorTotalFiados: number;
+
         valorEmAberto: number;
 
         valorRecebido: number;
@@ -33,5 +35,15 @@ export interface DashboardFiados {
         dataLancamento: string;
 
     }[];
+
+    evolucaoFiados: EvolucaoFiados[];
+
+}
+
+export interface EvolucaoFiados {
+
+    data: string;
+
+    valor: number;
 
 }

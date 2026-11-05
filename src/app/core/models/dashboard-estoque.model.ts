@@ -34,4 +34,44 @@ export interface DashboardEstoque {
 
     }[];
 
+    giroEstoque: GiroProduto[];
+
+    produtosMaiorGiro: GiroProduto[];
+
+    produtosMenorGiro: GiroProduto[];
+
+    produtosSemEstoque: ProdutoSemEstoque[];
+
+    produtosEstoqueBaixo: ProdutoEstoqueBaixo[];
+
+}
+
+export interface GiroProduto {
+
+    nome: string;
+
+    comprado: number;
+
+    vendido: number;
+
+    giro: number;
+
+}
+export interface ProdutoSemEstoque {
+
+    id: string;
+
+    nome: string;
+
+}
+export interface ProdutoEstoqueBaixo {
+
+    id: string;
+
+    nome: string;
+
+    estoqueAtual: number;
+
+    estoqueMinimo: number;
+
 }
