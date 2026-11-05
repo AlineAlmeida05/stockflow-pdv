@@ -41,11 +41,9 @@
             ) {
             <tr
                 [class.table-row-clickable]="clickableRows"
-                [class.table-row-inativo]="$any(row).ativo === false"
-                (click)="rowClick.emit(row)" [class.table-row-critico]="
-                    $any(row).statusEstoque === 'Crítico' ||
-                    $any(row).statusEstoque === 'Sem Estoque'
-                ">
+                [class.table-row-inativo]="isInativo(row)"
+                (click)="rowClick.emit(row)"
+                [class.table-row-critico]="isEstoqueCritico(row)">
                 @for (
                 column of columns;
                 track column.field
@@ -63,17 +61,14 @@
         $any(row)[column.field]
     )">
 
-                        {{ $any(row)[column.field] }}
+                        {{ getValue(row, column.field) }}
 
                     </span>
 
                     } @else if (column.type === 'currency') {
 
                     <span
-                        [class.preco-original-riscado]="
-                            column.field === 'precoVenda' &&
-                            $any(row).precoPromocional > 0
-                        "
+                        [class.preco-original-riscado]="column.field === 'precoVenda' &&temPrecoPromocional(row)"
                         [class.preco-promocional]="
                             column.field === 'precoPromocional' &&
                             $any(row).precoPromocional > 0
@@ -88,11 +83,7 @@
         column.field === 'saldoDevedor' &&
         $any(row)[column.field] > 0
     ">
-                            {{
-                            formatCurrency(
-                            $any(row)[column.field]
-                            )
-                            }}
+                            {{ formatCurrency( getValue(row, column.field))}}
                         </span>
 
                     </span>
@@ -133,7 +124,7 @@
                             <div
                                 class="table-progress__fill"
                                 [class]="'table-progress__fill ' +
-                                getProgressClass( $any(row)[column.field])"
+                                getProgressClass( getStringValue(row,column.field))"
                                 [style.width.%]="getProgressValue($any(row)[column.field])">
                             </div>
 
@@ -141,7 +132,7 @@
 
                         <span>
 
-                            {{ $any(row)[column.field] }}
+                            {{ getValue(row, column.field) }}
 
                         </span>
 
@@ -149,7 +140,7 @@
 
                     } @else {
 
-                    {{ $any(row)[column.field]}}
+                    {{ getValue(row, column.field) }}
 
                     }
 
