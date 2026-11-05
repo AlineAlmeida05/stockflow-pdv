@@ -12,7 +12,6 @@ import { ConfirmDialogService } from '../../core/services/confirm-dialog.service
 import { AlertService } from '../../core/services/alert.service';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 import { ExpandableCard } from '../../shared/components/expandable-card/expandable-card';
-import { ChangeDetectorRef } from '@angular/core';
 import { FORMA_PAGAMENTO_ICONS, FORMA_PAGAMENTO_OPTIONS, FORMA_PAGAMENTO_PADRAO, FormaPagamentoTela } from '../../core/models/forma-pagamento.model';
 import { VENDA_STATUS_LABELS, VendaStatus } from '../../core/models/venda-status.model';
 import { FormaPagamento } from '../../core/models/venda-request.model';
@@ -80,8 +79,7 @@ export class HistoricoDeVendas
     constructor(
         private vendaService: VendaService,
         private alertService: AlertService,
-        private confirmDialogService: ConfirmDialogService,
-        private cdr: ChangeDetectorRef
+        private confirmDialogService: ConfirmDialogService
     ) { }
 
     ngOnInit(): void {
@@ -349,7 +347,6 @@ export class HistoricoDeVendas
                                 ).getTime()
                         );
 
-                    this.cdr.detectChanges();
 
                 },
 

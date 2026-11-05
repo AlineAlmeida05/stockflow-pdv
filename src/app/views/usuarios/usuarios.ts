@@ -14,7 +14,6 @@ import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { Tenant } from '../../core/models/tenant.model';
 import { TenantService } from '../../core/services/tenant.service';
 import { AuthService } from '../../core/services/auth.service';
-import { ChangeDetectorRef } from '@angular/core';
 import { UsuarioCreateRequest } from '../../core/requests/usuario-create-request';
 import { UsuarioUpdateRequest } from '../../core/requests/usuario-update-request';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
@@ -94,7 +93,6 @@ export class Usuarios implements OnInit {
         private alertService: AlertService,
         private tenantService: TenantService,
         private authService: AuthService,
-        private cdr: ChangeDetectorRef,
         private confirmDialogService: ConfirmDialogService
     ) { }
 
@@ -112,13 +110,13 @@ export class Usuarios implements OnInit {
 
         if (this.tenantSelecionadoId) {
 
-        this.filtrarPorTenant(
-            this.tenantSelecionadoId
-        );
+            this.filtrarPorTenant(
+                this.tenantSelecionadoId
+            );
 
-        return;
+            return;
 
-    }
+        }
         const usuario =
             this.authService
                 .usuarioLogado();
@@ -137,7 +135,6 @@ export class Usuarios implements OnInit {
 
                         this.usuarios = usuarios;
 
-                        this.cdr.detectChanges();
 
                     },
 
@@ -165,7 +162,6 @@ export class Usuarios implements OnInit {
 
                     this.usuarios = [...usuarios];
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -324,7 +320,6 @@ export class Usuarios implements OnInit {
 
                         this.limparFormulario();
 
-                        this.cdr.detectChanges();
 
                         this.alertService.updateToast(
                             loadingToast.id,
@@ -389,7 +384,6 @@ export class Usuarios implements OnInit {
 
                     this.modoEdicao = false;
 
-                    this.cdr.detectChanges();
 
                     this.alertService.updateToast(
                         loadingToast.id,
@@ -500,7 +494,6 @@ export class Usuarios implements OnInit {
 
                     this.tenants = tenants;
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -540,7 +533,6 @@ export class Usuarios implements OnInit {
 
                     this.usuarios = usuarios;
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -725,7 +717,6 @@ export class Usuarios implements OnInit {
 
                             this.carregarUsuarios();
 
-                            this.cdr.detectChanges();
 
                             this.alertService.updateToast(
                                 loadingToast.id,

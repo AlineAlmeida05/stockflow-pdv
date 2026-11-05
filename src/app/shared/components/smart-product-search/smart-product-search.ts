@@ -1,7 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { FormsModule } from "@angular/forms";
 import { Produto } from "../../../core/models/produto.model";
-import { ChangeDetectorRef } from '@angular/core';
 
 
 @Component({
@@ -35,7 +34,7 @@ export class SmartProductSearch {
     mostrarResultados = false;
 
     constructor(
-        private cdr: ChangeDetectorRef
+
     ) { }
 
     private atualizarResultados(): void {
@@ -146,8 +145,6 @@ export class SmartProductSearch {
         this.textoBusca = '';
 
         this.mostrarResultados = false;
-
-        this.cdr.detectChanges();
 
     }
 

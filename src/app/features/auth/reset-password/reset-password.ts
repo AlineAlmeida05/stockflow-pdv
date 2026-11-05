@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -38,8 +38,7 @@ export class ResetPassword implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
-    private alertService: AlertService,
-    private cdr: ChangeDetectorRef
+    private alertService: AlertService
   ) {
 
     this.form = this.fb.group({
@@ -80,8 +79,6 @@ export class ResetPassword implements OnInit {
           this.tokenValido = response.valido;
 
           this.validandoToken = false;
-
-          this.cdr.detectChanges();
 
         },
 
@@ -139,8 +136,6 @@ export class ResetPassword implements OnInit {
           this.alertService.success(
             'Senha alterada com sucesso. Faça login com sua nova senha.'
           );
-
-          this.cdr.detectChanges();
 
           this.router.navigate([
             '/',

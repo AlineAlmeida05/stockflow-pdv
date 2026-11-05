@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { PageTitle } from '../../shared/components/page-title/page-title';
@@ -135,7 +135,6 @@ export class ExtratoFinanceiro
 
     constructor(
         private extratoFinanceiroService: ExtratoFinanceiroService,
-        private cdr: ChangeDetectorRef,
         private auditoriaService: AuditoriaService
     ) {
     }
@@ -169,7 +168,6 @@ export class ExtratoFinanceiro
 
                     this.atualizarIndicadores();
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -197,7 +195,6 @@ export class ExtratoFinanceiro
 
                     this.atualizarIndicadores();
 
-                    this.cdr.detectChanges();
 
                     setTimeout(() => {
 

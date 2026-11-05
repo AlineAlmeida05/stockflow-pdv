@@ -10,7 +10,7 @@ import { DashboardResponse } from '../models/dashboard-response.model';
 })
 export class DashboardService {
 
-    private readonly apiUrl =  `${environment.apiUrl}/api/dashboard`;
+    private readonly apiUrl = `${environment.apiUrl}/api/dashboard`;
 
     constructor(
         private http: HttpClient
@@ -22,7 +22,7 @@ export class DashboardService {
     ): Observable<DashboardResponse> {
 
         return this.http.get<DashboardResponse>(
-            `${environment.apiUrl}/api/dashboard?periodo=${periodo}`
+            `${this.apiUrl}?periodo=${periodo}`
         );
 
     }

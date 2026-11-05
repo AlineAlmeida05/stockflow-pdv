@@ -1,13 +1,9 @@
-import { Component, OnInit, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { FormsModule } from '@angular/forms';
 import { Produto } from '../../core/models/produto.model';
 import { ProdutoService } from '../../core/services/produto.service';
-import { MovimentacaoEstoque } from '../../core/models/movimentacao-estoque.model';
-import { MovimentacaoEstoqueService } from '../../core/services/movimentacao-estoque.service';
-import { Fiado } from '../../core/models/fiado.model';
-import { FiadoService } from '../../core/services/fiado.service';
 import { ReportVendas } from './components/report-vendas/report-vendas';
 import { ReportEstoque } from './components/report-estoque/report-estoque';
 import { ReportHeader } from '../../shared/components/report-header/report-header';
@@ -45,11 +41,7 @@ export class Relatorios
 
     produtos: Produto[] = [];
 
-    movimentacoes: MovimentacaoEstoque[] = [];
-
     dashboardVendas?: DashboardVendas;
-
-    fiados: Fiado[] = [];
 
     periodoSelecionado: string = 'todos';
 
@@ -220,12 +212,9 @@ export class Relatorios
 
     constructor(
         private produtoService: ProdutoService,
-        private movimentacaoService: MovimentacaoEstoqueService,
-        private fiadoService: FiadoService,
         private pdfExportService: PdfExportService,
         private excelExportService: ExcelExportService,
         private alertService: AlertService,
-        private cdr: ChangeDetectorRef,
         private relatorioService: RelatorioService,
         private relatorioEstoqueService: RelatorioEstoqueService,
         private RelatorioFiadosService: RelatorioFiadosService
@@ -241,51 +230,12 @@ export class Relatorios
 
                     this.produtos = produtos;
 
-                    this.cdr.detectChanges();
 
                 },
 
                 error: erro => {
 
                     console.error(erro);
-
-                }
-
-            });
-
-        this.movimentacaoService
-            .listar()
-            .subscribe({
-
-                next: movimentacoes => {
-
-                    this.movimentacoes = movimentacoes;
-
-                },
-
-                error: erro => {
-
-                    console.error(erro);
-
-                }
-
-            });
-
-        this.fiadoService
-            .listar()
-            .subscribe({
-
-                next: fiados => {
-
-                    this.fiados = fiados;
-
-                },
-
-                error: erro => {
-
-                    console.error(
-                        erro
-                    );
 
                 }
 
@@ -302,7 +252,6 @@ export class Relatorios
 
                     this.dashboardVendas = dashboard;
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -325,7 +274,6 @@ export class Relatorios
 
                     this.dashboardEstoque = dashboard;
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -346,21 +294,8 @@ export class Relatorios
 
                 next: dashboard => {
 
-                    console.log(
-                        'Dashboard Fiados',
-                        dashboard
-                    );
-
-                    console.log(
-                        'Chaves Dashboard Fiados',
-                        Object.keys(
-                            dashboard
-                        )
-                    );
-
                     this.dashboardFiados = dashboard;
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -592,66 +527,6 @@ export class Relatorios
         return this.dashboardEstoque
             ?.produtosSemMovimentacao
             ?? [];
-
-    }
-
-    obterQuantidadeComprada(
-        produtoId: string
-    ): number {
-
-        return this.movimentacoes
-            .filter(
-                movimentacao =>
-                    movimentacao.produtoId === produtoId &&
-                    movimentacao.tipo === 'entrada'
-            )
-            .reduce(
-                (total, movimentacao) =>
-                    total + movimentacao.quantidade,
-                0
-            );
-
-    }
-
-    obterQuantidadeVendida(
-        produtoId: string
-    ): number {
-
-        return this.movimentacoes
-            .filter(
-                movimentacao =>
-                    movimentacao.produtoId === produtoId &&
-                    movimentacao.tipo === 'saida'
-            )
-            .reduce(
-                (total, movimentacao) =>
-                    total + movimentacao.quantidade,
-                0
-            );
-
-    }
-
-    obterPercentualGiro(
-        produtoId: string
-    ): number {
-
-        const comprado =
-            this.obterQuantidadeComprada(
-                produtoId
-            );
-
-        const vendido =
-            this.obterQuantidadeVendida(
-                produtoId
-            );
-
-        if (comprado === 0) {
-            return 0;
-        }
-
-        return Math.round(
-            (vendido / comprado) * 100
-        );
 
     }
 

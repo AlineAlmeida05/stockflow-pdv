@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { Produto } from '../../core/models/produto.model';
@@ -137,7 +137,6 @@ export class EntradaDeEstoque implements OnInit {
         private produtoService: ProdutoService,
         private movimentacaoService: MovimentacaoEstoqueService,
         private alertService: AlertService,
-        private cdr: ChangeDetectorRef,
         private confirmDialogService: ConfirmDialogService
     ) { }
 
@@ -159,7 +158,6 @@ export class EntradaDeEstoque implements OnInit {
 
                     this.produtos = produtos;
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -422,7 +420,6 @@ export class EntradaDeEstoque implements OnInit {
 
                     this.finalizarEntrada();
 
-                    this.cdr.detectChanges();
 
                     this.alertService.success(
                         'Entrada de estoque registrada com sucesso.'
@@ -456,7 +453,6 @@ export class EntradaDeEstoque implements OnInit {
 
                     this.movimentacoes = movimentacoes;
 
-                    this.cdr.detectChanges();
 
                 },
 

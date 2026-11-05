@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ChangeDetectorRef } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { EmpresaComponent } from './empresa';
 import { EmpresaService } from '../../core/services/empresa.service';

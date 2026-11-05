@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { Produto } from '../../core/models/produto.model';
 import { ProdutoService } from '../../core/services/produto.service';
@@ -101,8 +101,7 @@ export class Estoque implements OnInit {
     searchInput?: SearchInput;
 
     constructor(
-        private produtoService: ProdutoService,
-        private cdr: ChangeDetectorRef
+        private produtoService: ProdutoService
     ) { }
 
     ngOnInit(): void {
@@ -118,7 +117,6 @@ export class Estoque implements OnInit {
 
                     this.produtos = produtos;
 
-                    this.cdr.detectChanges();
 
                     setTimeout(() => {
 
