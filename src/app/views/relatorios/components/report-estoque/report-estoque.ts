@@ -29,9 +29,6 @@ export class ReportEstoque {
     produtosEstoqueBaixo: any[] = [];
 
     @Input()
-    produtosReposicao: any[] = [];
-
-    @Input()
     produtosSemMovimentacao: any[] = [];
 
     @Input()
@@ -111,7 +108,7 @@ export class ReportEstoque {
             {
                 id: 'reposicao',
                 title: 'Reposição',
-                value: this.produtosReposicao.length,
+                value: this.sugestoesReposicao.length,
                 variant: 'danger' as const
             }
         ];

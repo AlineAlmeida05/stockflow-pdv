@@ -113,13 +113,6 @@ export class ReportFiados {
                 title: 'Clientes',
                 value: this.clientesDevedores,
                 variant: 'danger'
-            },
-
-            {
-                id: 'parciais',
-                title: 'Parciais',
-                value: this.totalParciais,
-                variant: 'warning'
             }
 
         ];
@@ -134,84 +127,84 @@ export class ReportFiados {
 
     get fiadosTabelaPaginada() {
 
-    const inicio =
-        (this.paginaAtual - 1)
-        * Number(this.itensPorPagina);
-
-    const fim =
-        inicio + Number(this.itensPorPagina);
-
-    return this.fiadosTabela.slice(
-        inicio,
-        fim
-    );
-
-}
-
-get totalPaginas() {
-
-    return Math.max(
-        1,
-        Math.ceil(
-            this.fiadosTabela.length
-            /
-            Number(this.itensPorPagina)
-        )
-    );
-
-}
-
-proximaPagina(): void {
-
-    if (
-        this.paginaAtual <
-        this.totalPaginas
-    ) {
-
-        this.paginaAtual++;
-
-    }
-
-}
-
-paginaAnterior(): void {
-
-    if (
-        this.paginaAtual > 1
-    ) {
-
-        this.paginaAtual--;
-
-    }
-
-}
-
-alterarItensPorPagina(): void {
-
-    this.paginaAtual = 1;
-
-}
-
-get inicioPagina(): number {
-
-    return this.fiadosTabela.length === 0
-        ? 0
-        : (
+        const inicio =
             (this.paginaAtual - 1)
-            * Number(this.itensPorPagina)
-        ) + 1;
+            * Number(this.itensPorPagina);
 
-}
+        const fim =
+            inicio + Number(this.itensPorPagina);
 
-get fimPagina(): number {
+        return this.fiadosTabela.slice(
+            inicio,
+            fim
+        );
 
-    return Math.min(
-        this.paginaAtual
-        * Number(this.itensPorPagina),
+    }
 
-        this.fiadosTabela.length
-    );
+    get totalPaginas() {
 
-}
+        return Math.max(
+            1,
+            Math.ceil(
+                this.fiadosTabela.length
+                /
+                Number(this.itensPorPagina)
+            )
+        );
+
+    }
+
+    proximaPagina(): void {
+
+        if (
+            this.paginaAtual <
+            this.totalPaginas
+        ) {
+
+            this.paginaAtual++;
+
+        }
+
+    }
+
+    paginaAnterior(): void {
+
+        if (
+            this.paginaAtual > 1
+        ) {
+
+            this.paginaAtual--;
+
+        }
+
+    }
+
+    alterarItensPorPagina(): void {
+
+        this.paginaAtual = 1;
+
+    }
+
+    get inicioPagina(): number {
+
+        return this.fiadosTabela.length === 0
+            ? 0
+            : (
+                (this.paginaAtual - 1)
+                * Number(this.itensPorPagina)
+            ) + 1;
+
+    }
+
+    get fimPagina(): number {
+
+        return Math.min(
+            this.paginaAtual
+            * Number(this.itensPorPagina),
+
+            this.fiadosTabela.length
+        );
+
+    }
 
 }

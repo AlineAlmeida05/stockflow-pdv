@@ -8,6 +8,7 @@ import { MenuBadge } from '../../core/models/menu-badge.model';
 import { ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MenuItem } from '../../core/models/menu-item.model';
+import { PromocaoService } from '../../core/services/promocao.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -28,18 +29,21 @@ export class Sidebar implements OnInit {
 
   badges: MenuBadge[] = [];
 
+  promocoesDisponiveis = false;
+
   private destroyRef = inject(DestroyRef);
 
   constructor(
     private authService: AuthService,
     private notificacaoService: NotificacaoService,
+    private promocaoService: PromocaoService,
     private cdr: ChangeDetectorRef,
   ) { }
 
   ngOnInit(): void {
 
-    this.carregarMenu();
-    
+    this.carregarDisponibilidadePromocoes();
+
     this.carregarBadges();
 
     this.cdr.detectChanges();
@@ -54,6 +58,8 @@ export class Sidebar implements OnInit {
       .subscribe(() => {
 
         this.carregarBadges();
+
+        this.carregarDisponibilidadePromocoes();
 
         this.cdr.detectChanges();
 
@@ -74,12 +80,28 @@ export class Sidebar implements OnInit {
     }
 
     this.menuFiltrado =
-      this.menu.filter(
-        item =>
+      this.menu.filter(item => {
+
+        const possuiPerfil =
           item.perfis.includes(
             usuario.perfil
-          )
-      );
+          );
+
+        if (!possuiPerfil) {
+          return false;
+        }
+
+        if (
+          item.modulo === 'PROMOCOES'
+          &&
+          !this.promocoesDisponiveis
+        ) {
+          return false;
+        }
+
+        return true;
+
+      });
 
   }
 
@@ -118,6 +140,33 @@ export class Sidebar implements OnInit {
 
           console.error(
             'Erro ao carregar badges',
+            erro
+          );
+
+        }
+      });
+
+  }
+
+  private carregarDisponibilidadePromocoes(): void {
+
+    this.promocaoService
+      .existePromocao()
+      .subscribe({
+        next: response => {
+
+          this.promocoesDisponiveis =
+            response.existePromocao;
+
+          this.carregarMenu();
+
+          this.cdr.detectChanges();
+
+        },
+        error: erro => {
+
+          console.error(
+            'Erro ao verificar promoções',
             erro
           );
 

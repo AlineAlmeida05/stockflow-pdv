@@ -1,8 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { PageTitle } from '../../shared/components/page-title/page-title';
-import { Venda } from '../../core/models/venda.model';
-import { VendaService } from '../../core/services/venda.service';
 import { FormsModule } from '@angular/forms';
 import { Produto } from '../../core/models/produto.model';
 import { ProdutoService } from '../../core/services/produto.service';
@@ -18,6 +16,12 @@ import { ReportFinanceiro } from './components/report-financeiro/report-financei
 import { PdfExportService } from '../../core/services/pdf-export.service';
 import { ExcelExportService } from '../../core/services/excel-export.service';
 import { AlertService } from '../../core/services/alert.service';
+import { RelatorioService } from '../../core/services/relatorio.service';
+import { DashboardVendas } from '../../core/models/dashboard-vendas.model';
+import { RelatorioEstoqueService } from '../../core/services/relatorio-estoque.service';
+import { DashboardEstoque } from '../../core/models/dashboard-estoque.model';
+import { DashboardFiados } from '../../core/models/dashboard-fiados.model';
+import { RelatorioFiadosService } from '../../core/services/relatorio-fiados.service';
 
 @Component({
     selector: 'app-relatorios',
@@ -30,7 +34,7 @@ import { AlertService } from '../../core/services/alert.service';
         ReportEstoque,
         ReportHeader,
         ReportFiados,
-        ReportFinanceiro
+        ReportFinanceiro,
     ],
     templateUrl: './relatorios.html',
     styleUrl: './relatorios.scss'
@@ -39,13 +43,21 @@ import { AlertService } from '../../core/services/alert.service';
 export class Relatorios
     implements OnInit {
 
-    vendas: Venda[] = [];
-
     produtos: Produto[] = [];
 
     movimentacoes: MovimentacaoEstoque[] = [];
 
+    dashboardVendas?: DashboardVendas;
+
     fiados: Fiado[] = [];
+
+    periodoSelecionado: string = 'todos';
+
+    formaPagamentoSelecionada: string = 'todos';
+
+    dashboardEstoque?: DashboardEstoque;
+
+    dashboardFiados?: DashboardFiados;
 
     colunasVendas: {
         field: string;
@@ -57,7 +69,7 @@ export class Relatorios
         | 'date';
     }[] = [
             {
-                field: 'dataVenda',
+                field: 'dataHora',
                 header: 'Data',
                 type: 'date',
             },
@@ -66,7 +78,7 @@ export class Relatorios
                 header: 'Pagamento'
             },
             {
-                field: 'quantidadeItens',
+                field: 'itens',
                 header: 'Itens'
             },
             {
@@ -74,10 +86,6 @@ export class Relatorios
                 header: 'Valor'
             }
         ];
-
-    periodoSelecionado: string = 'todos';
-
-    formaPagamentoSelecionada: string = 'todos';
 
     colunasEstoque: {
         field: string;
@@ -211,33 +219,19 @@ export class Relatorios
     reportContent!: ElementRef<HTMLElement>;
 
     constructor(
-        private vendaService: VendaService,
         private produtoService: ProdutoService,
         private movimentacaoService: MovimentacaoEstoqueService,
         private fiadoService: FiadoService,
         private pdfExportService: PdfExportService,
         private excelExportService: ExcelExportService,
         private alertService: AlertService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private relatorioService: RelatorioService,
+        private relatorioEstoqueService: RelatorioEstoqueService,
+        private RelatorioFiadosService: RelatorioFiadosService
     ) { }
 
     ngOnInit(): void {
-
-        this.vendaService
-            .listar()
-            .subscribe({
-                next: vendas => {
-
-                    this.vendas = vendas;
-
-                },
-
-                error: erro => {
-
-                    console.error(erro);
-
-                }
-            });
 
         this.produtoService
             .listar()
@@ -297,346 +291,207 @@ export class Relatorios
 
             });
 
+        this.relatorioService
+            .buscar(
+                '2020-01-01',
+                '2099-12-31'
+            )
+            .subscribe({
+
+                next: dashboard => {
+
+                    this.dashboardVendas = dashboard;
+
+                    this.cdr.detectChanges();
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        'Erro ao carregar dashboard vendas',
+                        erro
+                    );
+
+                }
+
+            });
+
+        this.relatorioEstoqueService
+            .buscar()
+            .subscribe({
+
+                next: dashboard => {
+
+                    this.dashboardEstoque = dashboard;
+
+                    this.cdr.detectChanges();
+
+                },
+
+                error: erro => {
+
+                    console.error(
+                        'Erro ao carregar dashboard estoque',
+                        erro
+                    );
+
+                }
+
+            });
+
+        this.RelatorioFiadosService
+            .buscar()
+            .subscribe({
+
+                next: dashboard => {
+
+                    console.log(
+                        'Dashboard Fiados',
+                        dashboard
+                    );
+
+                    console.log(
+                        'Chaves Dashboard Fiados',
+                        Object.keys(
+                            dashboard
+                        )
+                    );
+
+                    this.dashboardFiados = dashboard;
+
+                    this.cdr.detectChanges();
+
+                },
+
+
+                error: erro => {
+
+                    console.error(
+                        'Erro ao carregar dashboard fiados',
+                        erro
+                    );
+
+                }
+
+            });
     }
 
     get totalVendas(): number {
 
-        return this.vendasRelatorio.length;
+        return this.dashboardVendas
+            ?.resumo
+            ?.totalVendas
+            ?? 0;
 
     }
 
     get faturamentoTotal(): number {
 
-        return this.vendasRelatorio.reduce(
-            (total, venda) =>
-                total + venda.valorTotal,
-            0
+        return Number(
+            this.dashboardVendas
+                ?.resumo
+                ?.faturamento
+            ?? 0
         );
 
     }
 
     get ticketMedio(): number {
 
-        if (
-            this.vendasRelatorio.length === 0
-        ) {
-            return 0;
-        }
-
         return Number(
-            (
-                this.faturamentoTotal /
-                this.totalVendas
-            ).toFixed(2)
+            this.dashboardVendas
+                ?.resumo
+                ?.ticketMedio
+            ?? 0
         );
 
     }
 
     get vendasTabela() {
 
-        return this.vendasRelatorio.map(
-            venda => ({
+        return (
+            this.dashboardVendas
+                ?.historico
+            ?? []
+        ).map(venda => ({
 
-                ...venda,
+            ...venda,
 
-                valorTotalFormatado:
-                    venda.valorTotal
-                        .toLocaleString(
-                            'pt-BR',
-                            {
-                                style: 'currency',
-                                currency: 'BRL'
-                            }
-                        )
+            valorTotalFormatado:
+                Number(
+                    venda.valor
+                ).toLocaleString(
+                    'pt-BR',
+                    {
+                        style: 'currency',
+                        currency: 'BRL'
+                    }
+                )
 
-            })
-        );
-
-    }
-
-    get vendasFiltradas(): Venda[] {
-
-        const hoje = new Date();
-
-        switch (
-        this.periodoSelecionado
-        ) {
-
-            case 'hoje':
-
-                return this.vendas.filter(
-                    venda =>
-                        new Date(
-                            venda.dataVenda
-                        ).toDateString() ===
-                        hoje.toDateString()
-                );
-
-            case 'ontem':
-
-                const ontem = new Date();
-
-                ontem.setDate(
-                    ontem.getDate() - 1
-                );
-
-                return this.vendas.filter(
-                    venda =>
-                        new Date(
-                            venda.dataVenda
-                        ).toDateString() ===
-                        ontem.toDateString()
-                );
-
-            case '7dias':
-
-                const seteDias = new Date();
-
-                seteDias.setDate(
-                    seteDias.getDate() - 7
-                );
-
-                return this.vendas.filter(
-                    venda =>
-                        new Date(
-                            venda.dataVenda
-                        ) >= seteDias
-                );
-
-            case '30dias':
-
-                const trintaDias = new Date();
-
-                trintaDias.setDate(
-                    trintaDias.getDate() - 30
-                );
-
-                return this.vendas.filter(
-                    venda =>
-                        new Date(
-                            venda.dataVenda
-                        ) >= trintaDias
-                );
-
-            default:
-
-                return this.vendas;
-
-        }
-
-    }
-
-    get vendasRelatorio(): Venda[] {
-
-        if (
-            this.formaPagamentoSelecionada ===
-            'todos'
-        ) {
-
-            return this.vendasFiltradas;
-
-        }
-
-        return this.vendasFiltradas.filter(
-            venda =>
-                venda.formaPagamento ===
-                this.formaPagamentoSelecionada
-        );
+        }));
 
     }
 
     get topProdutosVendidos() {
 
-        const ranking = new Map<
-            string,
-            {
-                nome: string;
-                quantidade: number;
-            }
-        >();
+        return (
+            this.dashboardVendas
+                ?.top5Produtos
+            ?? []
+        ).map(produto => ({
 
-        for (const venda of this.vendasRelatorio) {
+            nome: produto.produtoNome,
 
-            for (const item of venda.itens) {
+            quantidade: produto.quantidadeVendida
 
-                const atual =
-                    ranking.get(
-                        item.produtoId
-                    );
-
-                if (atual) {
-
-                    atual.quantidade +=
-                        item.quantidade;
-
-                } else {
-
-                    ranking.set(
-                        item.produtoId,
-                        {
-                            nome:
-                                item.produtoNome,
-                            quantidade:
-                                item.quantidade
-                        }
-                    );
-
-                }
-
-            }
-
-        }
-
-        return [...ranking.values()]
-            .sort(
-                (a, b) =>
-                    b.quantidade -
-                    a.quantidade
-            )
-            .slice(0, 5);
-
-    }
-
-    get formasPagamentoRanking() {
-
-        const ranking = new Map<
-            string,
-            number
-        >();
-
-        for (const venda of this.vendasRelatorio) {
-
-            const atual =
-                ranking.get(
-                    venda.formaPagamento
-                ) ?? 0;
-
-            ranking.set(
-                venda.formaPagamento,
-                atual + 1
-            );
-
-        }
-
-        return [...ranking.entries()]
-            .map(
-                ([formaPagamento, total]) => ({
-
-                    formaPagamento,
-
-                    total
-
-                })
-            )
-            .sort(
-                (a, b) =>
-                    b.total - a.total
-            );
+        }));
 
     }
 
     get formaPagamentoMaisUtilizada(): string {
 
-        if (
-            this.formasPagamentoRanking
-                .length === 0
-        ) {
-
-            return '-';
-
-        }
-
-        return this.formasPagamentoRanking[0]
-            .formaPagamento;
+        return this.dashboardVendas
+            ?.resumo
+            ?.formaMaisUtilizada
+            ?? '-';
 
     }
 
     get evolucaoVendasPorDia() {
 
-        const agrupado = new Map<
-            string,
-            number
-        >();
+        return (
+            this.dashboardVendas
+                ?.evolucaoVendas
+            ?? []
+        ).map(item => ({
 
-        for (const venda of this.vendasRelatorio) {
+            data: item.data,
 
-            const data =
-                new Date(
-                    venda.dataVenda
-                ).toLocaleDateString(
-                    'pt-BR'
-                );
-
-            const totalAtual =
-                agrupado.get(
-                    data
-                ) ?? 0;
-
-            agrupado.set(
-                data,
-                totalAtual +
-                venda.valorTotal
-            );
-
-        }
-
-        return [...agrupado.entries()]
-            .map(
-                ([data, total]) => ({
-
-                    data,
-
-                    total
-
-                })
+            total: Number(
+                item.valor
             )
-            .sort(
-                (a, b) =>
-                    new Date(
-                        a.data
-                            .split('/')
-                            .reverse()
-                            .join('-')
-                    ).getTime()
-                    -
-                    new Date(
-                        b.data
-                            .split('/')
-                            .reverse()
-                            .join('-')
-                    ).getTime()
-            );
 
-    }
-
-    get melhorDiaVendas() {
-
-        if (
-            this.evolucaoVendasPorDia.length === 0
-        ) {
-
-            return undefined;
-
-        }
-
-        return [...this.evolucaoVendasPorDia]
-            .sort(
-                (a, b) =>
-                    b.total - a.total
-            )[0];
+        }));
 
     }
 
     get melhorDiaData(): string {
 
-        return this.melhorDiaVendas?.data ?? '-';
+        return this.dashboardVendas
+            ?.melhorDia
+            ?.data
+            ?? '-';
 
     }
 
     get melhorDiaValor(): string {
 
-        return (
-            this.melhorDiaVendas?.total ?? 0
+        return Number(
+            this.dashboardVendas
+                ?.melhorDia
+                ?.valor
+            ?? 0
         ).toLocaleString(
             'pt-BR',
             {
@@ -647,92 +502,27 @@ export class Relatorios
 
     }
 
-    get produtosMaisRentaveis() {
-
-        const ranking = new Map<
-            string,
-            {
-                nome: string;
-                faturamento: number;
-            }
-        >();
-
-        for (const venda of this.vendasRelatorio) {
-
-            for (const item of venda.itens) {
-
-                const atual =
-                    ranking.get(
-                        item.produtoId
-                    );
-
-                if (atual) {
-
-                    atual.faturamento +=
-                        item.subtotal;
-
-                } else {
-
-                    ranking.set(
-                        item.produtoId,
-                        {
-                            nome: item.produtoNome,
-
-                            faturamento: item.subtotal
-                        }
-                    );
-
-                }
-
-            }
-
-        }
-
-        return [...ranking.values()]
-            .sort(
-                (a, b) =>
-                    b.faturamento -
-                    a.faturamento
-            );
-
-    }
-
     get produtoMaisFaturou() {
 
-        if (
-            this.produtosMaisRentaveis.length === 0
-        ) {
+        const produto =
+            this.dashboardVendas
+                ?.top5Produtos?.[0];
+
+        if (!produto) {
 
             return undefined;
 
         }
 
-        return this.produtosMaisRentaveis[0];
+        return {
 
-    }
+            nome:
+                produto.produtoNome,
 
-    get produtosSemVendaNoPeriodo() {
+            faturamento:
+                produto.faturamento
 
-        const produtosVendidos = new Set<string>();
-
-        for (const venda of this.vendasRelatorio) {
-
-            for (const item of venda.itens) {
-
-                produtosVendidos.add(
-                    item.produtoId
-                );
-
-            }
-
-        }
-
-        return this.produtos.filter(
-            produto =>
-                !produtosVendidos.has(
-                    produto.id
-                )
-        );
+        };
 
     }
 
@@ -748,37 +538,26 @@ export class Relatorios
 
     get totalProdutos(): number {
 
-        return this.produtos.length;
+        return this.dashboardEstoque
+            ?.resumo
+            ?.totalProdutos
+            ?? 0;
 
     }
 
-    get produtosSemEstoque(): Produto[] {
+    get produtosSemEstoque() {
 
-        return this.produtos.filter(
-            produto =>
-                produto.estoqueAtual === 0
-        );
-
-    }
-
-    get produtosEstoqueBaixo(): Produto[] {
-
-        return this.produtos.filter(
-            produto =>
-                produto.estoqueAtual > 0 &&
-                produto.estoqueAtual <=
-                produto.estoqueMinimo
-        );
+        return this.dashboardEstoque
+            ?.produtosSemEstoque
+            ?? [];
 
     }
 
-    get produtosReposicao(): Produto[] {
+    get produtosEstoqueBaixo() {
 
-        return this.produtos.filter(
-            produto =>
-                produto.estoqueAtual <=
-                produto.estoqueMinimo
-        );
+        return this.dashboardEstoque
+            ?.produtosEstoqueBaixo
+            ?? [];
 
     }
 
@@ -810,25 +589,9 @@ export class Relatorios
 
     get produtosSemMovimentacao() {
 
-        const produtosMovimentados = new Set<string>();
-
-        for (
-            const movimentacao of
-            this.movimentacoes
-        ) {
-
-            produtosMovimentados.add(
-                movimentacao.produtoId
-            );
-
-        }
-
-        return this.produtos.filter(
-            produto =>
-                !produtosMovimentados.has(
-                    produto.id
-                )
-        );
+        return this.dashboardEstoque
+            ?.produtosSemMovimentacao
+            ?? [];
 
     }
 
@@ -894,316 +657,152 @@ export class Relatorios
 
     get produtosGiroEstoque() {
 
-        return this.produtos.map(
-            produto => ({
+        return (
+            this.dashboardEstoque
+                ?.giroEstoque
+            ?? []
+        ).map(produto => ({
 
-                nome: produto.nome,
+            ...produto,
 
-                comprado:
-                    this.obterQuantidadeComprada(
-                        produto.id
-                    ),
+            giro:
+                produto.giro + '%'
 
-                vendido:
-                    this.obterQuantidadeVendida(
-                        produto.id
-                    ),
-
-                giro:
-                    this.obterPercentualGiro(
-                        produto.id
-                    ) + '%'
-
-            })
-        );
+        }));
 
     }
 
     get produtosMenorGiro() {
 
-        return this.produtos
-            .map(produto => ({
-
-                nome: produto.nome,
-
-                giro:
-                    this.obterPercentualGiro(
-                        produto.id
-                    )
-
-            }))
-            .filter(
-                produto =>
-                    produto.giro > 0
-            )
-            .sort(
-                (a, b) =>
-                    a.giro - b.giro
-            )
-            .slice(0, 5);
+        return this.dashboardEstoque
+            ?.produtosMenorGiro
+            ?? [];
 
     }
 
     get sugestoesReposicao() {
 
-        return this.produtos
-            .filter(
-                produto =>
-                    produto.estoqueAtual <=
-                    produto.estoqueMinimo
-            )
-            .map(produto => ({
-
-                ...produto,
-
-                quantidadeReposicao:
-                    produto.estoqueMinimo -
-                    produto.estoqueAtual
-
-            }))
-            .sort(
-                (a, b) =>
-                    a.estoqueAtual -
-                    b.estoqueAtual
-            );
+        return this.dashboardEstoque
+            ?.sugestoesReposicao
+            ?? [];
 
     }
 
     get produtosMaiorGiro() {
 
-        return this.produtos
-            .map(produto => ({
-
-                nome: produto.nome,
-
-                giro:
-                    this.obterPercentualGiro(
-                        produto.id
-                    )
-
-            }))
-            .filter(
-                produto =>
-                    produto.giro > 0
-            )
-            .sort(
-                (a, b) =>
-                    b.giro - a.giro
-            )
-            .slice(0, 5);
+        return this.dashboardEstoque
+            ?.produtosMaiorGiro
+            ?? [];
 
     }
 
     get valorEmAberto(): number {
 
-        return this.fiados
-            .filter(
-                fiado =>
-                    fiado.status === 'pendente'
-            )
-            .reduce(
-                (total, fiado) =>
-                    total + fiado.valorTotal,
-                0
-            );
+        return this.dashboardFiados
+            ?.resumo
+            ?.valorEmAberto
+            ?? 0;
 
     }
 
     get totalPendentes(): number {
 
-        return this.fiados.filter(
-            fiado =>
-                fiado.status === 'pendente'
-        ).length;
+        return this.dashboardFiados
+            ?.resumo
+            ?.pendentes
+            ?? 0;
 
     }
 
     get totalPagos(): number {
 
-        return this.fiados.filter(
-            fiado =>
-                fiado.status === 'quitado'
-        ).length;
+        return this.dashboardFiados
+            ?.resumo
+            ?.pagos
+            ?? 0;
 
     }
 
+
     get clientesDevedores(): number {
 
-        return new Set(
-
-            this.fiados
-                .filter(
-                    fiado =>
-                        fiado.status === 'pendente'
-                )
-                .map(
-                    fiado =>
-                        fiado.clienteId
-                )
-
-        ).size;
+        return this.dashboardFiados
+            ?.resumo
+            ?.clientesDevedores
+            ?? 0;
 
     }
 
     get maioresDevedores() {
 
-        const ranking = new Map<
-            string,
-            {
-                nome: string;
-                total: number;
-            }
-        >();
-
-        this.fiados
-            .filter(
-                fiado =>
-                    fiado.status === 'pendente'
-            )
-            .forEach(fiado => {
-
-                const atual =
-                    ranking.get(
-                        fiado.clienteId
-                    );
-
-                if (atual) {
-
-                    atual.total += fiado.valorTotal;
-
-                } else {
-
-                    ranking.set(
-                        fiado.clienteId,
-                        {
-                            nome: fiado.clienteNome,
-
-                            total: fiado.valorTotal
-                        }
-                    );
-
-                }
-
-            });
-
-        return [...ranking.values()]
-            .sort(
-                (a, b) =>
-                    b.total - a.total
-            )
-            .slice(0, 5);
+        return this.dashboardFiados
+            ?.maioresDevedores
+            ?? [];
 
     }
 
     get ultimosFiados() {
 
-        return [...this.fiados]
-            .sort(
-                (a, b) =>
-                    new Date(
-                        b.dataLancamento
-                    ).getTime()
-                    -
-                    new Date(
-                        a.dataLancamento
-                    ).getTime()
-            )
-            .slice(0, 10);
+        return this.dashboardFiados
+            ?.ultimosLancamentos
+            ?? [];
 
     }
 
     get fiadosTabela() {
 
-        return this.ultimosFiados.map(
-            fiado => ({
+        return this.ultimosFiados
+            .map(fiado => ({
 
                 ...fiado,
 
                 valorFormatado:
-                    fiado.valorTotal
-                        .toLocaleString(
-                            'pt-BR',
-                            {
-                                style: 'currency',
-                                currency: 'BRL'
-                            }
-                        )
+                    Number(
+                        fiado.valor
+                    ).toLocaleString(
+                        'pt-BR',
+                        {
+                            style: 'currency',
+                            currency: 'BRL'
+                        }
+                    )
 
-            })
-        );
+            }));
 
     }
 
     get maiorDevedor() {
 
-        if (
-            this.maioresDevedores.length === 0
-        ) {
-
-            return undefined;
-
-        }
-
-        return this.maioresDevedores[0];
+        return this.dashboardFiados
+            ?.maioresDevedores?.[0];
 
     }
 
     get evolucaoFiadosPorDia() {
 
-        const agrupado = new Map<
-            string,
-            number
-        >();
+        return (
+            this.dashboardFiados
+                ?.evolucaoFiados
+            ?? []
+        ).map(item => ({
 
-        for (const fiado of this.fiados) {
+            data: item.data,
 
-            const data =
-                new Date(
-                    fiado.dataLancamento
-                ).toLocaleDateString(
-                    'pt-BR'
-                );
-
-            const totalAtual = agrupado.get(data) ?? 0;
-
-            agrupado.set(
-                data,
-                totalAtual +
-                fiado.valorTotal
-            );
-
-        }
-
-        return [...agrupado.entries()]
-            .map(
-                ([data, total]) => ({
-                    data,
-                    total
-                })
+            total: Number(
+                item.valor
             )
-            .sort(
-                (a, b) =>
-                    new Date(
-                        a.data.split('/')
-                            .reverse()
-                            .join('-')
-                    ).getTime()
-                    -
-                    new Date(
-                        b.data.split('/')
-                            .reverse()
-                            .join('-')
-                    ).getTime()
-            );
+
+        }));
 
     }
 
     get valorFiados(): number {
 
-        return this.fiados.reduce(
-            (total, fiado) =>
-                total + fiado.valorTotal,
-            0
+        return Number(
+            this.dashboardFiados
+                ?.resumo
+                ?.valorTotalFiados
+            ?? 0
         );
 
     }
@@ -1218,40 +817,9 @@ export class Relatorios
 
     get faturamentoPorPagamento() {
 
-        const ranking = new Map<
-            string,
-            number
-        >();
-
-        for (const venda of this.vendas) {
-
-            const atual =
-                ranking.get(
-                    venda.formaPagamento
-                ) ?? 0;
-
-            ranking.set(
-                venda.formaPagamento,
-                atual +
-                venda.valorTotal
-            );
-
-        }
-
-        return [...ranking.entries()]
-            .map(
-                ([formaPagamento, valor]) => ({
-
-                    formaPagamento,
-
-                    valor
-
-                })
-            )
-            .sort(
-                (a, b) =>
-                    b.valor - a.valor
-            );
+        return this.dashboardVendas
+            ?.receitaPorFormaPagamento
+            ?? [];
 
     }
 
@@ -1316,11 +884,11 @@ export class Relatorios
                 .sort(
                     (a, b) =>
                         new Date(
-                            b.dataVenda
+                            b.dataHora
                         ).getTime()
                         -
                         new Date(
-                            a.dataVenda
+                            a.dataHora
                         ).getTime()
                 )
 
@@ -1328,7 +896,7 @@ export class Relatorios
 
                     Data:
                         this.formatarDataExcel(
-                            venda.dataVenda
+                            venda.dataHora
                         ),
 
                     'Forma de Pagamento':
@@ -1336,9 +904,9 @@ export class Relatorios
                             venda.formaPagamento
                         ),
 
-                    Itens: venda.quantidadeItens,
+                    Itens: venda.itens,
 
-                    Valor: venda.valorTotal
+                    Valor: venda.valorTotalFormatado
 
                 }));
 
@@ -1515,15 +1083,15 @@ export class Relatorios
 
                     .sort(
                         (a, b) =>
-                            b.valorTotal -
-                            a.valorTotal
+                            b.valor -
+                            a.valor
                     )
 
                     .map(fiado => ({
 
                         Cliente: fiado.clienteNome,
 
-                        Valor: fiado.valorTotal,
+                        Valor: fiado.valor,
 
                         Status: fiado.status
 

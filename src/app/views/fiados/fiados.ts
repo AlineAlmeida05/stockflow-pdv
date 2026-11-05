@@ -118,8 +118,7 @@ export class Fiados implements OnInit {
 
     deveExibirAlertaFinanceiroResumo(): boolean {
 
-        const status =
-            this.statusFinanceiro;
+        const status = this.statusFinanceiro;
 
         return (
             status === 'INADIMPLENTE'
@@ -139,8 +138,7 @@ export class Fiados implements OnInit {
 
     }
 
-    resumosClientes:
-        Record<string, ClienteResumo> = {};
+    resumosClientes: Record<string, ClienteResumo> = {};
 
     obterDiasSemPagamento(
         clienteId: string
@@ -345,6 +343,10 @@ export class Fiados implements OnInit {
 
     confirmarRecebimento(): void {
 
+        console.log(
+            'Fiado selecionado',
+            this.fiados
+        );
         if (
             !this.cliente ||
             this.valorRecebido <= 0

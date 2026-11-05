@@ -32,6 +32,8 @@ export interface EvolucaoVendas {
 export interface TopProduto {
     produtoNome: string;
     quantidadeVendida: number;
+    faturamento: number;
+
 }
 
 export interface VendaHistorico {

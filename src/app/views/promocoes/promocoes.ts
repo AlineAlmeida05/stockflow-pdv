@@ -14,7 +14,6 @@ import { Promocao } from '../../core/models/promocao.model';
 import { ProdutoPromocao } from '../../core/models/produto-promocao.model';
 import { NotificacaoService } from '../../core/services/notificacao.service';
 
-
 @Component({
     selector: 'app-promocoes',
     standalone: true,
@@ -253,69 +252,6 @@ export class Promocoes implements OnInit {
 
         this.carregarDados();
 
-        this.produtoService
-            .listar()
-            .subscribe({
-                next: produtos => {
-
-                    this.produtos = produtos;
-
-                    this.cdr.detectChanges();
-
-                },
-
-                error: erro => {
-
-                    console.error(erro);
-
-                }
-
-            });
-
-        this.promocaoService
-            .listar()
-            .subscribe({
-
-                next: promocoes => {
-
-                    this.promocoes = promocoes;
-
-                    this.cdr.detectChanges();
-
-                },
-
-                error: erro => {
-
-                    console.error(erro);
-
-                }
-
-            });
-
-        this.promocaoService
-            .listarPainel()
-            .subscribe({
-
-                next: painel => {
-
-                    this.pendentes = painel.pendentes;
-
-                    this.ativas = painel.ativas;
-                    
-                    this.cdr.detectChanges();
-
-                },
-
-                error: erro => {
-
-                    console.error(
-                        erro
-                    );
-
-                }
-
-            });
-
     }
 
     obterPromocaoAtiva(
@@ -499,12 +435,19 @@ export class Promocoes implements OnInit {
 
                 next: () => {
 
+                    const produtoId = produto.id;
+
                     this.carregarDados();
 
-                    this.notificacaoService
-                        .notificarAtualizacaoBadges();
+                    setTimeout(() => {
 
-                    this.cdr.detectChanges();
+                        this.restaurarProdutoSelecionado(
+                            produtoId
+                        );
+
+                    });
+
+                    this.notificacaoService.notificarAtualizacaoBadges();
 
                     this.alertService.success(
                         'Promoção ativada com sucesso.'
@@ -550,16 +493,25 @@ export class Promocoes implements OnInit {
 
                 next: () => {
 
+                    const produtoId = produto.id;
+
                     this.carregarDados();
+
+                    setTimeout(() => {
+
+                        this.restaurarProdutoSelecionado(
+                            produtoId
+                        );
+
+                    });
 
                     this.notificacaoService
                         .notificarAtualizacaoBadges();
 
-                    this.cdr.detectChanges();
-
                     this.alertService.success(
                         'Promoção encerrada com sucesso.'
                     );
+
                 },
 
                 error: erro => {
@@ -615,8 +567,7 @@ export class Promocoes implements OnInit {
         produtoId: string
     ): 'success' | 'warning' | 'danger' {
 
-        const prioridade =
-            this.obterPrioridade(produtoId);
+        const prioridade = this.obterPrioridade(produtoId);
 
         if (
             prioridade.includes('Alta')
@@ -964,8 +915,11 @@ export class Promocoes implements OnInit {
             .listar()
             .subscribe({
                 next: produtos => {
+
                     this.produtos = produtos;
+
                     this.cdr.detectChanges();
+
                 }
             });
 
@@ -973,8 +927,11 @@ export class Promocoes implements OnInit {
             .listar()
             .subscribe({
                 next: promocoes => {
+
                     this.promocoes = promocoes;
+
                     this.cdr.detectChanges();
+
                 }
             });
 
@@ -982,11 +939,31 @@ export class Promocoes implements OnInit {
             .listarPainel()
             .subscribe({
                 next: painel => {
+
                     this.pendentes = painel.pendentes;
+
                     this.ativas = painel.ativas;
+
                     this.cdr.detectChanges();
+
                 }
             });
+
+    }
+
+    private restaurarProdutoSelecionado(
+        produtoId?: string
+    ): void {
+
+        if (!produtoId) {
+            return;
+        }
+
+        this.produtoSelecionado =
+            this.produtos.find(
+                produto =>
+                    produto.id === produtoId
+            );
 
     }
 }   

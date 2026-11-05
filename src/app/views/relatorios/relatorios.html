@@ -73,7 +73,9 @@
             [colunasVendas]="colunasVendas"
             [faturamentoPorPagamento]="faturamentoPorPagamento"
             [formaPagamentoSelecionada]="formaPagamentoSelecionada"
-            (formaPagamentoSelecionadaChange)="formaPagamentoSelecionada = $event">
+            (formaPagamentoSelecionadaChange)="formaPagamentoSelecionada = $event"
+            [melhorDiaData]="melhorDiaData"
+            [melhorDiaValor]="melhorDiaValor">
         </app-report-vendas>
 
         }
@@ -86,7 +88,7 @@
             [totalProdutos]="totalProdutos"
             [produtosSemEstoque]="produtosSemEstoque"
             [produtosEstoqueBaixo]="produtosEstoqueBaixo"
-            [produtosReposicao]="produtosReposicao"
+            [sugestoesReposicao]="sugestoesReposicao"
             [produtosSemMovimentacao]="produtosSemMovimentacao"
             [sugestoesReposicao]="sugestoesReposicao"
             [produtosMenorGiro]="produtosMenorGiro"
