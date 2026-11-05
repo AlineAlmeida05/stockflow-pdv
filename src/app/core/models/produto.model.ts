@@ -4,7 +4,7 @@ export interface Produto {
 
   codigo?: string;
 
-  codigoBarras: string;  
+  codigoBarras: string;
 
   nome: string;
 
@@ -30,12 +30,12 @@ export interface Produto {
 
   dataFimPromocao?: string;
 
-  custoMedio?: number;
+  custoMedio: number;
 
   promocaoMotivo?:
-    | 'giro-baixo'
-    | 'estoque-parado'
-    | 'manual'
-    | 'Meta atingida';
+  | 'giro-baixo'
+  | 'estoque-parado'
+  | 'manual'
+  | 'Meta atingida';
 
 }

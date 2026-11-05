@@ -108,6 +108,27 @@
             </div>
 
             <div class="field field-small">
+
+                <label>Custo Médio</label>
+
+                @if (modoVisualizacao) {
+
+                <input
+                    type="text"
+                    [value]="formatarMoeda(custoMedio)"
+                    readonly>
+
+                } @else {
+
+                <input
+                    type="number"
+                    [(ngModel)]="custoMedio">
+
+                }
+
+            </div>
+
+            <div class="field field-small">
                 <label>Estoque Atual</label>
 
                 <input

@@ -36,7 +36,7 @@ export class DataTable {
     columns: TableColumn[] = [];
 
     @Input()
-    data: unknown[] = [];
+    data: Record<string, unknown>[] = [];
 
     @Input()
     showActions = false;
@@ -48,13 +48,22 @@ export class DataTable {
     deleteIcon = '🗑️';
 
     @Output()
-    edit = new EventEmitter<unknown>();
+    edit =
+        new EventEmitter<
+            Record<string, unknown>
+        >();
 
     @Output()
-    delete = new EventEmitter<unknown>();
+    delete =
+        new EventEmitter<
+            Record<string, unknown>
+        >();
 
     @Output()
-    rowClick = new EventEmitter<unknown>();
+    rowClick =
+        new EventEmitter<
+            Record<string, unknown>
+        >();
 
     @Input()
     actionsHeader = 'Ações';
@@ -63,7 +72,10 @@ export class DataTable {
     clickableRows = false;
 
     @Output()
-    toggle = new EventEmitter<any>();
+    toggle =
+        new EventEmitter<
+            Record<string, unknown>
+        >();
 
     obterVariantStatus(
         status: string
