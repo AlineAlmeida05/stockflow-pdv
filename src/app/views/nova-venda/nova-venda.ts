@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { Produto } from '../../core/models/produto.model';
@@ -116,8 +116,7 @@ export class NovaVenda implements OnInit, AfterViewInit {
         private vendaService: VendaService,
         private clienteService: ClienteService,
         private alertService: AlertService,
-        private confirmDialogService: ConfirmDialogService,
-        private cdr: ChangeDetectorRef
+        private confirmDialogService: ConfirmDialogService
     ) { }
 
     ngOnInit(): void {
@@ -148,7 +147,7 @@ export class NovaVenda implements OnInit, AfterViewInit {
             produto => produto.id === this.produtoSelecionadoId
 
         );
-        
+
 
     }
 
@@ -189,7 +188,6 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
                     this.produtos = produtos;
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -740,7 +738,6 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
                     this.finalizandoVenda = false;
 
-                    this.cdr.detectChanges();
 
                     this.alertService.success(
                         'Venda concluída com sucesso.'

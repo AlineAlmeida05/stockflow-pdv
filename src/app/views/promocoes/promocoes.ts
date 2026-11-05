@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { Produto } from '../../core/models/produto.model';
@@ -244,7 +244,6 @@ export class Promocoes implements OnInit {
         private produtoService: ProdutoService,
         private promocaoService: PromocaoService,
         private alertService: AlertService,
-        private cdr: ChangeDetectorRef,
         private notificacaoService: NotificacaoService
     ) { }
 
@@ -918,7 +917,6 @@ export class Promocoes implements OnInit {
 
                     this.produtos = produtos;
 
-                    this.cdr.detectChanges();
 
                 }
             });
@@ -930,7 +928,6 @@ export class Promocoes implements OnInit {
 
                     this.promocoes = promocoes;
 
-                    this.cdr.detectChanges();
 
                 }
             });
@@ -944,7 +941,6 @@ export class Promocoes implements OnInit {
 
                     this.ativas = painel.ativas;
 
-                    this.cdr.detectChanges();
 
                 }
             });

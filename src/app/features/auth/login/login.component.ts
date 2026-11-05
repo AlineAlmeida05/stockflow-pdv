@@ -5,7 +5,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { AlertService } from '../../../core/services/alert.service';
-import { ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TenantService } from '../../../core/services/tenant.service';
 import { OnInit } from '@angular/core';
@@ -56,8 +55,6 @@ export class LoginComponent implements OnInit {
 
                 this.carregarTenant();
 
-                this.cdr.detectChanges();
-
             });
 
     }
@@ -67,7 +64,6 @@ export class LoginComponent implements OnInit {
         private authService: AuthService,
         private router: Router,
         private alertService: AlertService,
-        private cdr: ChangeDetectorRef,
         private route: ActivatedRoute,
         private tenantService: TenantService,
         private tenantContextService: TenantContextService

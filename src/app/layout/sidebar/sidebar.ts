@@ -5,7 +5,6 @@ import { AuthService } from '../../core/services/auth.service';
 import { OnInit } from '@angular/core';
 import { NotificacaoService } from '../../core/services/notificacao.service';
 import { MenuBadge } from '../../core/models/menu-badge.model';
-import { ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MenuItem } from '../../core/models/menu-item.model';
 import { PromocaoService } from '../../core/services/promocao.service';
@@ -36,17 +35,16 @@ export class Sidebar implements OnInit {
   constructor(
     private authService: AuthService,
     private notificacaoService: NotificacaoService,
-    private promocaoService: PromocaoService,
-    private cdr: ChangeDetectorRef,
+    private promocaoService: PromocaoService
   ) { }
 
   ngOnInit(): void {
 
+    this.carregarMenu();
+
     this.carregarDisponibilidadePromocoes();
 
     this.carregarBadges();
-
-    this.cdr.detectChanges();
 
     this.notificacaoService
       .badgesAtualizados$
@@ -60,8 +58,6 @@ export class Sidebar implements OnInit {
         this.carregarBadges();
 
         this.carregarDisponibilidadePromocoes();
-
-        this.cdr.detectChanges();
 
       });
 
@@ -79,29 +75,28 @@ export class Sidebar implements OnInit {
 
     }
 
-    this.menuFiltrado =
-      this.menu.filter(item => {
+    this.menuFiltrado = this.menu.filter(item => {
 
-        const possuiPerfil =
-          item.perfis.includes(
-            usuario.perfil
-          );
+      const possuiPerfil =
+        item.perfis.includes(
+          usuario.perfil
+        );
 
-        if (!possuiPerfil) {
-          return false;
-        }
+      if (!possuiPerfil) {
+        return false;
+      }
 
-        if (
-          item.modulo === 'PROMOCOES'
-          &&
-          !this.promocoesDisponiveis
-        ) {
-          return false;
-        }
+      if (
+        item.modulo === 'PROMOCOES'
+        &&
+        !this.promocoesDisponiveis
+      ) {
+        return false;
+      }
 
-        return true;
+      return true;
 
-      });
+    });
 
   }
 
@@ -133,8 +128,6 @@ export class Sidebar implements OnInit {
 
           this.badges = badges;
 
-          this.cdr.detectChanges();
-
         },
         error: erro => {
 
@@ -155,12 +148,9 @@ export class Sidebar implements OnInit {
       .subscribe({
         next: response => {
 
-          this.promocoesDisponiveis =
-            response.existePromocao;
+          this.promocoesDisponiveis = response.existePromocao;
 
           this.carregarMenu();
-
-          this.cdr.detectChanges();
 
         },
         error: erro => {
@@ -169,6 +159,8 @@ export class Sidebar implements OnInit {
             'Erro ao verificar promoções',
             erro
           );
+
+          this.carregarMenu();
 
         }
       });

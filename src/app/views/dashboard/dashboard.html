@@ -192,7 +192,7 @@
                 </h3>
 
                 @if (
-                vendasFiltradas.length === 0
+                vendasRecentes.length === 0
                 ) {
 
                 <app-empty-state
@@ -219,7 +219,7 @@
                         <tbody>
 
                             @for (
-                            venda of vendasFiltradas;
+                            venda of vendasRecentes;
                             track venda.id
                             ) {
 
@@ -258,7 +258,7 @@
                 </h3>
 
                 @if (
-                vendasFiltradas.length === 0
+                vendasRecentes.length === 0
                 ) {
 
                 <app-empty-state
@@ -281,7 +281,7 @@
 
                         <tbody>
                             @for (
-                            venda of vendasFiltradas;
+                            venda of vendasRecentes;
                             track venda.id
                             ) {
 
@@ -328,7 +328,7 @@
                 </h3>
 
                 @if (
-                fiadosFiltrados.length === 0
+                fiadosPendentes.length === 0
                 ) {
 
                 <app-empty-state
@@ -365,7 +365,7 @@
                         <tbody>
 
                             @for (
-                            fiado of fiadosFiltrados;
+                            fiado of fiadosPendentes;
                             track fiado.id
                             ) {
 
@@ -1034,7 +1034,7 @@
                                     {{ produto.nome }}
                                 </td>
 
-                                <td class="dashboard-table__value-success" >
+                                <td class="dashboard-table__value-success">
                                     {{ produto.quantidade }}
                                 </td>
 
@@ -1286,15 +1286,15 @@
 
                             <tr>
 
-                                <td class="dashboard-table__value-success" >
+                                <td class="dashboard-table__value-success">
                                     {{ produto.nome }}
                                 </td>
 
-                                <td class="dashboard-table__value" >
+                                <td class="dashboard-table__value">
                                     {{ produto.estoqueAtual }}
                                 </td>
 
-                                <td class="dashboard-table__value" >
+                                <td class="dashboard-table__value">
                                     {{ produto.estoqueMinimo }}
                                 </td>
 
@@ -1431,7 +1431,7 @@
 
                             <tr>
 
-                                <td class="dashboard-table__value" >
+                                <td class="dashboard-table__value">
                                     {{ produto.nome }}
                                 </td>
 
@@ -1442,7 +1442,7 @@
 
                                 </td>
 
-                                <td class="dashboard-table__value" >
+                                <td class="dashboard-table__value">
 
                                     {{ produto.estoqueMinimo }}
 
@@ -1537,5 +1537,5 @@
     </app-dashboard-layout>
 
     }
-    
+
 </app-main-layout>

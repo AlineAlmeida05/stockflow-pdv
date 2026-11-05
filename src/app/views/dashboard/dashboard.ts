@@ -1,10 +1,7 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { MainLayout } from '../../layout/main-layout/main-layout';
-import { VendaService } from '../../core/services/venda.service';
-import { FiadoService } from '../../core/services/fiado.service';
 import { ProdutoService } from '../../core/services/produto.service';
-import { Venda } from '../../core/models/venda.model';
 import { Fiado } from '../../core/models/fiado.model';
 import { Produto } from '../../core/models/produto.model';
 import { PageTitle } from '../../shared/components/page-title/page-title';
@@ -33,10 +30,6 @@ import { EmptyState } from '../../shared/components/empty-state/empty-state';
     styleUrl: './dashboard.scss'
 })
 export class Dashboard implements OnInit {
-
-    vendas: Venda[] = [];
-
-    fiados: Fiado[] = [];
 
     produtos: Produto[] = [];
 
@@ -68,54 +61,11 @@ export class Dashboard implements OnInit {
         = 'geral';
 
     constructor(
-        private vendaService: VendaService,
-        private fiadoService: FiadoService,
         private produtoService: ProdutoService,
-        private dashboardService: DashboardService,
-        private cdr: ChangeDetectorRef
+        private dashboardService: DashboardService
     ) { }
 
     ngOnInit(): void {
-
-        this.vendaService
-            .listar()
-            .subscribe({
-                next: vendas => {
-
-                    this.vendas = vendas;
-
-                    this.cdr.detectChanges();
-
-                },
-
-                error: erro => {
-
-                    console.error(erro);
-
-                }
-            });
-
-        this.fiadoService
-            .listar()
-            .subscribe({
-
-                next: fiados => {
-
-                    this.fiados = fiados;
-
-                    this.cdr.detectChanges();
-
-                },
-
-                error: erro => {
-
-                    console.error(
-                        erro
-                    );
-
-                }
-
-            });
 
         this.produtoService
             .listar()
@@ -125,7 +75,6 @@ export class Dashboard implements OnInit {
 
                     this.produtos = produtos;
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -139,7 +88,6 @@ export class Dashboard implements OnInit {
 
         this.carregarDashboard();
 
-        this.cdr.detectChanges();
 
     }
 
@@ -163,13 +111,12 @@ export class Dashboard implements OnInit {
         this.periodoSelecionado = periodo;
 
         this.carregarDashboard();
-        this.cdr.detectChanges();
 
     }
 
     get faturamentoPeriodo(): number {
 
-        return this.vendasFiltradas.reduce(
+        return this.vendasRecentes.reduce(
 
             (total, venda) =>
 
@@ -177,15 +124,6 @@ export class Dashboard implements OnInit {
 
             0
 
-        );
-
-    }
-
-    get fiadosFiltrados(): Fiado[] {
-
-        return this.filtrarPorPeriodo(
-            this.fiados,
-            fiado => fiado.dataLancamento
         );
 
     }
@@ -271,15 +209,6 @@ export class Dashboard implements OnInit {
         return this.dashboard
             ?.promocoesAtivas
             ?? 0;
-    }
-
-    get possuiIndicadoresPromocionais(): boolean {
-
-        return (
-            this.totalPromocoesAtivas > 0 ||
-            this.totalVendasPromocionais > 0
-        );
-
     }
 
     get totalPromocoesEficientes() {
@@ -674,49 +603,6 @@ export class Dashboard implements OnInit {
 
     };
 
-    get topProdutosChartData() {
-
-        const produtos = this.dashboard?.topProdutosVendidos ?? [];
-
-        return {
-
-            labels:
-                produtos.map(
-                    produto => produto.nome
-                ),
-
-            datasets: [
-
-                {
-
-                    label: 'Quantidade Vendida',
-
-                    data:
-                        produtos.map(
-                            produto =>
-                                produto.quantidade
-                        ),
-
-                    backgroundColor: '#22c55e'
-
-                }
-
-            ]
-
-        };
-
-    }
-
-    topProdutosChartOptions: ChartConfiguration['options'] = {
-
-        responsive: true,
-
-        maintainAspectRatio: false,
-
-        indexAxis: 'y'
-
-    };
-
     get fiadosChartData() {
 
         const evolucao = this.dashboard?.evolucaoFiados ?? [];
@@ -809,15 +695,6 @@ export class Dashboard implements OnInit {
 
     };
 
-    get vendasFiltradas(): Venda[] {
-
-        return this.filtrarPorPeriodo(
-            this.vendas,
-            venda => venda.dataVenda
-        );
-
-    }
-
     get descricaoPeriodo(): string {
         switch (this.periodoSelecionado) {
 
@@ -849,8 +726,6 @@ export class Dashboard implements OnInit {
                 next: dashboard => {
 
                     this.dashboard = dashboard;
-
-                    this.cdr.detectChanges();
 
                 }
 
@@ -927,6 +802,22 @@ export class Dashboard implements OnInit {
             default:
                 return itens;
         }
+    }
+
+    get vendasRecentes() {
+
+        return this.dashboard
+            ?.vendasRecentes
+            ?? [];
+
+    }
+
+    get fiadosPendentes() {
+
+        return this.dashboard
+            ?.fiadosPendentes
+            ?? [];
+
     }
 
 }

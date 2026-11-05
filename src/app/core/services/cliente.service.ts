@@ -1,10 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
 import { Observable } from 'rxjs';
-
 import { environment } from '../../../environments/environment';
-
 import { Cliente } from '../models/cliente.model';
 import { ClienteResumo } from '../models/cliente-resumo.model';
 
@@ -16,7 +13,7 @@ export class ClienteService {
   private readonly http = inject(HttpClient);
 
   private readonly apiUrl = `${environment.apiUrl}/api/clientes`;
-    
+
 
   listar(): Observable<Cliente[]> {
 

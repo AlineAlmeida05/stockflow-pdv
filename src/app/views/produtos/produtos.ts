@@ -10,7 +10,6 @@ import { DataTable } from '../../shared/components/data-table/data-table';
 import { Toolbar } from '../../shared/components/toolbar/toolbar';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 import { AlertService } from '../../core/services/alert.service';
-import { ChangeDetectorRef } from '@angular/core';
 
 
 type ProdutoTabela =
@@ -99,8 +98,7 @@ export class Produtos implements OnInit {
   constructor(
     private produtoService: ProdutoService,
     private confirmDialogService: ConfirmDialogService,
-    private alertService: AlertService,
-    private cdr: ChangeDetectorRef
+    private alertService: AlertService
   ) { }
 
   ngOnInit(): void {
@@ -119,7 +117,6 @@ export class Produtos implements OnInit {
 
           this.produtos = produtos;
 
-          this.cdr.detectChanges();
 
         },
 
@@ -313,7 +310,6 @@ export class Produtos implements OnInit {
 
               this.carregarProdutos();
 
-              this.cdr.detectChanges();
 
               this.alertService.success(
                 'Produto inativado com sucesso.'
@@ -424,7 +420,6 @@ export class Produtos implements OnInit {
 
               this.carregarProdutos();
 
-              this.cdr.detectChanges();
 
               this.alertService.success(
                 'Produto reativado com sucesso.'
@@ -567,7 +562,6 @@ export class Produtos implements OnInit {
 
             this.carregarProdutos();
 
-            this.cdr.detectChanges();
 
             this.alertService.updateToast(
               loadingToast.id,
@@ -589,7 +583,7 @@ export class Produtos implements OnInit {
             );
 
             console.error(erro);
-            }
+          }
 
 
         });
@@ -610,7 +604,6 @@ export class Produtos implements OnInit {
 
     this.carregarProdutos();
 
-    this.cdr.detectChanges();
 
     this.alertService.success(mensagem);
 

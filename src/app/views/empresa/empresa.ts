@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { Empresa } from '../../core/models/empresa.model';
@@ -25,7 +25,6 @@ export class EmpresaComponent implements OnInit {
 
     constructor(
         private empresaService: EmpresaService,
-        private cdr: ChangeDetectorRef,
         public tenantContextService: TenantContextService
     ) { }
 
@@ -43,7 +42,6 @@ export class EmpresaComponent implements OnInit {
 
                     this.empresa = empresa;
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -77,7 +75,7 @@ export class EmpresaComponent implements OnInit {
     }
 
     get corSecundaria(): string {
-        
+
         return this.empresa?.corSecundaria || this.branding.cores.secundaria;
     }
 

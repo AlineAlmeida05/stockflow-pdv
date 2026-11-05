@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Tenant } from '../../core/models/tenant.model';
@@ -116,7 +116,6 @@ export class Tenants implements OnInit {
     constructor(
         private tenantService: TenantService,
         private alertService: AlertService,
-        private cdr: ChangeDetectorRef,
         private tenantContextService: TenantContextService,
         private confirmDialogService: ConfirmDialogService,
         private impersonacaoService: ImpersonacaoService,
@@ -231,7 +230,6 @@ export class Tenants implements OnInit {
 
                     this.salvando = false;
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -283,7 +281,6 @@ export class Tenants implements OnInit {
                     this.modoEdicao = false;
                     this.tenantEditando = null;
                     this.novoAtivo = true;
-                    this.cdr.detectChanges();
                     this.limparFormulario();
 
                 },
@@ -340,7 +337,6 @@ export class Tenants implements OnInit {
 
                     this.tenants = tenants;
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -592,7 +588,6 @@ export class Tenants implements OnInit {
 
                             this.carregarTenants();
 
-                            this.cdr.detectChanges();
 
                         },
 
@@ -634,7 +629,6 @@ export class Tenants implements OnInit {
 
                     this.modoEdicao = false;
 
-                    this.cdr.detectChanges();
 
                 },
 

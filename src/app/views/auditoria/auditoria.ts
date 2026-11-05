@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuditoriaService } from '../../core/services/auditoria.service';
 import { Auditoria } from '../../core/models/auditoria.model';
 import { DatePipe } from '@angular/common';
@@ -84,15 +84,12 @@ export class AuditoriaComponent implements OnInit {
     ];
 
     constructor(
-        private auditoriaService: AuditoriaService,
-        private cdr: ChangeDetectorRef
+        private auditoriaService: AuditoriaService
     ) { }
 
     ngOnInit(): void {
 
         this.carregarAuditoria();
-
-        this.cdr.detectChanges();
     }
 
     carregarAuditoria(): void {
@@ -104,8 +101,6 @@ export class AuditoriaComponent implements OnInit {
                     this.auditorias = response;
 
                     this.carregarEntidades();
-
-                    this.cdr.detectChanges();
                 }
             });
     }
@@ -150,7 +145,7 @@ export class AuditoriaComponent implements OnInit {
                     ||
                     auditoria.acao === this.acaoSelecionada;
 
-                const atendePeriodo = this.auditoriaDentroPeriodo(auditoria.dataHora );
+                const atendePeriodo = this.auditoriaDentroPeriodo(auditoria.dataHora);
 
                 return (
                     atendeBusca

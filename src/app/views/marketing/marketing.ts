@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { OnInit } from '@angular/core';
@@ -27,7 +27,6 @@ export class Marketing implements OnInit {
 
     constructor(
         private marketingApiService: MarketingApiService,
-        private cdr: ChangeDetectorRef,
         private promocaoService: PromocaoService
     ) { }
 
@@ -60,7 +59,6 @@ export class Marketing implements OnInit {
 
                     this.promocoesAtivas = painel.ativas;
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -82,7 +80,6 @@ export class Marketing implements OnInit {
 
                     this.campanhas = campanhas;
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -148,7 +145,6 @@ export class Marketing implements OnInit {
 
                     this.campanhaAtual = campanha;
 
-                    this.cdr.detectChanges();
 
                     this.campanhas.unshift(
                         campanha

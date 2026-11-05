@@ -1,3 +1,50 @@
+export interface DashboardResponse {
+
+    totalProdutos: number;
+
+    totalVendas: number;
+
+    faturamento: number;
+
+    fiadosEmAberto: number;
+
+    clientesDevedores: number;
+
+    produtosComEstoqueBaixo: number;
+
+    produtosSemEstoque: number;
+
+    promocoesAtivas: number;
+
+    evolucaoVendas: EvolucaoVendaResponse[];
+
+    faturamentoPorPagamento: PagamentoDashboardResponse[];
+
+    topProdutosVendidos: TopProdutoDashboardResponse[];
+
+    evolucaoFiados: EvolucaoFiadoResponse[];
+
+    giroEstoque: GiroEstoqueResponse[];
+
+    produtosPromocionaisMaisVendidos: ProdutoPromocionalResponse[];
+
+    totalVendasPromocionais: number;
+
+    faturamentoPromocional: number;
+
+    totalPromocoesEficientes: number;
+
+    promocoesBaixaEfetividade: PromocaoBaixaEfetividadeResponse[];
+
+    promocoesEficientes: PromocaoEficienteResponse[];
+
+    promocoesAtivasDetalhes: PromocaoAtivaResponse[];
+
+    vendasRecentes: VendaDashboardResponse[];
+
+    fiadosPendentes: FiadoDashboardResponse[];
+
+}
 export interface EvolucaoVendaResponse {
 
     data: string;
@@ -80,56 +127,28 @@ export interface PromocaoAtivaResponse {
     estoqueMinimo: number;
 
 }
+export interface VendaDashboardResponse {
 
-export interface DashboardResponse {
+    id: string;
 
-    totalProdutos: number;
+    dataVenda: string;
 
-    totalVendas: number;
+    formaPagamento: string;
 
-    faturamento: number;
+    quantidadeItens: number;
 
-    fiadosEmAberto: number;
+    valorTotal: number;
 
-    clientesDevedores: number;
+}
 
-    produtosComEstoqueBaixo: number;
+export interface FiadoDashboardResponse {
 
-    produtosSemEstoque: number;
+    id: string;
 
-    promocoesAtivas: number;
+    clienteNome: string;
 
-    evolucaoVendas: EvolucaoVendaResponse[];
+    valorTotal: number;
 
-    faturamentoPorPagamento: PagamentoDashboardResponse[];
-
-    topProdutosVendidos: TopProdutoDashboardResponse[];
-
-    evolucaoFiados: EvolucaoFiadoResponse[];
-
-    giroEstoque:
-    GiroEstoqueResponse[];
-
-    produtosPromocionaisMaisVendidos:
-    ProdutoPromocionalResponse[];
-
-    totalVendasPromocionais:
-    number;
-
-    faturamentoPromocional:
-    number;
-
-    totalPromocoesEficientes:
-    number;
-
-    promocoesBaixaEfetividade:
-    PromocaoBaixaEfetividadeResponse[];
-
-    promocoesEficientes:
-    PromocaoEficienteResponse[];
-
-    promocoesAtivasDetalhes:
-    PromocaoAtivaResponse[];
-
+    dataLancamento: string;
 
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { Cliente } from '../../core/models/cliente.model';
@@ -64,8 +64,7 @@ export class Fiados implements OnInit {
         private clienteService: ClienteService,
         private fiadoService: FiadoService,
         private pagamentoService: PagamentoService,
-        private alertService: AlertService,
-        private cdr: ChangeDetectorRef
+        private alertService: AlertService
     ) { }
 
     ngOnInit(): void {
@@ -162,7 +161,6 @@ export class Fiados implements OnInit {
 
                     this.clientes = clientes;
 
-                    this.cdr.detectChanges();
 
                     clientes.forEach(cliente => {
 
@@ -176,7 +174,6 @@ export class Fiados implements OnInit {
                                         cliente.id
                                     ] = resumo;
 
-                                    this.cdr.detectChanges();
 
                                 },
 
@@ -192,7 +189,6 @@ export class Fiados implements OnInit {
 
                     });
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -216,7 +212,6 @@ export class Fiados implements OnInit {
 
                     this.fiados = fiados;
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -238,7 +233,6 @@ export class Fiados implements OnInit {
 
                     this.pagamentos = pagamentos;
 
-                    this.cdr.detectChanges();
 
                 }
 
@@ -274,7 +268,6 @@ export class Fiados implements OnInit {
 
                     this.clienteResumo = resumo;
 
-                    this.cdr.detectChanges();
 
                 },
 
@@ -395,7 +388,6 @@ export class Fiados implements OnInit {
 
                     this.mostrarRecebimento = false;
 
-                    this.cdr.detectChanges();
 
                     this.alertService.success(
                         'Pagamento registrado com sucesso.'

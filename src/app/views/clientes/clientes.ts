@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { Cliente } from '../../core/models/cliente.model';
 import { ClienteService } from '../../core/services/cliente.service';
@@ -85,15 +85,14 @@ export class Clientes implements OnInit {
 
         ];
 
-
     constructor(
         private clienteService: ClienteService,
         private alertService: AlertService,
-        private confirmDialogService: ConfirmDialogService,
-        private cdr: ChangeDetectorRef
+        private confirmDialogService: ConfirmDialogService
     ) { }
 
     ngOnInit(): void {
+
         this.carregarClientes();
     }
 
@@ -109,9 +108,7 @@ export class Clientes implements OnInit {
                 cliente.nome
                     .toLowerCase()
                     .includes(busca)
-
                 ||
-
                 cliente.telefone
                     .toLowerCase()
                     .includes(busca)
@@ -122,7 +119,6 @@ export class Clientes implements OnInit {
         this.clienteService
             .listar()
             .subscribe({
-
                 next: clientes => {
 
                     this.clientes = clientes;
@@ -133,8 +129,6 @@ export class Clientes implements OnInit {
                                 cliente.id
                             )
                     );
-
-                    this.cdr.detectChanges();
                 },
 
                 error: erro => {
@@ -188,8 +182,6 @@ export class Clientes implements OnInit {
                             'Cliente atualizado com sucesso.'
                         );
 
-                        this.cdr.detectChanges();
-
                     },
 
                     error: erro => {
@@ -230,8 +222,6 @@ export class Clientes implements OnInit {
                             'Cliente cadastrado com sucesso.'
                         );
 
-                        this.cdr.detectChanges();
-
                     },
 
                     error: erro => {
@@ -259,8 +249,6 @@ export class Clientes implements OnInit {
                 next: () => {
 
                     this.carregarClientes();
-
-                    this.cdr.detectChanges();
 
                     this.alertService.success(
                         'Cliente inativado com sucesso.'
@@ -421,8 +409,6 @@ export class Clientes implements OnInit {
                         this.clientes = [
                             ...this.clientes
                         ];
-
-                        this.cdr.detectChanges();
                     }
                 },
 
@@ -486,18 +472,18 @@ export class Clientes implements OnInit {
 
     habilitarEdicao(): void {
 
-    if (!this.clienteSelecionado?.ativo) {
+        if (!this.clienteSelecionado?.ativo) {
 
-        this.alertService.warning(
-            'Clientes inativos não podem ser editados.'
-        );
+            this.alertService.warning(
+                'Clientes inativos não podem ser editados.'
+            );
 
-        return;
+            return;
+        }
+
+        this.modoVisualizacao = false;
+
     }
-
-    this.modoVisualizacao = false;
-
-}
 
     formatarData(
         data?: string
@@ -586,8 +572,6 @@ export class Clientes implements OnInit {
 
                                 this.carregarClientes();
 
-                                this.cdr.detectChanges();
-
                                 this.alertService.success(
                                     'Cliente inativado com sucesso.'
                                 );
@@ -634,8 +618,6 @@ export class Clientes implements OnInit {
                             next: () => {
 
                                 this.carregarClientes();
-
-                                this.cdr.detectChanges();
 
                                 this.alertService.success(
                                     'Cliente reativado com sucesso.'
