@@ -2,25 +2,7 @@ import { Component, Input } from '@angular/core';
 import { EventEmitter, Output } from '@angular/core';
 import { ActionIcons } from '../action-icons/action-icons';
 
-type TableColumn = {
-    field: string;
-    header: string;
-    type?:
-    | 'text'
-    | 'badge'
-    | 'currency'
-    | 'date'
-    | 'toggle'
-    | 'progress';
-    align?:
-    | 'left'
-    | 'center'
-    | 'right';
-    badgeVariantField?: string;
-    toggleActiveValue?: string;
-    toggleActiveLabel?: string;
-    toggleInactiveLabel?: string;
-};
+
 @Component({
     selector: 'app-data-table',
     standalone: true,
@@ -36,7 +18,7 @@ export class DataTable {
     columns: TableColumn[] = [];
 
     @Input()
-    data: Record<string, unknown>[] = [];
+    data: unknown[] = [];
 
     @Input()
     showActions = false;
@@ -48,58 +30,22 @@ export class DataTable {
     deleteIcon = '🗑️';
 
     @Output()
-    edit =
-        new EventEmitter<
-            Record<string, unknown>
-        >();
+    edit = new EventEmitter<unknown>();
 
     @Output()
-    delete =
-        new EventEmitter<
-            Record<string, unknown>
-        >();
+    delete = new EventEmitter<unknown>();
 
     @Output()
-    rowClick =
-        new EventEmitter<
-            Record<string, unknown>
-        >();
+    rowClick = new EventEmitter<unknown>();
+
+    @Output()
+    toggle = new EventEmitter<unknown>();
 
     @Input()
     actionsHeader = 'Ações';
 
     @Input()
     clickableRows = false;
-
-    @Output()
-    toggle =
-        new EventEmitter<
-            Record<string, unknown>
-        >();
-
-    obterVariantStatus(
-        status: string
-    ): 'success' | 'warning' | 'danger' {
-
-        switch (status) {
-
-            case 'GERENTE':
-            case 'Ativo':
-                return 'success';
-
-            case 'Operador_Caixa':
-                return 'warning';
-
-            case 'Estoquista':
-            case 'Inativo':
-                return 'danger';
-
-            default:
-                return 'success';
-
-        }
-
-    }
 
     formatCurrency(
         value: unknown
@@ -224,4 +170,81 @@ export class DataTable {
         ) || 0;
 
     }
+
+    getValue(
+        row: unknown,
+        field: string
+    ): unknown {
+
+        return (row as Record<string, unknown>)[field];
+
+    }
+
+    isInativo(
+        row: unknown
+    ): boolean {
+
+        return (row as Record<string, unknown>)['ativo'] === false;
+
+    }
+
+    isEstoqueCritico(
+        row: unknown
+    ): boolean {
+
+        const status = (row as Record<string, unknown>)['statusEstoque'];
+
+        return (
+            status === 'Crítico'
+            ||
+            status === 'Sem Estoque'
+        );
+
+    }
+
+    possuiPromocao(
+        row: unknown
+    ): boolean {
+
+        const preco =
+            Number(
+                (row as Record<string, unknown>)['precoPromocional']
+            );
+
+        return preco > 0;
+
+    }
+
+    temPrecoPromocional(
+        row: unknown
+    ): boolean {
+
+        return Number(
+            (row as Record<string, unknown>)['precoPromocional']
+        ) > 0;
+
+    }
+
+    getNumberValue(
+        row: unknown,
+        field: string
+    ): number {
+
+        return Number(
+            (row as Record<string, unknown>)[field]
+        );
+
+    }
+
+    getStringValue(
+        row: unknown,
+        field: string
+    ): string {
+
+        return String(
+            (row as Record<string, unknown>)[field] ?? ''
+        );
+
+    }
+
 }

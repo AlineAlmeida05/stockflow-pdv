@@ -536,21 +536,24 @@ export class Clientes implements OnInit {
     }
 
     alternarStatusCliente(
-        cliente: Cliente
+        cliente: unknown
     ): void {
 
-        if (!cliente.id) {
+        const clienteSelecionado =
+            cliente as Cliente;
+
+        if (!clienteSelecionado.id) {
             return;
         }
 
-        if (cliente.ativo) {
+        if (clienteSelecionado.ativo) {
 
             this.confirmDialogService.open({
 
                 title: 'Inativar Cliente',
 
                 message:
-                    `Deseja realmente inativar o cliente ${cliente.nome}?`,
+                    `Deseja realmente inativar o cliente ${clienteSelecionado.nome}?`,
 
                 type: 'warning',
 
@@ -565,7 +568,7 @@ export class Clientes implements OnInit {
                     );
 
                     this.clienteService
-                        .excluir(cliente.id)
+                        .excluir(clienteSelecionado.id)
                         .subscribe({
 
                             next: () => {
@@ -601,7 +604,7 @@ export class Clientes implements OnInit {
                 title: 'Reativar Cliente',
 
                 message:
-                    `Deseja realmente reativar o cliente ${cliente.nome}?`,
+                    `Deseja realmente reativar o cliente ${clienteSelecionado.nome}?`,
 
                 type: 'info',
 
@@ -612,7 +615,7 @@ export class Clientes implements OnInit {
                 onConfirm: () => {
 
                     this.clienteService
-                        .reativar(cliente.id)
+                        .reativar(clienteSelecionado.id)
                         .subscribe({
 
                             next: () => {

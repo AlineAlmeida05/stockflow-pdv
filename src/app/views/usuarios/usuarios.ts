@@ -651,37 +651,40 @@ export class Usuarios implements OnInit {
     }
 
     alternarStatusUsuario(
-        usuario: Usuario
+        usuario: unknown
     ): void {
 
-        if (!usuario.id) {
+        const usuarioSelecionado =
+            usuario as Usuario;
+
+        if (!usuarioSelecionado.id) {
             return;
         }
 
         const acao =
-            usuario.ativo
+            usuarioSelecionado.ativo
                 ? 'desativar'
                 : 'ativar';
 
         this.confirmDialogService.open({
 
             title:
-                usuario.ativo
+                usuarioSelecionado.ativo
                     ? 'Desativar Usuário'
                     : 'Ativar Usuário',
 
             message:
-                usuario.ativo
-                    ? `Deseja realmente desativar o usuário "${usuario.nome}"?`
-                    : `Deseja realmente ativar o usuário "${usuario.nome}"?`,
+                usuarioSelecionado.ativo
+                    ? `Deseja realmente desativar o usuário "${usuarioSelecionado.nome}"?`
+                    : `Deseja realmente ativar o usuário "${usuarioSelecionado.nome}"?`,
 
             type:
-                usuario.ativo
+                usuarioSelecionado.ativo
                     ? 'warning'
                     : 'info',
 
             confirmText:
-                usuario.ativo
+                usuarioSelecionado.ativo
                     ? 'Desativar'
                     : 'Ativar',
 
@@ -698,17 +701,17 @@ export class Usuarios implements OnInit {
 
                 const request: UsuarioUpdateRequest = {
 
-                    nome: usuario.nome,
-                    email: usuario.email,
+                    nome: usuarioSelecionado.nome,
+                    email: usuarioSelecionado.email,
                     senha: '',
-                    perfil: usuario.perfil,
-                    ativo: !usuario.ativo,
-                    tenantId: usuario.tenantId!
+                    perfil: usuarioSelecionado.perfil,
+                    ativo: !usuarioSelecionado.ativo,
+                    tenantId: usuarioSelecionado.tenantId!
                 };
 
                 this.usuarioService
                     .atualizar(
-                        usuario.id!,
+                        usuarioSelecionado.id!,
                         request
                     )
                     .subscribe({
