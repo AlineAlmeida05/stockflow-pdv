@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
 import { Produto } from '../models/produto.model';
 import { environment } from '../../../environments/environment';
+import { ProdutoCreateRequest } from '../models/produto-create-request.model';
+import { ProdutoUpdateRequest } from '../models/produto-update-request.model';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,7 @@ export class ProdutoService {
   }
 
   salvar(
-    produto: Produto
+    produto: ProdutoCreateRequest
   ): Observable<Produto> {
 
     return this.http.post<Produto>(
@@ -44,11 +45,12 @@ export class ProdutoService {
   }
 
   atualizar(
-    produto: Produto
+    id: string,
+    produto: ProdutoUpdateRequest
   ): Observable<Produto> {
 
     return this.http.put<Produto>(
-      `${this.apiUrl}/${produto.id}`,
+      `${this.apiUrl}/${id}`,
       produto
     );
 

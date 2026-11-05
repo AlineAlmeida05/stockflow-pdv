@@ -54,6 +54,8 @@ export class Produtos implements OnInit {
 
   estoqueAtual = 0;
 
+  custoMedio = 0;
+
   dataCadastro = '';
 
   textoBusca = '';
@@ -126,6 +128,9 @@ export class Produtos implements OnInit {
             'Erro ao carregar produtos',
             erro
           );
+          this.alertService.error(
+            'Erro ao carregar produtos.'
+          );
 
         }
 
@@ -148,8 +153,9 @@ export class Produtos implements OnInit {
       return;
 
     }
+
     if (
-      this.estoqueMinimo <= 0
+      this.estoqueMinimo < 0
     ) {
 
       this.alertService.warning(
@@ -159,12 +165,25 @@ export class Produtos implements OnInit {
       return;
 
     }
+
     if (
       this.precoVenda <= 0
     ) {
 
       this.alertService.warning(
         'Informe um preço de venda válido.'
+      );
+
+      return;
+
+    }
+
+    if (
+      this.custoMedio < 0
+    ) {
+
+      this.alertService.warning(
+        'Informe um custo médio válido.'
       );
 
       return;
@@ -180,19 +199,19 @@ export class Produtos implements OnInit {
       );
 
       this.produtoService
-        .atualizar({
-          id: this.produtoEditandoId,
-          codigoBarras: this.codigoBarras,
-          nome: this.nome,
-          categoria: this.categoria,
-          precoVenda: this.precoVenda,
-          estoqueAtual: this.estoqueAtual,
-          estoqueMinimo: this.estoqueMinimo,
-          ativo: this.produtoAtivo,
-          dataCadastro: this.dataCadastro
-        } as Produto)
-
-        .subscribe({
+        .atualizar(
+          this.produtoEditandoId,
+          {
+            nome: this.nome,
+            categoria: this.categoria,
+            codigoBarras: this.codigoBarras,
+            precoVenda: this.precoVenda,
+            estoqueAtual: this.estoqueAtual,
+            estoqueMinimo: this.estoqueMinimo,
+            ativo: this.produtoAtivo,
+            custoMedio: this.custoMedio
+          }
+        ).subscribe({
 
           next: () => {
 
@@ -223,13 +242,11 @@ export class Produtos implements OnInit {
       this.produtoService
         .salvar({
 
-          id: '',
-
-          codigoBarras: this.codigoBarras,
-
           nome: this.nome,
 
           categoria: this.categoria,
+
+          codigoBarras: this.codigoBarras,
 
           precoVenda: this.precoVenda,
 
@@ -237,17 +254,14 @@ export class Produtos implements OnInit {
 
           estoqueMinimo: this.estoqueMinimo,
 
-          ativo: this.produtoAtivo,
+          custoMedio: this.custoMedio
 
-          dataCadastro: '',
-
-        } as Produto)
-        .subscribe({
+        }).subscribe({
 
           next: () => {
 
             this.finalizarSucesso(
-              'Produto atualizado com sucesso.'
+              'Produto cadastrado com sucesso.'
             );
 
           },
@@ -255,7 +269,7 @@ export class Produtos implements OnInit {
 
             this.finalizarErro(
               erro,
-              'Erro ao atualizar produto.'
+              'Erro ao cadastrar produto.'
             );
 
           }
@@ -327,14 +341,28 @@ export class Produtos implements OnInit {
 
   get produtosFiltrados(): Produto[] {
 
+    const busca =
+      this.textoBusca
+        .toLowerCase();
+
     return this.produtos.filter(
       produto =>
+
         produto.nome
           .toLowerCase()
-          .includes(
-            this.textoBusca
-              .toLowerCase()
-          )
+          .includes(busca)
+
+        ||
+
+        produto.codigo
+          ?.toLowerCase()
+          .includes(busca)
+
+        ||
+
+        produto.codigoBarras
+          ?.toLowerCase()
+          .includes(busca)
     );
 
   }
@@ -446,14 +474,15 @@ export class Produtos implements OnInit {
     this.estoqueAtual = 0;
     this.dataCadastro = '';
     this.mostrarFormulario = false;
+    this.codigo = '';
+    this.custoMedio = 0;
   }
 
   visualizarProduto(
     produto: unknown
   ): void {
 
-    const produtoSelecionado =
-      produto as Produto;
+    const produtoSelecionado = produto as Produto;
 
     this.produtoEditandoId = produtoSelecionado.id;
 
@@ -472,6 +501,8 @@ export class Produtos implements OnInit {
     this.estoqueMinimo = produtoSelecionado.estoqueMinimo;
 
     this.produtoAtivo = produtoSelecionado.ativo;
+
+    this.custoMedio = produtoSelecionado.custoMedio ?? 0;
 
     this.dataCadastro = produtoSelecionado.dataCadastro;
 
@@ -506,62 +537,57 @@ export class Produtos implements OnInit {
   }
 
   alternarStatusProduto(
-    produto: Produto
+    produto: unknown
   ): void {
 
-    if (!produto.id) {
+    const produtoSelecionado = produto as Produto;
+
+    if (!produtoSelecionado.id) {
       return;
     }
 
     const acao =
-      produto.ativo
+      produtoSelecionado.ativo
         ? 'desativar'
         : 'ativar';
 
     this.confirmDialogService.open({
 
-      title:
-        produto.ativo
-          ? 'Desativar Produto'
-          : 'Ativar Produto',
+      title: produtoSelecionado.ativo
+        ? 'Desativar Produto'
+        : 'Ativar Produto',
 
-      message:
-        produto.ativo
-          ? `Deseja realmente desativar o produto "${produto.nome}"?`
-          : `Deseja realmente ativar o produto "${produto.nome}"?`,
+      message: produtoSelecionado.ativo
+        ? `Deseja realmente desativar o produto "${produtoSelecionado.nome}"?`
+        : `Deseja realmente ativar o produto "${produtoSelecionado.nome}"?`,
 
-      type:
-        produto.ativo
-          ? 'warning'
-          : 'info',
+      type: produtoSelecionado.ativo
+        ? 'warning'
+        : 'info',
 
-      confirmText:
-        produto.ativo
-          ? 'Desativar'
-          : 'Ativar',
+      confirmText: produtoSelecionado.ativo
+        ? 'Desativar'
+        : 'Ativar',
 
       cancelText: 'Cancelar',
 
       onConfirm: () => {
 
-        const loadingToast =
-          this.alertService.loading(
-            `${acao === 'ativar'
-              ? 'Ativando'
-              : 'Desativando'} produto...`
-          );
+        const loadingToast = this.alertService.loading(
+          `${acao === 'ativar'
+            ? 'Ativando'
+            : 'Desativando'} produto...`
+        );
 
-        const request =
-          produto.ativo
-            ? this.produtoService.excluir(produto.id)
-            : this.produtoService.reativar(produto.id);
+        const request = produtoSelecionado.ativo
+          ? this.produtoService.excluir(produtoSelecionado.id)
+          : this.produtoService.reativar(produtoSelecionado.id);
 
         request.subscribe({
 
           next: () => {
 
             this.carregarProdutos();
-
 
             this.alertService.updateToast(
               loadingToast.id,
@@ -604,6 +630,7 @@ export class Produtos implements OnInit {
 
     this.carregarProdutos();
 
+    this.custoMedio = 0;
 
     this.alertService.success(mensagem);
 
