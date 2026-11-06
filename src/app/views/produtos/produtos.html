@@ -34,157 +34,234 @@
 
     </app-toolbar>
 
-    @if (mostrarFormulario) {
+    @if (
+    mostrarFormulario
+    ||
+    modoVisualizacao
+    ) {
 
     <div class="card produto-form-card">
-        <h3>
-            {{
-            !produtoEditandoId
-            ? 'Novo Produto'
-            : modoVisualizacao
-            ? 'Produto'
-            : 'Editar Produto'
-            }}
-        </h3>
-        <div class="formulario">
-            <div class="field field-large">
-                <label>Nome do Produto</label>
-                <input
-                    type="text"
-                    placeholder="Nome"
-                    [(ngModel)]="nome"
-                    [readonly]="modoVisualizacao">
-            </div>
 
-            <div class="field field-large">
-                <label>Categoria</label>
-                <input
-                    type="text"
-                    placeholder="Categoria"
-                    [(ngModel)]="categoria"
-                    [readonly]="modoVisualizacao">
-            </div>
-            <div class="field field-small">
-                <label>Código do Produto</label>
-                <input
-                    type="text"
-                    [value]="codigo"
-                    readonly>
-            </div>
+        <app-split-panel>
+            @if (mostrarFormulario) {
+            <div left>
 
-            <div class="field field-large">
-                <label>Código de Barras</label>
-                <input
-                    type="text"
-                    placeholder="Código de Barras"
-                    [(ngModel)]="codigoBarras"
-                    [readonly]="modoVisualizacao">
-            </div>
+                <h3>
 
-            <div class="field field-small">
-                <label>Estoque Mínimo</label>
-                <input
-                    type="number"
-                    [(ngModel)]="estoqueMinimo"
-                    [readonly]="modoVisualizacao">
-            </div>
+                    {{ !produtoEditandoId ? 'Novo Produto'
+                    : modoVisualizacao
+                    ? 'Produto': 'Editar Produto'
+                    }}
 
-            <div class="field field-small">
-                <label>Preço de Venda</label>
-                @if (modoVisualizacao) {
+                </h3>
 
-                <input
-                    type="text"
-                    [value]="formatarMoeda(precoVenda)"
-                    readonly>
+                <div class="formulario">
 
-                } @else {
+                    <div class="field field-large">
 
-                <input
-                    type="number"
-                    [(ngModel)]="precoVenda">
+                        <label>Nome do Produto</label>
 
-                }
-            </div>
+                        <input
+                            type="text"
+                            placeholder="Nome"
+                            [(ngModel)]="nome"
+                            [readonly]="modoVisualizacao">
 
-            <div class="field field-small">
+                    </div>
 
-                <label>Custo Médio</label>
+                    <div class="field field-large">
 
-                @if (modoVisualizacao) {
+                        <label>Categoria</label>
 
-                <input
-                    type="text"
-                    [value]="formatarMoeda(custoMedio)"
-                    readonly>
+                        <input
+                            type="text"
+                            placeholder="Categoria"
+                            [(ngModel)]="categoria"
+                            [readonly]="modoVisualizacao">
 
-                } @else {
+                    </div>
 
-                <input
-                    type="number"
-                    [(ngModel)]="custoMedio">
+                    <div class="field field-small">
 
-                }
+                        <label>Estoque Mínimo</label>
+
+                        <input
+                            type="number"
+                            [(ngModel)]="estoqueMinimo"
+                            [readonly]="modoVisualizacao">
+
+                    </div>
+
+                    <div class="field field-small">
+
+                        <label>Preço de Venda</label>
+
+                        @if (modoVisualizacao) {
+
+                        <input
+                            type="text"
+                            [value]="formatarMoeda(precoVenda)"
+                            readonly>
+
+                        } @else {
+
+                        <input
+                            type="number"
+                            [(ngModel)]="precoVenda">
+
+                        }
+
+                    </div>
+
+                    <div class="field field-small">
+
+                        <label>
+                            Estoque Inicial
+                        </label>
+
+                        <input
+                            type="number"
+                            min="0"
+                            [(ngModel)]="estoqueInicial">
+
+                    </div>
+
+                </div>
 
             </div>
-
-            <div class="field field-small">
-                <label>Estoque Atual</label>
-
-                <input
-                    type="number"
-                    [value]="estoqueAtual"
-                    readonly>
-            </div>
-
-            <div class="field field-small">
-                <label>Status</label>
-
-                <input
-                    type="text"
-                    [value]="produtoAtivo ? 'Ativo' : 'Inativo'"
-                    readonly>
-            </div>
-        </div>
-
-        <div class="form-actions">
-
-            @if (modoVisualizacao) {
-            <button
-                type="button"
-                class="btn btn-primary"
-                (click)="habilitarEdicao()">
-                Editar
-            </button>
-            <button
-                type="button"
-                class="btn btn-secondary"
-                (click)="cancelarEdicao()">
-                Fechar
-            </button>
-            } @else {
-            <button
-                type="button"
-                class="btn btn-primary"
-                (click)="salvarProduto()"
-                [disabled]="salvandoProduto">
-                {{
-                salvandoProduto
-                ? 'Salvando...'
-                : produtoEditandoId
-                ? 'Atualizar Produto'
-                : 'Salvar Produto'
-                }}
-            </button>
-
-            <button
-                type="button"
-                class="btn btn-secondary"
-                (click)="cancelarEdicao()">
-                Cancelar
-            </button>
             }
-        </div>
+
+            @if (
+            produtoEditandoId
+            ||
+            nome
+            ) {
+            <div right>
+
+                <div class="card">
+
+                    <h3>
+                        Resumo
+                    </h3>
+
+                    <div>
+
+                        <strong>Código:</strong>
+
+                        {{ codigo || 'Gerado automaticamente' }}
+
+                    </div>
+
+                    <div>
+
+                        <strong>Nome:</strong>
+
+                        {{ nome || '-' }}
+
+                    </div>
+
+                    <div>
+
+                        <strong>Categoria:</strong>
+
+                        {{ categoria || '-' }}
+
+                    </div>
+
+                    <div>
+
+                        <strong>Preço:</strong>
+
+                        {{ formatarMoeda(precoVenda) }}
+
+                    </div>
+
+                    <div>
+
+                        <strong>Estoque Mínimo:</strong>
+
+                        {{ estoqueMinimo }}
+
+                    </div>
+
+                    @if (!produtoEditandoId) {
+
+                    <div>
+
+                        <strong>Estoque Inicial:</strong>
+
+                        {{ estoqueInicial }}
+
+                    </div>
+
+                    }
+
+                    @if (produtoEditandoId) {
+
+                    <div>
+
+                        <strong>Estoque Atual:</strong>
+
+                        {{ estoqueAtual }}
+
+                    </div>
+
+                    <div>
+
+                        <strong>Status:</strong>
+
+                        {{ produtoAtivo ? 'Ativo' : 'Inativo' }}
+
+                    </div>
+
+                    }
+
+                </div>
+
+                <div class="form-actions">
+
+                    @if (modoVisualizacao) {
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        (click)="habilitarEdicao()">
+                        Editar
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        (click)="cancelarEdicao()">
+                        Fechar
+                    </button>
+                    } @else {
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        (click)="salvarProduto()"
+                        [disabled]="salvandoProduto">
+                        {{
+                        salvandoProduto
+                        ? 'Salvando...'
+                        : produtoEditandoId
+                        ? 'Atualizar Produto'
+                        : 'Salvar Produto'
+                        }}
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        (click)="cancelarEdicao()">
+                        Cancelar
+                    </button>
+                    }
+                </div>
+
+            </div>
+
+            }
+        </app-split-panel>
+
     </div>
     }
 
