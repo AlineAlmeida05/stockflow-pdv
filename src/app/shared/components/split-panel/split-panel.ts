@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'app-split-panel',
@@ -7,4 +7,8 @@ import { Component } from '@angular/core';
     styleUrl: './split-panel.scss'
 })
 export class SplitPanel {
+
+    @Input()
+    reverse = false;
+
 }

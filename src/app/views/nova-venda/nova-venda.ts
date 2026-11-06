@@ -10,7 +10,6 @@ import { CurrencyPipe } from '@angular/common';
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { AlertService } from '../../core/services/alert.service';
-import { DataTable } from '../../shared/components/data-table/data-table';
 import { HostListener } from '@angular/core';
 import { CurrencyInput } from '../../shared/components/currency-input/currency-input';
 import { ClienteResumo } from '../../core/models/cliente-resumo.model';
@@ -21,6 +20,8 @@ import { VendaRequest, FormaPagamento } from '../../core/models/venda-request.mo
 import { FORMA_PAGAMENTO_LABELS, FORMA_PAGAMENTO_PADRAO, FormaPagamentoTela } from '../../core/models/forma-pagamento.model';
 import { CarrinhoTabelaItem } from '../../core/models/carrinho-tabela-item.model';
 import { StatusEstoque } from '../../core/models/estoque-status.model';
+import { SplitPanel } from '../../shared/components/split-panel/split-panel';
+import { VendaLinha } from '../../core/models/venda-linha.model';
 
 @Component({
     selector: 'app-nova-venda',
@@ -31,9 +32,9 @@ import { StatusEstoque } from '../../core/models/estoque-status.model';
         CurrencyPipe,
         PageTitle,
         EmptyState,
-        DataTable,
         CurrencyInput,
-        SmartProductSearch
+        SmartProductSearch,
+        SplitPanel
     ],
     templateUrl: './nova-venda.html',
     styleUrl: './nova-venda.scss'
@@ -62,47 +63,16 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
     finalizandoVenda = false;
 
-    colunasCarrinho: {
-        field: string;
-        header: string;
-        type?: | 'text' | 'badge' | 'currency' | 'date';
-        align?: 'left' | 'right' | 'center';
-    }[] = [
-            {
-                field: 'produtoNome',
-                header: 'Produto'
-            },
-            {
-                field: 'quantidade',
-                header: 'Qtde',
-                align: 'center'
-            },
-            {
-                field: 'precoVenda',
-                header: 'Unit.',
-                type: 'currency',
-                align: 'center'
-            },
-            {
-                field: 'precoPromocional',
-                header: 'Promoção',
-                type: 'currency',
-                align: 'center'
-            },
-            {
-                field: 'subtotal',
-                header: 'Subtotal',
-                type: 'currency',
-                align: 'center'
-            },
-            {
-                field: 'acoes',
-                header: '',
-                align: 'center'
-            },
-        ];
+    linhasVenda: VendaLinha[] = [
+        {
+            id: crypto.randomUUID(),
+            quantidade: 1
+        }
+    ];
 
-    @ViewChild(SmartProductSearch)
+    @ViewChild('produtoSearch', {
+        read: SmartProductSearch
+    })
     smartProductSearch?: SmartProductSearch;
 
     @ViewChild('quantidadeInput')
@@ -147,7 +117,6 @@ export class NovaVenda implements OnInit, AfterViewInit {
             produto => produto.id === this.produtoSelecionadoId
 
         );
-
 
     }
 
@@ -326,15 +295,7 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
             }
 
-            this.quantidade = null;
-            this.produtoSelecionadoId = '';
-            this.smartProductSearch?.limpar();
-
-            setTimeout(() => {
-
-                this.focarProduto();
-
-            });
+            this.resetLinhaVenda();
 
         } finally {
 
@@ -535,61 +496,6 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
     }
 
-    get carrinhoTabela(): CarrinhoTabelaItem[] {
-
-        return this.carrinho.map(
-            item => ({
-
-                produtoId: item.produto.id,
-
-                produtoNome: item.produto.nome,
-
-                quantidade: item.quantidade,
-
-                precoVenda: item.produto.precoVenda,
-
-                precoPromocional: item.promocaoAplicada
-                    ? item.precoUnitario
-                    : 0,
-
-                subtotal: item.subtotal
-
-            })
-        );
-
-    }
-
-    removerItemCarrinho(
-        row: unknown
-    ): void {
-
-        const item = row as CarrinhoTabelaItem;
-
-        this.confirmDialogService.open({
-
-            title: 'Remover Item',
-
-            message: `Deseja remover "${item.produtoNome}" do carrinho?`,
-
-            type: 'danger',
-
-            confirmText: 'Remover',
-
-            cancelText: 'Cancelar',
-
-            onConfirm: () => {
-
-                this.removerItem(
-                    item.produtoId
-                );
-
-                this.alertService.success(
-                    `"${item.produtoNome}" removido do carrinho.`
-                );
-            }
-        });
-    }
-
     focarQuantidade(): void {
 
         setTimeout(() => {
@@ -787,6 +693,11 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
     ngAfterViewInit(): void {
 
+        console.log(
+            'viewchild',
+            this.smartProductSearch
+        );
+
         setTimeout(() => {
 
             this.focarProduto();
@@ -853,4 +764,126 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
         this.clienteSelecionadoId = '';
     }
+
+    get quantidadePromocoes(): number {
+
+        return this.carrinho.filter(
+            item => item.promocaoAplicada
+        ).length;
+
+    }
+
+    adicionarLinha(): void {
+
+        this.linhasVenda.push({
+            id: crypto.randomUUID(),
+            quantidade: 1
+        });
+
+    }
+
+    removerLinha(
+        id: string
+    ): void {
+
+        this.linhasVenda =
+            this.linhasVenda.filter(
+                linha => linha.id !== id
+            );
+
+    }
+
+    incrementarQuantidadeCarrinho(
+        item: ItemCarrinho
+    ): void {
+
+        if (
+            item.quantidade >=
+            item.produto.estoqueAtual
+        ) {
+
+            this.alertService.warning(
+                'Estoque insuficiente.'
+            );
+
+            return;
+        }
+
+        item.quantidade++;
+
+        item.subtotal =
+            item.quantidade *
+            item.precoUnitario;
+
+    }
+
+    decrementarQuantidadeCarrinho(
+        item: ItemCarrinho
+    ): void {
+
+        if (
+            item.quantidade <= 1
+        ) {
+
+            this.removerItem(
+                item.produto.id
+            );
+
+            return;
+        }
+
+        item.quantidade--;
+
+        item.subtotal =
+            item.quantidade *
+            item.precoUnitario;
+
+    }
+
+    get precoLinhaAtual(): number {
+
+        if (!this.produtoSelecionado) {
+            return 0;
+        }
+
+        return this.produtoSelecionado.promocaoAtiva
+            ? this.produtoSelecionado.precoPromocional!
+            : this.produtoSelecionado.precoVenda;
+
+    }
+
+    get subtotalLinhaAtual(): number {
+
+        if (
+            !this.produtoSelecionado ||
+            !this.quantidade
+        ) {
+            return 0;
+        }
+
+        return this.precoLinhaAtual * this.quantidade;
+
+    }
+
+    private resetLinhaVenda(): void {
+
+        this.quantidade = null;
+
+        this.produtoSelecionadoId = '';
+
+        setTimeout(() => {
+
+            console.log(
+                'search',
+                this.smartProductSearch
+            );
+
+            this.smartProductSearch?.limpar();
+
+            this.smartProductSearch?.focar();
+
+        }, 50);
+
+    }
+
 }

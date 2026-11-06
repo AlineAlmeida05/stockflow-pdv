@@ -1,7 +1,15 @@
 export interface ProdutoCreateRequest {
+
     nome: string;
+
     categoria: string;
+
+    precoCompraInicial: number;
+
     precoVenda: number;
-    estoqueMinimo: number;
+
     estoqueInicial: number;
+
+    estoqueMinimo: number;
+
 }

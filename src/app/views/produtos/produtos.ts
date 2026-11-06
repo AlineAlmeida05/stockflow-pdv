@@ -70,6 +70,8 @@ export class Produtos implements OnInit {
 
   estoqueInicial = 0;
 
+  precoCompraInicial = 0;
+
   colunasProdutos: {
     field: string;
     header: string;
@@ -223,6 +225,18 @@ export class Produtos implements OnInit {
 
     } else {
 
+      if (
+        this.precoCompraInicial <= 0
+      ) {
+
+        this.alertService.warning(
+          'Informe um preço de compra inicial válido.'
+        );
+
+        return;
+
+      }
+
       this.salvandoProduto = true;
 
       this.alertService.info(
@@ -230,11 +244,14 @@ export class Produtos implements OnInit {
       );
 
       this.produtoService.salvar({
+
         nome: this.nome,
         categoria: this.categoria,
+        precoCompraInicial: this.precoCompraInicial,
         precoVenda: this.precoVenda,
         estoqueMinimo: this.estoqueMinimo,
         estoqueInicial: this.estoqueInicial
+
       }).subscribe({
 
         next: () => {
@@ -371,6 +388,10 @@ export class Produtos implements OnInit {
 
     this.modoVisualizacao = false;
 
+    this.precoCompraInicial = 0;
+
+    this.estoqueInicial = 0;
+
   }
 
   cancelarEdicao(): void {
@@ -440,13 +461,21 @@ export class Produtos implements OnInit {
 
     this.nome = '';
     this.categoria = '';
+
+    this.precoCompraInicial = 0;
     this.precoVenda = 0;
+
+    this.estoqueInicial = 0;
     this.estoqueMinimo = 0;
+
     this.produtoEditandoId = null;
     this.estoqueAtual = 0;
     this.dataCadastro = '';
+
     this.mostrarFormulario = false;
+
     this.codigo = '';
+
     this.custoMedio = 0;
   }
 

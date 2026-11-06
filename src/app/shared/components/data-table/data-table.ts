@@ -54,6 +54,11 @@ export class DataTable {
             field: string;
         }>();
 
+    @Output()
+    increment = new EventEmitter<unknown>();
+
+    @Output()
+    decrement = new EventEmitter<unknown>();
 
     formatCurrency(
         value: unknown
