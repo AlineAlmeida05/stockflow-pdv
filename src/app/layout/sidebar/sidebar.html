@@ -18,8 +18,11 @@
     </span>
 
     @if (
-    obterBadge(item.modulo) > 0
+    obterBadge(item.modulo);
+    as badge
     ) {
+
+    @if (badge > 0) {
 
     <div class="menu-indicator">
 
@@ -28,16 +31,12 @@
         aria-label="Pendências">
 
         {{ obterBadge(item.modulo) }}
-        
-      </span>
 
-      <span
-        class="menu-alert-icon"
-        aria-hidden="true">
-        ⚠️
       </span>
 
     </div>
+
+    }
 
     }
 

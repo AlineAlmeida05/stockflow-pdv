@@ -126,9 +126,7 @@
                             Tipo da Promoção
 
                             <select
-                                [(ngModel)]="
-            tipoPromocaoSelecionado
-        ">
+                                [(ngModel)]="tipoPromocaoSelecionado">
 
                                 <option>
                                     Mega Promoção
@@ -159,9 +157,7 @@
                             Elemento Visual Principal
 
                             <select
-                                [(ngModel)]="
-            elementoVisualSelecionado
-        ">
+                                [(ngModel)]="elementoVisualSelecionado">
 
                                 <option>
                                     Automático
@@ -203,9 +199,11 @@
 
                         <button
                             type="button"
-                            (click)="gerarCampanha()">
+                            (click)="gerarCampanha()"
+                            [disabled]="gerandoCampanha">
 
-                            ✨ Criar Arte
+                            {{ gerandoCampanha? 'Gerando...': '✨ Criar Prompt'
+                            }}
 
                         </button>
 
@@ -229,10 +227,12 @@
 
                         <button
                             type="button"
-                            class="copy-button"
-                            (click)="copiarPrompt()">
+                            (click)="gerarCampanha()"
+                            class="btn btn-primary"
+                            [disabled]="!promocaoSelecionada || gerandoCampanha">
 
-                            📋 Copiar Prompt
+                            {{ gerandoCampanha? 'Gerando Prompt...':
+                            '✨ Criar Prompt' }}
 
                         </button>
 
@@ -243,6 +243,41 @@
                             {{ campanhaAtual.prompt }}
                         </pre>
                     </div>
+
+                    @if (campanhas.length > 0) {
+
+                    <div class="marketing-history">
+
+                        <h3>
+                            📜 Campanhas Anteriores
+                        </h3>
+
+                        @for (
+                        campanha of campanhas;
+                        track campanha.id
+                        ) {
+
+                        <button
+                            type="button"
+                            class="campaign-history-item"
+                            (click)="atualizarCampanha(campanha)">
+
+                            <strong>
+                                {{ campanha.produtoNome }}
+                            </strong>
+
+                            <small>
+                                {{ campanha.criadoEm | date:'dd/MM/yyyy HH:mm'
+                                }}
+                            </small>
+
+                        </button>
+
+                        }
+
+                    </div>
+
+                    }
 
                     <div class="marketing-ai-tools">
 

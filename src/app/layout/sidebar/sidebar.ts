@@ -65,7 +65,8 @@ export class Sidebar implements OnInit {
 
   private carregarMenu(): void {
 
-    const usuario = this.authService.usuarioLogado();
+    const usuario =
+      this.authService.usuarioLogado();
 
     if (!usuario) {
 
@@ -75,28 +76,49 @@ export class Sidebar implements OnInit {
 
     }
 
-    this.menuFiltrado = this.menu.filter(item => {
+    console.log(
+      'Perfil do usuário:',
+      usuario.perfil
+    );
 
-      const possuiPerfil =
-        item.perfis.includes(
-          usuario.perfil
-        );
+    this.menuFiltrado =
+      this.menu.filter(item => {
 
-      if (!possuiPerfil) {
-        return false;
-      }
+        const possuiPerfil =
+          item.perfis.includes(
+            usuario.perfil
+          );
 
-      if (
-        item.modulo === 'PROMOCOES'
-        &&
-        !this.promocoesDisponiveis
-      ) {
-        return false;
-      }
+        if (!possuiPerfil) {
+          return false;
+        }
 
-      return true;
+        if (
+          item.modulo === 'PROMOCOES'
+          &&
+          !this.promocoesDisponiveis
+        ) {
+          return false;
+        }
 
-    });
+        return true;
+
+      });
+
+    console.table(
+      this.menuFiltrado
+    );
+
+    console.log(
+      this.menuFiltrado.find(
+        item =>
+          item.label === 'Promoções'
+      )
+    );
+
+    console.log(
+      this.menuFiltrado.length
+    );
 
   }
 
@@ -147,6 +169,11 @@ export class Sidebar implements OnInit {
       .existePromocao()
       .subscribe({
         next: response => {
+
+          console.log(
+            'Promoções disponíveis:',
+            response
+          );
 
           this.promocoesDisponiveis = response.existePromocao;
 

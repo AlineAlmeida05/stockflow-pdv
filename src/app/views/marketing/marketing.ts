@@ -9,7 +9,9 @@ import { FormsModule } from '@angular/forms';
 import { ProdutoPromocao } from '../../core/models/produto-promocao.model';
 import { PromocaoService } from '../../core/services/promocao.service';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
-
+import { AlertService } from '../../core/services/alert.service';
+import { DatePipe } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 @Component({
     selector: 'app-marketing',
     standalone: true,
@@ -18,7 +20,8 @@ import { EmptyState } from '../../shared/components/empty-state/empty-state';
         PageTitle,
         SplitPanel,
         FormsModule,
-        EmptyState
+        EmptyState,
+        DatePipe
     ],
     templateUrl: './marketing.html',
     styleUrl: './marketing.scss'
@@ -27,7 +30,9 @@ export class Marketing implements OnInit {
 
     constructor(
         private marketingApiService: MarketingApiService,
-        private promocaoService: PromocaoService
+        private promocaoService: PromocaoService,
+        private alertService: AlertService,
+        private route: ActivatedRoute,
     ) { }
 
     campanhas: MarketingCampaignResponse[] = [];
@@ -48,6 +53,7 @@ export class Marketing implements OnInit {
 
     elementoVisualSelecionado = 'Automático';
 
+    gerandoCampanha = false;
 
     ngOnInit(): void {
 
@@ -94,6 +100,28 @@ export class Marketing implements OnInit {
 
             });
 
+        this.route.queryParams
+            .subscribe(params => {
+
+                const produtoId =
+                    this.route.snapshot
+                        .queryParamMap
+                        .get('produtoId');
+
+                if (
+                    produtoId &&
+                    this.promocoesAtivas.some(
+                        item => item.id === produtoId
+                    )
+                ) {
+
+                    this.promocaoSelecionada =
+                        produtoId;
+
+                }
+
+            });
+
     }
 
     atualizarCampanha(
@@ -101,10 +129,6 @@ export class Marketing implements OnInit {
     ): void {
 
         this.campanhaAtual = campanha;
-
-        this.campanhas.unshift(
-            campanha
-        );
 
     }
 
@@ -118,33 +142,38 @@ export class Marketing implements OnInit {
             );
 
         if (!produto) {
+
+            this.alertService.warning(
+                'Selecione uma promoção para gerar a campanha.'
+            );
+
             return;
+
         }
+
+        this.gerandoCampanha = true;
 
         this.marketingApiService
             .gerarCampanha({
 
                 produtoId: produto.id,
 
-                tom:
-                    this.tomSelecionado,
+                tom: this.tomSelecionado,
 
-                tipoPromocao:
-                    this.tipoPromocaoSelecionado,
+                tipoPromocao: this.tipoPromocaoSelecionado,
 
-                elementoVisual:
-                    this.elementoVisualSelecionado,
+                elementoVisual: this.elementoVisualSelecionado,
 
-                observacoes:
-                    this.observacoes
+                observacoes: this.observacoes
 
             })
             .subscribe({
 
                 next: campanha => {
 
-                    this.campanhaAtual = campanha;
+                    this.gerandoCampanha = false;
 
+                    this.campanhaAtual = campanha;
 
                     this.campanhas.unshift(
                         campanha
@@ -154,9 +183,15 @@ export class Marketing implements OnInit {
 
                 error: erro => {
 
+                    this.gerandoCampanha = false;
+
                     console.error(
                         'Erro ao gerar campanha',
                         erro
+                    );
+
+                    this.alertService.error(
+                        'Erro ao gerar campanha.'
                     );
 
                 }

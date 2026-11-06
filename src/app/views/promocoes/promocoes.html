@@ -142,7 +142,7 @@
 
                         </div>
 
-                        <div class="promo-progress__footer">                            
+                        <div class="promo-progress__footer">
 
                             <div class="promo-progress__remaining">
 
@@ -389,12 +389,25 @@
                 }
 
                 <div class="produto-acoes">
+
                     <button
                         class="btn btn-danger"
                         type="button"
                         (click)="desativarPromocao(produtoSelecionado)">
+
                         Encerrar Promoção
+
                     </button>
+
+                    <button
+                        class="btn btn-primary"
+                        type="button"
+                        (click)="criarMarketing(produtoSelecionado.id)">
+
+                        ✨ Criar Marketing
+
+                    </button>
+
                 </div>
                 }
 
