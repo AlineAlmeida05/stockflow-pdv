@@ -13,6 +13,7 @@ import { PromocaoService } from '../../core/services/promocao.service';
 import { Promocao } from '../../core/models/promocao.model';
 import { ProdutoPromocao } from '../../core/models/produto-promocao.model';
 import { NotificacaoService } from '../../core/services/notificacao.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-promocoes',
@@ -244,7 +245,8 @@ export class Promocoes implements OnInit {
         private produtoService: ProdutoService,
         private promocaoService: PromocaoService,
         private alertService: AlertService,
-        private notificacaoService: NotificacaoService
+        private notificacaoService: NotificacaoService,
+        private router: Router
     ) { }
 
     ngOnInit(): void {
@@ -960,6 +962,21 @@ export class Promocoes implements OnInit {
                 produto =>
                     produto.id === produtoId
             );
+
+    }
+
+    criarMarketing(
+        produtoId: string
+    ): void {
+
+        this.router.navigate(
+            ['/marketing'],
+            {
+                queryParams: {
+                    produtoId
+                }
+            }
+        );
 
     }
 }   
