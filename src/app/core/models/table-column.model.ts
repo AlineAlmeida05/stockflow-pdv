@@ -8,7 +8,8 @@ type TableColumn = {
     | 'date'
     | 'toggle'
     | 'progress'
-    | 'action';
+    | 'action'
+    | 'quantity-control';
     align?:
     | 'left'
     | 'center'

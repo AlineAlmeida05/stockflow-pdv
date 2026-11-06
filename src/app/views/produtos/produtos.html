@@ -1,4 +1,5 @@
 <app-main-layout>
+
     <app-page-title
         title="Produtos"
         subtitle="Cadastre e mantenha os produtos disponíveis para venda.">
@@ -13,15 +14,21 @@
                 class="btn btn-primary"
                 (click)="novoProduto()"
                 [disabled]="salvandoProduto">
+
                 + Novo Produto
+
             </button>
+
             <div class="produtos-toolbar-right">
 
                 <div class="card produtos-resumo">
+
                     <span>
                         📦
                     </span>
+
                     {{ produtosFiltrados.length }} produtos
+
                 </div>
 
                 <app-search-input
@@ -42,8 +49,10 @@
 
     <div class="card produto-form-card">
 
-        <app-split-panel>
+        <app-split-panel [reverse]="true">
+
             @if (mostrarFormulario) {
+
             <div left>
 
                 <h3>
@@ -94,6 +103,15 @@
 
                     <div class="field field-small">
 
+                        <label>Preço Compra Inicial</label>
+
+                        <input
+                            type="number"
+                            [(ngModel)]="precoCompraInicial">
+                    </div>
+
+                    <div class="field field-small">
+
                         <label>Preço de Venda</label>
 
                         @if (modoVisualizacao) {
@@ -132,10 +150,11 @@
             }
 
             @if (
-            produtoEditandoId
+            mostrarFormulario
             ||
-            nome
+            modoVisualizacao
             ) {
+
             <div right>
 
                 <div class="card">
@@ -165,6 +184,14 @@
                         <strong>Categoria:</strong>
 
                         {{ categoria || '-' }}
+
+                    </div>
+
+                    <div>
+
+                        <strong>Preço Compra:</strong>
+
+                        {{ formatarMoeda(precoCompraInicial) }}
 
                     </div>
 
@@ -221,24 +248,33 @@
                 <div class="form-actions">
 
                     @if (modoVisualizacao) {
+
                     <button
                         type="button"
                         class="btn btn-primary"
                         (click)="habilitarEdicao()">
+
                         Editar
+
                     </button>
+
                     <button
                         type="button"
                         class="btn btn-secondary"
                         (click)="cancelarEdicao()">
+
                         Fechar
+
                     </button>
+
                     } @else {
+
                     <button
                         type="button"
                         class="btn btn-primary"
                         (click)="salvarProduto()"
                         [disabled]="salvandoProduto">
+
                         {{
                         salvandoProduto
                         ? 'Salvando...'
@@ -246,35 +282,46 @@
                         ? 'Atualizar Produto'
                         : 'Salvar Produto'
                         }}
+
                     </button>
 
                     <button
                         type="button"
                         class="btn btn-secondary"
                         (click)="cancelarEdicao()">
+
                         Cancelar
+
                     </button>
+
                     }
+
                 </div>
 
             </div>
 
             }
+
         </app-split-panel>
 
     </div>
+
     }
 
     @if (
     produtosFiltrados.length === 0
     ) {
+
     <app-empty-state
         icon="📦"
         title="Nenhum produto cadastrado"
         message="Cadastre o primeiro produto para disponibilizá-lo para vendas e controle de estoque.">
     </app-empty-state>
+
     }
+
     <div class="card">
+
         <app-data-table
             [columns]="colunasProdutos"
             [data]="produtosTabela"
@@ -285,6 +332,9 @@
             (toggle)="alternarStatusProduto($event)"
             (rowClick)="visualizarProduto($event)"
             (delete)="excluirProdutoTabela($event)">
+
         </app-data-table>
+
     </div>
+
 </app-main-layout>

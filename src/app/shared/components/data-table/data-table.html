@@ -169,6 +169,36 @@
 
                     }
 
+                    } @else if (
+                    column.type === 'quantity-control'
+                    ) {
+
+                    <div class="quantity-control">
+
+                        <button
+                            type="button"
+                            (click)="
+            $event.stopPropagation();
+            decrement.emit(row)
+        ">
+                            -
+                        </button>
+
+                        <span>
+                            {{ getValue(row, column.field) }}
+                        </span>
+
+                        <button
+                            type="button"
+                            (click)="
+            $event.stopPropagation();
+            increment.emit(row)
+        ">
+                            +
+                        </button>
+
+                    </div>
+
                     }@else {
 
                     {{ getValue(row, column.field) }}

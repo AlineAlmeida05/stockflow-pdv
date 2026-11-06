@@ -3,370 +3,435 @@
     <app-page-title
         title="Nova Venda"
         subtitle="Registre vendas e aplique promoções automaticamente.">
+
     </app-page-title>
 
-    <div class="venda-content">
+    <app-split-panel [reverse]="true">
 
-        <div class="produto-panel">
+        <div left>
 
-            <div class="card novo-item-card">
+            <div class="venda-content__carrinho">
 
-                <app-smart-product-search
-                    [produtos]="produtos"
-                    (produtoSelecionado)="
-        selecionarProduto($event)">
-                </app-smart-product-search>
+                <h2>
+                    Carrinho
+                </h2>
 
-                @if (produtoSelecionadoId && produtoSelecionado) {
+                <div class="carrinho-editor">
 
-                <div class="produto-resumo">
+                    <table>
 
-                    <div
-                        class="produto-resumo-item produto-resumo-item--principal">
+                        <thead>
 
-                        <small>Produto</small>
+                            <tr>
 
-                        <strong>
-                            {{ produtoSelecionado.nome }}
-                        </strong>
+                                <th>Produto</th>
 
-                    </div>
+                                <th>Qtde</th>
 
-                    <div class="produto-resumo-item">
+                                <th>Unitário</th>
 
-                        <small>Estoque</small>
+                                <th>Subtotal</th>
 
-                        <strong
-                            [class.estoque-baixo]="statusEstoque === 'baixo'"
-                            [class.estoque-medio]="statusEstoque === 'medio'"
-                            [class.estoque-alto]="statusEstoque === 'alto'">
+                                <th></th>
 
-                            {{ produtoSelecionado.estoqueAtual }}
+                            </tr>
 
-                        </strong>
+                        </thead>
 
-                    </div>
+                        <tbody>
 
-                    @if (produtoSelecionado.promocaoAtiva) {
+                            <tr class="linha-nova-venda">
 
-                    <div class="produto-resumo-item">
-                        <small>Preço</small>
-                        <strong>
-                            {{ produtoSelecionado.precoVenda | currency:'BRL' }}
-                        </strong>
+                                <td>
 
-                    </div>
+                                    <app-smart-product-search
+                                        #produtoSearch
+                                        [produtos]="produtos"
+                                        (produtoSelecionado)="selecionarProduto($event)">
+                                    </app-smart-product-search>
 
-                    <div class="produto-resumo-item">
-                        <small>Promoção:</small>
-                        <strong>
-                            {{ produtoSelecionado.precoPromocional | currency:'BRL'}}
-                        </strong>
-                    </div>
+                                </td>
 
-                    } @else {
-                    <div class="produto-resumo-item">
-                        <small>Preço:</small>
-                        <strong>{{ produtoSelecionado.precoVenda | currency:'BRL' }}</strong>
-                    </div>
+                                <td>
 
-                    }
+                                    <input
+                                        #quantidadeInput
+                                        type="number"
+                                        min="1"
+                                        [(ngModel)]="quantidade"
+                                        (keyup.enter)="adicionarAoCarrinho()">
 
-                </div>
+                                </td>
 
-                }
+                                <td>
 
-                <div class="venda-toolbar__quantidade">
-                    
-                    <div class="field">
+                                    {{
+                                    precoLinhaAtual > 0
+                                    ? (precoLinhaAtual | currency:'BRL')
+                                    : '-'
+                                    }}
 
-                        <label>
-                            Quantidade
-                        </label>
+                                </td>
 
-                        <input
-                            #quantidadeInput
-                            type="number"
-                            [(ngModel)]="quantidade"
-                            (keyup.enter)="adicionarAoCarrinho()">
-                    </div>
-                </div>
+                                <td>
 
-                <div class="venda-toolbar__acoes">
+                                    {{
+                                    subtotalLinhaAtual > 0
+                                    ? (subtotalLinhaAtual | currency:'BRL')
+                                    : '-'
+                                    }}
 
-                    <button
-                        class="btn btn-primary"
-                        type="button"
-                        (click)="adicionarAoCarrinho()"
-                        [disabled]="adicionandoItem">
-                        {{ adicionandoItem? 'Adicionando...':'Adicionar ao Carrinho'}}
-                    </button>
-                </div>
-            </div>
-        </div>
+                                </td>
 
-        <div class="venda-content__carrinho">
+                                <td>
 
-            <h2>
-                Carrinho
-            </h2>
+                                    <button
+                                        (click)="adicionarAoCarrinho()">
 
-            <div class="total-venda">
-                <div>
-                    <small>
-                        {{ quantidadeItens }}
-                        item(ns)
-                    </small>
-                    
-                    @if (totalDescontos > 0) {
+                                        +
 
-                    <small class="desconto-total">
-                        Economia:
-                        {{ totalDescontos | currency:'BRL' }}
-                    </small>
-                    }
-                </div>
+                                    </button>
 
-                <strong>
-                    {{ total | currency:'BRL' }}
-                </strong>
-            </div>
+                                </td>
 
-            @if (carrinho.length === 0) {
+                            </tr>
 
-            <app-empty-state
-                icon="🛒"
-                title="Carrinho vazio"
-                message="Utilize a busca de produtos para adicionar itens ao carrinho e iniciar uma venda.">
-            </app-empty-state>
-            } @else {
+                            @for (item of carrinho; track item.produto.id) {
 
-            <div class="carrinho-tabela">
+                            <tr>
 
-                <app-data-table
-                    [columns]="colunasCarrinho"
-                    [data]="carrinhoTabela"
-                    [showActions]="true"
-                    [showEditAction]="false"
-                    (delete)="removerItemCarrinho($event)"
-                    [deleteIcon]="'🗑️'">
-                </app-data-table>
-            </div>
+                                <td>
+                                    {{ item.produto.nome }}
+                                </td>
 
-            }
+                                <td>
 
-        </div>
+                                    <button
+                                        type="button"
+                                        (click)="decrementarQuantidadeCarrinho(item)">
+                                        -
+                                    </button>
 
-        <div class="pagamento-panel">
-            <div class="card pagamento-card">
-                <h3>
-                    Pagamento
-                </h3>
-                <div class="resumo-pagamento">
+                                    {{ item.quantidade }}
 
-                    <div>
-                        <span>Total</span>
-                        <strong>
-                            {{ total | currency:'BRL' }}
-                        </strong>
-                    </div>
+                                    <button
+                                        type="button"
+                                        (click)="incrementarQuantidadeCarrinho(item)">
+                                        +
+                                    </button>
 
-                    <div>
-                        <span>Pagamento</span>
+                                </td>
 
-                        <strong>
-                            {{ formaPagamentoDescricao }}
-                        </strong>
-                    </div>
+                                <td>
+                                    {{ item.precoUnitario | currency:'BRL'
+                                    }}
+                                </td>
 
-                    @if (formaPagamento === 'fiado' && resumoCliente) {
+                                <td>
+                                    {{ item.subtotal | currency:'BRL' }}
+                                </td>
 
-                    <div>
+                                <td>
 
-                        <span>Cliente</span>
+                                    <button
+                                        type="button"
+                                        (click)="removerItem(item.produto.id)">
 
-                        <strong>
-                            {{ resumoCliente.nome }}
-                        </strong>
+                                        🗑️
 
-                    </div>
+                                    </button>
 
-                    }
+                                </td>
 
-                </div>
-                <div class="field">
-                    <label>Forma de Pagamento</label>
-                    <select
-                        #formaPagamentoSelect
-                        [(ngModel)]="formaPagamento">
-                        <option value>
-                            Selecione...
-                        </option>
-                        <option value="dinheiro">
-                            Dinheiro
-                        </option>
-                        <option value="pix">
-                            PIX
-                        </option>
-                        <option value="debito">
-                            Débito
-                        </option>
-                        <option value="credito">
-                            Crédito
-                        </option>
-                        <option value="fiado">
-                            Fiado
-                        </option>
-                    </select>
+                            </tr>
 
-                    @if (formaPagamento === 'fiado') {
-
-                    <div class="field">
-                        <label>Cliente</label>
-                        <select
-                            [(ngModel)]="clienteSelecionadoId"
-                            (change)="carregarResumoCliente()">
-                            <option value>
-                                Selecione um cliente
-                            </option>
-
-                            @for (cliente of clientes; track cliente.id) {
-                            <option [value]="cliente.id">
-                                {{ cliente.nome }}
-                            </option>
                             }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div right>
+
+            <div class="pagamento-panel">
+
+                <div class="card pagamento-card">
+
+                    <div class="resumo-venda">
+
+                        <h4>
+                            🧾 Resumo da Venda
+                        </h4>
+
+                        <div class="resumo-item">
+
+                            <span>Itens</span>
+
+                            <strong>
+
+                                {{ carrinho.length }}
+
+                            </strong>
+
+                        </div>
+
+                        <div class="resumo-item">
+
+                            <span>Quantidade</span>
+
+                            <strong>
+
+                                {{ quantidadeItens }}
+
+                            </strong>
+
+                        </div>
+
+                        <div class="resumo-item">
+
+                            <span>Economia</span>
+
+                            <strong>
+
+                                {{ totalDescontos | currency:'BRL' }}
+
+                            </strong>
+
+                        </div>
+
+                        <div class="resumo-total">
+
+                            <span>Total</span>
+
+                            <strong>
+
+                                {{ total | currency:'BRL' }}
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                    <h3>
+                        Pagamento
+                    </h3>
+
+                    <div class="field">
+
+                        <label>Forma de Pagamento</label>
+
+                        <select
+                            #formaPagamentoSelect
+                            [(ngModel)]="formaPagamento">
+
+                            <option value>
+
+                                Selecione...
+                            </option>
+
+                            <option value="dinheiro">
+
+                                Dinheiro
+
+                            </option>
+
+                            <option value="pix">
+
+                                PIX
+
+                            </option>
+
+                            <option value="debito">
+
+                                Débito
+
+                            </option>
+
+                            <option value="credito">
+
+                                Crédito
+
+                            </option>
+
+                            <option value="fiado">
+
+                                Fiado
+
+                            </option>
+
                         </select>
-                        @if (resumoCliente) {
 
-                        <div class="cliente-credito-info">
+                        @if (formaPagamento === 'fiado') {
 
-                            @if (creditoInsuficiente) {
+                        <div class="field">
 
-                            <small class="credito-insuficiente">
+                            <label>Cliente</label>
 
-                                Crédito insuficiente para esta venda.
+                            <select
+                                [(ngModel)]="clienteSelecionadoId"
+                                (change)="carregarResumoCliente()">
 
+                                <option value>
+
+                                    Selecione um cliente
+
+                                </option>
+
+                                @for (cliente of clientes; track cliente.id)
+                                {
+
+                                <option [value]="cliente.id">
+
+                                    {{ cliente.nome }}
+
+                                </option>
+
+                                }
+
+                            </select>
+
+                            @if (resumoCliente) {
+
+                            <div class="cliente-credito-info">
+
+                                @if (creditoInsuficiente) {
+
+                                <small class="credito-insuficiente">
+
+                                    Crédito insuficiente para esta venda.
+
+                                </small>
+
+                                }
+
+                                <div>
+                                    <span>Limite Crédito</span>
+
+                                    <strong>
+                                        {{resumoCliente.limiteCredito|
+                                        currency:'BRL'}}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Saldo Devedor</span>
+
+                                    <strong class="saldo-devedor">
+                                        {{resumoCliente.saldoDevedor|
+                                        currency:'BRL'}}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Crédito Disponível</span>
+
+                                    <strong class="credito-disponivel">
+                                        {{resumoCliente.creditoDisponivel|
+                                        currency:'BRL'}}
+                                    </strong>
+                                </div>
+
+                                <div>
+
+                                    <span>Status</span>
+
+                                    <strong
+                                        [class.status-em-dia]="
+                                        resumoCliente.status === 'Em Dia'"
+                                        [class.status-devedor]="
+                                        resumoCliente.status === 'Devedor'"
+                                        [class.status-inadimplente]="
+                                        resumoCliente.status === 'Inadimplente'"
+                                        [class.status-limite-excedido]="
+                                        resumoCliente.status === 'Limite Excedido'">
+
+                                        {{ resumoCliente.status }}
+
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                            }
+
+                            @if (clienteBloqueadoFiado) {
+
+                            <small class="cliente-bloqueado">
+                                ⚠️ Cliente bloqueado para compras fiado.
                             </small>
 
                             }
 
-                            <div>
-                                <span>Limite Crédito</span>
-
-                                <strong>
-                                    {{resumoCliente.limiteCredito| currency:'BRL'}}
-                                </strong>
-                            </div>
-
-                            <div>
-                                <span>Saldo Devedor</span>
-
-                                <strong class="saldo-devedor">
-                                    {{resumoCliente.saldoDevedor| currency:'BRL'}}
-                                </strong>
-                            </div>
-
-                            <div>
-                                <span>Crédito Disponível</span>
-
-                                <strong class="credito-disponivel">
-                                    {{resumoCliente.creditoDisponivel| currency:'BRL'}}
-                                </strong>
-                            </div>
-
-                            <div>
-
-                                <span>Status</span>
-
-                                <strong
-                                    [class.status-em-dia]="
-                                        resumoCliente.status === 'Em Dia'"
-                                    [class.status-devedor]="
-                                        resumoCliente.status === 'Devedor'"
-                                    [class.status-inadimplente]="
-                                        resumoCliente.status === 'Inadimplente'"
-                                    [class.status-limite-excedido]="
-                                        resumoCliente.status === 'Limite Excedido'">
-
-                                    {{ resumoCliente.status }}
-
-                                </strong>
-
-                            </div>
-
                         </div>
-
                         }
+                    </div>
 
-                        @if (clienteBloqueadoFiado) {
+                    @if (formaPagamento === 'dinheiro') {
 
-                        <small class="cliente-bloqueado">
-                            ⚠️ Cliente bloqueado para compras fiado.
-                        </small>
+                    <div class="field">
 
-                        }
+                        <app-currency-input
+                            label="Valor Recebido"
+                            placeholder="0,00"
+                            [(value)]="valorRecebido"
+                            (keyup.enter)="finalizarVenda()">
+                        </app-currency-input>
+
+                    </div>
+
+                    @if (
+                    formaPagamento === 'dinheiro' &&
+                    valorRecebido !== null
+                    ) {
+
+                    <div
+                        class="troco-box"
+                        [class.troco-positivo]="troco > 0">
+
+                        <span>
+                            Troco
+                        </span>
+
+                        <strong>
+                            {{ troco | currency:'BRL' }}
+                        </strong>
 
                     </div>
                     }
-                </div>
+                    }
 
-                @if (formaPagamento === 'dinheiro') {
-
-                <div class="field">
-
-                    <app-currency-input
-                        label="Valor Recebido"
-                        placeholder="0,00"
-                        [(value)]="valorRecebido"
-                        (keyup.enter)="finalizarVenda()">
-                    </app-currency-input>
-
-                </div>
-
-                @if (
-                formaPagamento === 'dinheiro' &&
-                valorRecebido !== null
-                ) {
-
-                <div
-                    class="troco-box"
-                    [class.troco-positivo]="troco > 0">
-
-                    <span>
-                        Troco
-                    </span>
-
-                    <strong>
-                        {{ troco | currency:'BRL' }}
-                    </strong>
-
-                </div>
-                }
-                }
-
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    (click)="finalizarVenda()"
-                    [disabled]="
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        (click)="finalizarVenda()"
+                        [disabled]="
                         carrinho.length === 0 ||
                         finalizandoVenda ||
                         creditoInsuficiente ||
                         clienteBloqueadoFiado
                     ">
-                    {{
-                    finalizandoVenda
-                    ? 'Finalizando...'
-                    : carrinho.length === 0
-                    ? 'Carrinho Vazio'
-                    : 'Finalizar Venda (F2)'
-                    }}
-                </button>
+                        {{
+                        finalizandoVenda
+                        ? 'Finalizando...'
+                        : carrinho.length === 0
+                        ? 'Carrinho Vazio'
+                        : 'Finalizar Venda (F2)'
+                        }}
+                    </button>
+                </div>
             </div>
         </div>
 
-    </div>
-    
+    </app-split-panel>
+
     <div class="atalhos-venda">
 
         <span>

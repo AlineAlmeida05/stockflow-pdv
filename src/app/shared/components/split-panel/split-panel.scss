@@ -1,19 +1,21 @@
 .split-panel {
     display: grid;
-    grid-template-columns: 1fr 2fr;
     gap: 24px;
     align-items: start;
     margin-top: 24px;
 }
 
-.left,
-.right {
-    min-width: 0;
+.split-panel:not(.reverse) {
+    grid-template-columns: 1fr 2fr;
 }
 
+.split-panel.reverse {
+    grid-template-columns: 2fr 1fr;
+}
 
 @media (max-width: 768px) {
-    .split-panel {
+    .split-panel,
+    .split-panel.reverse {
         grid-template-columns: 1fr;
     }
 }
