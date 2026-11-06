@@ -10,6 +10,7 @@ import { DataTable } from '../../shared/components/data-table/data-table';
 import { Toolbar } from '../../shared/components/toolbar/toolbar';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 import { AlertService } from '../../core/services/alert.service';
+import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 
 
 type ProdutoTabela =
@@ -29,6 +30,7 @@ type ProdutoTabela =
     EmptyState,
     DataTable,
     Toolbar,
+    SplitPanel
 
   ],
   templateUrl: './produtos.html',
@@ -45,8 +47,6 @@ export class Produtos implements OnInit {
   categoria = '';
 
   precoVenda = 0;
-
-  codigoBarras = '';
 
   estoqueMinimo = 0;
 
@@ -67,6 +67,8 @@ export class Produtos implements OnInit {
   produtoAtivo = true;
 
   salvandoProduto = false;
+
+  estoqueInicial = 0;
 
   colunasProdutos: {
     field: string;
@@ -178,18 +180,6 @@ export class Produtos implements OnInit {
 
     }
 
-    if (
-      this.custoMedio < 0
-    ) {
-
-      this.alertService.warning(
-        'Informe um custo médio válido.'
-      );
-
-      return;
-
-    }
-
     if (this.produtoEditandoId) {
 
       this.salvandoProduto = true;
@@ -204,7 +194,7 @@ export class Produtos implements OnInit {
           {
             nome: this.nome,
             categoria: this.categoria,
-            codigoBarras: this.codigoBarras,
+            codigoBarras: '',
             precoVenda: this.precoVenda,
             estoqueAtual: this.estoqueAtual,
             estoqueMinimo: this.estoqueMinimo,
@@ -239,42 +229,31 @@ export class Produtos implements OnInit {
         'Cadastrando produto...'
       );
 
-      this.produtoService
-        .salvar({
+      this.produtoService.salvar({
+        nome: this.nome,
+        categoria: this.categoria,
+        precoVenda: this.precoVenda,
+        estoqueMinimo: this.estoqueMinimo,
+        estoqueInicial: this.estoqueInicial
+      }).subscribe({
 
-          nome: this.nome,
+        next: () => {
 
-          categoria: this.categoria,
+          this.finalizarSucesso(
+            'Produto cadastrado com sucesso.'
+          );
 
-          codigoBarras: this.codigoBarras,
+        },
+        error: erro => {
 
-          precoVenda: this.precoVenda,
+          this.finalizarErro(
+            erro,
+            'Erro ao cadastrar produto.'
+          );
 
-          estoqueAtual: 0,
+        }
 
-          estoqueMinimo: this.estoqueMinimo,
-
-          custoMedio: this.custoMedio
-
-        }).subscribe({
-
-          next: () => {
-
-            this.finalizarSucesso(
-              'Produto cadastrado com sucesso.'
-            );
-
-          },
-          error: erro => {
-
-            this.finalizarErro(
-              erro,
-              'Erro ao cadastrar produto.'
-            );
-
-          }
-
-        });
+      });
 
     }
 
@@ -357,12 +336,6 @@ export class Produtos implements OnInit {
         produto.codigo
           ?.toLowerCase()
           .includes(busca)
-
-        ||
-
-        produto.codigoBarras
-          ?.toLowerCase()
-          .includes(busca)
     );
 
   }
@@ -394,9 +367,9 @@ export class Produtos implements OnInit {
 
     this.limparFormulario();
 
-    this.modoVisualizacao = false;
-
     this.mostrarFormulario = true;
+
+    this.modoVisualizacao = false;
 
   }
 
@@ -467,7 +440,6 @@ export class Produtos implements OnInit {
 
     this.nome = '';
     this.categoria = '';
-    this.codigoBarras = '';
     this.precoVenda = 0;
     this.estoqueMinimo = 0;
     this.produtoEditandoId = null;
@@ -492,8 +464,6 @@ export class Produtos implements OnInit {
 
     this.codigo = produtoSelecionado.codigo ?? '';
 
-    this.codigoBarras = produtoSelecionado.codigoBarras;
-
     this.precoVenda = produtoSelecionado.precoVenda;
 
     this.estoqueAtual = produtoSelecionado.estoqueAtual;
@@ -506,13 +476,15 @@ export class Produtos implements OnInit {
 
     this.dataCadastro = produtoSelecionado.dataCadastro;
 
-    this.mostrarFormulario = true;
+    this.mostrarFormulario = false;
 
     this.modoVisualizacao = true;
 
   }
 
   habilitarEdicao(): void {
+
+    this.mostrarFormulario = true;
 
     this.modoVisualizacao = false;
 

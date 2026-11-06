@@ -6,8 +6,11 @@ import { MovimentacaoEstoqueRequest } from '../models/movimentacao-estoque-reque
 import { environment } from '../../../environments/environment';
 
 @Injectable({
+
   providedIn: 'root'
+
 })
+
 export class MovimentacaoEstoqueService {
 
   private readonly http = inject(HttpClient);
@@ -17,33 +20,49 @@ export class MovimentacaoEstoqueService {
   listar(): Observable<MovimentacaoEstoque[]> {
 
     return this.http.get<
+
       MovimentacaoEstoque[]
+
     >(this.apiUrl);
 
   }
 
   registrarEntrada(
+
     request: MovimentacaoEstoqueRequest
+
   ): Observable<MovimentacaoEstoque> {
 
     return this.http.post<
+
       MovimentacaoEstoque
+
     >(
+
       this.apiUrl,
+
       request
+
     );
 
-  }    
+  }
 
   registrar(
+
     request: MovimentacaoEstoqueRequest
+
   ): Observable<MovimentacaoEstoque> {
 
     return this.http.post<
+
       MovimentacaoEstoque
+
     >(
+
       this.apiUrl,
+
       request
+
     );
 
   }
