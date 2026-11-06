@@ -10,11 +10,14 @@ import { Toolbar } from '../../shared/components/toolbar/toolbar';
 import { StatCard } from '../../shared/components/stat-card/stat-card';
 import { FormsModule } from '@angular/forms';
 import { SelectInput } from '../../shared/components/select-input/select-input';
-
+import { ProdutoPromocao } from '../../core/models/produto-promocao.model';
+import { PromocaoService } from '../../core/services/promocao.service';
+import { Router } from '@angular/router';
 
 type ProdutoEstoque = Produto & {
     statusEstoque: string;
     nivelEstoque: string;
+    acaoPromocional: string;
 };
 @Component({
     selector: 'app-estoque',
@@ -41,10 +44,14 @@ export class Estoque implements OnInit {
 
     filtroStatus = '';
 
+    pendentes: ProdutoPromocao[] = [];
+
+    ativas: ProdutoPromocao[] = [];
+
     colunasEstoque: {
         field: string;
         header: string;
-        type?: | 'text' | 'badge' | 'currency' | 'date' | 'progress';
+        type?: | 'text' | 'badge' | 'currency' | 'date' | 'progress' | 'toggle' | 'action';
         align: 'left' | 'right' | 'center';
     }[] = [
             {
@@ -54,8 +61,9 @@ export class Estoque implements OnInit {
                 align: 'left'
             },
             {
-                field: 'categoria',
-                header: 'Categoria',
+                field: 'acaoPromocional',
+                header: '',
+                type: 'action',
                 align: 'center'
             },
             {
@@ -101,10 +109,25 @@ export class Estoque implements OnInit {
     searchInput?: SearchInput;
 
     constructor(
-        private produtoService: ProdutoService
+        private produtoService: ProdutoService,
+        private promocaoService: PromocaoService,
+        private router: Router
     ) { }
 
     ngOnInit(): void {
+
+        this.promocaoService
+            .listarPainel()
+            .subscribe({
+                next: painel => {
+
+                    this.pendentes = painel.pendentes;
+
+                    this.ativas = painel.ativas;
+
+                }
+            });
+
         this.carregarProdutos();
     }
 
@@ -144,6 +167,10 @@ export class Estoque implements OnInit {
 
                 statusEstoque:
                     this.obterDescricaoStatusEstoque(
+                        produto
+                    ),
+                acaoPromocional:
+                    this.obterAcaoProduto(
                         produto
                     ),
 
@@ -340,6 +367,97 @@ export class Estoque implements OnInit {
 
             default:
                 return 'Em Estoque';
+
+        }
+
+    }
+
+    private obterAcaoProduto(
+        produto: Produto
+    ): string {
+
+        if (
+            this.ativas.some(
+                item => item.id === produto.id
+            )
+        ) {
+            return '📈 Acompanhar';
+        }
+
+        if (
+            this.pendentes.some(
+                item => item.id === produto.id
+            )
+        ) {
+            return '⚠️ Promoção';
+        }
+
+        if (
+            produto.estoqueAtual === 0
+            ||
+            produto.estoqueAtual <=
+            produto.estoqueMinimo
+        ) {
+            return '➕ Repor';
+        }
+
+        return '';
+
+    }
+
+
+    abrirAcaoProduto(
+        event: {
+            row: unknown;
+            field: string;
+        }
+    ): void {
+
+        const produto =
+            event.row as ProdutoEstoque;
+
+        switch (
+        produto.acaoPromocional
+        ) {
+
+            case '📈 Acompanhar':
+
+                this.router.navigate(
+                    ['/promocoes'],
+                    {
+                        queryParams: {
+                            produtoId: produto.id
+                        }
+                    }
+                );
+
+                break;
+
+            case '⚠️ Promoção':
+
+                this.router.navigate(
+                    ['/promocoes'],
+                    {
+                        queryParams: {
+                            produtoId: produto.id
+                        }
+                    }
+                );
+
+                break;
+
+            case '➕ Repor':
+
+                this.router.navigate(
+                    ['/entrada-de-estoque'],
+                    {
+                        queryParams: {
+                            produtoId: produto.id
+                        }
+                    }
+                );
+
+                break;
 
         }
 

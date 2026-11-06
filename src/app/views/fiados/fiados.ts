@@ -336,10 +336,6 @@ export class Fiados implements OnInit {
 
     confirmarRecebimento(): void {
 
-        console.log(
-            'Fiado selecionado',
-            this.fiados
-        );
         if (
             !this.cliente ||
             this.valorRecebido <= 0

@@ -16,6 +16,7 @@ import { ExpandableCard } from '../../shared/components/expandable-card/expandab
 import { SmartProductSearch } from '../../shared/components/smart-product-search/smart-product-search';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 import { MovimentacaoEstoqueRequest } from '../../core/models/movimentacao-estoque-request.model';
+import { ActivatedRoute } from '@angular/router';
 
 type ProdutoTabela = Produto & {
     statusEstoque: string;
@@ -63,6 +64,8 @@ export class EntradaDeEstoque implements OnInit {
     quantidadeInput?: ElementRef<HTMLInputElement>;
 
     produtoSelecionado: Produto | null = null;
+
+    private produtoIdSelecionado?: string;
 
     colunasProdutos: {
         field: string;
@@ -137,10 +140,17 @@ export class EntradaDeEstoque implements OnInit {
         private produtoService: ProdutoService,
         private movimentacaoService: MovimentacaoEstoqueService,
         private alertService: AlertService,
-        private confirmDialogService: ConfirmDialogService
+        private confirmDialogService: ConfirmDialogService,
+        private route: ActivatedRoute
     ) { }
 
     ngOnInit(): void {
+
+        this.produtoIdSelecionado =
+            this.route.snapshot
+                .queryParamMap
+                .get('produtoId')
+            ?? undefined;
 
         this.carregarProdutos();
 
@@ -158,9 +168,38 @@ export class EntradaDeEstoque implements OnInit {
 
                     this.produtos = produtos;
 
+                    if (
+                        this.produtoIdSelecionado
+                    ) {
+
+                        const produto =
+                            produtos.find(
+                                item =>
+                                    item.id ===
+                                    this.produtoIdSelecionado
+                            );
+
+                        if (produto) {
+
+                            this.produtoSelecionado =
+                                produto;
+
+                            this.produtoSelecionadoId =
+                                produto.id;
+
+                            setTimeout(() => {
+
+                                this.quantidadeInput
+                                    ?.nativeElement
+                                    .focus();
+
+                            });
+
+                        }
+
+                    }
 
                 },
-
                 error: erro => {
 
                     console.error(erro);

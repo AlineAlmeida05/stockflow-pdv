@@ -7,7 +7,8 @@ type TableColumn = {
     | 'currency'
     | 'date'
     | 'toggle'
-    | 'progress';
+    | 'progress'
+    | 'action';
     align?:
     | 'left'
     | 'center'

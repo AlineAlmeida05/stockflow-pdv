@@ -90,29 +90,8 @@ export const MENU_CONFIG: MenuItem[] = [
     ]
   },
   {
-    label: 'Promoções',
-    route: '/promocoes',
-    modulo: 'PROMOCOES',
-    perfis: [
-      'SUPER_ADMIN',
-      'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE'
-    ]
-  },
-  {
     label: 'Relatórios',
     route: '/relatorios',
-    perfis: [
-      'SUPER_ADMIN',
-      'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE'
-    ]
-  },
-  {
-    label: 'Marketing IA',
-    route: '/marketing',
     perfis: [
       'SUPER_ADMIN',
       'PROPRIETARIO',

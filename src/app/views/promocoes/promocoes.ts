@@ -14,6 +14,7 @@ import { Promocao } from '../../core/models/promocao.model';
 import { ProdutoPromocao } from '../../core/models/produto-promocao.model';
 import { NotificacaoService } from '../../core/services/notificacao.service';
 import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-promocoes',
@@ -44,6 +45,7 @@ export class Promocoes implements OnInit {
 
     ativas: ProdutoPromocao[] = [];
 
+    private produtoIdSelecionado?: string;
 
     obterMotivoBackend(
         produtoId: string
@@ -246,10 +248,17 @@ export class Promocoes implements OnInit {
         private promocaoService: PromocaoService,
         private alertService: AlertService,
         private notificacaoService: NotificacaoService,
-        private router: Router
+        private router: Router,
+        private route: ActivatedRoute
     ) { }
 
     ngOnInit(): void {
+
+        this.produtoIdSelecionado =
+            this.route.snapshot
+                .queryParamMap
+                .get('produtoId')
+            ?? undefined;
 
         this.carregarDados();
 
@@ -919,6 +928,25 @@ export class Promocoes implements OnInit {
 
                     this.produtos = produtos;
 
+                    if (
+                        this.produtoIdSelecionado
+                    ) {
+
+                        const produto =
+                            produtos.find(
+                                item =>
+                                    item.id ===
+                                    this.produtoIdSelecionado
+                            );
+
+                        if (produto) {
+
+                            this.produtoSelecionado =
+                                produto;
+
+                        }
+
+                    }
 
                 }
             });
@@ -979,4 +1007,6 @@ export class Promocoes implements OnInit {
         );
 
     }
+
+
 }   
