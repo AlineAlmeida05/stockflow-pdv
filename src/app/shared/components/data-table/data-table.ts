@@ -47,6 +47,14 @@ export class DataTable {
     @Input()
     clickableRows = false;
 
+    @Output()
+    actionClick =
+        new EventEmitter<{
+            row: unknown;
+            field: string;
+        }>();
+
+
     formatCurrency(
         value: unknown
     ): string {
@@ -119,6 +127,18 @@ export class DataTable {
             case 'Inativo':
             case 'Inadimplente':
             case 'Crítico':
+                return 'status-danger';
+
+            case '✅ Promoção Ativa':
+                return 'status-success';
+
+            case '⚠️ Promoção':
+                return 'status-warning';
+
+            case '📈 Acompanhar':
+                return 'status-success';
+
+            case '➕ Repor':
                 return 'status-danger';
 
             default:

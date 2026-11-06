@@ -7,7 +7,6 @@ import { NotificacaoService } from '../../core/services/notificacao.service';
 import { MenuBadge } from '../../core/models/menu-badge.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MenuItem } from '../../core/models/menu-item.model';
-import { PromocaoService } from '../../core/services/promocao.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -28,21 +27,16 @@ export class Sidebar implements OnInit {
 
   badges: MenuBadge[] = [];
 
-  promocoesDisponiveis = false;
-
   private destroyRef = inject(DestroyRef);
 
   constructor(
     private authService: AuthService,
-    private notificacaoService: NotificacaoService,
-    private promocaoService: PromocaoService
+    private notificacaoService: NotificacaoService
   ) { }
 
   ngOnInit(): void {
 
     this.carregarMenu();
-
-    this.carregarDisponibilidadePromocoes();
 
     this.carregarBadges();
 
@@ -56,8 +50,6 @@ export class Sidebar implements OnInit {
       .subscribe(() => {
 
         this.carregarBadges();
-
-        this.carregarDisponibilidadePromocoes();
 
       });
 
@@ -76,11 +68,6 @@ export class Sidebar implements OnInit {
 
     }
 
-    console.log(
-      'Perfil do usuário:',
-      usuario.perfil
-    );
-
     this.menuFiltrado =
       this.menu.filter(item => {
 
@@ -93,32 +80,9 @@ export class Sidebar implements OnInit {
           return false;
         }
 
-        if (
-          item.modulo === 'PROMOCOES'
-          &&
-          !this.promocoesDisponiveis
-        ) {
-          return false;
-        }
-
         return true;
 
       });
-
-    console.table(
-      this.menuFiltrado
-    );
-
-    console.log(
-      this.menuFiltrado.find(
-        item =>
-          item.label === 'Promoções'
-      )
-    );
-
-    console.log(
-      this.menuFiltrado.length
-    );
 
   }
 
@@ -157,37 +121,6 @@ export class Sidebar implements OnInit {
             'Erro ao carregar badges',
             erro
           );
-
-        }
-      });
-
-  }
-
-  private carregarDisponibilidadePromocoes(): void {
-
-    this.promocaoService
-      .existePromocao()
-      .subscribe({
-        next: response => {
-
-          console.log(
-            'Promoções disponíveis:',
-            response
-          );
-
-          this.promocoesDisponiveis = response.existePromocao;
-
-          this.carregarMenu();
-
-        },
-        error: erro => {
-
-          console.error(
-            'Erro ao verificar promoções',
-            erro
-          );
-
-          this.carregarMenu();
 
         }
       });

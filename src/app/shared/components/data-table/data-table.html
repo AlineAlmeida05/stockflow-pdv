@@ -1,28 +1,42 @@
 <div class="table-container">
+
     <table class="table">
+
         <thead>
+
             <tr>
                 @for (
                 column of columns;
                 track column.field
                 ) {
+
                 <th
                     scope="col"
                     [class.text-center]="column.align === 'center'"
                     [class.text-right]="column.align === 'right'">
+
                     {{ column.header }}
+
                 </th>
+
                 }
 
                 @if (showActions) {
+
                 <th scope="col">
+
                     {{ actionsHeader }}
+
                 </th>
+
                 }
+
             </tr>
+
         </thead>
 
         <tbody>
+
             @if (!data.length) {
 
             <tr>
@@ -30,6 +44,7 @@
                     class="table-empty"
                     [attr.colspan]="showActions ? columns.length + 1 : columns.length">
                     Nenhum registro encontrado.
+
                 </td>
             </tr>
 
@@ -39,11 +54,13 @@
             row of data;
             track $index;
             ) {
+
             <tr
                 [class.table-row-clickable]="clickableRows"
                 [class.table-row-inativo]="isInativo(row)"
                 (click)="rowClick.emit(row)"
                 [class.table-row-critico]="isEstoqueCritico(row)">
+
                 @for (
                 column of columns;
                 track column.field
@@ -54,12 +71,11 @@
                     [class.text-right]="column.align === 'right'"
                     [class.table-cell-product]="column.field === 'produtoNome'"
                     [class.table-cell-subtotal]="column.field === 'subtotal'">
+
                     @if (column.type === 'badge') {
 
                     <span
-                        [class]="getBadgeClass(
-        $any(row)[column.field]
-    )">
+                        [class]="getBadgeClass($any(row)[column.field])">
 
                         {{ getValue(row, column.field) }}
 
@@ -69,21 +85,17 @@
 
                     <span
                         [class.preco-original-riscado]="column.field === 'precoVenda' &&temPrecoPromocional(row)"
-                        [class.preco-promocional]="
-                            column.field === 'precoPromocional' &&
-                            $any(row).precoPromocional > 0
-                        ">
+                        [class.preco-promocional]="column.field === 'precoPromocional' &&
+                            $any(row).precoPromocional > 0">
 
                         <span
-                            [class.saldo-positivo]="
-        column.field === 'saldoDevedor' &&
-        $any(row)[column.field] <= 0
-    "
-                            [class.saldo-negativo]="
-        column.field === 'saldoDevedor' &&
-        $any(row)[column.field] > 0
-    ">
+                            [class.saldo-positivo]="column.field === 'saldoDevedor' &&
+                            $any(row)[column.field] <= 0"
+                            [class.saldo-negativo]="column.field === 'saldoDevedor' &&
+                            $any(row)[column.field] > 0">
+
                             {{ formatCurrency( getValue(row, column.field))}}
+
                         </span>
 
                     </span>
@@ -110,6 +122,7 @@
                                 (column.toggleActiveValue ?? 'Ativo')
                                 ? (column.toggleActiveLabel ?? 'Ativo')
                                 : (column.toggleInactiveLabel ?? 'Inativo')">
+
                             </span>
 
                         </div>
@@ -126,6 +139,7 @@
                                 [class]="'table-progress__fill ' +
                                 getProgressClass( getStringValue(row,column.field))"
                                 [style.width.%]="getProgressValue($any(row)[column.field])">
+
                             </div>
 
                         </div>
@@ -138,7 +152,24 @@
 
                     </div>
 
-                    } @else {
+                    } @else if (column.type === 'action') {
+
+                    @if (getValue(row, column.field)) {
+
+                    <button
+                        type="button"
+                        class="table-action"
+                        (click)="$event.stopPropagation();
+                            actionClick.emit({
+                            row,field: column.field})">
+
+                        {{ getValue(row, column.field) }}
+
+                    </button>
+
+                    }
+
+                    }@else {
 
                     {{ getValue(row, column.field) }}
 
@@ -151,6 +182,7 @@
                 @if (showActions) {
 
                 <td class="table-actions-column">
+
                     <app-action-icons
                         [showEdit]="showEditAction"
                         [deleteIcon]="
@@ -161,6 +193,7 @@
                                     : '▶️'"
                         (edit)="edit.emit(row)"
                         (delete)="delete.emit(row)">
+
                     </app-action-icons>
                 </td>
                 }

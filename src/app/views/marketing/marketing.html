@@ -1,9 +1,18 @@
 <app-main-layout>
 
     <app-page-title
-        title="Marketing IA"
-        subtitle="Crie materiais de divulgação para suas promoções">
+        title="Marketing da Promoção"
+        subtitle="Crie materiais de divulgação para a promoção selecionada">
     </app-page-title>
+
+    <button
+        class="btn-link btn btn-primary"
+        type="button"
+        (click)="voltarParaPromocoes()">
+
+        ← Voltar para Promoções
+
+    </button>
 
     <div class="marketing-page">
 
@@ -21,55 +30,17 @@
 
                         <label>
 
-                            Produto em Promoção
+                            <div class="produto-selecionado">
 
-                            <select
-                                [(ngModel)]="promocaoSelecionada">
+                                <h3>
+                                    Produto Selecionado
+                                </h3>
 
-                                <option value>
-                                    Selecione
-                                </option>
+                                <strong>
+                                    ✅ {{ obterPromocaoSelecionada()?.nome }}
+                                </strong>
 
-                                @for (
-                                promocao of promocoesAtivas;
-                                track promocao.id
-                                ) {
-
-                                <option
-                                    [value]="promocao.id">
-
-                                    {{ promocao.nome }}
-
-                                    -
-
-                                    R$
-
-                                    {{ promocao.precoPromocional }}
-
-                                </option>
-
-                                }
-
-                            </select>
-
-                        </label>
-
-                        <label>
-
-                            Modo da IA
-
-                            <select
-                                [(ngModel)]="modoIaSelecionado">
-
-                                <option>
-                                    Automático
-                                </option>
-
-                                <option>
-                                    Manual
-                                </option>
-
-                            </select>
+                            </div>
 
                         </label>
 
@@ -81,14 +52,9 @@
                                 rows="4"
                                 [(ngModel)]="observacoes">
 
-                </textarea>
+                            </textarea>
 
                         </label>
-
-                        @if (
-                        modoIaSelecionado ===
-                        'Manual'
-                        ) {
 
                         <h3>
                             Direção Criativa
@@ -194,8 +160,6 @@
                             </select>
 
                         </label>
-
-                        }
 
                         <button
                             type="button"

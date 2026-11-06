@@ -11,7 +11,7 @@ import { PromocaoService } from '../../core/services/promocao.service';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { AlertService } from '../../core/services/alert.service';
 import { DatePipe } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 @Component({
     selector: 'app-marketing',
     standalone: true,
@@ -33,6 +33,7 @@ export class Marketing implements OnInit {
         private promocaoService: PromocaoService,
         private alertService: AlertService,
         private route: ActivatedRoute,
+        private router: Router
     ) { }
 
     campanhas: MarketingCampaignResponse[] = [];
@@ -43,8 +44,6 @@ export class Marketing implements OnInit {
 
     promocaoSelecionada = '';
 
-    modoIaSelecionado = 'Automático';
-
     observacoes = '';
 
     tomSelecionado = 'Promocional';
@@ -52,6 +51,8 @@ export class Marketing implements OnInit {
     tipoPromocaoSelecionado = 'Mega Promoção';
 
     elementoVisualSelecionado = 'Automático';
+
+    private produtoIdSelecionado?: string;
 
     gerandoCampanha = false;
 
@@ -63,16 +64,17 @@ export class Marketing implements OnInit {
 
                 next: painel => {
 
-                    this.promocoesAtivas = painel.ativas;
+                    this.promocoesAtivas =
+                        painel.ativas;
 
+                    if (
+                        this.produtoIdSelecionado
+                    ) {
 
-                },
+                        this.promocaoSelecionada =
+                            this.produtoIdSelecionado;
 
-                error: erro => {
-
-                    console.error(
-                        erro
-                    );
+                    }
 
                 }
 
@@ -104,16 +106,9 @@ export class Marketing implements OnInit {
             .subscribe(params => {
 
                 const produtoId =
-                    this.route.snapshot
-                        .queryParamMap
-                        .get('produtoId');
+                    params['produtoId'];
 
-                if (
-                    produtoId &&
-                    this.promocoesAtivas.some(
-                        item => item.id === produtoId
-                    )
-                ) {
+                if (produtoId) {
 
                     this.promocaoSelecionada =
                         produtoId;
@@ -214,5 +209,23 @@ export class Marketing implements OnInit {
 
     }
 
+    obterPromocaoSelecionada():
+        ProdutoPromocao | undefined {
+
+        return this.promocoesAtivas.find(
+            item =>
+                item.id ===
+                this.promocaoSelecionada
+        );
+
+    }
+
+    voltarParaPromocoes(): void {
+
+        this.router.navigate(
+            ['/promocoes']
+        );
+
+    }
 
 }
