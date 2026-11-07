@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { Venda } from '../../core/models/venda.model';
@@ -79,7 +79,8 @@ export class HistoricoDeVendas
     constructor(
         private vendaService: VendaService,
         private alertService: AlertService,
-        private confirmDialogService: ConfirmDialogService
+        private confirmDialogService: ConfirmDialogService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -195,6 +196,8 @@ export class HistoricoDeVendas
                     this.atualizarVendaCancelada();
 
                     this.limparCancelamento();
+
+                    this.cdr.detectChanges();
 
                 },
 
@@ -347,6 +350,7 @@ export class HistoricoDeVendas
                                 ).getTime()
                         );
 
+                    this.cdr.detectChanges();
 
                 },
 
@@ -448,6 +452,8 @@ export class HistoricoDeVendas
                     });
 
                     this.limparCancelamento();
+
+                    this.cdr.detectChanges();
 
                 },
 

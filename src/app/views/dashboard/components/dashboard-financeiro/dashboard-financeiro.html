@@ -1,0 +1,19 @@
+<app-dashboard-layout>
+
+    <div main>
+
+        <app-dashboard-panel
+            title="Evolução dos Fiados">
+
+            <app-dashboard-chart
+                type="line"
+                [chartData]="fiadosChartData"
+                [chartOptions]="fiadosChartOptions">
+
+            </app-dashboard-chart>
+
+        </app-dashboard-panel>
+
+    </div>
+
+</app-dashboard-layout>

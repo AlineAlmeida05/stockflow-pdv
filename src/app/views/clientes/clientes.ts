@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { Cliente } from '../../core/models/cliente.model';
 import { ClienteService } from '../../core/services/cliente.service';
@@ -91,7 +91,8 @@ export class Clientes implements OnInit {
         private clienteService: ClienteService,
         private alertService: AlertService,
         private confirmDialogService: ConfirmDialogService,
-        private router: Router
+        private router: Router,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -132,6 +133,8 @@ export class Clientes implements OnInit {
                                 cliente.id
                             )
                     );
+
+                    this.cdr.detectChanges();
                 },
 
                 error: erro => {
@@ -181,6 +184,8 @@ export class Clientes implements OnInit {
                         this.clienteEditandoId = null;
                         this.mostrarFormulario = false;
 
+                        this.cdr.detectChanges();
+
                         this.alertService.success(
                             'Cliente atualizado com sucesso.'
                         );
@@ -221,6 +226,8 @@ export class Clientes implements OnInit {
                         this.clienteEditandoId = null;
                         this.mostrarFormulario = false;
 
+                        this.cdr.detectChanges();
+
                         this.alertService.success(
                             'Cliente cadastrado com sucesso.'
                         );
@@ -252,6 +259,8 @@ export class Clientes implements OnInit {
                 next: () => {
 
                     this.carregarClientes();
+
+                    this.cdr.detectChanges();
 
                     this.alertService.success(
                         'Cliente inativado com sucesso.'
@@ -413,6 +422,8 @@ export class Clientes implements OnInit {
                             ...this.clientes
                         ];
                     }
+
+                    this.cdr.detectChanges();
                 },
 
                 error: erro => {
@@ -605,6 +616,8 @@ export class Clientes implements OnInit {
                                     'Cliente inativado com sucesso.'
                                 );
 
+                                this.cdr.detectChanges();
+
                             },
 
                             error: erro => {
@@ -651,6 +664,8 @@ export class Clientes implements OnInit {
                                 this.alertService.success(
                                     'Cliente reativado com sucesso.'
                                 );
+
+                                this.cdr.detectChanges();
 
                             },
 

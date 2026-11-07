@@ -1,0 +1,34 @@
+<app-dashboard-layout>
+
+    <div summary>
+
+        <app-dashboard-panel
+            title="Receita por Forma de Pagamento">
+
+            <app-dashboard-chart
+                type="doughnut"
+                [chartData]="pagamentoChartData"
+                [chartOptions]="pagamentoChartOptions">
+
+            </app-dashboard-chart>
+
+        </app-dashboard-panel>
+
+    </div>
+
+    <div main>
+
+        <app-dashboard-panel
+            title="Evolução das Vendas">
+
+            <app-dashboard-chart
+                [chartData]="vendasChartData"
+                [chartOptions]="vendasChartOptions">
+
+            </app-dashboard-chart>
+
+        </app-dashboard-panel>
+
+    </div>
+
+</app-dashboard-layout>

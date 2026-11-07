@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -27,7 +27,8 @@ export class ForgotPassword implements OnInit {
     private authService: AuthService,
     public router: Router,
     private alertService: AlertService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
 
     this.form = this.fb.group({
@@ -42,7 +43,7 @@ export class ForgotPassword implements OnInit {
 
   }
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
 
     this.slug =
       this.route.snapshot.queryParamMap.get(
@@ -82,6 +83,8 @@ export class ForgotPassword implements OnInit {
           this.router.navigate([
             `/${this.slug}/login`
           ]);
+
+          this.cdr.detectChanges();
 
         },
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, DestroyRef, inject } from '@angular/core';
+import { Component, EventEmitter, Output, DestroyRef, inject, ChangeDetectorRef } from '@angular/core';
 import { RouterLink, RouterLinkActive, } from '@angular/router';
 import { MENU_CONFIG } from '../../config/menu.config';
 import { AuthService } from '../../core/services/auth.service';
@@ -31,7 +31,8 @@ export class Sidebar implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private notificacaoService: NotificacaoService
+    private notificacaoService: NotificacaoService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -113,6 +114,8 @@ export class Sidebar implements OnInit {
         next: badges => {
 
           this.badges = badges;
+
+          this.cdr.detectChanges();
 
         },
         error: erro => {

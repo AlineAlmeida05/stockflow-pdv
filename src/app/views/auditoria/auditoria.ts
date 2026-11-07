@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AuditoriaService } from '../../core/services/auditoria.service';
 import { Auditoria } from '../../core/models/auditoria.model';
 import { DatePipe } from '@angular/common';
@@ -84,7 +84,8 @@ export class AuditoriaComponent implements OnInit {
     ];
 
     constructor(
-        private auditoriaService: AuditoriaService
+        private auditoriaService: AuditoriaService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -101,6 +102,8 @@ export class AuditoriaComponent implements OnInit {
                     this.auditorias = response;
 
                     this.carregarEntidades();
+
+                    this.cdr.detectChanges();
                 }
             });
     }

@@ -1,7 +1,6 @@
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { FormsModule } from "@angular/forms";
 import { Produto } from "../../../core/models/produto.model";
-
 
 @Component({
     selector: 'app-smart-product-search',
@@ -12,7 +11,7 @@ import { Produto } from "../../../core/models/produto.model";
     templateUrl: './smart-product-search.html',
     styleUrl: './smart-product-search.scss'
 })
-export class SmartProductSearch {
+export class SmartProductSearch implements OnChanges {
 
     @Input()
     produtos: Produto[] = [];
@@ -25,6 +24,9 @@ export class SmartProductSearch {
 
     resultados: Produto[] = [];
 
+    @Input()
+    produtoSelecionadoAtual?: Produto;
+
     readonly inputId = `produto-${Math.random()
         .toString(36)
         .slice(2, 9)}`;
@@ -36,6 +38,34 @@ export class SmartProductSearch {
     constructor(
 
     ) { }
+
+    ngOnChanges(
+        changes: SimpleChanges
+    ): void {
+
+        if (
+            changes['produtoSelecionadoAtual']
+        ) {
+
+            this.textoBusca = this.produtoSelecionadoAtual?.nome ?? '';
+
+            this.resultados = [];
+
+            this.mostrarResultados = false;
+
+        }
+
+        if (
+            changes['produtos']
+            &&
+            this.textoBusca
+        ) {
+
+            this.atualizarResultados();
+
+        }
+
+    }
 
     private atualizarResultados(): void {
 
@@ -57,10 +87,8 @@ export class SmartProductSearch {
                         produto.nome?.toLowerCase()
                             .includes(busca)
                         ||
-                        produto.codigo?.toLowerCase()
-                            .includes(busca)
-                        ||
-                        produto.codigoBarras?.toLowerCase()
+                        (produto.codigo ?? '')
+                            .toLowerCase()
                             .includes(busca)
                 )
                 .sort((a, b) =>
@@ -143,16 +171,6 @@ export class SmartProductSearch {
     limpar(): void {
 
         this.textoBusca = '';
-
-        this.mostrarResultados = false;
-
-    }
-
-    setProduto(
-        produto: Produto | undefined
-    ): void {
-
-        this.textoBusca = produto?.nome ?? '';
 
         this.resultados = [];
 

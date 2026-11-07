@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { Produto } from '../../core/models/produto.model';
@@ -249,7 +249,8 @@ export class Promocoes implements OnInit {
         private alertService: AlertService,
         private notificacaoService: NotificacaoService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -459,6 +460,8 @@ export class Promocoes implements OnInit {
 
                     this.notificacaoService.notificarAtualizacaoBadges();
 
+                    this.cdr.detectChanges();
+
                     this.alertService.success(
                         'Promoção ativada com sucesso.'
                     );
@@ -517,6 +520,8 @@ export class Promocoes implements OnInit {
 
                     this.notificacaoService
                         .notificarAtualizacaoBadges();
+
+                    this.cdr.detectChanges();
 
                     this.alertService.success(
                         'Promoção encerrada com sucesso.'
@@ -948,6 +953,8 @@ export class Promocoes implements OnInit {
 
                     }
 
+                    this.cdr.detectChanges();
+
                 }
             });
 
@@ -958,7 +965,7 @@ export class Promocoes implements OnInit {
 
                     this.promocoes = promocoes;
 
-
+                    this.cdr.detectChanges();
                 }
             });
 
@@ -971,7 +978,7 @@ export class Promocoes implements OnInit {
 
                     this.ativas = painel.ativas;
 
-
+                    this.cdr.detectChanges();
                 }
             });
 

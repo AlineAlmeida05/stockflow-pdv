@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { Produto } from '../../core/models/produto.model';
 import { ProdutoService } from '../../core/services/produto.service';
@@ -111,7 +111,8 @@ export class Estoque implements OnInit {
     constructor(
         private produtoService: ProdutoService,
         private promocaoService: PromocaoService,
-        private router: Router
+        private router: Router,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -124,6 +125,8 @@ export class Estoque implements OnInit {
                     this.pendentes = painel.pendentes;
 
                     this.ativas = painel.ativas;
+
+                    this.cdr.detectChanges();
 
                 }
             });
@@ -146,6 +149,8 @@ export class Estoque implements OnInit {
                         this.searchInput?.focar();
 
                     });
+
+                    this.cdr.detectChanges();
 
                 },
 

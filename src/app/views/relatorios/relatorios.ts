@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { FormsModule } from '@angular/forms';
@@ -219,7 +219,8 @@ export class Relatorios
         private relatorioService: RelatorioService,
         private relatorioEstoqueService: RelatorioEstoqueService,
         private RelatorioFiadosService: RelatorioFiadosService,
-        private router: Router
+        private router: Router,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -232,7 +233,7 @@ export class Relatorios
 
                     this.produtos = produtos;
 
-
+                    this.cdr.detectChanges();
                 },
 
                 error: erro => {
@@ -254,7 +255,7 @@ export class Relatorios
 
                     this.dashboardVendas = dashboard;
 
-
+                    this.cdr.detectChanges();
                 },
 
                 error: erro => {
@@ -276,7 +277,7 @@ export class Relatorios
 
                     this.dashboardEstoque = dashboard;
 
-
+                    this.cdr.detectChanges();
                 },
 
                 error: erro => {
@@ -298,7 +299,7 @@ export class Relatorios
 
                     this.dashboardFiados = dashboard;
 
-
+                    this.cdr.detectChanges();
                 },
 
 

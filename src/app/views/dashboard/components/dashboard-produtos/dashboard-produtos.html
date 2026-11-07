@@ -1,0 +1,441 @@
+<app-dashboard-layout>
+
+    <div summary>
+
+        <app-dashboard-panel
+            title="Resumo de Produtos">
+
+            <div class="executive-summary">
+
+                <div
+                    class="summary-item"
+                    [class.summary-item--active]="resumoProdutosSelecionado ==='todos'"
+                    (click)="selecionarResumo('todos')">
+
+                    <span>Total Produtos</span>
+
+                    <strong>
+
+                        {{ produtos.length }}
+
+                    </strong>
+                </div>
+
+                <div
+                    class="summary-item"
+                    [class.summary-item--active]="resumoProdutosSelecionado ==='semEstoque' "
+                    (click)="selecionarResumo('semEstoque')">
+
+                    <span>Sem Estoque</span>
+
+                    <strong>
+
+                        {{ produtosSemEstoque.length }}
+
+                    </strong>
+
+                </div>
+
+                <div
+                    class="summary-item"
+                    [class.summary-item--active]="resumoProdutosSelecionado ==='estoqueBaixo' "
+                    (click)="selecionarResumo('estoqueBaixo')">
+
+                    <span>Estoque Baixo</span>
+
+                    <strong>
+
+                        {{ produtosEstoqueBaixo.length }}
+
+                    </strong>
+
+                </div>
+
+                @if (topProdutosVendidos.length > 0
+                ){
+
+                <div
+                    class="summary-item"
+                    [class.summary-item--active]="resumoProdutosSelecionado ==='maisVendido' "
+                    (click)="selecionarResumo('maisVendido')">
+
+                    <span>Mais Vendido</span>
+
+                    <strong>
+
+                        {{ topProdutosVendidos[0]?.nome }}
+
+                    </strong>
+                </div>
+
+                }
+
+            </div>
+
+        </app-dashboard-panel>
+
+    </div>
+
+    <div main>
+
+        <app-dashboard-panel
+            title="Detalhamento">
+
+            @if (
+            !resumoProdutosSelecionado
+            ) {
+
+            <app-empty-state
+                icon="📦"
+                title="Nenhum indicador selecionado"
+                message="Clique em um indicador para visualizar os detalhes dos produtos.">
+
+            </app-empty-state>
+
+            }
+            @if (
+            resumoProdutosSelecionado ===
+            'todos'
+            ) {
+
+            <h3>
+
+                Todos os Produtos
+
+            </h3>
+
+            @if (
+            produtos.length === 0
+            ) {
+
+            <app-empty-state
+                icon="📦"
+                title="Nenhum produto encontrado"
+                message="Não existem produtos cadastrados.">
+
+            </app-empty-state>
+
+            } @else {
+
+            <div class="dashboard-table-container">
+
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+
+                                Produto
+
+                            </th>
+
+                            <th>
+
+                                Estoque Atual
+
+                            </th>
+
+                            <th>
+
+                                Estoque Mínimo
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @for (
+                        produto of produtos;
+                        track produto.id
+                        ) {
+
+                        <tr>
+
+                            <td class="dashboard-table__value-success">
+
+                                {{ produto.nome }}
+
+                            </td>
+
+                            <td class="dashboard-table__value">
+
+                                {{ produto.estoqueAtual }}
+
+                            </td>
+
+                            <td class="dashboard-table__value">
+
+                                {{ produto.estoqueMinimo }}
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            } }
+            @if (
+            resumoProdutosSelecionado ===
+            'semEstoque'
+            ) {
+
+            <h3>
+
+                Produtos Sem Estoque
+
+            </h3>
+
+            @if (
+            produtosSemEstoque.length === 0
+            ) {
+
+            <app-empty-state
+                icon="✅"
+                title="Nenhum produto sem estoque"
+                message="Todos os produtos possuem estoque disponível.">
+
+            </app-empty-state>
+
+            } @else {
+
+            <div class="dashboard-table-container">
+
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Produto</th>
+
+                            <th>Estoque</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @for (
+                        produto of produtosSemEstoque;
+                        track produto.id
+                        ) {
+
+                        <tr>
+
+                            <td class="dashboard-table__value">
+
+                                {{ produto.nome }}
+
+                            </td>
+
+                            <td
+                                class="dashboard-table__danger">
+
+                                {{ produto.estoqueAtual }}
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            } }
+            @if (
+            resumoProdutosSelecionado ===
+            'estoqueBaixo'
+            ) {
+
+            <h3>
+
+                Produtos com Estoque Baixo
+
+            </h3>
+
+            @if (
+            produtosEstoqueBaixo.length === 0
+            ) {
+
+            <app-empty-state
+                icon="📦"
+                title="Nenhum produto com estoque baixo"
+                message="Todos os produtos estão acima do estoque mínimo.">
+
+            </app-empty-state>
+
+            } @else {
+
+            <div class="dashboard-table-container">
+
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+
+                                Produto
+
+                            </th>
+
+                            <th>
+
+                                Estoque Atual
+
+                            </th>
+
+                            <th>
+
+                                Estoque Mínimo
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @for (
+                        produto of produtosEstoqueBaixo;
+                        track produto.id
+                        ) {
+
+                        <tr>
+
+                            <td class="dashboard-table__value">
+
+                                {{ produto.nome }}
+
+                            </td>
+
+                            <td
+                                class="dashboard-table__warning">
+
+                                {{ produto.estoqueAtual }}
+
+                            </td>
+
+                            <td class="dashboard-table__value">
+
+                                {{ produto.estoqueMinimo }}
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            } }
+
+            @if (
+            resumoProdutosSelecionado ===
+            'maisVendido'
+            ) {
+
+            <h3>
+
+                Produtos Mais Vendidos
+
+            </h3>
+
+            @if (
+
+            topProdutosVendidos.length === 0
+            ) {
+
+            <app-empty-state
+                icon="📈"
+                title="Nenhum produto vendido"
+                message="Não existem vendas registradas para o período selecionado.">
+
+            </app-empty-state>
+
+            } @else {
+
+            <div class="dashboard-table-container">
+
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+
+                                Produto
+
+                            </th>
+
+                            <th>
+
+                                Quantidade
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @for (
+                        produto of topProdutosVendidos;
+                        track produto.nome
+                        ) {
+
+                        <tr>
+
+                            <td>
+
+                                {{ produto.nome }}
+
+                            </td>
+
+                            <td>
+
+                                {{ produto.quantidade }}
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            } }
+
+        </app-dashboard-panel>
+
+    </div>
+
+</app-dashboard-layout>

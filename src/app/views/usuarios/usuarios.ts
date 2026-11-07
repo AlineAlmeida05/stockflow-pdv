@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Usuario } from '../../core/models/usuario.model';
 import { UsuarioService } from '../../core/services/usuario.service';
@@ -93,7 +93,8 @@ export class Usuarios implements OnInit {
         private alertService: AlertService,
         private tenantService: TenantService,
         private authService: AuthService,
-        private confirmDialogService: ConfirmDialogService
+        private confirmDialogService: ConfirmDialogService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -135,7 +136,7 @@ export class Usuarios implements OnInit {
 
                         this.usuarios = usuarios;
 
-
+                        this.cdr.detectChanges();
                     },
 
                     error: erro => {
@@ -162,7 +163,7 @@ export class Usuarios implements OnInit {
 
                     this.usuarios = [...usuarios];
 
-
+                    this.cdr.detectChanges();
                 },
 
                 error: erro => {
@@ -320,6 +321,7 @@ export class Usuarios implements OnInit {
 
                         this.limparFormulario();
 
+                        this.cdr.detectChanges();
 
                         this.alertService.updateToast(
                             loadingToast.id,
@@ -384,6 +386,7 @@ export class Usuarios implements OnInit {
 
                     this.modoEdicao = false;
 
+                    this.cdr.detectChanges();
 
                     this.alertService.updateToast(
                         loadingToast.id,
@@ -494,7 +497,7 @@ export class Usuarios implements OnInit {
 
                     this.tenants = tenants;
 
-
+                    this.cdr.detectChanges();
                 },
 
                 error: erro => {
@@ -533,7 +536,7 @@ export class Usuarios implements OnInit {
 
                     this.usuarios = usuarios;
 
-
+                    this.cdr.detectChanges();
                 },
 
                 error: erro => {
@@ -720,6 +723,7 @@ export class Usuarios implements OnInit {
 
                             this.carregarUsuarios();
 
+                            this.cdr.detectChanges();
 
                             this.alertService.updateToast(
                                 loadingToast.id,

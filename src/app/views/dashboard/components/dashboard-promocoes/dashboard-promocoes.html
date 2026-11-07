@@ -1,0 +1,373 @@
+<app-dashboard-layout>
+    <div summary>
+
+        <app-dashboard-panel
+            title="Resumo de Promoções">
+
+            <div class="executive-summary">
+
+                <div
+                    class="summary-item"
+                    [class.summary-item--active]="resumoPromocoesSelecionado === 'promocoesAtivas'"
+                    (click)="selecionarResumo('promocoesAtivas')">
+
+                    <span>Promoções Ativas</span>
+
+                    <strong>
+
+                        {{ totalPromocoesAtivas }}
+
+                    </strong>
+
+                </div>
+
+                <div
+                    class="summary-item"
+                    [class.summary-item--active]="resumoPromocoesSelecionado === 'vendasPromocionais'"
+                    (click)="selecionarResumo('vendasPromocionais')">
+
+                    <span>Vendas Promocionais</span>
+
+                    <strong>
+
+                        {{ totalVendasPromocionais }}
+
+                    </strong>
+
+                </div>
+
+                <div
+                    class="summary-item"
+                    [class.summary-item--active]="resumoPromocoesSelecionado ==='faturamentoPromocional'"
+                    (click)="selecionarResumo('faturamentoPromocional')">
+
+                    <span>Faturamento Promocional</span>
+
+                    <strong>
+
+                        {{ faturamentoPromocional | currency:'BRL' }}
+
+                    </strong>
+
+                </div>
+
+                <div
+                    class="summary-item"
+                    [class.summary-item--active]="resumoPromocoesSelecionado === 'promocoesEficientes'"
+                    (click)="selecionarResumo('promocoesEficientes')">
+
+                    <span>Promoções Eficientes</span>
+
+                    <strong>
+
+                        {{ totalPromocoesEficientes }}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </app-dashboard-panel>
+
+    </div>
+
+    <div main>
+
+        <app-dashboard-panel
+            title="Detalhamento">
+
+            @if (
+            resumoPromocoesSelecionado === 'promocoesAtivas'
+            ) {
+
+            <h3>
+
+                Promoções Ativas
+
+            </h3>
+
+            <ul>
+
+                @if (
+                promocoesAtivasDetalhes.length === 0
+                ) {
+
+                <app-empty-state
+                    icon="🎯"
+                    title="Nenhuma promoção ativa"
+                    message="Não existem promoções ativas no momento.">
+
+                </app-empty-state>
+
+                } @else {
+
+                <div class="dashboard-table-container">
+
+                    <table class="dashboard-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+
+                                    Produto
+
+                                </th>
+
+                                <th>
+
+                                    Estoque Atual
+
+                                </th>
+
+                                <th>
+
+                                    Estoque Mínimo
+
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @for (
+                            promocao of promocoesAtivasDetalhes;
+                            track promocao.nome
+                            ) {
+
+                            <tr>
+
+                                <td class="dashboard-table__value">
+
+                                    {{ promocao.nome }}
+
+                                </td>
+
+                                <td class="dashboard-table__value">
+
+                                    {{ promocao.estoqueAtual }}
+
+                                </td>
+
+                                <td class="dashboard-table__value">
+
+                                    {{ promocao.estoqueMinimo }}
+
+                                </td>
+
+                            </tr>
+
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                }
+
+            </ul>
+
+            }
+
+            @if (
+            resumoPromocoesSelecionado === 'vendasPromocionais'
+            ) {
+
+            <h3>
+
+                Vendas Promocionais
+
+            </h3>
+
+            @if (
+            produtosPromocionaisMaisVendidos.length === 0
+            ) {
+
+            <app-empty-state
+                icon="🛒"
+                title="Nenhuma venda promocional"
+                message="Não existem vendas promocionais registradas para o período selecionado.">
+
+            </app-empty-state>
+
+            } @else {
+
+            <div class="dashboard-table-container">
+
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+
+                                Produto
+
+                            </th>
+
+                            <th>
+
+                                Quantidade Vendida
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @for (
+                        produto of produtosPromocionaisMaisVendidos;
+                        track produto.nome
+                        ) {
+
+                        <tr>
+
+                            <td class="dashboard-table__value">
+
+                                {{ produto.nome }}
+
+                            </td>
+
+                            <td class="dashboard-table__value-success">
+
+                                {{ produto.quantidade }}
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            }
+
+            }
+
+            @if (
+            resumoPromocoesSelecionado === 'faturamentoPromocional'
+            ) {
+
+            <h3>
+
+                Faturamento Promocional
+
+            </h3>
+
+            <div class="dashboard-resumo-financeiro">
+
+                <strong>
+
+                    {{faturamentoPromocional| currency:'BRL'}}
+
+                </strong>
+
+                <p>
+
+                    Valor total obtido através de vendas promocionais.
+
+                </p>
+
+            </div>
+
+            }
+
+            @if (
+            resumoPromocoesSelecionado === 'promocoesEficientes'
+            ) {
+
+            <h3>
+                Promoções Eficientes
+            </h3>
+
+            @if (
+            promocoesEficientes.length === 0
+            ) {
+
+            <app-empty-state
+                icon="✅"
+                title="Nenhuma promoção eficiente"
+                message="Nenhuma promoção atingiu os critérios definidos até o momento.">
+
+            </app-empty-state>
+
+            } @else {
+
+            <div class="dashboard-table-container">
+
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+
+                                Produto
+
+                            </th>
+
+                            <th>
+
+                                Giro (%)
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @for (
+                        promocao of promocoesEficientes;
+                        track promocao.nome
+                        ) {
+
+                        <tr>
+
+                            <td class="dashboard-table__value">
+
+                                {{ promocao.nome }}
+
+                            </td>
+
+                            <td
+                                class="dashboard-table__success">
+
+                                {{ promocao.giro }}%
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            }
+
+            }
+
+        </app-dashboard-panel>
+
+    </div>
+
+</app-dashboard-layout>

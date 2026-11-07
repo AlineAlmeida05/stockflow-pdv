@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { Produto } from '../../core/models/produto.model';
@@ -141,7 +141,8 @@ export class EntradaDeEstoque implements OnInit {
         private movimentacaoService: MovimentacaoEstoqueService,
         private alertService: AlertService,
         private confirmDialogService: ConfirmDialogService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -198,6 +199,8 @@ export class EntradaDeEstoque implements OnInit {
                         }
 
                     }
+
+                    this.cdr.detectChanges();
 
                 },
                 error: erro => {
@@ -492,7 +495,7 @@ export class EntradaDeEstoque implements OnInit {
 
                     this.movimentacoes = movimentacoes;
 
-
+                    this.cdr.detectChanges();
                 },
 
                 error: erro => {

@@ -13,8 +13,8 @@ export class TenantContextService {
     ) {
 
         const tenantSalvo = localStorage.getItem(
-                'tenantAtivo'
-            );
+            'tenantAtivo'
+        );
 
         if (tenantSalvo) {
 
@@ -32,8 +32,8 @@ export class TenantContextService {
     }
 
     private tenantSubject = new BehaviorSubject<Tenant | null>(
-            null
-        );
+        null
+    );
 
     readonly tenant$ = this.tenantSubject.asObservable();
 
