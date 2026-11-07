@@ -23,9 +23,9 @@
 
         <app-select-input
             label="Movimentação"
-            [(value)]="formaPagamentoSelecionada"
+            [(value)]="tipoMovimentacaoSelecionado "
             (valueChange)="reiniciarPaginacao()"
-            [options]="formasPagamento">
+            [options]="tiposMovimentacao">
         </app-select-input>
 
         <app-select-input
@@ -36,7 +36,7 @@
         </app-select-input>
 
         <app-search-input
-            placeholder="Buscar cliente..."
+            placeholder="Buscar cliente, operador ou movimentação..."
             [(value)]="textoBusca"
             (valueChange)="reiniciarPaginacao()">
         </app-search-input>
@@ -70,7 +70,7 @@
 
                     <strong>
 
-                        {{ movimentacao.tipo === 'fiado'? movimentacao.clienteNome : movimentacao.formaPagamento?.toUpperCase()}}
+                        {{ obterTituloMovimentacao(movimentacao) }}
 
                     </strong>
 
@@ -84,36 +84,44 @@
 
                     <div class="movimentacao-meta">
 
-                        @if (
-                        movimentacao.tipo === 'fiado'
-                        ) {
+                        Cliente:
+                        {{
+                        movimentacao.clienteNome
+                        || 'Consumidor Final'
+                        }}
 
-                        FIADO
+                    </div>
 
-                        @if (
-                        movimentacao.usuarioNome
-                        ) {
-
-                        •
-
-                        {{ movimentacao.usuarioNome }}
-
-                        }
-
-                        } @else {
-
-                        {{ movimentacao.usuarioNome }}
-
-                        }
-
-                        •
+                    <div class="movimentacao-meta">
 
                         {{
                         movimentacao.data
                         | date:'dd/MM/yyyy HH:mm'
                         }}
 
+                        @if (movimentacao.usuarioNome) {
+
+                        •
+
+                        Operador:
+                        {{
+                        movimentacao.usuarioNome
+                        }}
+
+                        }
+
                     </div>
+
+                </div>
+
+                <div class="movimentacao-cliente">
+
+                    Cliente:
+
+                    {{
+                    movimentacao.clienteNome
+                    || 'Consumidor Final'
+                    }}
 
                 </div>
 
