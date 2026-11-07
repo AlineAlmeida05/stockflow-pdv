@@ -10,9 +10,6 @@ import { SelectInput } from '../../shared/components/select-input/select-input';
 import { ExtratoFinanceiroService } from '../../core/services/extrato-financeiro.service';
 import { IndicadoresExtrato } from '../../core/models/indicadores-extrato.model';
 import { StatCard } from '../../shared/components/stat-card/stat-card';
-import { AuditoriaService } from '../../core/services/auditoria.service';
-
-
 @Component({
     selector: 'app-extrato-financeiro',
     standalone: true,
@@ -38,7 +35,7 @@ export class ExtratoFinanceiro
 
     textoBusca = '';
 
-    formaPagamentoSelecionada = 'todos';
+    tipoMovimentacaoSelecionado = 'todos';
 
     indicadores?: IndicadoresExtrato;
 
@@ -70,33 +67,23 @@ export class ExtratoFinanceiro
 
     ];
 
-    formasPagamento = [
-
+    tiposMovimentacao = [
         {
             label: 'Todas',
             value: 'todos'
         },
         {
-            label: 'Fiado',
+            label: 'Vendas',
+            value: 'venda'
+        },
+        {
+            label: 'Fiados',
             value: 'fiado'
         },
         {
-            label: 'PIX',
-            value: 'pix'
-        },
-        {
-            label: 'Dinheiro',
-            value: 'dinheiro'
-        },
-        {
-            label: 'Débito',
-            value: 'debito'
-        },
-        {
-            label: 'Crédito',
-            value: 'credito'
+            label: 'Pagamentos',
+            value: 'pagamento'
         }
-
     ];
 
     cards: {
@@ -134,8 +121,7 @@ export class ExtratoFinanceiro
     searchInput?: SearchInput;
 
     constructor(
-        private extratoFinanceiroService: ExtratoFinanceiroService,
-        private auditoriaService: AuditoriaService
+        private extratoFinanceiroService: ExtratoFinanceiroService
     ) {
     }
 
@@ -144,14 +130,6 @@ export class ExtratoFinanceiro
         this.carregarMovimentacoes();
 
         this.carregarIndicadores();
-
-        this.auditoriaService
-            .listar()
-            .subscribe({
-                next: response => {
-                    console.log(response);
-                }
-            });
 
     }
 
@@ -163,8 +141,7 @@ export class ExtratoFinanceiro
 
                 next: indicadores => {
 
-                    this.indicadores =
-                        indicadores;
+                    this.indicadores = indicadores;
 
                     this.atualizarIndicadores();
 
@@ -192,6 +169,14 @@ export class ExtratoFinanceiro
                 next: movimentacoes => {
 
                     this.movimentacoes = movimentacoes;
+
+                    console.log(
+                        this.movimentacoes
+                            .map(m => ({
+                                tipo: m.tipo,
+                                status: m.status
+                            }))
+                    );
 
                     this.atualizarIndicadores();
 
@@ -221,47 +206,57 @@ export class ExtratoFinanceiro
         return this.movimentacoes.filter(
             movimentacao => {
 
+                const busca =
+                    this.textoBusca
+                        .toLowerCase()
+                        .trim();
+
                 const atendeBusca =
 
+                    !busca
+
+                    ||
+
                     (
-                        movimentacao.clienteNome
-                        ?? ''
+                        movimentacao.clienteNome ?? ''
                     )
                         .toLowerCase()
-                        .includes(
-                            this.textoBusca
-                                .toLowerCase()
-                        );
+                        .includes(busca)
+
+                    ||
+
+                    (
+                        movimentacao.usuarioNome ?? ''
+                    )
+                        .toLowerCase()
+                        .includes(busca)
+
+                    ||
+
+                    (
+                        movimentacao.formaPagamento ?? ''
+                    )
+                        .toLowerCase()
+                        .includes(busca)
+
+                    ||
+
+                    (
+                        movimentacao.tipo ?? ''
+                    )
+                        .toLowerCase()
+                        .includes(busca);
 
 
                 const atendeTipo =
 
-                    this.formaPagamentoSelecionada ===
-                    'todos'
+                    this.tipoMovimentacaoSelecionado === 'todos'
 
                     ||
 
-                    (
-                        this.formaPagamentoSelecionada ===
-                        'fiado'
+                    movimentacao.tipo ===
+                    this.tipoMovimentacaoSelecionado;
 
-                        &&
-
-                        movimentacao.tipo ===
-                        'fiado'
-                    )
-
-                    ||
-
-                    (
-                        movimentacao.tipo ===
-                        'pagamento'
-
-                        &&
-
-                        movimentacao.formaPagamento ===
-                        this.formaPagamentoSelecionada
-                    );
                 const atendePeriodo =
 
                     this.movimentacaoDentroPeriodo(
@@ -278,6 +273,28 @@ export class ExtratoFinanceiro
 
             }
         );
+
+    }
+
+    obterTituloMovimentacao(
+        movimentacao: MovimentacaoFinanceira
+    ): string {
+
+        switch (movimentacao.tipo) {
+
+            case 'venda':
+                return '🛒 Venda';
+
+            case 'fiado':
+                return '📄 Fiado';
+
+            case 'pagamento':
+                return '💰 Pagamento';
+
+            default:
+                return 'Movimentação';
+
+        }
 
     }
 
