@@ -12,6 +12,7 @@ import { AlertService } from '../../core/services/alert.service';
 import { ConfirmDialogService } from '../../core/services/confirm-dialog.service';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { ClienteResumo } from '../../core/models/cliente-resumo.model';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-clientes',
@@ -57,17 +58,18 @@ export class Clientes implements OnInit {
     colunasClientes: {
         field: string;
         header: string;
-        type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle';
+        type?: 'text' | 'badge' | 'currency' | 'date' | 'toggle' | 'action';
         align?: 'left' | 'center' | 'right';
     }[] = [
             {
-                field: 'nome',
-                header: 'Nome'
+                field: 'abrirCliente',
+                header: 'Cliente',
+                type: 'action'
             },
             {
-                field: 'saldoDevedor',
-                header: 'Saldo',
-                type: 'currency',
+                field: 'fiados',
+                header: 'Fiados',
+                type: 'action',
                 align: 'center'
             },
             {
@@ -88,7 +90,8 @@ export class Clientes implements OnInit {
     constructor(
         private clienteService: ClienteService,
         private alertService: AlertService,
-        private confirmDialogService: ConfirmDialogService
+        private confirmDialogService: ConfirmDialogService,
+        private router: Router
     ) { }
 
     ngOnInit(): void {
@@ -525,6 +528,13 @@ export class Clientes implements OnInit {
 
                 ...cliente,
 
+                abrirCliente: cliente.nome,
+
+                fiados:
+                    (cliente.saldoDevedor ?? 0) > 0
+                        ? 'Ver Fiados'
+                        : '',
+
                 controle:
                     cliente.ativo
                         ? 'Ativo'
@@ -534,6 +544,22 @@ export class Clientes implements OnInit {
         );
 
     }
+
+    abrirFiadosCliente(
+        cliente: Cliente
+    ): void {
+
+        this.router.navigate(
+            ['/fiados'],
+            {
+                queryParams: {
+                    clienteId: cliente.id
+                }
+            }
+        );
+
+    }
+
 
     alternarStatusCliente(
         cliente: unknown
@@ -662,6 +688,36 @@ export class Clientes implements OnInit {
         }
 
         return this.formatarMoeda(valor);
+
+    }
+
+    executarAcaoTabela(
+        event: {
+            row: unknown;
+            field: string;
+        }
+    ): void {
+
+        const cliente =
+            event.row as Cliente;
+
+        if (
+            event.field === 'abrirCliente'
+        ) {
+
+            this.visualizarCliente(cliente);
+
+            return;
+
+        }
+
+        if (
+            event.field === 'fiados'
+        ) {
+
+            this.abrirFiadosCliente(cliente);
+
+        }
 
     }
 

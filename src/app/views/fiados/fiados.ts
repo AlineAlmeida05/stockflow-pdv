@@ -16,6 +16,7 @@ import { AlertService } from '../../core/services/alert.service';
 import { CurrencyInput } from '../../shared/components/currency-input/currency-input';
 import { ClienteResumo } from '../../core/models/cliente-resumo.model';
 import { ExpandableCard } from '../../shared/components/expandable-card/expandable-card';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-fiados',
@@ -60,14 +61,21 @@ export class Fiados implements OnInit {
 
     clienteResumo?: ClienteResumo;
 
+    private clientePreSelecionadoId?: string;
+
     constructor(
         private clienteService: ClienteService,
         private fiadoService: FiadoService,
         private pagamentoService: PagamentoService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private route: ActivatedRoute
     ) { }
 
     ngOnInit(): void {
+
+        this.clientePreSelecionadoId =
+            this.route.snapshot.queryParamMap
+                .get('clienteId') ?? undefined;
 
         this.carregarDados();
 
@@ -161,6 +169,26 @@ export class Fiados implements OnInit {
 
                     this.clientes = clientes;
 
+                    if (
+                        this.clientePreSelecionadoId
+                    ) {
+
+                        const clienteEncontrado =
+                            clientes.find(
+                                cliente =>
+                                    cliente.id ===
+                                    this.clientePreSelecionadoId
+                            );
+
+                        if (clienteEncontrado) {
+
+                            this.selecionarCliente(
+                                clienteEncontrado
+                            );
+
+                        }
+
+                    }
 
                     clientes.forEach(cliente => {
 

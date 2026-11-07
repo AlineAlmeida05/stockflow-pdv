@@ -18,6 +18,7 @@ import { RelatorioEstoqueService } from '../../core/services/relatorio-estoque.s
 import { DashboardEstoque } from '../../core/models/dashboard-estoque.model';
 import { DashboardFiados } from '../../core/models/dashboard-fiados.model';
 import { RelatorioFiadosService } from '../../core/services/relatorio-fiados.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-relatorios',
@@ -217,7 +218,8 @@ export class Relatorios
         private alertService: AlertService,
         private relatorioService: RelatorioService,
         private relatorioEstoqueService: RelatorioEstoqueService,
-        private RelatorioFiadosService: RelatorioFiadosService
+        private RelatorioFiadosService: RelatorioFiadosService,
+        private router: Router
     ) { }
 
     ngOnInit(): void {
@@ -1140,6 +1142,22 @@ export class Relatorios
         return new Date()
             .toLocaleDateString('pt-BR')
             .replaceAll('/', '-');
+
+    }
+
+    abrirHistoricoVendas(): void {
+
+        this.router.navigate(
+            ['/historico-de-vendas']
+        );
+
+    }
+
+    abrirExtratoFinanceiro(): void {
+
+        this.router.navigate(
+            ['/extrato-financeiro']
+        );
 
     }
 
