@@ -8,7 +8,6 @@ import { Cliente } from '../../core/models/cliente.model';
 import { ClienteService } from '../../core/services/cliente.service';
 import { CurrencyPipe } from '@angular/common';
 import { PageTitle } from '../../shared/components/page-title/page-title';
-import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { AlertService } from '../../core/services/alert.service';
 import { HostListener } from '@angular/core';
 import { CurrencyInput } from '../../shared/components/currency-input/currency-input';
@@ -18,7 +17,6 @@ import { SmartProductSearch } from '../../shared/components/smart-product-search
 import { ItemCarrinho } from '../../core/models/item-carrinho.model';
 import { VendaRequest, FormaPagamento } from '../../core/models/venda-request.model';
 import { FORMA_PAGAMENTO_LABELS, FORMA_PAGAMENTO_PADRAO, FormaPagamentoTela } from '../../core/models/forma-pagamento.model';
-import { CarrinhoTabelaItem } from '../../core/models/carrinho-tabela-item.model';
 import { StatusEstoque } from '../../core/models/estoque-status.model';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { VendaLinha } from '../../core/models/venda-linha.model';
@@ -31,7 +29,6 @@ import { VendaLinha } from '../../core/models/venda-linha.model';
         FormsModule,
         CurrencyPipe,
         PageTitle,
-        EmptyState,
         CurrencyInput,
         SmartProductSearch,
         SplitPanel

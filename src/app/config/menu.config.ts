@@ -25,17 +25,6 @@ export const MENU_CONFIG: MenuItem[] = [
     ]
   },
   {
-    label: 'Histórico de Vendas',
-    route: '/historico-de-vendas',
-    perfis: [
-      'SUPER_ADMIN',
-      'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE',
-      'Operador_Caixa'
-    ]
-  },
-  {
     label: 'Estoque',
     route: '/estoque',
     perfis: [
@@ -79,17 +68,6 @@ export const MENU_CONFIG: MenuItem[] = [
     ]
   },
   {
-    label: 'Fiados',
-    route: '/fiados',
-    perfis: [
-      'SUPER_ADMIN',
-      'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE',
-      'Operador_Caixa'
-    ]
-  },
-  {
     label: 'Relatórios',
     route: '/relatorios',
     perfis: [
@@ -124,24 +102,6 @@ export const MENU_CONFIG: MenuItem[] = [
       'PROPRIETARIO',
       'SOCIO',
       'GERENTE'
-    ]
-  },
-  {
-    label: 'Extrato Financeiro',
-    route: '/extrato-financeiro',
-    perfis: [
-      'SUPER_ADMIN',
-      'PROPRIETARIO',
-      'SOCIO',
-      'GERENTE'
-    ]
-  },
-  {
-    label: 'Auditoria',
-    route: '/auditoria',
-    perfis: [
-      'SUPER_ADMIN',
-      'PROPRIETARIO'
     ]
   }
 ];

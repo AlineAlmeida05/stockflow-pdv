@@ -201,7 +201,25 @@
 
                     }@else {
 
+                    @if (column.field === 'nome') {
+
+                    <button
+                        type="button"
+                        class="table-link"
+                        (click)="
+                $event.stopPropagation();
+                rowClick.emit(row)
+            ">
+
+                        {{ getValue(row, column.field) }}
+
+                    </button>
+
+                    } @else {
+
                     {{ getValue(row, column.field) }}
+
+                    }
 
                     }
 

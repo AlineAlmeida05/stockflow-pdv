@@ -126,68 +126,6 @@
             <div class="dashboard-panel">
 
                 <h2>
-                    Identidade Visual
-                </h2>
-
-                <div class="brand-section">
-
-                    <div class="brand-layout">
-
-                        <div class="brand-logo">
-
-                            <img
-                                [src]="logoEmpresa"
-                                [alt]="empresa?.nomeFantasia || branding.nomeExibicao">
-
-                        </div>
-
-                        <div class="brand-colors">
-
-                            <div class="brand-color">
-
-                                <span>
-                                    Cor Primária
-                                </span>
-
-                                <div
-                                    class="brand-color__preview"
-                                    [style.background]="empresa?.corPrimaria">
-                                </div>
-
-                                <strong>
-                                    {{ empresa?.corPrimaria || '-' }}
-                                </strong>
-
-                            </div>
-
-                            <div class="brand-color">
-
-                                <span>
-                                    Cor Secundária
-                                </span>
-
-                                <div
-                                    class="brand-color__preview"
-                                    [style.background]="empresa?.corSecundaria">
-                                </div>
-
-                                <strong>
-                                    {{ empresa?.corSecundaria || '-' }}
-                                </strong>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="dashboard-panel">
-
-                <h2>
                     Recursos e Status
                 </h2>
 
@@ -254,6 +192,19 @@
 
                     }
 
+                    <div class="empresa-acoes">
+
+                        <button
+                            class="btn btn-secondary"
+                            type="button"
+                            (click)="abrirAuditoria()">
+
+                            📋 Auditoria
+
+                        </button>
+
+                    </div>
+
                     <div class="status-item">
 
                         <span>
@@ -268,6 +219,68 @@
                             }}
 
                         </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="dashboard-panel">
+
+                <h2>
+                    Identidade Visual
+                </h2>
+
+                <div class="brand-section">
+
+                    <div class="brand-layout">
+
+                        <div class="brand-logo">
+
+                            <img
+                                [src]="logoEmpresa"
+                                [alt]="empresa?.nomeFantasia || branding.nomeExibicao">
+
+                        </div>
+
+                        <div class="brand-colors">
+
+                            <div class="brand-color">
+
+                                <span>
+                                    Cor Primária
+                                </span>
+
+                                <div
+                                    class="brand-color__preview"
+                                    [style.background]="empresa?.corPrimaria">
+                                </div>
+
+                                <strong>
+                                    {{ empresa?.corPrimaria || '-' }}
+                                </strong>
+
+                            </div>
+
+                            <div class="brand-color">
+
+                                <span>
+                                    Cor Secundária
+                                </span>
+
+                                <div
+                                    class="brand-color__preview"
+                                    [style.background]="empresa?.corSecundaria">
+                                </div>
+
+                                <strong>
+                                    {{ empresa?.corSecundaria || '-' }}
+                                </strong>
+
+                            </div>
+
+                        </div>
 
                     </div>
 

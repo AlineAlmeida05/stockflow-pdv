@@ -3,23 +3,32 @@
     <app-page-title
         title="Clientes"
         subtitle="Gerencie os clientes cadastrados para vendas e fiados.">
+
     </app-page-title>
 
     <app-toolbar>
+
         <button
             class="btn btn-primary"
             type="button"
             (click)="novoCliente()">
+
             + Novo Cliente
+
         </button>
+
         <app-search-input
             placeholder="Buscar cliente..."
             [(value)]="textoBusca">
+
         </app-search-input>
+
     </app-toolbar>
 
     <app-split-panel>
+
         <div left>
+
             @if (!mostrarFormulario) {
 
             <app-empty-state
@@ -27,11 +36,14 @@
                 title="Nenhum cliente em edição"
                 message="Clique em '+ Novo Cliente' para iniciar um cadastro ou selecione um cliente para visualizar os detalhes.">
             </app-empty-state>
+
             }
 
             @if (mostrarFormulario) {
+
             <div class="card formulario-cliente"
                 [class.visualizacao.form-view-mode]="modoVisualizacao">
+
                 <h3>
                     {{
                     !clienteEditandoId
@@ -45,18 +57,27 @@
                 <div class="formulario">
 
                     <div class="field">
+
                         <label>
+
                             Nome
+
                         </label>
+
                         <input
                             type="text"
                             placeholder="Informe o nome"
                             [(ngModel)]="nome"
                             [readonly]="modoVisualizacao">
+
                     </div>
+
                     <div class="field">
+
                         <label>
+
                             Telefone
+
                         </label>
 
                         <input
@@ -64,10 +85,15 @@
                             placeholder="Informe o telefone"
                             [(ngModel)]="telefone"
                             [readonly]="modoVisualizacao">
+
                     </div>
+
                     <div class="field">
+
                         <label>
+
                             Limite de Crédito
+
                         </label>
 
                         <input
@@ -77,36 +103,48 @@
                     </div>
 
                     <div class="field">
+
                         <label>
+
                             Saldo Devedor
+
                         </label>
 
                         <input
                             type="text"
                             [value]="formatarSaldoDevedor(clienteSelecionado?.saldoDevedor)"
                             readonly>
+
                     </div>
 
                     <div class="field">
+
                         <label>
+
                             Crédito Disponível
+
                         </label>
 
                         <input
                             type="text"
                             [value]="formatarMoeda(clienteSelecionado?.creditoDisponivel) ?? ''"
                             readonly>
+
                     </div>
 
                     <div class="field">
+
                         <label>
+
                             Status
+
                         </label>
 
                         <input
                             type="text"
                             [value]="clienteSelecionado?.status ?? ''"
                             readonly>
+
                     </div>
 
                     <div class="field">
@@ -138,7 +176,7 @@
 
                     @if (modoVisualizacao) {
 
-                        @if (clienteSelecionado?.ativo) {
+                    @if (clienteSelecionado?.ativo) {
 
                     <button
                         class="btn btn-primary"
@@ -146,7 +184,7 @@
                         (click)="habilitarEdicao()">
                         Editar
                     </button>
-                }
+                    }
 
                     <button
                         class="btn btn-secondary"
@@ -208,10 +246,9 @@
                     [showActions]="false"
                     [showEditAction]="false"
                     actionsHeader="Excluir"
-                    [clickableRows]="true"
                     (toggle)="alternarStatusCliente($event)"
-                    (rowClick)="visualizarCliente($event)"
-                    (delete)="excluirClienteTabela($event)">
+                    (delete)="excluirClienteTabela($event)"
+                    (actionClick)="executarAcaoTabela($event)">
                 </app-data-table>
             </div>
             }

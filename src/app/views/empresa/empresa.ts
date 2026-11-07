@@ -7,6 +7,7 @@ import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { DatePipe } from '@angular/common';
 import { TenantContextService } from '../../core/services/tenant-context.service';
 import { BRANDING_CONFIG } from '../../config/branding.config';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-empresa',
@@ -25,7 +26,8 @@ export class EmpresaComponent implements OnInit {
 
     constructor(
         private empresaService: EmpresaService,
-        public tenantContextService: TenantContextService
+        public tenantContextService: TenantContextService,
+        private router: Router
     ) { }
 
     empresa!: Empresa;
@@ -77,6 +79,14 @@ export class EmpresaComponent implements OnInit {
     get corSecundaria(): string {
 
         return this.empresa?.corSecundaria || this.branding.cores.secundaria;
+    }
+
+    abrirAuditoria(): void {
+
+        this.router.navigate(
+            ['/auditoria']
+        );
+
     }
 
 }
