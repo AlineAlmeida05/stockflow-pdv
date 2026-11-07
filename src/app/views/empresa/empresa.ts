@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { Empresa } from '../../core/models/empresa.model';
@@ -27,7 +27,8 @@ export class EmpresaComponent implements OnInit {
     constructor(
         private empresaService: EmpresaService,
         public tenantContextService: TenantContextService,
-        private router: Router
+        private router: Router,
+        private cdr: ChangeDetectorRef
     ) { }
 
     empresa!: Empresa;
@@ -44,7 +45,7 @@ export class EmpresaComponent implements OnInit {
 
                     this.empresa = empresa;
 
-
+                    this.cdr.detectChanges();
                 },
 
                 error: erro => {

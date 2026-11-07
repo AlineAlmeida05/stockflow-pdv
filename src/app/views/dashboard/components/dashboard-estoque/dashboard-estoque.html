@@ -1,0 +1,337 @@
+<app-dashboard-layout>
+
+    <div summary>
+
+        <app-dashboard-panel
+            title="Resumo de Estoque">
+
+            <div class="executive-summary">
+
+                <div
+                    class="summary-item summary-item--vendas"
+                    [class.summary-item--active]="resumoEstoqueSelecionado === 'produtos'"
+                    (click)="selecionarResumo('produtos')">
+
+                    <span>
+
+                        Total Produtos
+
+                    </span>
+
+                    <strong>
+
+                        {{ produtos.length }}
+
+                    </strong>
+
+                </div>
+
+                <div
+                    class="summary-item summary-item--vendas"
+                    [class.summary-item--active]="resumoEstoqueSelecionado === 'estoqueBaixo'"
+                    (click)="selecionarResumo('estoqueBaixo')">
+
+                    <span>
+
+                        Estoque Baixo
+
+                    </span>
+
+                    <strong>
+
+                        {{ produtosEstoqueBaixo.length }}
+
+                    </strong>
+
+                </div>
+
+                <div
+                    class="summary-item summary-item--vendas"
+                    [class.summary-item--active]="resumoEstoqueSelecionado === 'semEstoque'"
+                    (click)="selecionarResumo('semEstoque')">
+
+                    <span>
+
+                        Sem Estoque
+
+                    </span>
+
+                    <strong>
+
+                        {{ produtosSemEstoque.length }}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </app-dashboard-panel>
+
+    </div>
+
+    <div main>
+
+        <app-dashboard-panel
+            title="Detalhamento">
+
+            <h2>
+
+                Detalhamento
+
+            </h2>
+
+            @if (!resumoEstoqueSelecionado) {
+
+            <app-empty-state
+                icon="📦"
+                title="Nenhum indicador selecionado"
+                message="Clique em um indicador para visualizar os produtos.">
+            </app-empty-state>
+
+            }
+            @if (
+            resumoEstoqueSelecionado ===
+            'produtos'
+            ) {
+
+            <h3>
+
+                Todos os Produtos
+
+            </h3>
+
+            <div class="dashboard-table-container">
+
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Produto</th>
+
+                            <th>Estoque</th>
+
+                            <th>Mínimo</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @for (
+                        produto of produtos;
+                        track produto.id
+                        ) {
+
+                        <tr>
+
+                            <td class="dashboard-table__value">
+
+                                {{ produto.nome }}
+
+                            </td>
+
+                            <td class="dashboard-table__value">
+
+                                {{ produto.estoqueAtual }}
+
+                            </td>
+
+                            <td class="dashboard-table__value">
+
+                                {{ produto.estoqueMinimo }}
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            }
+            @if (
+            resumoEstoqueSelecionado ===
+            'estoqueBaixo'
+            ) {
+
+            <h3>
+
+                Produtos com Estoque Baixo
+
+            </h3>
+
+            @if (
+            produtosEstoqueBaixo.length === 0
+            ) {
+
+            <app-empty-state
+                icon="📦"
+                title="Nenhum produto com estoque baixo"
+                message="Todos os produtos estão acima do estoque mínimo.">
+            </app-empty-state>
+
+            } @else {
+
+            <div class="dashboard-table-container">
+
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Produto</th>
+
+                            <th>Estoque Atual</th>
+
+                            <th>Estoque Mínimo</th>
+
+                            <th>Diferença</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @for (
+                        produto of produtosEstoqueBaixo;
+                        track produto.id
+                        ) {
+
+                        <tr>
+
+                            <td class="dashboard-table__value">
+
+                                {{ produto.nome }}
+
+                            </td>
+
+                            <td class="dashboard-table__warning">
+
+                                {{ produto.estoqueAtual }}
+
+                            </td>
+
+                            <td class="dashboard-table__value">
+
+                                {{ produto.estoqueMinimo }}
+
+                            </td>
+
+                            <td class="dashboard-table__value">
+
+                                {{ produto.estoqueMinimo - produto.estoqueAtual
+                                }}
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            }
+
+            }
+            @if (
+            resumoEstoqueSelecionado ===
+            'semEstoque'
+            ) {
+
+            <h3>
+
+                Produtos Sem Estoque
+
+            </h3>
+
+            @if (
+            produtosSemEstoque.length === 0
+            ) {
+
+            <app-empty-state
+                icon="✅"
+                title="Nenhum produto sem estoque"
+                message="Todos os produtos possuem estoque disponível.">
+            </app-empty-state>
+
+            } @else {
+
+            <div class="dashboard-table-container">
+
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Produto</th>
+
+                            <th>Estoque Atual</th>
+
+                            <th>Estoque Mínimo</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @for (
+                        produto of produtosSemEstoque;
+                        track produto.id
+                        ) {
+
+                        <tr>
+
+                            <td class="dashboard-table__value">
+
+                                {{ produto.nome }}
+
+                            </td>
+
+                            <td
+                                class="dashboard-table__danger">
+
+                                {{ produto.estoqueAtual }}
+
+                            </td>
+
+                            <td class="dashboard-table__value">
+
+                                {{ produto.estoqueMinimo }}
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            }
+
+            }
+
+        </app-dashboard-panel>
+
+    </div>
+
+</app-dashboard-layout>

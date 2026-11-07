@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { OnInit } from '@angular/core';
@@ -33,7 +33,8 @@ export class Marketing implements OnInit {
         private promocaoService: PromocaoService,
         private alertService: AlertService,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private cdr: ChangeDetectorRef
     ) { }
 
     campanhas: MarketingCampaignResponse[] = [];
@@ -76,6 +77,8 @@ export class Marketing implements OnInit {
 
                     }
 
+                    this.cdr.detectChanges();
+
                 }
 
             });
@@ -88,7 +91,7 @@ export class Marketing implements OnInit {
 
                     this.campanhas = campanhas;
 
-
+                    this.cdr.detectChanges();
                 },
 
                 error: erro => {
@@ -173,6 +176,8 @@ export class Marketing implements OnInit {
                     this.campanhas.unshift(
                         campanha
                     );
+
+                    this.cdr.detectChanges();
 
                 },
 

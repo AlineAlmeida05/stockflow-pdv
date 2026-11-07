@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, HostListener, ElementRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Output, HostListener, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { TenantContextService } from '../../../core/services/tenant-context.service';
 import { BRANDING_CONFIG } from '../../../config/branding.config';
 import { Router } from '@angular/router';
@@ -33,7 +33,8 @@ export class Header {
         public tenantContextService: TenantContextService,
         private authService: AuthService,
         private router: Router,
-        private impersonacaoService: ImpersonacaoService
+        private impersonacaoService: ImpersonacaoService,
+        private cdr: ChangeDetectorRef
     ) {
     }
 
@@ -74,6 +75,8 @@ export class Header {
                     this.router.navigate([
                         `/${slug}/login`
                     ]);
+
+                    this.cdr.detectChanges();
 
                 },
                 error: () => {
@@ -185,6 +188,8 @@ export class Header {
                     );
 
                     window.location.reload();
+
+                    this.cdr.detectChanges();
 
                 }
 

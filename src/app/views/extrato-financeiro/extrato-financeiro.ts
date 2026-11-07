@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { PageTitle } from '../../shared/components/page-title/page-title';
@@ -121,7 +121,8 @@ export class ExtratoFinanceiro
     searchInput?: SearchInput;
 
     constructor(
-        private extratoFinanceiroService: ExtratoFinanceiroService
+        private extratoFinanceiroService: ExtratoFinanceiroService,
+        private cdr: ChangeDetectorRef
     ) {
     }
 
@@ -145,7 +146,7 @@ export class ExtratoFinanceiro
 
                     this.atualizarIndicadores();
 
-
+                    this.cdr.detectChanges();
                 },
 
                 error: erro => {
@@ -170,22 +171,15 @@ export class ExtratoFinanceiro
 
                     this.movimentacoes = movimentacoes;
 
-                    console.log(
-                        this.movimentacoes
-                            .map(m => ({
-                                tipo: m.tipo,
-                                status: m.status
-                            }))
-                    );
-
                     this.atualizarIndicadores();
-
 
                     setTimeout(() => {
 
                         this.searchInput?.focar();
 
                     });
+
+                    this.cdr.detectChanges();
 
                 },
 

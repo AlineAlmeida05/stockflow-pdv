@@ -1,5 +1,5 @@
 import { finalize } from 'rxjs';
-import { Component, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
@@ -66,7 +66,8 @@ export class LoginComponent implements OnInit {
         private alertService: AlertService,
         private route: ActivatedRoute,
         private tenantService: TenantService,
-        private tenantContextService: TenantContextService
+        private tenantContextService: TenantContextService,
+        private cdr: ChangeDetectorRef
     ) {
         this.form = this.fb.group({
 
@@ -129,6 +130,8 @@ export class LoginComponent implements OnInit {
                             );
 
                     }
+
+                    this.cdr.detectChanges();
 
                     this.alertService.updateToast(
                         loadingToast.id,
@@ -220,6 +223,8 @@ export class LoginComponent implements OnInit {
                     this.tenant = tenant;
 
                     this.aplicarTemaTenant();
+
+                    this.cdr.detectChanges();
 
                 },
 

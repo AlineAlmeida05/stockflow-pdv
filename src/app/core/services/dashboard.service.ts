@@ -22,7 +22,9 @@ export class DashboardService {
     ): Observable<DashboardResponse> {
 
         return this.http.get<DashboardResponse>(
+
             `${this.apiUrl}?periodo=${periodo}`
+
         );
 
     }

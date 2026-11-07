@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -36,7 +36,8 @@ export class AlterarSenhaModal {
         private authService: AuthService,
         private alertService: AlertService,
         private router: Router,
-        private tenantContextService: TenantContextService
+        private tenantContextService: TenantContextService,
+        private cdr: ChangeDetectorRef
     ) {
 
         this.formAlterarSenha =
@@ -128,6 +129,8 @@ export class AlterarSenhaModal {
                     this.router.navigate([
                         `/${slug}/login`
                     ]);
+
+                    this.cdr.detectChanges();
 
                 },
 

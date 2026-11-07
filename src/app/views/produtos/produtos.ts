@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { Produto } from '../../core/models/produto.model';
@@ -104,7 +104,8 @@ export class Produtos implements OnInit {
   constructor(
     private produtoService: ProdutoService,
     private confirmDialogService: ConfirmDialogService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -123,7 +124,7 @@ export class Produtos implements OnInit {
 
           this.produtos = produtos;
 
-
+          this.cdr.detectChanges();
         },
 
         error: erro => {
@@ -211,6 +212,8 @@ export class Produtos implements OnInit {
               'Produto atualizado com sucesso.'
             );
 
+            this.cdr.detectChanges();
+
           },
           error: erro => {
 
@@ -259,6 +262,8 @@ export class Produtos implements OnInit {
           this.finalizarSucesso(
             'Produto cadastrado com sucesso.'
           );
+
+          this.cdr.detectChanges();
 
         },
         error: erro => {
@@ -324,6 +329,8 @@ export class Produtos implements OnInit {
               this.alertService.success(
                 'Produto inativado com sucesso.'
               );
+
+              this.cdr.detectChanges();
 
             }
 
@@ -446,6 +453,8 @@ export class Produtos implements OnInit {
               this.alertService.success(
                 'Produto reativado com sucesso.'
               );
+
+              this.cdr.detectChanges();
 
             }
 
@@ -598,6 +607,8 @@ export class Produtos implements OnInit {
               } com sucesso.`,
               'success'
             );
+
+            this.cdr.detectChanges();
 
           },
 

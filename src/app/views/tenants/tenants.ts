@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Tenant } from '../../core/models/tenant.model';
@@ -119,7 +119,8 @@ export class Tenants implements OnInit {
         private tenantContextService: TenantContextService,
         private confirmDialogService: ConfirmDialogService,
         private impersonacaoService: ImpersonacaoService,
-        private authStateService: AuthStateService
+        private authStateService: AuthStateService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit(): void {
@@ -222,6 +223,8 @@ export class Tenants implements OnInit {
 
                     this.limparFormulario();
 
+                    this.cdr.detectChanges();
+
                     this.alertService.updateToast(
                         loadingToast.id,
                         'Tenant criado com sucesso.',
@@ -270,6 +273,8 @@ export class Tenants implements OnInit {
                                     ? tenantAtualizado
                                     : tenant
                         );
+
+                    this.cdr.detectChanges();
 
                     this.alertService.updateToast(
                         loadingToast.id,
@@ -337,7 +342,7 @@ export class Tenants implements OnInit {
 
                     this.tenants = tenants;
 
-
+                    this.cdr.detectChanges();
                 },
 
                 error: (erro) => {
@@ -578,6 +583,8 @@ export class Tenants implements OnInit {
                     .subscribe({
                         next: () => {
 
+                            this.cdr.detectChanges();
+
                             this.alertService.updateToast(
                                 loadingToast.id,
                                 tenant.ativo
@@ -629,7 +636,7 @@ export class Tenants implements OnInit {
 
                     this.modoEdicao = false;
 
-
+                    this.cdr.detectChanges();
                 },
 
                 error: erro => {
@@ -685,6 +692,8 @@ export class Tenants implements OnInit {
                     this.authStateService.inicializar();
 
                     window.location.reload();
+
+                    this.cdr.detectChanges();
 
                 },
 
