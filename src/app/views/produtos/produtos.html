@@ -3,6 +3,7 @@
     <app-page-title
         title="Produtos"
         subtitle="Cadastre e mantenha os produtos disponíveis para venda.">
+
     </app-page-title>
 
     <app-toolbar>
@@ -24,7 +25,9 @@
                 <div class="card produtos-resumo">
 
                     <span>
+
                         📦
+
                     </span>
 
                     {{ produtosFiltrados.length }} produtos
@@ -34,7 +37,9 @@
                 <app-search-input
                     placeholder="Buscar produto..."
                     [(value)]="textoBusca">
+
                 </app-search-input>
+
             </div>
 
         </div>
@@ -55,6 +60,7 @@
                 icon="📦"
                 title="Nenhum produto cadastrado"
                 message="Cadastre o primeiro produto para disponibilizá-lo para vendas e controle de estoque.">
+
             </app-empty-state>
 
             }
@@ -84,8 +90,8 @@
 
             <h3>
 
-                {{ !produtoEditandoId ? 'Novo Produto': modoVisualizacao
-                ? 'Produto': 'Editar Produto' }}
+                {{ !produtoEditandoId ? 'Novo Produto': modoVisualizacao?
+                'Produto': 'Editar Produto' }}
 
             </h3>
 
@@ -93,7 +99,11 @@
 
                 <div class="field field-large">
 
-                    <label>Nome do Produto</label>
+                    <label>
+
+                        Nome do Produto
+
+                    </label>
 
                     <input
                         type="text"
@@ -105,7 +115,11 @@
 
                 <div class="field field-large">
 
-                    <label>Categoria</label>
+                    <label>
+
+                        Categoria
+
+                    </label>
 
                     <input
                         type="text"
@@ -117,7 +131,11 @@
 
                 <div class="field field-small">
 
-                    <label>Estoque Mínimo</label>
+                    <label>
+
+                        Estoque Mínimo
+
+                    </label>
 
                     <input
                         type="number"
@@ -128,16 +146,25 @@
 
                 <div class="field field-small">
 
-                    <label>Preço Compra Inicial</label>
+                    <label>
+
+                        Preço Compra Inicial
+
+                    </label>
 
                     <input
                         type="number"
                         [(ngModel)]="precoCompraInicial">
+
                 </div>
 
                 <div class="field field-small">
 
-                    <label>Preço de Venda</label>
+                    <label>
+
+                        Preço de Venda
+
+                    </label>
 
                     @if (modoVisualizacao) {
 
@@ -159,7 +186,9 @@
                 <div class="field field-small">
 
                     <label>
+
                         Estoque Inicial
+
                     </label>
 
                     <input
@@ -176,12 +205,18 @@
             <div class="card">
 
                 <h3>
+
                     Resumo
+
                 </h3>
 
                 <div class="detail-row">
 
-                    <strong>Código:</strong>
+                    <strong>
+
+                        Código:
+
+                    </strong>
 
                     {{ codigo || 'Gerado automaticamente' }}
 
@@ -189,7 +224,11 @@
 
                 <div class="detail-row">
 
-                    <strong>Nome:</strong>
+                    <strong>
+
+                        Nome:
+
+                    </strong>
 
                     {{ nome || '-' }}
 
@@ -197,7 +236,11 @@
 
                 <div class="detail-row">
 
-                    <strong>Categoria:</strong>
+                    <strong>
+
+                        Categoria:
+
+                    </strong>
 
                     {{ categoria || '-' }}
 
@@ -205,7 +248,11 @@
 
                 <div class="detail-row">
 
-                    <strong>Preço Compra:</strong>
+                    <strong>
+
+                        Preço Compra:
+
+                    </strong>
 
                     {{ formatarMoeda(precoCompraInicial) }}
 
@@ -213,7 +260,11 @@
 
                 <div class="detail-row">
 
-                    <strong>Preço:</strong>
+                    <strong>
+
+                        Preço:
+
+                    </strong>
 
                     {{ formatarMoeda(precoVenda) }}
 
@@ -221,7 +272,11 @@
 
                 <div class="detail-row">
 
-                    <strong>Estoque Mínimo:</strong>
+                    <strong>
+
+                        Estoque Mínimo:
+
+                    </strong>
 
                     {{ estoqueMinimo }}
 
@@ -231,7 +286,11 @@
 
                 <div class="detail-row">
 
-                    <strong>Estoque Inicial:</strong>
+                    <strong>
+
+                        Estoque Inicial:
+
+                    </strong>
 
                     {{ estoqueInicial }}
 
@@ -243,13 +302,18 @@
 
                 <div class="detail-row">
 
-                    <strong>Estoque Atual:</strong>
+                    <strong>
+
+                        Estoque Atual:
+
+                    </strong>
 
                     {{ estoqueAtual }}
 
                 </div>
 
                 <div class="detail-row">
+
                     <strong>Status</strong>
 
                     <span
@@ -257,9 +321,7 @@
                         [class.badge-success]="produtoAtivo"
                         [class.badge-danger]="!produtoAtivo">
 
-                        {{ produtoAtivo
-                        ? 'Ativo'
-                        : 'Inativo' }}
+                        {{ produtoAtivo ? 'Ativo': 'Inativo' }}
 
                     </span>
 
@@ -316,13 +378,8 @@
                     (click)="salvarProduto()"
                     [disabled]="salvandoProduto">
 
-                    {{
-                    salvandoProduto
-                    ? 'Salvando...'
-                    : produtoEditandoId
-                    ? 'Atualizar Produto'
-                    : 'Salvar Produto'
-                    }}
+                    {{ salvandoProduto ? 'Salvando...': produtoEditandoId
+                    ? 'Atualizar Produto' : 'Salvar Produto' }}
 
                 </button>
 

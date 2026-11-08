@@ -25,9 +25,46 @@
 
     </app-toolbar>
 
-    <app-split-panel>
+    <app-split-panel
+        [reverse]="false"
+        [showRight]="mostrarPainelLateral">
 
         <div left>
+
+            @if (clientes.length === 0) {
+
+            <app-empty-state
+                icon="🧑‍🤝‍🧑"
+                title="Nenhum cliente cadastrado"
+                message="Cadastre o primeiro cliente para utilizar vendas fiadas e acompanhar limites de crédito.">
+
+            </app-empty-state>
+
+            } @else {
+
+            <div class="card">
+
+                <app-data-table
+                    [columns]="colunasClientes"
+                    [data]="clientesTabela"
+                    [showActions]="false"
+                    [showEditAction]="false"
+                    actionsHeader="Excluir"
+                    (toggle)="alternarStatusCliente($event)"
+                    (delete)="excluirClienteTabela($event)"
+                    [clickableRows]="true"
+                    (actionClick)="executarAcaoTabela($event)"
+                    (rowClick)="visualizarCliente($event)">
+
+                </app-data-table>
+
+            </div>
+
+            }
+
+        </div>
+
+        <div right>
 
             @if (!mostrarFormulario) {
 
@@ -35,23 +72,207 @@
                 icon="👤"
                 title="Nenhum cliente em edição"
                 message="Clique em '+ Novo Cliente' para iniciar um cadastro ou selecione um cliente para visualizar os detalhes.">
+
             </app-empty-state>
 
             }
 
-            @if (mostrarFormulario) {
+            @if (modoVisualizacao) {
+
+            <div class="card">
+
+                <h3>
+
+                    Resumo
+
+                </h3>
+
+                <div class="detail-row">
+
+                    <strong>
+
+                        Nome
+
+                    </strong>
+
+                    <span>
+
+                        {{ clienteSelecionado?.nome }}
+
+                    </span>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <strong>
+
+                        Telefone
+
+                    </strong>
+
+                    <span>
+
+                        {{ clienteSelecionado?.telefone }}
+
+                    </span>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <strong>
+
+                        Limite de Crédito
+
+                    </strong>
+
+                    <span>
+
+                        {{ formatarMoeda(clienteSelecionado?.limiteCredito) }}
+
+                    </span>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <strong>
+
+                        Crédito Disponível
+
+                    </strong>
+
+                    <span>
+
+                        {{ formatarMoeda(clienteSelecionado?.creditoDisponivel)
+                        }}
+
+                    </span>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <strong>
+
+                        Saldo Devedor
+
+                    </strong>
+
+                    <span
+                        [class.text-danger]="(clienteSelecionado?.saldoDevedor ?? 0) > 0">
+
+                        {{formatarSaldoDevedor(clienteSelecionado?.saldoDevedor)}}
+
+                    </span>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <strong>
+
+                        Status
+
+                    </strong>
+
+                    <span
+                        class="badge"
+                        [class.badge-success]="clienteSelecionado?.ativo"
+                        [class.badge-danger]="!clienteSelecionado?.ativo">
+
+                        {{ clienteSelecionado?.ativo? 'Ativo': 'Inativo' }}
+
+                    </span>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <strong>
+
+                        Situação Financeira
+
+                    </strong>
+
+                    <span
+                        [class.badge-success]="clienteSelecionado?.status === 'Em Dia'"
+                        [class.badge-warning]="clienteSelecionado?.status === 'Devedor'"
+                        [class.badge-danger]="clienteSelecionado?.status === 'Inadimplente'"
+                        class="badge">
+
+                        {{ clienteSelecionado?.status }}
+
+                    </span>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <strong>
+
+                        Cadastro
+
+                    </strong>
+
+                    <span>
+
+                        {{ formatarData( clienteSelecionado?.dataCadastro ) }}
+
+                    </span>
+
+                </div>
+
+                <div class="formulario-acoes">
+
+                    @if (clienteSelecionado?.ativo) {
+
+                    <button
+                        class="btn btn-primary"
+                        type="button"
+                        (click)="habilitarEdicao()">
+
+                        Editar
+
+                    </button>
+
+                    } @else {
+
+                    <button
+                        class="btn btn-success"
+                        type="button"
+                        (click)="reativarClienteResumo()">
+
+                        Reativar Cliente
+
+                    </button>
+
+                    }
+
+                    <button
+                        class="btn btn-secondary"
+                        type="button"
+                        (click)="cancelarEdicao()">
+
+                        Fechar
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            } @else if (mostrarFormulario) {
 
             <div class="card formulario-cliente"
                 [class.visualizacao.form-view-mode]="modoVisualizacao">
 
                 <h3>
-                    {{
-                    !clienteEditandoId
-                    ? 'Cadastrar Cliente'
-                    : modoVisualizacao
-                    ? 'Cliente'
-                    : 'Editar Cliente'
-                    }}
+
+                    {{ !clienteEditandoId? 'Cadastrar Cliente'
+                    : modoVisualizacao? 'Cliente': 'Editar Cliente' }}
+
                 </h3>
 
                 <div class="formulario">
@@ -102,65 +323,12 @@
                             [readonly]="modoVisualizacao">
                     </div>
 
-                    <div class="field">
-
-                        <label>
-
-                            Saldo Devedor
-
-                        </label>
-
-                        <input
-                            type="text"
-                            [value]="formatarSaldoDevedor(clienteSelecionado?.saldoDevedor)"
-                            readonly>
-
-                    </div>
-
-                    <div class="field">
-
-                        <label>
-
-                            Crédito Disponível
-
-                        </label>
-
-                        <input
-                            type="text"
-                            [value]="formatarMoeda(clienteSelecionado?.creditoDisponivel) ?? ''"
-                            readonly>
-
-                    </div>
-
-                    <div class="field">
-
-                        <label>
-
-                            Status
-
-                        </label>
-
-                        <input
-                            type="text"
-                            [value]="clienteSelecionado?.status ?? ''"
-                            readonly>
-
-                    </div>
-
-                    <div class="field">
-                        <label>
-                            Data de Cadastro
-                        </label>
-
-                        <input
-                            type="text"
-                            [value]="formatarData(clienteSelecionado?.dataCadastro)"
-                            readonly>
-                    </div>
-
                     <div class="field field-full">
+
                         <label>
+
                             Observação
+
                         </label>
 
                         <textarea
@@ -168,90 +336,42 @@
                             placeholder="Informações adicionais sobre o cliente"
                             [(ngModel)]="observacao"
                             [readonly]="modoVisualizacao">
+
                     </textarea>
+
                     </div>
 
                 </div>
+
                 <div class="formulario-acoes">
-
-                    @if (modoVisualizacao) {
-
-                    @if (clienteSelecionado?.ativo) {
-
-                    <button
-                        class="btn btn-primary"
-                        type="button"
-                        (click)="habilitarEdicao()">
-                        Editar
-                    </button>
-                    }
-
-                    <button
-                        class="btn btn-secondary"
-                        type="button"
-                        (click)="cancelarEdicao()">
-                        Fechar
-                    </button>
-
-                    } @else {
 
                     <button
                         class="btn btn-primary"
                         type="button"
                         (click)="salvarCliente()">
-                        {{
-                        clienteEditandoId
-                        ? 'Atualizar Cliente'
-                        : 'Salvar Cliente'
-                        }}
+
+                        {{ clienteEditandoId ? 'Salvar Alterações'
+                        :'Salvar Cliente' }}
+
                     </button>
 
                     <button
                         class="btn btn-secondary"
                         type="button"
                         (click)="cancelarEdicao()">
+
                         Cancelar
+
                     </button>
 
-                    }
-
                 </div>
+
             </div>
+
             }
+
         </div>
 
-        <div right>
-            <div class="secao-clientes">
-                <h2>
-                    Clientes Cadastrados
-                </h2>
-                <p>
-                    Consulte, edite e exclua clientes cadastrados.
-                </p>
-            </div>
-
-            @if (clientes.length === 0) {
-
-            <app-empty-state
-                icon="🧑‍🤝‍🧑"
-                title="Nenhum cliente cadastrado"
-                message="Cadastre o primeiro cliente para utilizar vendas fiadas e acompanhar limites de crédito.">
-            </app-empty-state>
-            } @else {
-
-            <div class="card">
-                <app-data-table
-                    [columns]="colunasClientes"
-                    [data]="clientesTabela"
-                    [showActions]="false"
-                    [showEditAction]="false"
-                    actionsHeader="Excluir"
-                    (toggle)="alternarStatusCliente($event)"
-                    (delete)="excluirClienteTabela($event)"
-                    (actionClick)="executarAcaoTabela($event)">
-                </app-data-table>
-            </div>
-            }
-        </div>
     </app-split-panel>
+
 </app-main-layout>
