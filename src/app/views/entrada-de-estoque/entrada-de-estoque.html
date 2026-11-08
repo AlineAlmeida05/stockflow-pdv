@@ -4,7 +4,9 @@
         subtitle="Registre reposições e acompanhe o estoque atual dos produtos.">
     </app-page-title>
 
-    <app-split-panel>
+    <app-split-panel
+        [invertSizes]="true">
+
         <div left>
             <div class="card estoque-form-card">
 
@@ -62,7 +64,8 @@
                         <div>
                             Status:
                             <strong>
-                                {{ obterDescricaoStatusEstoque( produtoSelecionado)}}
+                                {{ obterDescricaoStatusEstoque(
+                                produtoSelecionado)}}
                             </strong>
                         </div>
 
