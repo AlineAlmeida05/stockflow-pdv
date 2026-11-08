@@ -27,6 +27,9 @@ export class SmartProductSearch implements OnChanges {
     @Input()
     produtoSelecionadoAtual?: Produto;
 
+    @Input()
+    showLabel = true;
+
     readonly inputId = `produto-${Math.random()
         .toString(36)
         .slice(2, 9)}`;

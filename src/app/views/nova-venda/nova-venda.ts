@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { Produto } from '../../core/models/produto.model';
@@ -20,6 +20,7 @@ import { FORMA_PAGAMENTO_LABELS, FORMA_PAGAMENTO_PADRAO, FormaPagamentoTela } fr
 import { StatusEstoque } from '../../core/models/estoque-status.model';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { VendaLinha } from '../../core/models/venda-linha.model';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-nova-venda',
@@ -60,6 +61,14 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
     finalizandoVenda = false;
 
+    mostrarPagamento = false;
+
+    mostrarDialogLimite = false;
+
+    novoLimite: number | null = null;
+
+    motivoAumentoLimite = '';
+
     linhasVenda: VendaLinha[] = [
         {
             id: crypto.randomUUID(),
@@ -84,7 +93,8 @@ export class NovaVenda implements OnInit, AfterViewInit {
         private clienteService: ClienteService,
         private alertService: AlertService,
         private confirmDialogService: ConfirmDialogService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private router: Router
     ) { }
 
     ngOnInit(): void {
@@ -104,6 +114,192 @@ export class NovaVenda implements OnInit, AfterViewInit {
                     0
                 )
                 .toFixed(2)
+        );
+
+    }
+
+    get podeAumentarLimite(): boolean {
+
+        return (
+            !this.clienteInativo
+            &&
+            this.resumoCliente?.status !== 'Inadimplente'
+            &&
+            this.resumoCliente?.status !== 'Limite Excedido'
+        );
+
+    }
+
+    abrirDialogAumentoLimite(): void {
+
+        const limiteAtual = this.resumoCliente?.limiteCredito ?? 0;
+
+        this.novoLimite = limiteAtual + 100;
+
+        this.motivoAumentoLimite = '';
+
+        this.mostrarDialogLimite = true;
+
+    }
+
+    get aumentoLimite(): number {
+
+        return Math.max(
+            0,
+            (this.novoLimite ?? 0)
+            -
+            (this.resumoCliente?.limiteCredito ?? 0)
+        );
+
+    }
+
+    validarAumentoLimite(): boolean {
+
+        const limiteAtual = this.resumoCliente?.limiteCredito ?? 0;
+
+        if (
+            !this.novoLimite
+        ) {
+
+            this.alertService.warning(
+                'Informe o novo limite.'
+            );
+
+            return false;
+
+        }
+
+        if (
+            this.novoLimite <= limiteAtual
+        ) {
+
+            this.alertService.warning(
+                'O novo limite deve ser maior que o atual.'
+            );
+
+            return false;
+
+        }
+
+        if (
+            !this.motivoAumentoLimite.trim()
+        ) {
+
+            this.alertService.warning(
+                'Informe o motivo do aumento.'
+            );
+
+            return false;
+
+        }
+
+        return true;
+
+    }
+
+    confirmarAumentoLimite(): void {
+
+        if (
+            !this.validarAumentoLimite()
+        ) {
+
+            return;
+
+        }
+
+        this.confirmDialogService.open({
+
+            title: 'Aumentar Limite',
+
+            message: `Deseja aumentar o limite deste cliente?
+
+            Limite Atual:
+            ${this.resumoCliente?.limiteCredito
+                }
+
+            Novo Limite:
+            ${this.novoLimite
+                }
+            `,
+
+            type: 'warning',
+
+            confirmText: 'Confirmar',
+
+            cancelText: 'Cancelar',
+
+            onConfirm: () => {
+
+                this.salvarAumentoLimite();
+
+            }
+
+        });
+
+    }
+
+    salvarAumentoLimite(): void {
+
+        const cliente = this.obterClienteSelecionado();
+
+        if (!cliente) {
+
+            return;
+
+        }
+
+        const clienteAtualizado: Cliente = {
+
+            ...cliente,
+
+            limiteCredito:
+                this.novoLimite!
+
+        };
+
+        this.clienteService
+            .atualizar(
+                clienteAtualizado
+            )
+            .subscribe({
+
+                next: () => {
+
+                    cliente.limiteCredito = this.novoLimite!;
+
+                    this.alertService.success(
+                        'Limite atualizado com sucesso.'
+                    );
+
+                    this.mostrarDialogLimite = false;
+
+                    this.carregarClientes();
+
+                    this.carregarResumoCliente();
+
+                },
+
+                error: (erro: unknown) => {
+
+                    console.error(
+                        erro
+                    );
+
+                    this.alertService.error(
+                        'Erro ao atualizar limite.'
+                    );
+
+                }
+
+            });
+
+    }
+
+    private obterClienteSelecionado(): Cliente | undefined {
+
+        return this.clientes.find(
+            cliente =>
+                cliente.id === this.clienteSelecionadoId
         );
 
     }
@@ -426,15 +622,20 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
     get clienteBloqueadoFiado(): boolean {
 
+        const cliente =
+            this.clientes.find(
+                c => c.id === this.clienteSelecionadoId
+            );
+
         return (
             this.formaPagamento === 'fiado'
             &&
-            !!this.resumoCliente
-            &&
             (
-                this.resumoCliente.status === 'Inadimplente'
+                cliente?.ativo === false
                 ||
-                this.resumoCliente.status === 'Limite Excedido'
+                this.resumoCliente?.status === 'Inadimplente'
+                ||
+                this.resumoCliente?.status === 'Limite Excedido'
             )
         );
 
@@ -540,12 +741,11 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
             event.preventDefault();
 
-            this.focarPagamento();
+            this.abrirPagamento();
 
             return;
 
         }
-
 
         if (event.key === 'Escape') {
 
@@ -738,6 +938,8 @@ export class NovaVenda implements OnInit, AfterViewInit {
 
         this.carrinho = [];
 
+        this.mostrarPagamento = false;
+
         this.formaPagamento = FORMA_PAGAMENTO_PADRAO;
 
         this.produtoSelecionadoId = '';
@@ -876,6 +1078,56 @@ export class NovaVenda implements OnInit, AfterViewInit {
             this.smartProductSearch?.focar();
 
         }, 50);
+
+    }
+
+    abrirPagamento(): void {
+
+        if (this.carrinho.length === 0) {
+
+            this.alertService.warning(
+                'Adicione pelo menos um item ao carrinho.'
+            );
+
+            return;
+
+        }
+
+        this.mostrarPagamento = true;
+
+        setTimeout(() => {
+
+            this.focarPagamento();
+
+        });
+
+    }
+
+    get clienteInativo(): boolean {
+
+        const cliente = this.clientes.find(
+            c => c.id === this.clienteSelecionadoId
+        );
+
+        return cliente?.ativo === false;
+
+    }
+
+    abrirHistorico(): void {
+
+        this.router.navigate(
+            ['/historico-de-vendas']
+        );
+
+    }
+
+    selecionarCliente(clienteId: string): void {
+
+        this.clienteSelecionadoId = clienteId;
+
+        this.resumoCliente = undefined;
+
+        this.carregarResumoCliente();
 
     }
 
