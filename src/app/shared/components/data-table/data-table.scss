@@ -64,6 +64,8 @@ tbody tr:hover {
 .preco-original-riscado {
     text-decoration: line-through;
     opacity: 0.7;
+    color: var(--color-danger);
+    font-weight: 700;
 }
 
 .preco-promocional {
@@ -252,11 +254,8 @@ tbody tr:hover {
 
 .quantity-control {
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
     gap: 8px;
 }
 
@@ -267,4 +266,20 @@ tbody tr:hover {
     border-radius: 6px;
     cursor: pointer;
     font-weight: 700;
+}
+
+.table-action {
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    background: var(--color-primary);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.table-action:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
 }

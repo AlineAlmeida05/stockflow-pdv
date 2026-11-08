@@ -13,7 +13,6 @@ import { ConfirmDialogService } from '../../core/services/confirm-dialog.service
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { ClienteResumo } from '../../core/models/cliente-resumo.model';
 import { Router } from '@angular/router';
-
 @Component({
     selector: 'app-clientes',
     standalone: true,
@@ -62,9 +61,8 @@ export class Clientes implements OnInit {
         align?: 'left' | 'center' | 'right';
     }[] = [
             {
-                field: 'abrirCliente',
-                header: 'Cliente',
-                type: 'action'
+                field: 'nome',
+                header: 'Cliente'
             },
             {
                 field: 'fiados',
@@ -404,19 +402,16 @@ export class Clientes implements OnInit {
 
                     if (cliente) {
 
-                        cliente.saldoDevedor =
-                            resumo.saldoDevedor;
+                        cliente.saldoDevedor = resumo.saldoDevedor;
 
-                        cliente.creditoDisponivel =
-                            resumo.creditoDisponivel;
+                        cliente.creditoDisponivel = resumo.creditoDisponivel;
 
                         cliente.status =
                             this.formatarStatus(
                                 resumo.status
                             );
 
-                        cliente.diasSemPagamento =
-                            resumo.diasSemPagamento;
+                        cliente.diasSemPagamento = resumo.diasSemPagamento;
 
                         this.clientes = [
                             ...this.clientes
@@ -464,8 +459,7 @@ export class Clientes implements OnInit {
         cliente: unknown
     ): void {
 
-        const clienteSelecionado =
-            cliente as Cliente;
+        const clienteSelecionado = cliente as Cliente;
 
         this.clienteSelecionado = clienteSelecionado;
 
@@ -539,8 +533,6 @@ export class Clientes implements OnInit {
 
                 ...cliente,
 
-                abrirCliente: cliente.nome,
-
                 fiados:
                     (cliente.saldoDevedor ?? 0) > 0
                         ? 'Ver Fiados'
@@ -576,8 +568,35 @@ export class Clientes implements OnInit {
         cliente: unknown
     ): void {
 
-        const clienteSelecionado =
-            cliente as Cliente;
+        const clienteSelecionado = cliente as Cliente;
+
+        if (
+            clienteSelecionado.ativo
+            &&
+            (clienteSelecionado.saldoDevedor ?? 0) > 0
+        ) {
+
+            this.alertService.warning(
+                'Clientes com saldo devedor não podem ser inativados.'
+            );
+
+            return;
+
+        }
+
+        if (
+            clienteSelecionado.ativo
+            &&
+            clienteSelecionado.status === 'Inadimplente'
+        ) {
+
+            this.alertService.warning(
+                'Clientes inadimplentes não podem ser inativados.'
+            );
+
+            return;
+
+        }
 
         if (!clienteSelecionado.id) {
             return;
@@ -713,18 +732,7 @@ export class Clientes implements OnInit {
         }
     ): void {
 
-        const cliente =
-            event.row as Cliente;
-
-        if (
-            event.field === 'abrirCliente'
-        ) {
-
-            this.visualizarCliente(cliente);
-
-            return;
-
-        }
+        const cliente = event.row as Cliente;
 
         if (
             event.field === 'fiados'
@@ -735,5 +743,25 @@ export class Clientes implements OnInit {
         }
 
     }
+
+    get mostrarPainelLateral(): boolean {
+
+        return this.mostrarFormulario
+            || this.modoVisualizacao;
+
+    }
+
+    reativarClienteResumo(): void {
+
+        if (!this.clienteSelecionado?.id) {
+            return;
+        }
+
+        this.alternarStatusCliente(
+            this.clienteSelecionado
+        );
+
+    }
+
 
 }
