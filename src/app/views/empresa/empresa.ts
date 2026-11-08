@@ -8,6 +8,7 @@ import { DatePipe } from '@angular/common';
 import { TenantContextService } from '../../core/services/tenant-context.service';
 import { BRANDING_CONFIG } from '../../config/branding.config';
 import { Router } from '@angular/router';
+import { Toolbar } from '../../shared/components/toolbar/toolbar';
 
 @Component({
     selector: 'app-empresa',
@@ -16,7 +17,8 @@ import { Router } from '@angular/router';
         MainLayout,
         PageTitle,
         SplitPanel,
-        DatePipe
+        DatePipe,
+        Toolbar
     ],
     templateUrl: './empresa.html',
     styleUrl: './empresa.scss'
