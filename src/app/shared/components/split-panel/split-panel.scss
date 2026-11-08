@@ -17,14 +17,26 @@
         minmax(320px, 30%);
 }
 
+.split-panel.invert-sizes.has-right {
+    grid-template-columns:
+        minmax(320px, 30%)
+        minmax(0, 70%);
+}
+
 .split-panel--with-right {
     grid-template-columns: 70% 30%;
 }
 
-:host.with-right .split-panel {
+:host.with-right .split-panel:not(.invert-sizes) {
     grid-template-columns:
         minmax(0, 70%)
         minmax(340px, 30%);
+}
+
+:host.with-right .split-panel.invert-sizes {
+    grid-template-columns:
+        minmax(340px, 30%)
+        minmax(0, 70%);
 }
 
 .left {

@@ -14,6 +14,9 @@ export class SplitPanel {
     @Input()
     showRight = true;
 
+    @Input()
+    invertSizes = false;
+
     @HostBinding('class.with-right')
     get withRight(): boolean {
 

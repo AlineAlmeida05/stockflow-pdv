@@ -3,78 +3,107 @@
     <app-page-title
         title="Relatório de Vendas"
         subtitle="Acompanhe o desempenho das vendas da adega.">
+
     </app-page-title>
 
     <app-report-header>
+
         <div tabs>
+
             <div class="abas">
+
                 <button
                     type="button"
                     [class.active]="abaSelecionada === 'vendas'"
                     (click)="abaSelecionada = 'vendas'">
+
                     Vendas
+
                 </button>
 
                 <button
                     type="button"
                     [class.active]="abaSelecionada === 'estoque'"
                     (click)="abaSelecionada = 'estoque'">
+
                     Estoque
+
                 </button>
 
                 <button
                     type="button"
                     [class.active]="abaSelecionada === 'fiados'"
                     (click)="abaSelecionada = 'fiados'">
+
                     Fiados
+
                 </button>
 
                 <button
                     type="button"
                     [class.active]="abaSelecionada === 'financeiro'"
                     (click)="abaSelecionada = 'financeiro'">
+
                     Financeiro
+
                 </button>
+
             </div>
+
         </div>
 
         <div actions>
-            <div class="relatorios-acoes">
+
+            <div class="acoes-navegacao">
+
+                <div class="relatorios-acoes">
+
+                    <button
+                        class="btn btn-secondary"
+                        type="button"
+                        (click)="abrirHistoricoVendas()">
+
+                        🧾 Histórico de Vendas
+
+                    </button>
+
+                    <button
+                        class="btn btn-secondary"
+                        type="button"
+                        (click)="abrirExtratoFinanceiro()">
+
+                        💰 Extrato Financeiro
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="acoes-exportacao">
 
                 <button
-                    class="btn btn-secondary"
                     type="button"
-                    (click)="abrirHistoricoVendas()">
+                    class="export-button pdf"
+                    (click)="exportarPdf()">
 
-                    🧾 Histórico de Vendas
+                    📄 PDF
 
                 </button>
 
                 <button
-                    class="btn btn-secondary"
                     type="button"
-                    (click)="abrirExtratoFinanceiro()">
+                    class="export-button excel"
+                    (click)="exportarExcel()">
 
-                    💰 Extrato Financeiro
+                    📊 Excel
 
                 </button>
 
             </div>
 
-            <button
-                type="button"
-                class="export-button pdf"
-                (click)="exportarPdf()">
-                📄 PDF
-            </button>
-
-            <button
-                type="button"
-                class="export-button excel"
-                (click)="exportarExcel()">
-                📊 Excel
-            </button>
         </div>
+
     </app-report-header>
 
     <div #reportContent>
@@ -98,6 +127,7 @@
             (formaPagamentoSelecionadaChange)="formaPagamentoSelecionada = $event"
             [melhorDiaData]="melhorDiaData"
             [melhorDiaValor]="melhorDiaValor">
+
         </app-report-vendas>
 
         }
@@ -106,6 +136,7 @@
         @if (
         abaSelecionada === 'estoque'
         ) {
+
         <app-report-estoque
             [totalProdutos]="totalProdutos"
             [produtosSemEstoque]="produtosSemEstoque"
@@ -119,7 +150,9 @@
             [produtosTabela]="produtosTabela"
             [colunasGiroEstoque]="colunasGiroEstoque"
             [produtosGiroEstoque]="produtosGiroEstoque">
+
         </app-report-estoque>
+
         }
 
         <!-- ABA FIADOS -->
@@ -135,6 +168,7 @@
             [maioresDevedores]="maioresDevedores"
             [colunasFiados]="colunasFiados"
             [fiadosTabela]="fiadosTabela">
+
         </app-report-fiados>
 
         }
@@ -151,9 +185,11 @@
             [receitaRealizada]="receitaRealizada"
             [ticketMedio]="ticketMedio"
             [faturamentoPorPagamento]="faturamentoPorPagamento">
+
         </app-report-financeiro>
 
         }
+
     </div>
 
 </app-main-layout>

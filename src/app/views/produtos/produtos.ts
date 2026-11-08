@@ -12,7 +12,6 @@ import { ConfirmDialogService } from '../../core/services/confirm-dialog.service
 import { AlertService } from '../../core/services/alert.service';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 
-
 type ProdutoTabela =
   Omit<Produto, 'precoPromocional'> & {
     status: string;

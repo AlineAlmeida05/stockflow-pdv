@@ -14,6 +14,7 @@
             [value]="card.value"
             [variant]="card.variant"
             [active]="selectedSection === card.id">
+
         </app-stat-card>
 
     </div>
@@ -22,15 +23,20 @@
 
 </div>
 
-<app-split-panel>
+<app-split-panel
+    [invertSizes]="true">
+
     <div left>
+
         <div
             class="card resumo-clickable"
             [class.active]="selectedSection === 'sem-movimentacao'"
             (click)="selectedSection = 'sem-movimentacao'">
 
             <h2>
+
                 Produtos Sem Movimentação
+
             </h2>
 
         </div>
@@ -39,9 +45,13 @@
             class="card resumo-clickable"
             [class.active]="selectedSection === 'reposicao'"
             (click)="selectedSection = 'reposicao'">
+
             <h2>
+
                 Sugestões de Reposição
+
             </h2>
+
         </div>
 
         <div
@@ -50,10 +60,13 @@
             (click)="selectedSection = 'giro-estoque'">
 
             <h2>
+
                 Giro de Estoque
+
             </h2>
 
         </div>
+
     </div>
 
     <div right>
@@ -63,6 +76,7 @@
             icon="📦"
             title="Explore os dados"
             message="Selecione um indicador ou resumo para visualizar os detalhes.">
+
         </app-empty-state>
 
         }
@@ -72,7 +86,9 @@
         <div class="report-detail">
 
             <h2>
+
                 📦 Produtos Sem Movimentação
+
             </h2>
 
             <div class="card">
@@ -82,7 +98,9 @@
                 ) {
 
                 <p>
+
                     Todos os produtos possuem movimentação.
+
                 </p>
 
                 } @else {
@@ -93,7 +111,9 @@
                 ) {
 
                 <p>
+
                     {{ produto.nome }}
+
                 </p>
 
                 }
@@ -111,7 +131,9 @@
         <div class="report-detail">
 
             <h2>
+
                 📦 Sugestões de Reposição
+
             </h2>
 
             <div class="card">
@@ -119,10 +141,12 @@
                 @if (
                 sugestoesReposicao.length === 0
                 ) {
+
                 <app-empty-state
                     icon="📦"
                     title="Explore os dados"
                     message="Nenhum produto precisa de reposição.">
+
                 </app-empty-state>
 
                 } @else {
@@ -133,24 +157,24 @@
                 ) {
 
                 <p>
+
                     <strong>
+
                         {{ produto.nome }}
+
                     </strong>
 
                     <br>
 
-                    Atual:
-                    {{ produto.estoqueAtual }}
+                    Atual: {{ produto.estoqueAtual }}
 
                     |
 
-                    Mínimo:
-                    {{ produto.estoqueMinimo }}
+                    Mínimo: {{ produto.estoqueMinimo }}
 
                     |
 
-                    Comprar:
-                    {{ produto.quantidadeReposicao }}
+                    Comprar: {{ produto.quantidadeReposicao }}
                 </p>
 
                 }
@@ -168,11 +192,15 @@
         <div class="report-detail">
 
             <h2>
+
                 📦 Produtos Estoque Atual
+
             </h2>
 
             <p>
+
                 Situação atual dos produtos cadastrados.
+
             </p>
 
             <div class="card">
@@ -180,6 +208,7 @@
                 <app-data-table
                     [columns]="colunasEstoque"
                     [data]="produtosTabelaPaginada">
+
                 </app-data-table>
 
                 <div class="pagination">
@@ -191,16 +220,14 @@
                             [(value)]="itensPorPagina"
                             (valueChange)="alterarItensPorPagina()"
                             [options]="opcoesItensPorPagina">
+
                         </app-select-input>
 
                         <span class="pagination-info">
 
-                            Mostrando
-                            {{ inicioPagina }}
+                            Mostrando {{ inicioPagina }}
                             -
-                            {{ fimPagina }}
-                            de
-                            {{ produtosTabela.length }}
+                            {{ fimPagina }} de {{ produtosTabela.length }}
                             registros
 
                         </span>
@@ -221,10 +248,7 @@
 
                         <span class="pagination-page">
 
-                            Página
-                            {{ paginaAtual }}
-                            de
-                            {{ totalPaginas }}
+                            Página {{ paginaAtual }} de {{ totalPaginas }}
 
                         </span>
 
@@ -253,11 +277,15 @@
         <div class="report-detail">
 
             <h2>
+
                 📊 Giro de Estoque
+
             </h2>
 
             <p>
+
                 Comparativo entre entradas e saídas dos produtos.
+
             </p>
 
             <div class="card">
@@ -265,6 +293,7 @@
                 <app-data-table
                     [columns]="colunasGiroEstoque"
                     [data]="produtosGiroEstoque">
+
                 </app-data-table>
 
             </div>
@@ -278,7 +307,9 @@
         <div class="report-detail">
 
             <h2>
+
                 📦 Produtos Sem Estoque
+
             </h2>
 
             <div class="card">
@@ -289,6 +320,7 @@
                     icon="📦"
                     title="Produtos"
                     message="Nenhum produto sem estoque.">
+
                 </app-empty-state>
 
                 } @else {
@@ -299,7 +331,9 @@
                 ) {
 
                 <p>
+
                     {{ produto.nome }}
+
                 </p>
 
                 }
@@ -317,7 +351,9 @@
         <div class="report-detail">
 
             <h2>
+
                 ⚠️ Produtos com Estoque Baixo
+
             </h2>
 
             <div class="card">
@@ -328,6 +364,7 @@
                     icon="📦"
                     title="Produtos"
                     message="Nenhum produto com estoque baixo.">
+
                 </app-empty-state>
 
                 } @else {
@@ -338,7 +375,9 @@
                 ) {
 
                 <p>
+
                     {{ produto.nome }}
+
                 </p>
 
                 }
@@ -352,4 +391,5 @@
         }
 
     </div>
+
 </app-split-panel>

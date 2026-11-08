@@ -131,8 +131,7 @@ export class ReportFiados {
             (this.paginaAtual - 1)
             * Number(this.itensPorPagina);
 
-        const fim =
-            inicio + Number(this.itensPorPagina);
+        const fim = inicio + Number(this.itensPorPagina);
 
         return this.fiadosTabela.slice(
             inicio,

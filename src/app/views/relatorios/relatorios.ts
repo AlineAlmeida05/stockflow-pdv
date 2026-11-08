@@ -454,11 +454,9 @@ export class Relatorios
 
         return {
 
-            nome:
-                produto.produtoNome,
+            nome: produto.produtoNome,
 
-            faturamento:
-                produto.faturamento
+            faturamento: produto.faturamento
 
         };
 
@@ -598,7 +596,6 @@ export class Relatorios
             ?.resumo
             ?.pagos
             ?? 0;
-
     }
 
 
@@ -688,8 +685,7 @@ export class Relatorios
     get receitaRealizada(): number {
 
         return (
-            this.faturamentoTotal -
-            this.valorEmAberto
+            this.faturamentoTotal - this.valorEmAberto
         )
     }
 

@@ -1,4 +1,5 @@
 <div class="indicadores">
+
     @for (
     card of cardsVendas;
     track card.id
@@ -13,6 +14,7 @@
             [value]="card.value"
             [variant]="card.variant"
             [active]="selectedSection === card.id">
+
         </app-stat-card>
 
     </div>
@@ -20,35 +22,53 @@
     }
 
 </div>
-<app-split-panel>
+
+<app-split-panel
+    [invertSizes]="true">
+
     <div left>
+
         <div
             class="card resumo-clickable"
             [class.active]="selectedSection === 'melhor-dia'"
             (click)="selectedSection = 'melhor-dia'">
+
             <h2>
+
                 Melhor Dia
+
             </h2>
+
         </div>
 
         @if (produtoMaisFaturou) {
+
         <div
             class="card resumo-clickable"
             [class.active]="selectedSection === 'produto-mais-faturou'"
             (click)="selectedSection = 'produto-mais-faturou'">
+
             <h2>
+
                 Produto que Mais Faturou
+
             </h2>
+
         </div>
+
         }
 
         <div
             class="card resumo-clickable"
             [class.active]="selectedSection === 'receita-pagamento'"
             (click)="selectedSection = 'receita-pagamento'">
+
             <h2>
+
                 Receita por Forma de Pagamento
+
             </h2>
+
         </div>
 
         <div
@@ -57,21 +77,29 @@
             (click)="selectedSection = 'evolucao-vendas'">
 
             <h2>
+
                 Evolução das Vendas
+
             </h2>
+
         </div>
 
         <div
             class="card resumo-clickable"
             [class.active]="selectedSection === 'top-produtos'"
             (click)="selectedSection = 'top-produtos'">
+
             <h2>
+
                 Top 5 Produtos Vendidos
+
             </h2>
+
         </div>
+
     </div>
 
-    <div right>        
+    <div right>
 
         @if (!selectedSection) {
 
@@ -79,6 +107,7 @@
             icon="📊"
             title="Explore os dados"
             message="Selecione um indicador ou resumo para visualizar os detalhes.">
+
         </app-empty-state>
 
         }
@@ -86,15 +115,21 @@
         @if (
         selectedSection === 'historico-vendas'
         ) {
+
         <div class="report-detail">
+
             <h2>
+
                 📋 Total de Vendas
+
             </h2>
+
             <div class="card">
 
                 <app-data-table
                     [columns]="colunasVendas"
                     [data]="vendasTabelaPaginada">
+
                 </app-data-table>
 
                 <div class="pagination">
@@ -106,17 +141,15 @@
                             [(value)]="itensPorPagina"
                             (valueChange)="alterarItensPorPagina()"
                             [options]="opcoesItensPorPagina">
+
                         </app-select-input>
 
                         <span class="pagination-info">
 
-                            Mostrando
-                            {{ inicioPagina }}
+                            Mostrando {{ inicioPagina }}
                             -
-                            {{ fimPagina }}
-                            de
-                            {{ vendasTabela.length }}
-                            registros
+                            {{ fimPagina }} de {{ vendasTabela.length
+                            }}registros
 
                         </span>
 
@@ -136,10 +169,7 @@
 
                         <span class="pagination-page">
 
-                            Página
-                            {{ paginaAtual }}
-                            de
-                            {{ totalPaginas }}
+                            Página {{ paginaAtual }} de {{ totalPaginas }}
 
                         </span>
 
@@ -158,7 +188,9 @@
                 </div>
 
             </div>
+
         </div>
+
         }
 
         @if (selectedSection === 'faturamento') {
@@ -170,24 +202,39 @@
             </h2>
 
             <div class="detail-row">
+
                 <span>Total Faturado</span>
+
                 <strong>
+
                     {{ faturamentoTotal | currency:'BRL' }}
+
                 </strong>
+
             </div>
 
             <div class="detail-row">
+
                 <span>Total de Vendas</span>
+
                 <strong>
+
                     {{ totalVendas }}
+
                 </strong>
+
             </div>
 
             <div class="detail-row">
+
                 <span>Ticket Médio</span>
+
                 <strong>
+
                     {{ ticketMedio | currency:'BRL' }}
+
                 </strong>
+
             </div>
 
         </div>
@@ -199,14 +246,21 @@
         <div class="report-detail">
 
             <h2>
+
                 💳 Forma de Pagamento Mais Utilizada
+
             </h2>
 
             <div class="detail-row">
+
                 <span>Forma Mais Utilizada</span>
+
                 <strong>
+
                     {{ formaPagamentoMaisUtilizada }}
+
                 </strong>
+
             </div>
 
             @for (
@@ -217,11 +271,15 @@
             <div class="detail-row">
 
                 <span>
+
                     {{ forma.formaPagamento }}
+
                 </span>
 
                 <strong>
+
                     {{ forma.valor | currency:'BRL' }}
+
                 </strong>
 
             </div>
@@ -237,28 +295,45 @@
         <div class="report-detail">
 
             <h2>
+
                 🎟️ Ticket Médio
+
             </h2>
 
             <div class="detail-row">
+
                 <span>Ticket Médio</span>
+
                 <strong>
+
                     {{ ticketMedio | currency:'BRL' }}
+
                 </strong>
+
             </div>
 
             <div class="detail-row">
+
                 <span>Total de Vendas</span>
+
                 <strong>
+
                     {{ totalVendas }}
+
                 </strong>
+
             </div>
 
             <div class="detail-row">
+
                 <span>Faturamento Total</span>
+
                 <strong>
+
                     {{ faturamentoTotal | currency:'BRL' }}
+
                 </strong>
+
             </div>
 
         </div>
@@ -270,21 +345,32 @@
         <div class="report-detail">
 
             <h2>
+
                 🏆 Melhor Dia
+
             </h2>
 
             <div class="detail-row">
 
                 <p>
                     <strong>Data:</strong>
+
                     {{ melhorDiaData }}
+
                 </p>
+
             </div>
+
             <div class="detail-row">
+
                 <p>
+
                     <strong>Faturamento:</strong>
+
                     {{ melhorDiaValor }}
+
                 </p>
+
             </div>
 
         </div>
@@ -296,7 +382,9 @@
         <div class="report-detail">
 
             <h2>
+
                 💳 Receita por Forma de Pagamento
+
             </h2>
 
             <div class="card">
@@ -305,41 +393,66 @@
                 forma of faturamentoPorPagamento;
                 track forma.formaPagamento
                 ) {
+
                 <div class="detail-row">
+
                     <p>
+
                         <strong>
+
                             {{ forma.formaPagamento }}
+
                         </strong>
-                        -
-                        {{ forma.valor | currency:'BRL' }}
+
+                        - {{ forma.valor | currency:'BRL' }}
+
                     </p>
+
                 </div>
+
                 }
 
             </div>
+
         </div>
+
         }
 
         @if (selectedSection === 'produto-mais-faturou') {
+
         <div class="report-detail">
+
             <h2>
+
                 💰 Produto que Mais Faturou
+
             </h2>
 
             <div class="detail-row">
 
                 <span>Produto:</span>
-                <strong>{{ produtoMaisFaturou?.nome }}</strong>
+
+                <strong>
+
+                    {{ produtoMaisFaturou?.nome }}
+
+                </strong>
 
             </div>
+
             <div class="detail-row">
+
                 <p>
                     <strong>Faturamento:</strong>
+
                     {{ produtoMaisFaturou?.faturamento | currency:'BRL' }}
+
                 </p>
+
             </div>
 
         </div>
+
         }
 
         @if (selectedSection === 'evolucao-vendas') {
@@ -347,7 +460,9 @@
         <div class="report-detail">
 
             <h2>
+
                 📈 Evolução das Vendas
+
             </h2>
 
             <div class="card">
@@ -358,6 +473,7 @@
                     icon="📈"
                     title="Evolução das Vendas"
                     message="Nenhuma venda encontrada.">
+
                 </app-empty-state>
 
                 } @else {
@@ -366,15 +482,27 @@
                 dia of evolucaoVendasPorDia;
                 track dia.data
                 ) {
+
                 <div class="detail-row">
+
                     <p>
+
                         <strong>
+
                             {{ dia.data }}
+
                         </strong>
+
                         -
-                        <span>{{ dia.total | currency:'BRL' }}</span>
+
+                        <span>
+
+                            {{ dia.total | currency:'BRL' }}
+
+                        </span>
 
                     </p>
+
                 </div>
 
                 }
@@ -382,6 +510,7 @@
                 }
 
             </div>
+
         </div>
 
         }
@@ -391,7 +520,9 @@
         <div class="report-detail">
 
             <h2>
+
                 🏆 Top Produtos Vendidos
+
             </h2>
 
             <div class="card">
@@ -402,6 +533,7 @@
                     icon="🏆"
                     title="Top Produtos Vendidos"
                     message="Informações de produtos não disponíveis para o relatório.">
+
                 </app-empty-state>
 
                 } @else {
@@ -410,24 +542,39 @@
                 produto of topProdutosVendidos;
                 track produto.nome
                 ) {
+
                 <div class="detail-row">
+
                     <p>
+
                         <strong>
+
                             {{ produto.nome }}
+
                         </strong>
+
                         -
-                        <span>{{ produto.quantidade }} un.</span>
+
+                        <span>
+
+                            {{ produto.quantidade }}
+
+                            un.</span>
 
                     </p>
+
                 </div>
+
                 }
 
                 }
 
             </div>
+
         </div>
 
         }
 
     </div>
+
 </app-split-panel>

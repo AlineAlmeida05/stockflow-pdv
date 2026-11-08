@@ -14,6 +14,7 @@
             [value]="card.value"
             [variant]="card.variant"
             [active]="selectedSection === card.id">
+
         </app-stat-card>
 
     </div>
@@ -22,15 +23,20 @@
 
 </div>
 
-<app-split-panel>
+<app-split-panel
+    [invertSizes]="true">
+
     <div left>
+
         <div
             class="card resumo-clickable"
             [class.active]="selectedSection === 'receita-pagamento'"
             (click)="selectedSection = 'receita-pagamento'">
 
             <h2>
+
                 Receita por Forma de Pagamento
+
             </h2>
 
         </div>
@@ -41,7 +47,9 @@
             (click)="selectedSection = 'resumo-financeiro'">
 
             <h2>
+
                 Resumo Financeiro
+
             </h2>
 
         </div>
@@ -55,6 +63,7 @@
             icon="💰"
             title="Explore os dados"
             message="Selecione um indicador ou resumo para visualizar os detalhes.">
+
         </app-empty-state>
 
         }
@@ -64,17 +73,23 @@
         <div class="report-detail">
 
             <h2>
+
                 💰 Faturamento Total
+
             </h2>
 
             <div class="detail-row">
 
                 <span>
+
                     Faturamento Total
+
                 </span>
 
                 <strong>
+
                     {{ faturamentoTotal | currency:'BRL' }}
+
                 </strong>
 
             </div>
@@ -88,17 +103,23 @@
         <div class="report-detail">
 
             <h2>
+
                 📒 Valor em Fiados
+
             </h2>
 
             <div class="detail-row">
 
                 <span>
+
                     Valor em Fiados
+
                 </span>
 
                 <strong>
+
                     {{ valorFiados | currency:'BRL' }}
+
                 </strong>
 
             </div>
@@ -112,17 +133,23 @@
         <div class="report-detail">
 
             <h2>
+
                 ⚠️ Valor em Aberto
+
             </h2>
 
             <div class="detail-row">
 
                 <span>
+
                     Valor em Aberto
+
                 </span>
 
                 <strong>
+
                     {{ valorEmAberto | currency:'BRL' }}
+
                 </strong>
 
             </div>
@@ -136,17 +163,23 @@
         <div class="report-detail">
 
             <h2>
+
                 ✅ Receita Realizada
+
             </h2>
 
             <div class="detail-row">
 
                 <span>
+
                     Receita Realizada
+
                 </span>
 
                 <strong>
+
                     {{ receitaRealizada | currency:'BRL' }}
+
                 </strong>
 
             </div>
@@ -160,17 +193,23 @@
         <div class="report-detail">
 
             <h2>
+
                 🎟️ Ticket Médio
+
             </h2>
 
             <div class="detail-row">
 
                 <span>
+
                     Ticket Médio
+
                 </span>
 
                 <strong>
+
                     {{ ticketMedio | currency:'BRL' }}
+
                 </strong>
 
             </div>
@@ -178,12 +217,15 @@
         </div>
 
         }
+
         @if (selectedSection === 'receita-pagamento') {
 
         <div class="report-detail">
 
             <h2>
+
                 💳 Receita por Forma de Pagamento
+
             </h2>
 
             <div class="card">
@@ -196,11 +238,15 @@
                 <div class="detail-row">
 
                     <span>
+
                         {{ forma.formaPagamento }}
+
                     </span>
 
                     <strong>
+
                         {{ forma.valor | currency:'BRL' }}
+
                     </strong>
 
                 </div>
@@ -218,17 +264,23 @@
         <div class="report-detail">
 
             <h2>
+
                 💰 Resumo Financeiro
+
             </h2>
 
             <div class="detail-row">
 
                 <span>
+
                     Receita Realizada
+
                 </span>
 
                 <strong>
+
                     {{ receitaRealizada | currency:'BRL' }}
+
                 </strong>
 
             </div>
@@ -236,11 +288,15 @@
             <div class="detail-row">
 
                 <span>
+
                     Valor em Aberto
+
                 </span>
 
                 <strong>
+
                     {{ valorEmAberto | currency:'BRL' }}
+
                 </strong>
 
             </div>
@@ -248,5 +304,7 @@
         </div>
 
         }
+
     </div>
+
 </app-split-panel>
