@@ -152,8 +152,7 @@ export class ReportVendas {
             (this.paginaAtual - 1)
             * Number(this.itensPorPagina);
 
-        const fim =
-            inicio + Number(this.itensPorPagina);
+        const fim = inicio + Number(this.itensPorPagina);
 
         return this.vendasTabela.slice(
             inicio,

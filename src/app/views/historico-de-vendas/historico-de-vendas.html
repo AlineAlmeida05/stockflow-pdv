@@ -21,7 +21,8 @@
 
     </div>
 
-    <app-split-panel>
+    <app-split-panel
+        [invertSizes]="true">
         <div left class="vendas-panel">
 
             <h2>
@@ -162,7 +163,8 @@
                     <div class="info-cancelamento">
                         <span>Data do Cancelamento</span>
                         <strong>
-                            {{vendaSelecionada.dataCancelamento| date:'dd/MM/yyyy HH:mm'}}
+                            {{vendaSelecionada.dataCancelamento|
+                            date:'dd/MM/yyyy HH:mm'}}
                         </strong>
                     </div>
 

@@ -76,12 +76,16 @@
     border-bottom: 1px solid #eee;
 }
 
-@media (max-width: 768px) {
+:host ::ng-deep .split-panel.has-right {
+    grid-template-columns:
+        minmax(320px, 30%)
+        minmax(0, 70%);
+}
 
+@media (max-width: 768px) {
     .indicadores {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
     }
-
 }

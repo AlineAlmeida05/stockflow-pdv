@@ -14,6 +14,7 @@
             [value]="card.value"
             [variant]="card.variant"
             [active]="selectedSection === card.id">
+
         </app-stat-card>
 
     </div>
@@ -22,7 +23,8 @@
 
 </div>
 
-<app-split-panel>
+<app-split-panel
+    [invertSizes]="true">
 
     <div left>
 
@@ -32,7 +34,9 @@
             (click)="selectedSection = 'maiores-devedores'">
 
             <h2>
+
                 Maiores Devedores
+
             </h2>
 
         </div>
@@ -43,7 +47,9 @@
             (click)="selectedSection = 'ultimo-lancamento'">
 
             <h2>
+
                 Últimos Lançamentos
+
             </h2>
 
         </div>
@@ -60,6 +66,7 @@
                 icon="📒"
                 title="Explore os dados"
                 message="Selecione um indicador ou resumo para visualizar os detalhes.">
+
             </app-empty-state>
 
             }
@@ -69,17 +76,23 @@
             <div class="report-detail">
 
                 <h2>
+
                     💰 Valor em Aberto
+
                 </h2>
 
                 <div class="detail-row">
 
                     <span>
+
                         Valor em Aberto
+
                     </span>
 
                     <strong>
+
                         {{ valorEmAberto | currency:'BRL' }}
+
                     </strong>
 
                 </div>
@@ -93,17 +106,23 @@
             <div class="report-detail">
 
                 <h2>
+
                     ⏳ Fiados Pendentes
+
                 </h2>
 
                 <div class="detail-row">
 
                     <span>
+
                         Total de Pendentes
+
                     </span>
 
                     <strong>
+
                         {{ totalPendentes }}
+
                     </strong>
 
                 </div>
@@ -117,17 +136,23 @@
             <div class="report-detail">
 
                 <h2>
+
                     ✅ Fiados Pagos
+
                 </h2>
 
                 <div class="detail-row">
 
                     <span>
+
                         Total de Pagos
+
                     </span>
 
                     <strong>
+
                         {{ totalPagos }}
+
                     </strong>
 
                 </div>
@@ -141,17 +166,23 @@
             <div class="report-detail">
 
                 <h2>
+
                     👥 Clientes Devedores
+
                 </h2>
 
                 <div class="detail-row">
 
                     <span>
+
                         Clientes Devedores
+
                     </span>
 
                     <strong>
+
                         {{ clientesDevedores }}
+
                     </strong>
 
                 </div>
@@ -165,7 +196,9 @@
             <div class="report-detail">
 
                 <h2>
+
                     📒 Maiores Devedores
+
                 </h2>
 
                 <div class="card">
@@ -178,6 +211,7 @@
                         icon="📒"
                         title="Devedores"
                         message="Nenhum cliente devedor.">
+
                     </app-empty-state>
 
                     } @else {
@@ -193,10 +227,7 @@
 
                         -
 
-                        {{
-                        cliente.total
-                        | currency:'BRL'
-                        }}
+                        {{ cliente.total| currency:'BRL' }}
 
                     </p>
 
@@ -215,7 +246,9 @@
             <div class="report-detail">
 
                 <h2>
+
                     📒 Últimos Lançamentos
+
                 </h2>
 
                 <div class="card">
@@ -223,6 +256,7 @@
                     <app-data-table
                         [columns]="colunasFiados"
                         [data]="fiadosTabelaPaginada">
+
                     </app-data-table>
 
                     <div class="pagination">
@@ -234,16 +268,14 @@
                                 [(value)]="itensPorPagina"
                                 (valueChange)="alterarItensPorPagina()"
                                 [options]="opcoesItensPorPagina">
+
                             </app-select-input>
 
                             <span class="pagination-info">
 
-                                Mostrando
-                                {{ inicioPagina }}
+                                Mostrando {{ inicioPagina }}
                                 -
-                                {{ fimPagina }}
-                                de
-                                {{ fiadosTabela.length }}
+                                {{ fimPagina }} de {{ fiadosTabela.length }}
                                 registros
 
                             </span>
@@ -264,10 +296,7 @@
 
                             <span class="pagination-page">
 
-                                Página
-                                {{ paginaAtual }}
-                                de
-                                {{ totalPaginas }}
+                                Página {{ paginaAtual }} de {{ totalPaginas }}
 
                             </span>
 

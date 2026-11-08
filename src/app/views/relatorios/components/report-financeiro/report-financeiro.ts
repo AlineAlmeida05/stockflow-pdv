@@ -3,18 +3,15 @@ import { CurrencyPipe } from '@angular/common';
 import { StatCard } from '../../../../shared/components/stat-card/stat-card';
 import { SplitPanel } from '../../../../shared/components/split-panel/split-panel';
 import { EmptyState } from '../../../../shared/components/empty-state/empty-state';
-
 @Component({
     selector: 'app-report-financeiro',
     standalone: true,
-
     imports: [
         CurrencyPipe,
         StatCard,
         SplitPanel,
         EmptyState
     ],
-
     templateUrl: './report-financeiro.html',
     styleUrl: './report-financeiro.scss'
 })
@@ -85,19 +82,6 @@ export class ReportFinanceiro {
                     }
                 ),
                 variant: 'danger'
-            },
-
-            {
-                id: 'receita-realizada',
-                title: 'Receita Realizada',
-                value: this.receitaRealizada.toLocaleString(
-                    'pt-BR',
-                    {
-                        style: 'currency',
-                        currency: 'BRL'
-                    }
-                ),
-                variant: 'success'
             },
 
             {

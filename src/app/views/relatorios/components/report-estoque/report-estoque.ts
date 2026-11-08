@@ -126,8 +126,7 @@ export class ReportEstoque {
             (this.paginaAtual - 1)
             * Number(this.itensPorPagina);
 
-        const fim =
-            inicio + Number(this.itensPorPagina);
+        const fim = inicio + Number(this.itensPorPagina);
 
         return this.produtosTabela.slice(
             inicio,
@@ -195,8 +194,7 @@ export class ReportEstoque {
 
         return Math.min(
 
-            this.paginaAtual
-            * Number(this.itensPorPagina),
+            this.paginaAtual * Number(this.itensPorPagina),
 
             this.produtosTabela.length
 
