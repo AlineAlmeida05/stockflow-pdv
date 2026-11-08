@@ -8,7 +8,7 @@
             <div class="executive-summary">
 
                 <div
-                    class="summary-item summary-item--vendas"
+                    class="summary-item summary-item--produtos"
                     [class.summary-item--active]="resumoEstoqueSelecionado === 'produtos'"
                     (click)="selecionarResumo('produtos')">
 
@@ -27,7 +27,7 @@
                 </div>
 
                 <div
-                    class="summary-item summary-item--vendas"
+                    class="summary-item summary-item--warning"
                     [class.summary-item--active]="resumoEstoqueSelecionado === 'estoqueBaixo'"
                     (click)="selecionarResumo('estoqueBaixo')">
 
@@ -46,7 +46,7 @@
                 </div>
 
                 <div
-                    class="summary-item summary-item--vendas"
+                    class="summary-item summary-item--danger"
                     [class.summary-item--active]="resumoEstoqueSelecionado === 'semEstoque'"
                     (click)="selecionarResumo('semEstoque')">
 
@@ -75,12 +75,6 @@
         <app-dashboard-panel
             title="Detalhamento">
 
-            <h2>
-
-                Detalhamento
-
-            </h2>
-
             @if (!resumoEstoqueSelecionado) {
 
             <app-empty-state
@@ -101,9 +95,9 @@
 
             </h3>
 
-            <div class="dashboard-table-container">
+            <div class="table-container">
 
-                <table class="dashboard-table">
+                <table class="table">
 
                     <thead>
 
@@ -180,9 +174,9 @@
 
             } @else {
 
-            <div class="dashboard-table-container">
+            <div class="table-container">
 
-                <table class="dashboard-table">
+                <table class="table">
 
                     <thead>
 
@@ -270,9 +264,9 @@
 
             } @else {
 
-            <div class="dashboard-table-container">
+            <div class="table-container">
 
-                <table class="dashboard-table">
+                <table class="table">
 
                     <thead>
 

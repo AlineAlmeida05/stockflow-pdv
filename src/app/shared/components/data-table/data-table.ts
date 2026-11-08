@@ -60,6 +60,9 @@ export class DataTable {
     @Output()
     decrement = new EventEmitter<unknown>();
 
+    @Input()
+    showNameAsLink = false;
+
     formatCurrency(
         value: unknown
     ): string {

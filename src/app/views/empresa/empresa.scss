@@ -22,7 +22,7 @@
 }
 
 .company-info__item span {
-    color: var(--color-gray-600);
+    color: var(--color-gray-500);
 }
 
 .company-info__item strong {
@@ -60,7 +60,7 @@
 }
 
 .brand-color span {
-    color: var(--color-gray-600);
+    color: var(--color-gray-500);
     font-size: 0.875rem;
 }
 
@@ -104,7 +104,7 @@
 }
 
 .status-item span {
-    color: var(--color-gray-600);
+    color: var(--color-gray-500);
     font-size: 0.875rem;
 }
 
@@ -124,5 +124,4 @@
     .brand-logo {
         display: flex;
     }
-    
 }

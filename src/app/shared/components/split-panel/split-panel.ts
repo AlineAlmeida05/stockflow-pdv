@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, HostBinding, Input } from '@angular/core';
 
 @Component({
     selector: 'app-split-panel',
@@ -10,5 +10,15 @@ export class SplitPanel {
 
     @Input()
     reverse = false;
+
+    @Input()
+    showRight = true;
+
+    @HostBinding('class.with-right')
+    get withRight(): boolean {
+
+        return this.showRight;
+
+    }
 
 }

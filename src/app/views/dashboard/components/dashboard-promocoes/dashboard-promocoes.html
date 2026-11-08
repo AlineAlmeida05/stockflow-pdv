@@ -7,7 +7,7 @@
             <div class="executive-summary">
 
                 <div
-                    class="summary-item"
+                    class="summary-item summary-item--info"
                     [class.summary-item--active]="resumoPromocoesSelecionado === 'promocoesAtivas'"
                     (click)="selecionarResumo('promocoesAtivas')">
 
@@ -22,7 +22,7 @@
                 </div>
 
                 <div
-                    class="summary-item"
+                    class="summary-item summary-item--success"
                     [class.summary-item--active]="resumoPromocoesSelecionado === 'vendasPromocionais'"
                     (click)="selecionarResumo('vendasPromocionais')">
 
@@ -37,7 +37,7 @@
                 </div>
 
                 <div
-                    class="summary-item"
+                    class="summary-item summary-item--success"
                     [class.summary-item--active]="resumoPromocoesSelecionado ==='faturamentoPromocional'"
                     (click)="selecionarResumo('faturamentoPromocional')">
 
@@ -52,7 +52,7 @@
                 </div>
 
                 <div
-                    class="summary-item"
+                    class="summary-item summary-item--warning"
                     [class.summary-item--active]="resumoPromocoesSelecionado === 'promocoesEficientes'"
                     (click)="selecionarResumo('promocoesEficientes')">
 
@@ -87,91 +87,87 @@
 
             </h3>
 
-            <ul>
+            @if (
+            promocoesAtivasDetalhes.length === 0
+            ) {
 
-                @if (
-                promocoesAtivasDetalhes.length === 0
-                ) {
+            <app-empty-state
+                icon="🎯"
+                title="Nenhuma promoção ativa"
+                message="Não existem promoções ativas no momento.">
 
-                <app-empty-state
-                    icon="🎯"
-                    title="Nenhuma promoção ativa"
-                    message="Não existem promoções ativas no momento.">
+            </app-empty-state>
 
-                </app-empty-state>
+            } @else {
 
-                } @else {
+            <div class="table-container">
 
-                <div class="dashboard-table-container">
+                <table class="table">
 
-                    <table class="dashboard-table">
+                    <thead>
 
-                        <thead>
+                        <tr>
 
-                            <tr>
+                            <th>
 
-                                <th>
+                                Produto
 
-                                    Produto
+                            </th>
 
-                                </th>
+                            <th>
 
-                                <th>
+                                Estoque Atual
 
-                                    Estoque Atual
+                            </th>
 
-                                </th>
+                            <th>
 
-                                <th>
+                                Estoque Mínimo
 
-                                    Estoque Mínimo
+                            </th>
 
-                                </th>
+                        </tr>
 
-                            </tr>
+                    </thead>
 
-                        </thead>
+                    <tbody>
 
-                        <tbody>
+                        @for (
+                        promocao of promocoesAtivasDetalhes;
+                        track promocao.nome
+                        ) {
 
-                            @for (
-                            promocao of promocoesAtivasDetalhes;
-                            track promocao.nome
-                            ) {
+                        <tr>
 
-                            <tr>
+                            <td class="dashboard-table__value">
 
-                                <td class="dashboard-table__value">
+                                {{ promocao.nome }}
 
-                                    {{ promocao.nome }}
+                            </td>
 
-                                </td>
+                            <td class="dashboard-table__value">
 
-                                <td class="dashboard-table__value">
+                                {{ promocao.estoqueAtual }}
 
-                                    {{ promocao.estoqueAtual }}
+                            </td>
 
-                                </td>
+                            <td class="dashboard-table__value">
 
-                                <td class="dashboard-table__value">
+                                {{ promocao.estoqueMinimo }}
 
-                                    {{ promocao.estoqueMinimo }}
+                            </td>
 
-                                </td>
+                        </tr>
 
-                            </tr>
+                        }
 
-                            }
+                    </tbody>
 
-                        </tbody>
+                </table>
 
-                    </table>
+            </div>
 
-                </div>
-
-                }
-
-            </ul>
+            }
 
             }
 
@@ -198,9 +194,9 @@
 
             } @else {
 
-            <div class="dashboard-table-container">
+            <div class="table-container">
 
-                <table class="dashboard-table">
+                <table class="table">
 
                     <thead>
 
@@ -267,19 +263,21 @@
 
             </h3>
 
-            <div class="dashboard-resumo-financeiro">
+            <div class="card">
 
-                <strong>
+                <div class="card-body">
 
-                    {{faturamentoPromocional| currency:'BRL'}}
+                    <strong>
 
-                </strong>
+                        {{ faturamentoPromocional | currency:'BRL' }}
 
-                <p>
+                    </strong>
 
-                    Valor total obtido através de vendas promocionais.
+                    <p>
+                        Valor total obtido através de vendas promocionais.
+                    </p>
 
-                </p>
+                </div>
 
             </div>
 
@@ -306,9 +304,9 @@
 
             } @else {
 
-            <div class="dashboard-table-container">
+            <div class="table-container">
 
-                <table class="dashboard-table">
+                <table class="table">
 
                     <thead>
 

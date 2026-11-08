@@ -201,7 +201,11 @@
 
                     }@else {
 
-                    @if (column.field === 'nome') {
+                    @if (
+                    column.field === 'nome'
+                    &&
+                    showNameAsLink
+                    ) {
 
                     <button
                         type="button"

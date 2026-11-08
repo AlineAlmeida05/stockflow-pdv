@@ -8,7 +8,7 @@
             <div class="executive-summary">
 
                 <div
-                    class="summary-item"
+                    class="summary-item summary-item--produtos"
                     [class.summary-item--active]="resumoProdutosSelecionado ==='todos'"
                     (click)="selecionarResumo('todos')">
 
@@ -22,7 +22,7 @@
                 </div>
 
                 <div
-                    class="summary-item"
+                    class="summary-item summary-item--danger"
                     [class.summary-item--active]="resumoProdutosSelecionado ==='semEstoque' "
                     (click)="selecionarResumo('semEstoque')">
 
@@ -37,7 +37,7 @@
                 </div>
 
                 <div
-                    class="summary-item"
+                    class="summary-item summary-item--warning"
                     [class.summary-item--active]="resumoProdutosSelecionado ==='estoqueBaixo' "
                     (click)="selecionarResumo('estoqueBaixo')">
 
@@ -55,7 +55,7 @@
                 ){
 
                 <div
-                    class="summary-item"
+                    class="summary-item summary-item--success"
                     [class.summary-item--active]="resumoProdutosSelecionado ==='maisVendido' "
                     (click)="selecionarResumo('maisVendido')">
 
@@ -63,9 +63,16 @@
 
                     <strong>
 
-                        {{ topProdutosVendidos[0]?.nome }}
+                        {{ topProdutosVendidos[0]?.quantidade }}
 
                     </strong>
+
+                    <span>
+
+                        {{ topProdutosVendidos[0]?.nome }}
+
+                    </span>
+
                 </div>
 
                 }
@@ -117,9 +124,9 @@
 
             } @else {
 
-            <div class="dashboard-table-container">
+            <div class="table-container">
 
-                <table class="dashboard-table">
+                <table class="table">
 
                     <thead>
 
@@ -156,13 +163,13 @@
 
                         <tr>
 
-                            <td class="dashboard-table__value-success">
+                            <td>
 
                                 {{ produto.nome }}
 
                             </td>
 
-                            <td class="dashboard-table__value">
+                            <td>
 
                                 {{ produto.estoqueAtual }}
 
@@ -209,9 +216,9 @@
 
             } @else {
 
-            <div class="dashboard-table-container">
+            <div class="table-container">
 
-                <table class="dashboard-table">
+                <table class="table">
 
                     <thead>
 
@@ -282,9 +289,9 @@
 
             } @else {
 
-            <div class="dashboard-table-container">
+            <div class="table-container">
 
-                <table class="dashboard-table">
+                <table class="table">
 
                     <thead>
 
@@ -377,9 +384,9 @@
 
             } @else {
 
-            <div class="dashboard-table-container">
+            <div class="table-container">
 
-                <table class="dashboard-table">
+                <table class="table">
 
                     <thead>
 

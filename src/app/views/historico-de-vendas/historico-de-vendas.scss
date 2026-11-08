@@ -31,7 +31,7 @@
 }
 
 .status-venda span {
-  color: var(--color-gray-600);
+  color: var(--color-gray-500);
   font-size: 0.875rem;
 }
 
@@ -52,7 +52,7 @@ app-expandable-card {
 
 .total-venda-card span {
   font-size: 0.9rem;
-  color: var(--color-gray-600);
+  color: var(--color-gray-500);
 }
 
 .total-venda-card strong {
@@ -68,7 +68,7 @@ app-expandable-card {
 
 .forma-pagamento span {
   display: block;
-  color: var(--color-gray-600);
+  color: var(--color-gray-500);
   margin-bottom: 4px;
 }
 
@@ -260,7 +260,7 @@ app-expandable-card {
 
 .cliente-venda span {
   display: block;
-  color: var(--color-gray-600);
+  color: var(--color-gray-500);
   margin-bottom: 4px;
 }
 
@@ -271,7 +271,7 @@ app-expandable-card {
 
 .venda-card__cliente {
   font-size: 0.875rem;
-  color: var(--color-gray-600);
+  color: var(--color-gray-500);
 }
 
 .vendedor-venda {
@@ -280,7 +280,7 @@ app-expandable-card {
 
 .vendedor-venda span {
   display: block;
-  color: var(--color-gray-600);
+  color: var(--color-gray-500);
   margin-bottom: 4px;
 }
 
@@ -339,7 +339,7 @@ app-expandable-card {
 
 .venda-card__itens {
   font-size: 0.9rem;
-  color: var(--color-gray-600);
+  color: var(--color-gray-500);
 }
 
 .venda-card__pagamento {
@@ -408,11 +408,9 @@ app-expandable-card {
   background: color-mix(in srgb, var(--color-danger) 8%, white);
 }
 
-.venda-card--cancelada
-.venda-card__valor {
-    color: var(--color-danger);
+.venda-card--cancelada .venda-card__valor {
+  color: var(--color-danger);
 }
-
 
 @media (max-width: 768px) {
   .filtros {
