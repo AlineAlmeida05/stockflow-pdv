@@ -1,8 +1,14 @@
 <div class="field">
 
+    @if (showLabel) {
+
     <label [for]="inputId">
+
         Produto
+
     </label>
+
+    }
 
     <input
         [id]="inputId"

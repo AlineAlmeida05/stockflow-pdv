@@ -6,150 +6,255 @@
 
     </app-page-title>
 
-    <app-split-panel [reverse]="true">
+    <app-split-panel
+        [reverse]="true"
+        [showRight]="mostrarPagamento">
 
         <div left>
 
             <div class="venda-content__carrinho">
 
                 <h2>
+
                     Carrinho
+
                 </h2>
 
                 <div class="carrinho-editor">
 
-                    <table>
+                    <div class="carrinho-scroll">
 
-                        <thead>
+                        <table>
 
-                            <tr>
+                            <thead>
 
-                                <th>Produto</th>
+                                <tr>
 
-                                <th>Qtde</th>
+                                    <th>Produto</th>
 
-                                <th>Unitário</th>
+                                    <th>Qtde</th>
 
-                                <th>Subtotal</th>
+                                    <th>Unitário</th>
 
-                                <th></th>
+                                    <th>Subtotal</th>
 
-                            </tr>
+                                    <th></th>
 
-                        </thead>
+                                </tr>
 
-                        <tbody>
+                            </thead>
 
-                            <tr class="linha-nova-venda">
+                            <tbody>
 
-                                <td>
+                                <tr class="linha-nova-venda">
 
-                                    <app-smart-product-search
-                                        #produtoSearch
-                                        [produtos]="produtos"
-                                        (produtoSelecionado)="selecionarProduto($event)">
-                                    </app-smart-product-search>
+                                    <td>
 
-                                </td>
+                                        <div class="campo">
 
-                                <td>
+                                            <app-smart-product-search
+                                                #produtoSearch
+                                                [showLabel]="false"
+                                                [produtos]="produtos"
+                                                (produtoSelecionado)="selecionarProduto($event)">
 
-                                    <input
-                                        #quantidadeInput
-                                        type="number"
-                                        min="1"
-                                        [(ngModel)]="quantidade"
-                                        (keyup.enter)="adicionarAoCarrinho()">
+                                            </app-smart-product-search>
 
-                                </td>
+                                        </div>
 
-                                <td>
+                                    </td>
 
-                                    {{
-                                    precoLinhaAtual > 0
-                                    ? (precoLinhaAtual | currency:'BRL')
-                                    : '-'
-                                    }}
+                                    <td>
 
-                                </td>
+                                        <input
+                                            #quantidadeInput
+                                            type="number"
+                                            min="1"
+                                            [(ngModel)]="quantidade"
+                                            (keyup.enter)="adicionarAoCarrinho()">
 
-                                <td>
+                                    </td>
 
-                                    {{
-                                    subtotalLinhaAtual > 0
-                                    ? (subtotalLinhaAtual | currency:'BRL')
-                                    : '-'
-                                    }}
+                                    <td>
 
-                                </td>
+                                        {{ precoLinhaAtual > 0
+                                        ?(precoLinhaAtual| currency:'BRL') : '-'
+                                        }}
 
-                                <td>
+                                    </td>
 
-                                    <button
-                                        (click)="adicionarAoCarrinho()">
+                                    <td>
 
-                                        +
+                                        {{ subtotalLinhaAtual > 0
+                                        ?(subtotalLinhaAtual |
+                                        currency:'BRL'):'-' }}
 
-                                    </button>
+                                    </td>
 
-                                </td>
+                                    <td>
 
-                            </tr>
+                                        <button
+                                            class="btn-qtd"
+                                            type="button"
+                                            (click)="adicionarAoCarrinho()">
 
-                            @for (item of carrinho; track item.produto.id) {
+                                            +
 
-                            <tr>
+                                        </button>
 
-                                <td>
-                                    {{ item.produto.nome }}
-                                </td>
+                                    </td>
 
-                                <td>
+                                </tr>
 
-                                    <button
-                                        type="button"
-                                        (click)="decrementarQuantidadeCarrinho(item)">
-                                        -
-                                    </button>
+                                @for (item of carrinho; track item.produto.id) {
 
-                                    {{ item.quantidade }}
+                                <tr>
 
-                                    <button
-                                        type="button"
-                                        (click)="incrementarQuantidadeCarrinho(item)">
-                                        +
-                                    </button>
+                                    <td>
 
-                                </td>
+                                        {{ item.produto.nome }}
 
-                                <td>
-                                    {{ item.precoUnitario | currency:'BRL'
-                                    }}
-                                </td>
+                                    </td>
 
-                                <td>
-                                    {{ item.subtotal | currency:'BRL' }}
-                                </td>
+                                    <td>
 
-                                <td>
+                                        <div class="controle-quantidade">
 
-                                    <button
-                                        type="button"
-                                        (click)="removerItem(item.produto.id)">
+                                            <button
+                                                type="button"
+                                                class="btn-qtd"
+                                                (click)="decrementarQuantidadeCarrinho(item)">
 
-                                        🗑️
+                                                -
 
-                                    </button>
+                                            </button>
 
-                                </td>
+                                            <span class="quantidade-carrinho">
 
-                            </tr>
+                                                {{ item.quantidade }}
 
-                            }
+                                            </span>
 
-                        </tbody>
+                                            <button
+                                                type="button"
+                                                class="btn-qtd"
+                                                (click)="incrementarQuantidadeCarrinho(item)">
 
-                    </table>
+                                                +
+
+                                            </button>
+
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+
+                                        {{ item.precoUnitario | currency:'BRL'
+                                        }}
+
+                                    </td>
+
+                                    <td>
+
+                                        {{ item.subtotal | currency:'BRL' }}
+
+                                    </td>
+
+                                    <td>
+
+                                        <button
+                                            type="button"
+                                            class="btn-remover"
+                                            (click)="removerItem(item.produto.id)">
+
+                                            🗑️
+
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+
+                                }
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="resumo-venda-horizontal">
+
+                <div class="resumo-card">
+
+                    <span>
+
+                        Itens
+
+                    </span>
+
+                    <strong>
+
+                        {{ carrinho.length }}
+
+                    </strong>
+
+                </div>
+
+                <div class="field resumo-card">
+
+                    <span>Quantidade</span>
+
+                    <strong>
+
+                        {{ quantidadeItens }}
+
+                    </strong>
+
+                </div>
+
+                <div class="resumo-card">
+
+                    <span>Economia</span>
+
+                    <strong>
+
+                        {{ totalDescontos | currency:'BRL' }}
+
+                    </strong>
+
+                </div>
+
+                <div class="resumo-card resumo-card--total">
+
+                    <span>Total</span>
+
+                    <strong>
+
+                        {{ total | currency:'BRL' }}
+
+                    </strong>
+
+                </div>
+
+                <div class="resumo-card resumo-card--action">
+
+                    @if (!mostrarPagamento) {
+
+                    <button
+                        class="btn btn-primary"
+                        (click)="abrirPagamento()">
+
+                        Pagamento (F4)
+
+                    </button>
+
+                    }
 
                 </div>
 
@@ -163,64 +268,19 @@
 
                 <div class="card pagamento-card">
 
-                    <div class="resumo-venda">
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        (click)="mostrarPagamento = false">
 
-                        <h4>
-                            🧾 Resumo da Venda
-                        </h4>
+                        Voltar ao Carrinho
 
-                        <div class="resumo-item">
-
-                            <span>Itens</span>
-
-                            <strong>
-
-                                {{ carrinho.length }}
-
-                            </strong>
-
-                        </div>
-
-                        <div class="resumo-item">
-
-                            <span>Quantidade</span>
-
-                            <strong>
-
-                                {{ quantidadeItens }}
-
-                            </strong>
-
-                        </div>
-
-                        <div class="resumo-item">
-
-                            <span>Economia</span>
-
-                            <strong>
-
-                                {{ totalDescontos | currency:'BRL' }}
-
-                            </strong>
-
-                        </div>
-
-                        <div class="resumo-total">
-
-                            <span>Total</span>
-
-                            <strong>
-
-                                {{ total | currency:'BRL' }}
-
-                            </strong>
-
-                        </div>
-
-                    </div>
+                    </button>
 
                     <h3>
+
                         Pagamento
+
                     </h3>
 
                     <div class="field">
@@ -234,6 +294,7 @@
                             <option value>
 
                                 Selecione...
+
                             </option>
 
                             <option value="dinheiro">
@@ -275,8 +336,8 @@
                             <label>Cliente</label>
 
                             <select
-                                [(ngModel)]="clienteSelecionadoId"
-                                (change)="carregarResumoCliente()">
+                                [ngModel]="clienteSelecionadoId"
+                                (ngModelChange)="selecionarCliente($event)">
 
                                 <option value>
 
@@ -299,79 +360,139 @@
 
                             @if (resumoCliente) {
 
-                            <div class="cliente-credito-info">
+                            <div class="cliente-status-venda">
 
-                                @if (creditoInsuficiente) {
+                                @if (clienteInativo) {
 
-                                <small class="credito-insuficiente">
+                                <div class="status-bloqueado">
 
-                                    Crédito insuficiente para esta venda.
+                                    <p class="alerta">⛔ Cliente inativo.</p>
 
-                                </small>
+                                    <div>
+
+                                        <strong>
+
+                                            Reative o cliente antes de realizar
+                                            vendas fiadas.
+
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                                } @else if (!clienteBloqueadoFiado &&
+                                !creditoInsuficiente) {
+
+                                <div class="status-aprovado">
+
+                                    <p class="alerta"> ✅ Cliente apto para
+                                        compras fiado. </p>
+
+                                    <div>
+
+                                        Crédito disponível:
+
+                                        <strong>
+
+                                            {{ resumoCliente.creditoDisponivel |
+                                            currency:'BRL' }}
+
+                                        </strong>
+
+                                    </div>
+
+                                </div>
 
                                 }
 
-                                <div>
-                                    <span>Limite Crédito</span>
+                                @if (creditoInsuficiente) {
 
-                                    <strong>
-                                        {{resumoCliente.limiteCredito|
-                                        currency:'BRL'}}
-                                    </strong>
-                                </div>
+                                <div class="status-alerta">
 
-                                <div>
-                                    <span>Saldo Devedor</span>
+                                    <p class="alerta">⚠️ Crédito
+                                        insuficiente.</p>
 
-                                    <strong class="saldo-devedor">
-                                        {{resumoCliente.saldoDevedor|
-                                        currency:'BRL'}}
-                                    </strong>
-                                </div>
+                                    <div>
 
-                                <div>
-                                    <span>Crédito Disponível</span>
+                                        Disponível:
 
-                                    <strong class="credito-disponivel">
-                                        {{resumoCliente.creditoDisponivel|
-                                        currency:'BRL'}}
-                                    </strong>
-                                </div>
+                                        <strong>
 
-                                <div>
+                                            {{ resumoCliente.creditoDisponivel |
+                                            currency:'BRL' }}
 
-                                    <span>Status</span>
+                                        </strong>
 
-                                    <strong
-                                        [class.status-em-dia]="
-                                        resumoCliente.status === 'Em Dia'"
-                                        [class.status-devedor]="
-                                        resumoCliente.status === 'Devedor'"
-                                        [class.status-inadimplente]="
-                                        resumoCliente.status === 'Inadimplente'"
-                                        [class.status-limite-excedido]="
-                                        resumoCliente.status === 'Limite Excedido'">
+                                    </div>
 
-                                        {{ resumoCliente.status }}
+                                    <div>
 
-                                    </strong>
+                                        Valor da venda:
+
+                                        <strong>
+
+                                            {{ total | currency:'BRL' }}
+
+                                        </strong>
+
+                                    </div>
 
                                 </div>
+
+                                @if (
+                                creditoInsuficiente
+                                // &&
+                                // podeAlterarLimite
+                                ) {
+
+                                <button
+                                    class="btn btn-warning"
+                                    type="button"
+                                    (click)="abrirDialogAumentoLimite()">
+
+                                    Aumentar Limite
+
+                                </button>
+
+                                }
+
+                                }
+
+                                @if (
+                                resumoCliente.status === 'Inadimplente'
+                                || resumoCliente.status === 'Limite Excedido'
+                                ) {
+
+                                <div class="status-bloqueado">
+
+                                    <p class="alerta">⛔ Cliente bloqueado para
+                                        compras fiado.</p>
+
+                                    <div>
+
+                                        Motivo:
+
+                                        <strong>
+
+                                            {{ resumoCliente.status }}
+
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                                }
 
                             </div>
 
                             }
 
-                            @if (clienteBloqueadoFiado) {
-
-                            <small class="cliente-bloqueado">
-                                ⚠️ Cliente bloqueado para compras fiado.
-                            </small>
-
-                            }
-
                         </div>
+
                         }
+
                     </div>
 
                     @if (formaPagamento === 'dinheiro') {
@@ -383,6 +504,7 @@
                             placeholder="0,00"
                             [(value)]="valorRecebido"
                             (keyup.enter)="finalizarVenda()">
+
                         </app-currency-input>
 
                     </div>
@@ -397,15 +519,21 @@
                         [class.troco-positivo]="troco > 0">
 
                         <span>
+
                             Troco
+
                         </span>
 
                         <strong>
+
                             {{ troco | currency:'BRL' }}
+
                         </strong>
 
                     </div>
+
                     }
+
                     }
 
                     <button
@@ -416,43 +544,163 @@
                         carrinho.length === 0 ||
                         finalizandoVenda ||
                         creditoInsuficiente ||
-                        clienteBloqueadoFiado
-                    ">
-                        {{
-                        finalizandoVenda
-                        ? 'Finalizando...'
-                        : carrinho.length === 0
-                        ? 'Carrinho Vazio'
-                        : 'Finalizar Venda (F2)'
-                        }}
+                        clienteBloqueadoFiado">
+
+                        {{ finalizandoVenda? 'Finalizando...'
+                        : carrinho.length === 0? 'Carrinho Vazio':
+                        'Finalizar Venda (F2)' }}
+
                     </button>
+
                 </div>
+
             </div>
+
         </div>
 
     </app-split-panel>
 
     <div class="atalhos-venda">
 
+        <button
+            class="btn-link"
+            type="button"
+            (click)="abrirHistorico()">
+
+            📜 Histórico de Vendas
+
+        </button>
+
         <span>
+
             <kbd>F3</kbd>
+
             Produto
+
         </span>
 
         <span>
+
             <kbd>F4</kbd>
+
             Pagamento
+
         </span>
 
         <span>
+
             <kbd>ESC</kbd>
+
             Limpar
+
         </span>
 
         <span>
+
             <kbd>F2</kbd>
+
             Finalizar
+
         </span>
 
     </div>
+
+    @if (mostrarDialogLimite) {
+
+    <div class="dialog-overlay">
+
+        <div class="dialog-limite">
+
+            <h3>
+
+                Aumentar Limite de Crédito
+
+            </h3>
+
+            <div class="field">
+
+                <label>
+
+                    Limite Atual
+
+                </label>
+
+                <input
+                    type="text"
+                    [value]="
+                    resumoCliente?.limiteCredito
+                    | currency:'BRL'" readonly>
+
+            </div>
+
+            <div class="field">
+
+                <label>
+
+                    Novo Limite
+
+                </label>
+
+                <input
+                    type="number"
+                    [(ngModel)]="novoLimite">
+
+            </div>
+
+            <div class="info-aumento">
+
+                Aumento:
+
+                <strong>
+
+                    + {{aumentoLimite | currency:'BRL' }}
+
+                </strong>
+
+            </div>
+
+            <div class="field">
+
+                <label>
+
+                    Motivo
+
+                </label>
+
+                <textarea
+                    rows="4"
+                    [(ngModel)]="motivoAumentoLimite">
+
+            </textarea>
+
+            </div>
+
+            <div class="dialog-acoes">
+
+                <button
+                    class="btn btn-primary"
+                    type="button"
+                    (click)="confirmarAumentoLimite()">
+
+                    Atualizar Limite
+
+                </button>
+
+                <button
+                    class="btn btn-secondary"
+                    type="button"
+                    (click)="mostrarDialogLimite = false">
+
+                    Cancelar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    }
+
 </app-main-layout>
