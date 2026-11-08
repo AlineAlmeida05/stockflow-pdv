@@ -1,6 +1,7 @@
 <div
     class="split-panel"
-    [class.reverse]="reverse">
+    [class.reverse]="reverse"
+    [class.has-right]="showRight">
 
     <div class="left">
 
@@ -10,6 +11,8 @@
 
     </div>
 
+    @if (showRight) {
+
     <div class="right">
 
         <ng-content select="[right]">
@@ -17,5 +20,7 @@
         </ng-content>
 
     </div>
+
+    }
 
 </div>

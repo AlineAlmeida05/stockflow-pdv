@@ -205,7 +205,7 @@
 }
 
 .saldo-card__header span {
-    color: var(--color-gray-600);
+    color: var(--color-gray-500);
 }
 
 .saldo-card__meta {
@@ -252,8 +252,6 @@
     z-index: 10;
     background: white;
 }
-
-
 
 @media (max-width: 768px) {
     app-search-input {
@@ -305,6 +303,4 @@
     .saldo-card__header strong {
         font-size: 1.75rem;
     }
-
-    
 }

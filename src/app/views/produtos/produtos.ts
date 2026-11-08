@@ -522,6 +522,16 @@ export class Produtos implements OnInit {
 
   habilitarEdicao(): void {
 
+    if (!this.produtoAtivo) {
+
+      this.alertService.warning(
+        'Produtos inativos não podem ser editados. Reative o produto para continuar.'
+      );
+
+      return;
+
+    }
+
     this.mostrarFormulario = true;
 
     this.modoVisualizacao = false;
@@ -658,6 +668,13 @@ export class Produtos implements OnInit {
     console.error(erro);
 
     this.alertService.error(mensagem);
+
+  }
+
+  get mostrarPainelLateral(): boolean {
+
+    return this.mostrarFormulario
+      || this.modoVisualizacao;
 
   }
 }
