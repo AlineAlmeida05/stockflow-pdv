@@ -18,7 +18,6 @@ import { ConfirmDialogService } from '../../core/services/confirm-dialog.service
 import { ImpersonacaoService } from '../../core/services/impersonacao.service';
 import { AuthStateService } from '../../core/services/auth-state.service';
 import { STORAGE_KEYS } from '../../core/constants/storage.constants';
-
 @Component({
     selector: 'app-tenants',
     standalone: true,
@@ -70,8 +69,6 @@ export class Tenants implements OnInit {
 
     novoUf = '';
 
-    novoMarketingIaHabilitado = false;
-
     novoDeliveryHabilitado = false;
 
     salvando = false;
@@ -87,6 +84,8 @@ export class Tenants implements OnInit {
     textoBusca = '';
 
     novoAtivo = true;
+
+    mostrarPainel = false;
 
     abaSelecionada:
         'informacoes'
@@ -147,7 +146,6 @@ export class Tenants implements OnInit {
         this.novoTelefone = '';
         this.novoEndereco = '';
         this.novoUf = '';
-        this.novoMarketingIaHabilitado = false;
         this.novoDeliveryHabilitado = false;
     }
 
@@ -171,7 +169,6 @@ export class Tenants implements OnInit {
             faviconUrl: this.novoFaviconUrl,
             corPrimaria: this.novaCorPrimaria,
             corSecundaria: this.novaCorSecundaria,
-            marketingIaHabilitado: this.novoMarketingIaHabilitado,
             deliveryHabilitado: this.novoDeliveryHabilitado
 
         };
@@ -198,7 +195,6 @@ export class Tenants implements OnInit {
         this.novoTelefone = tenant.telefone ?? '';
         this.novoEndereco = tenant.endereco ?? '';
         this.novoUf = tenant.uf ?? '';
-        this.novoMarketingIaHabilitado = tenant.marketingIaHabilitado ?? false;
         this.novoDeliveryHabilitado = tenant.deliveryHabilitado ?? false;
 
     }
@@ -388,17 +384,37 @@ export class Tenants implements OnInit {
 
     cancelarEdicao(): void {
 
+        this.mostrarPainel = false;
+
         this.mostrarFormulario = false;
+
+        this.modoVisualizacao = false;
+
         this.modoEdicao = false;
+
         this.tenantEditando = null;
+
+        this.abaSelecionada = 'informacoes';
+
         this.limparFormulario();
+
     }
+
 
     novoTenant(): void {
 
+        this.mostrarPainel = true;
+
         this.mostrarFormulario = true;
+
+        this.modoVisualizacao = false;
+
         this.modoEdicao = false;
+
         this.tenantEditando = null;
+
+        this.abaSelecionada = 'informacoes';
+
         this.limparFormulario();
 
     }
@@ -631,6 +647,8 @@ export class Tenants implements OnInit {
                     );
 
                     this.mostrarFormulario = true;
+
+                    this.mostrarPainel = true;
 
                     this.modoVisualizacao = true;
 

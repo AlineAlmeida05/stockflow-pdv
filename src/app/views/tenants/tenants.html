@@ -3,6 +3,7 @@
     <app-page-title
         title="Tenants"
         subtitle="Consulte, edite e gerencie tenants cadastrados.">
+
     </app-page-title>
 
     <app-toolbar>
@@ -19,13 +20,33 @@
         <app-search-input
             placeholder="Buscar tenant..."
             [(value)]="textoBusca">
+
         </app-search-input>
 
     </app-toolbar>
 
-    <app-split-panel>
+    <app-split-panel
+        [showRight]="mostrarPainel">
 
         <div left>
+
+            <div class="card">
+
+                <app-data-table
+                    [columns]="colunasTenants"
+                    [data]="tenantsFiltrados"
+                    [showActions]="false"
+                    [clickableRows]="true"
+                    (toggle)="alternarStatusTenant($any($event))"
+                    (rowClick)="visualizarTenant($any($event))">
+
+                </app-data-table>
+
+            </div>
+
+        </div>
+
+        <div right>
 
             @if (!mostrarFormulario) {
 
@@ -115,6 +136,34 @@
 
                 </div>
 
+                <div class="tenant-item">
+
+                    <span>
+                        Slug
+                    </span>
+
+                    <strong>
+
+                        {{ tenantEditando?.slug }}
+
+                    </strong>
+
+                </div>
+
+                <div class="tenant-item">
+
+                    <span>
+                        Código
+                    </span>
+
+                    <strong>
+
+                        {{ tenantEditando?.codigoTenant }}
+
+                    </strong>
+
+                </div>
+
             </div>
 
             <div class="tenant-section">
@@ -180,12 +229,17 @@
                 </div>
 
                 <div class="tenant-item">
+
                     <span>Cidade / UF</span>
+
                     <strong>
+
                         {{ tenantEditando?.cidade || '-' }}
                         /
                         {{ tenantEditando?.uf || '-' }}
+
                     </strong>
+
                 </div>
 
             </div>
@@ -197,54 +251,60 @@
             <h4>Branding</h4>
 
             <div class="tenant-item">
+
                 <span>Logo</span>
+
                 <strong>
+
                     {{ tenantEditando?.logoUrl || '-' }}
+
                 </strong>
+
             </div>
 
             <div class="tenant-item">
+
                 <span>Cor Primária</span>
+
                 <strong>
+
                     {{ tenantEditando?.corPrimaria || '-' }}
+
                 </strong>
+
             </div>
 
             <div class="tenant-item">
+
                 <span>Cor Secundária</span>
+
                 <strong>
+
                     {{ tenantEditando?.corSecundaria || '-' }}
+
                 </strong>
+
             </div>
 
             <div class="tenant-section">
 
                 <h4>
+
                     Recursos
+
                 </h4>
 
                 <div class="tenant-item">
-                    <span>Marketing IA</span>
 
-                    <strong>
-                        {{
-                        tenantEditando?.marketingIaHabilitado
-                        ? '✅ Habilitado'
-                        : '❌ Desabilitado'
-                        }}
-                    </strong>
-                </div>
-
-                <div class="tenant-item">
                     <span>Delivery</span>
 
                     <strong>
-                        {{
-                        tenantEditando?.deliveryHabilitado
-                        ? '✅ Habilitado'
-                        : '❌ Desabilitado'
-                        }}
+
+                        {{ tenantEditando?.deliveryHabilitado ? '✅ Habilitado' :
+                        '❌ Desabilitado' }}
+
                     </strong>
+
                 </div>
 
             </div>
@@ -252,14 +312,13 @@
             <h4>Status</h4>
 
             <div class="tenant-item">
+
                 <span>Status</span>
 
                 <strong>
-                    {{
-                    tenantEditando?.ativo
-                    ? '✅ Ativo'
-                    : '❌ Inativo'
-                    }}
+
+                    {{ tenantEditando?.ativo ? '✅ Ativo': '❌ Inativo' }}
+
                 </strong>
             </div>
 
@@ -293,8 +352,7 @@
 
             </div>
 
-            }
-            @else {
+            } @else {
 
             <div class="tenant-tabs">
 
@@ -323,7 +381,9 @@
             <div class="field compact">
 
                 <label>
+
                     Nome
+
                 </label>
 
                 <input
@@ -332,6 +392,7 @@
                     [(ngModel)]="novoNome"
                     [readonly]="modoVisualizacao"
                     (input)="gerarSlug(); gerarCodigoTenant()">
+
             </div>
 
             <h4>Dados Empresariais</h4>
@@ -339,31 +400,39 @@
             <div class="field compact">
 
                 <label>
+
                     Razão Social
+
                 </label>
 
                 <input
                     type="text"
                     [readonly]="modoVisualizacao"
                     [(ngModel)]="novaRazaoSocial">
+
             </div>
 
             <div class="field compact">
 
                 <label>
+
                     CNPJ
+
                 </label>
 
                 <input
                     type="text"
                     [readonly]="modoVisualizacao"
                     [(ngModel)]="novoCnpj">
+
             </div>
 
             <div class="field compact">
 
                 <label>
+
                     Responsável
+
                 </label>
 
                 <input
@@ -371,12 +440,15 @@
                     placeholder="Responsável"
                     [readonly]="modoVisualizacao"
                     [(ngModel)]="novoResponsavel">
+
             </div>
 
             <div class="field compact">
 
                 <label>
+
                     Email
+
                 </label>
 
                 <input
@@ -384,24 +456,30 @@
                     [readonly]="modoVisualizacao"
                     placeholder="Email"
                     [(ngModel)]="novoEmail">
+
             </div>
 
             <div class="field compact">
 
                 <label>
+
                     Telefone
+
                 </label>
 
                 <input
                     type="text"
                     [readonly]="modoVisualizacao"
                     [(ngModel)]="novoTelefone">
+
             </div>
 
             <div class="field compact">
 
                 <label>
+
                     Cidade
+
                 </label>
 
                 <input
@@ -409,6 +487,7 @@
                     placeholder="Cidade"
                     [readonly]="modoVisualizacao"
                     [(ngModel)]="novaCidade">
+
             </div>
 
             <h4>Endereço</h4>
@@ -416,19 +495,24 @@
             <div class="field compact">
 
                 <label>
+
                     Endereço
+
                 </label>
 
                 <input
                     type="text"
                     [readonly]="modoVisualizacao"
                     [(ngModel)]="novoEndereco">
+
             </div>
 
             <div class="field compact">
 
                 <label>
+
                     UF
+
                 </label>
 
                 <input
@@ -436,6 +520,7 @@
                     maxlength="2"
                     [readonly]="modoVisualizacao"
                     [(ngModel)]="novoUf">
+
             </div>
 
             }
@@ -445,91 +530,62 @@
             <div class="field compact">
 
                 <label>
-                    Slug
-                </label>
 
-                <input
-                    type="text"
-                    placeholder="adega-fulano"
-                    [(ngModel)]="novoSlug"
-                    readonly>
-            </div>
-
-            <div class="field compact">
-
-                <label>
-                    Código do Tenant
-                </label>
-
-                <input
-                    type="text"
-                    placeholder="SIN"
-                    [(ngModel)]="novoCodigoTenant"
-                    readonly>
-            </div>
-
-            <div class="field compact">
-
-                <label>
                     Logo URL
+
                 </label>
 
                 <input
                     type="text"
                     [(ngModel)]="novoLogoUrl">
+
             </div>
 
             <div class="field compact">
 
                 <label>
+
                     Favicon URL
+
                 </label>
 
                 <input
                     type="text"
                     [(ngModel)]="novoFaviconUrl">
+
             </div>
 
             <div class="field compact">
 
                 <label>
+
                     Cor Primária
+
                 </label>
 
                 <input
                     type="text"
                     placeholder="#AAAAAA"
                     [(ngModel)]="novaCorPrimaria">
+
             </div>
 
             <div class="field compact">
 
                 <label>
+
                     Cor Secundária
+
                 </label>
 
                 <input
                     type="text"
                     placeholder="#000000"
                     [(ngModel)]="novaCorSecundaria">
+
             </div>
 
             <h4>Recursos</h4>
-
-            <div class="field compact">
-
-                <label>
-
-                    <input
-                        type="checkbox"
-                        [disabled]="modoVisualizacao"
-                        [(ngModel)]="novoMarketingIaHabilitado">
-
-                    Marketing IA
-
-                </label>
-
-            </div>
 
             <div class="field compact">
 
@@ -546,62 +602,43 @@
 
             </div>
 
-            <div class="field compact">
+            <div class="formulario-acoes">
 
-                <label>
-                    Status
-                </label>
+                <button
+                    class="btn btn-primary"
+                    type="button"
+                    [disabled]="salvando"
+                    (click)="
+            tenantEditando
+                ? atualizarTenant()
+                : salvarTenant()
+        ">
 
-                <select
-                    [(ngModel)]="novoAtivo">
-                    <option [ngValue]="true">
-                        Ativo
-                    </option>
+                    {{
+                    salvando
+                    ? 'Salvando...'
+                    : tenantEditando
+                    ? 'Salvar Alterações'
+                    : 'Cadastrar Tenant'
+                    }}
 
-                    <option [ngValue]="false">
-                        Inativo
-                    </option>
-                </select>
+                </button>
+
+                <button
+                    class="btn btn-secondary"
+                    type="button"
+                    (click)="cancelarEdicao()">
+
+                    Cancelar
+
+                </button>
+
             </div>
 
             }
 
             }
 
-            }
-
-        </div>
-
-        <div right>
-            <div class="secao-tenants">
-                <h2>
-                    Tenants Cadastrados
-                </h2>
-                <p>
-                    Consulte, edite e exclua tenants cadastrados.
-                </p>
-            </div>
-
-            @if (tenants.length === 0) {
-
-            <app-empty-state
-                icon="🏬"
-                title="Nenhum tenant cadastrado"
-                message="Cadastre o primeiro tenant para iniciar a utilização da plataforma.">
-            </app-empty-state>
-
-            } @else {
-
-            <div class="card">
-                <app-data-table
-                    [columns]="colunasTenants"
-                    [data]="tenantsFiltrados"
-                    [showActions]="false"
-                    [clickableRows]="true"
-                    (toggle)="alternarStatusTenant($any($event))"
-                    (rowClick)="visualizarTenant($any($event))">
-                </app-data-table>
-            </div>
             }
         </div>
 
