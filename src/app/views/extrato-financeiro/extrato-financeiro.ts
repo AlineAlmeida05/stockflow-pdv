@@ -10,6 +10,8 @@ import { SelectInput } from '../../shared/components/select-input/select-input';
 import { ExtratoFinanceiroService } from '../../core/services/extrato-financeiro.service';
 import { IndicadoresExtrato } from '../../core/models/indicadores-extrato.model';
 import { StatCard } from '../../shared/components/stat-card/stat-card';
+import { DataTable } from '../../shared/components/data-table/data-table';
+import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 @Component({
     selector: 'app-extrato-financeiro',
     standalone: true,
@@ -22,7 +24,9 @@ import { StatCard } from '../../shared/components/stat-card/stat-card';
         SearchInput,
         Toolbar,
         SelectInput,
-        StatCard
+        StatCard,
+        DataTable,
+        SplitPanel
     ],
     templateUrl: './extrato-financeiro.html',
     styleUrl: './extrato-financeiro.scss'
@@ -39,9 +43,15 @@ export class ExtratoFinanceiro
 
     indicadores?: IndicadoresExtrato;
 
-    paginaAtual = 1;
+    formaPagamentoSelecionada = 'todos';
 
-    itensPorPagina = '10';
+    periodoSelecionado = 'todos';
+
+    mostrarPainel = false;
+
+    movimentacaoSelecionada:
+        MovimentacaoFinanceira
+        | null = null;
 
     opcoesItensPorPagina = [
 
@@ -96,8 +106,6 @@ export class ExtratoFinanceiro
         | 'danger';
     }[] = [];
 
-    periodoSelecionado = 'todos';
-
     periodos = [
         {
             label: 'Todos',
@@ -114,6 +122,52 @@ export class ExtratoFinanceiro
         {
             label: '30 Dias',
             value: '30dias'
+        }
+    ];
+
+    colunasMovimentacoes = [
+        {
+            field: 'dataFormatada',
+            header: 'Data'
+        },
+        {
+            field: 'tipoDescricao',
+            header: 'Tipo'
+        },
+        {
+            field: 'cliente',
+            header: 'Cliente'
+        },
+        {
+            field: 'valorFormatado',
+            header: 'Valor'
+        }
+    ];
+
+    formasPagamento = [
+        {
+            label: 'Todas',
+            value: 'todos'
+        },
+        {
+            label: 'PIX',
+            value: 'PIX'
+        },
+        {
+            label: 'Dinheiro',
+            value: 'DINHEIRO'
+        },
+        {
+            label: 'Crédito',
+            value: 'CREDITO'
+        },
+        {
+            label: 'Débito',
+            value: 'DEBITO'
+        },
+        {
+            label: 'Fiado',
+            value: 'FIADO'
         }
     ];
 
@@ -205,9 +259,16 @@ export class ExtratoFinanceiro
                         .toLowerCase()
                         .trim();
 
-                const atendeBusca =
+                const atendeFormaPagamento =
 
-                    !busca
+                    this.formaPagamentoSelecionada === 'todos'
+
+                    ||
+
+                    movimentacao.formaPagamento ===
+                    this.formaPagamentoSelecionada;
+
+                const atendeBusca = !busca
 
                     ||
 
@@ -242,9 +303,7 @@ export class ExtratoFinanceiro
                         .includes(busca);
 
 
-                const atendeTipo =
-
-                    this.tipoMovimentacaoSelecionado === 'todos'
+                const atendeTipo = this.tipoMovimentacaoSelecionado === 'todos'
 
                     ||
 
@@ -289,108 +348,6 @@ export class ExtratoFinanceiro
                 return 'Movimentação';
 
         }
-
-    }
-
-    get movimentacoesPaginadas() {
-
-        const inicio =
-
-            (this.paginaAtual - 1)
-            * Number(this.itensPorPagina);
-
-        const fim =
-
-            inicio
-            + Number(this.itensPorPagina);
-
-        return this
-            .movimentacoesFiltradas
-            .slice(
-                inicio,
-                fim
-            );
-
-    }
-
-    get totalPaginas() {
-
-        return Math.max(
-
-            1,
-
-            Math.ceil(
-
-                this.movimentacoesFiltradas.length
-                /
-                Number(this.itensPorPagina)
-
-            )
-
-        );
-
-    }
-
-    proximaPagina(): void {
-
-        if (
-            this.paginaAtual <
-            this.totalPaginas
-        ) {
-
-            this.paginaAtual++;
-
-        }
-
-    }
-
-    paginaAnterior(): void {
-
-        if (
-            this.paginaAtual > 1
-        ) {
-
-            this.paginaAtual--;
-
-        }
-
-    }
-
-    reiniciarPaginacao(): void {
-
-        this.paginaAtual = 1;
-
-    }
-
-    get inicioPagina(): number {
-
-        return this.movimentacoesFiltradas.length === 0
-
-            ? 0
-
-            : (
-                (this.paginaAtual - 1)
-                * Number(this.itensPorPagina)
-            ) + 1;
-
-    }
-
-    get fimPagina(): number {
-
-        return Math.min(
-
-            this.paginaAtual
-            * Number(this.itensPorPagina),
-
-            this.movimentacoesFiltradas.length
-
-        );
-
-    }
-
-    alterarItensPorPagina(): void {
-
-        this.paginaAtual = 1;
 
     }
 
@@ -451,12 +408,6 @@ export class ExtratoFinanceiro
                 value:
                     clientesDevedores,
                 variant: 'danger'
-            },
-
-            {
-                title: 'Movimentações',
-                value: this.movimentacoes.length,
-                variant: 'info'
             }
 
         ];
@@ -530,6 +481,52 @@ export class ExtratoFinanceiro
         }
 
         return true;
+
+    }
+
+    get movimentacoesTabela(): unknown[] {
+
+        return this.movimentacoesFiltradas.map(
+            movimentacao => ({
+
+                ...movimentacao,
+
+                dataFormatada:
+                    new Date(
+                        movimentacao.data
+                    ).toLocaleString('pt-BR'),
+
+                cliente:
+                    movimentacao.clienteNome
+                    || 'Consumidor Final',
+
+                valorFormatado:
+                    movimentacao.valor
+                        .toLocaleString(
+                            'pt-BR',
+                            {
+                                style: 'currency',
+                                currency: 'BRL'
+                            }
+                        ),
+
+                tipoDescricao:
+                    this.obterTituloMovimentacao(
+                        movimentacao
+                    )
+
+            })
+        );
+
+    }
+
+    visualizarMovimentacao(
+        movimentacao: unknown
+    ): void {
+
+        this.movimentacaoSelecionada = movimentacao as MovimentacaoFinanceira;
+
+        this.mostrarPainel = true;
 
     }
 }
