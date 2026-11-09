@@ -3,59 +3,222 @@
     <app-page-title
         title="Usuários"
         subtitle="Gerenciamento de usuários">
+
     </app-page-title>
 
     <app-toolbar>
 
-        <button
-            class="btn btn-primary"
-            (click)="novoUsuario()">
+        <div class="toolbar">
 
-            {{'+ Cadastrar Usuário' }}
+            <button
+                class="btn btn-primary"
+                (click)="novoUsuario()">
 
-        </button>
+                {{'+ Cadastrar Usuário' }}
 
-        <app-search-input
-            placeholder="Buscar usuário..."
-            [(value)]="textoBusca">
-        </app-search-input>
+            </button>
 
-    </app-toolbar>
+            @if (ehSuperAdmin) {
 
-    <app-split-panel>
+            <div class="field tenant">
 
-        <div left>
+                <label>
 
-            @if (!mostrarFormulario) {
+                    Tenant
 
-            <app-empty-state
-                icon="👤"
-                title="Nenhum usuário em edição"
-                message="Clique em '+ Cadastrar Usuário' para criar um novo usuário ou selecione um usuário para visualizar os detalhes.">
-            </app-empty-state>
+                </label>
+
+                <select
+                    [(ngModel)]="tenantSelecionadoId"
+                    (ngModelChange)="filtrarPorTenant($event)">
+
+                    <option value>
+
+                        Selecione um tenant
+
+                    </option>
+
+                    @for (
+                    tenant of tenants;
+                    track tenant.id
+                    ) {
+
+                    <option
+                        [value]="tenant.id">
+
+                        {{ tenant.nome }}
+
+                    </option>
+
+                    }
+
+                </select>
+
+            </div>
 
             }
 
-            @if (mostrarFormulario) {
+            <app-search-input
+                placeholder="Buscar usuário..."
+                [(value)]="textoBusca">
+
+            </app-search-input>
+
+        </div>
+
+    </app-toolbar>
+
+    <app-split-panel
+        [reverse]="true"
+        [showRight]="mostrarPainel">
+
+        <div left>
+
+            @if (usuarios.length === 0) {
+
+            <app-empty-state
+                icon="👥"
+                title="Nenhum usuário cadastrado"
+                message="Cadastre o primeiro usuário para permitir o acesso à aplicação.">
+
+            </app-empty-state>
+
+            } @else {
+
+            <div class="card">
+
+                <app-data-table
+                    [columns]="colunasUsuarios"
+                    [data]="usuariosFiltrados"
+                    [showActions]="false"
+                    [clickableRows]="true"
+                    (toggle)="alternarStatusUsuario($event)"
+                    (rowClick)="visualizarUsuario($event)">
+
+                </app-data-table>
+
+            </div>
+
+            }
+
+        </div>
+
+        <div right>
+
+            @if (modoVisualizacao) {
+
+            <div class="card">
+
+                <h3>
+
+                    {{ novoNome }}
+
+                </h3>
+
+                <div class="detail-row">
+
+                    <span>Email</span>
+
+                    <strong>
+
+                        {{ novoEmail }}
+
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>Perfil</span>
+
+                    <strong>
+
+                        {{ perfisLabel[novoPerfil] }}
+
+                    </strong>
+
+                </div>
+
+                @if (ehSuperAdmin) {
+
+                <div class="detail-row">
+
+                    <span>Tenant</span>
+
+                    <strong>
+
+                        {{
+                        obterNomeTenant(
+                        tenantCadastroId
+                        )
+                        }}
+
+                    </strong>
+
+                </div>
+
+                }
+
+                <div class="detail-row">
+
+                    <span>Status</span>
+
+                    <strong>
+
+                        {{
+                        novoAtivo
+                        ? '✅ Ativo'
+                        : '❌ Inativo'
+                        }}
+
+                    </strong>
+
+                </div>
+
+                <div class="formulario-acoes">
+
+                    <button
+                        class="btn btn-primary"
+                        type="button"
+                        (click)="habilitarEdicao()">
+
+                        Editar
+
+                    </button>
+
+                    <button
+                        class="btn btn-secondary"
+                        type="button"
+                        (click)="cancelarEdicao()">
+
+                        Fechar
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            } @else {
 
             <div class="card formulario-usuario">
 
                 <div class="formulario">
 
                     <h3>
-                        {{
-                        !usuarioEmEdicao
-                        ? 'Cadastrar Usuário'
-                        : modoVisualizacao
-                        ? 'Usuário'
-                        : 'Editar Usuário'
-                        }}
+
+                        {{!usuarioEmEdicao ? 'Cadastrar Usuário':
+                        modoVisualizacao?
+                        'Usuário': 'Editar Usuário' }}
+
                     </h3>
 
                     <div class="field">
 
                         <label>
+
                             Nome
+
                         </label>
 
                         <input
@@ -88,7 +251,9 @@
                     <div class="field">
 
                         <label>
+
                             Senha
+
                         </label>
 
                         <input
@@ -106,7 +271,9 @@
                     <div class="field">
 
                         <label>
+
                             Tenant
+
                         </label>
 
                         <select
@@ -115,7 +282,9 @@
                             [disabled]="modoVisualizacao || modoEdicao">
 
                             <option value>
+
                                 Selecione um tenant
+
                             </option>
 
                             @for (
@@ -141,7 +310,9 @@
                     <div class="field">
 
                         <label>
+
                             Perfil
+
                         </label>
 
                         <select
@@ -163,19 +334,6 @@
                             }
 
                         </select>
-
-                    </div>
-
-                    <div class="field">
-
-                        <label>
-                            Status
-                        </label>
-
-                        <input
-                            type="text"
-                            [value]="novoAtivo ? 'Ativo' : 'Inativo'"
-                            readonly>
 
                     </div>
 
@@ -208,95 +366,25 @@
                             type="button"
                             [disabled]="salvando"
                             (click)="salvarUsuario()">
-                            {{
-                            salvando
-                            ? 'Salvando...'
-                            : 'Salvar Alterações'
-                            }}
+
+                            {{ salvando ? 'Salvando...': 'Salvar Alterações' }}
+
                         </button>
 
                         <button
                             class="btn btn-secondary"
                             type="button"
                             (click)="cancelarEdicao()">
+
                             Cancelar
+
                         </button>
 
                         }
 
                     </div>
+
                 </div>
-            </div>
-            }
-        </div>
-
-        <div right>
-
-            <div class="secao-usuarios">
-
-                <h2>
-                    Usuários Cadastrados
-                </h2>
-
-                <p>
-                    Consulte, edite e exclua usuários cadastrados.
-                </p>
-
-            </div>
-
-            @if (ehSuperAdmin) {
-
-            <div class="field">
-
-                <label>
-                    Tenant
-                </label>
-
-                <select
-                    [(ngModel)]="tenantSelecionadoId"
-                    (ngModelChange)="filtrarPorTenant($event)">
-
-                    <option value>
-                        Selecione um tenant
-                    </option>
-
-                    @for (
-                    tenant of tenants;
-                    track tenant.id
-                    ) {
-
-                    <option
-                        [value]="tenant.id">
-                        {{ tenant.nome }}
-                    </option>
-                    }
-
-                </select>
-
-            </div>
-
-            }
-
-            @if (usuarios.length === 0) {
-
-            <app-empty-state
-                icon="👥"
-                title="Nenhum usuário cadastrado"
-                message="Cadastre o primeiro usuário para permitir o acesso à aplicação.">
-            </app-empty-state>
-
-            } @else {
-
-            <div class="card">
-
-                <app-data-table
-                    [columns]="colunasUsuarios"
-                    [data]="usuariosFiltrados"
-                    [showActions]="false"
-                    [clickableRows]="true"
-                    (toggle)="alternarStatusUsuario($event)"
-                    (rowClick)="visualizarUsuario($event)">
-                </app-data-table>
 
             </div>
 

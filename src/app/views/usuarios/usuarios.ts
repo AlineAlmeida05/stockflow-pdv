@@ -67,6 +67,8 @@ export class Usuarios implements OnInit {
 
     textoBusca = '';
 
+    mostrarPainel = false;
+
     colunasUsuarios: {
         field: string;
         header: string;
@@ -448,6 +450,8 @@ export class Usuarios implements OnInit {
     }
 
     novoUsuario(): void {
+
+        this.mostrarPainel = true;
         this.modoVisualizacao = false;
         this.limparFormulario();
         this.mostrarFormulario = true;
@@ -457,6 +461,7 @@ export class Usuarios implements OnInit {
     cancelarEdicao(): void {
         this.modoVisualizacao = false;
         this.mostrarFormulario = false;
+        this.mostrarPainel = false;
         this.modoEdicao = false;
         this.usuarioEmEdicao = null;
         this.limparFormulario();
@@ -470,19 +475,19 @@ export class Usuarios implements OnInit {
                 .trim();
 
         return this.usuariosTabela.filter(
-
             usuario =>
 
                 !filtro ||
 
-                String(
-                    (usuario as any).nome
-                )
+                String((usuario as any).nome)
                     .toLowerCase()
-                    .includes(
-                        filtro
-                    )
+                    .includes(filtro)
 
+                ||
+
+                String((usuario as any).email)
+                    .toLowerCase()
+                    .includes(filtro)
         );
 
     }
@@ -624,6 +629,7 @@ export class Usuarios implements OnInit {
         this.novoPerfil = usuarioSelecionado.perfil;
         this.novoAtivo = usuarioSelecionado.ativo;
         this.mostrarFormulario = true;
+        this.mostrarPainel = true;
         this.modoVisualizacao = true;
         this.tenantCadastroId = usuarioSelecionado.tenantId ?? '';
     }
@@ -765,5 +771,11 @@ export class Usuarios implements OnInit {
         OPERADOR_CAIXA: 'Operador Caixa',
         ESTOQUISTA: 'Estoquista'
     };
+
+    get totalUsuarios(): number {
+
+        return this.usuarios.length;
+
+    }
 
 }
