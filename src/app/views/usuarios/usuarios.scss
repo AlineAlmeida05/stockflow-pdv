@@ -11,6 +11,7 @@
     display: flex;
     gap: 12px;
     margin-top: 16px;
+    flex: 1;
 }
 
 .secao-usuarios {
@@ -35,8 +36,22 @@
     color: var(--color-gray-500);
 }
 
+.tenant {
+    min-width: 240px;
+
+    max-width: 300px;
+}
+
 app-search-input {
     min-width: 400px;
+}
+
+.toolbar {
+    width: 100%;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    align-items: center;
 }
 
 @media (max-width: 768px) {
@@ -49,6 +64,4 @@ app-search-input {
         flex-direction: column;
         width: 100%;
     }
-
-    
 }
