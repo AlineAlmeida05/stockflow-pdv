@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { Cliente } from '../../core/models/cliente.model';
 import { Fiado } from '../../core/models/fiado.model';
@@ -9,28 +9,25 @@ import { Pagamento } from '../../core/models/pagamento.model';
 import { PagamentoService } from '../../core/services/pagamento.service';
 import { FormsModule } from '@angular/forms';
 import { PageTitle } from '../../shared/components/page-title/page-title';
-import { SearchInput } from '../../shared/components/search-input/search-input';
-import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { AlertService } from '../../core/services/alert.service';
 import { CurrencyInput } from '../../shared/components/currency-input/currency-input';
 import { ClienteResumo } from '../../core/models/cliente-resumo.model';
-import { ExpandableCard } from '../../shared/components/expandable-card/expandable-card';
 import { ActivatedRoute } from '@angular/router';
-
+import { DataTable } from '../../shared/components/data-table/data-table';
+import { VendaService } from '../../core/services/venda.service';
+import { ExpandableCard } from '../../shared/components/expandable-card/expandable-card';
 @Component({
     selector: 'app-fiados',
     standalone: true,
     imports: [
         MainLayout,
         CurrencyPipe,
-        DatePipe,
         FormsModule,
         PageTitle,
-        SearchInput,
-        EmptyState,
         SplitPanel,
         CurrencyInput,
+        DataTable,
         ExpandableCard
     ],
     templateUrl: './fiados.html',
@@ -50,6 +47,25 @@ export class Fiados implements OnInit {
 
     valorRecebido = 0;
 
+    textoBusca = '';
+
+    clienteResumo?: ClienteResumo;
+
+    mostrarPainel = false;
+
+    private clientePreSelecionadoId?: string;
+
+    movimentoSelecionado: any = null;
+
+    vendas: any[] = [];
+
+    vendaDetalhadaSelecionada: any = null;
+
+    modoPainel:
+        'pagamento'
+        | 'movimentacao'
+        | null = null;
+
     formaPagamento:
         | 'pix'
         | 'dinheiro'
@@ -57,11 +73,24 @@ export class Fiados implements OnInit {
         | 'credito'
         = 'pix';
 
-    textoBusca = '';
-
-    clienteResumo?: ClienteResumo;
-
-    private clientePreSelecionadoId?: string;
+    colunasExtrato = [
+        {
+            field: 'dataFormatada',
+            header: 'Data'
+        },
+        {
+            field: 'tipoDescricao',
+            header: 'Movimentação'
+        },
+        {
+            field: 'valorFormatado',
+            header: 'Valor'
+        },
+        {
+            field: 'saldoFormatado',
+            header: 'Saldo'
+        }
+    ];
 
     constructor(
         private clienteService: ClienteService,
@@ -69,7 +98,9 @@ export class Fiados implements OnInit {
         private pagamentoService: PagamentoService,
         private alertService: AlertService,
         private route: ActivatedRoute,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private vendaService: VendaService
+
     ) { }
 
     ngOnInit(): void {
@@ -89,10 +120,67 @@ export class Fiados implements OnInit {
 
     }
 
+    visualizarMovimento(
+        movimento: any
+    ): void {
+
+        this.movimentoSelecionado =
+            movimento;
+
+        this.modoPainel =
+            'movimentacao';
+
+        this.mostrarPainel =
+            true;
+
+        if (
+            movimento.tipo === 'fiado'
+            &&
+            movimento.vendaId
+        ) {
+
+            this.vendaService
+                .buscarPorId(
+                    movimento.vendaId
+                )
+                .subscribe({
+
+                    next: venda => {
+
+                        this.vendaDetalhadaSelecionada =
+                            venda;
+
+                    }
+
+                });
+
+        }
+
+    }
+
+
     get diasSemPagamento(): number {
 
         return this.clienteResumo
             ?.diasSemPagamento ?? 0;
+
+    }
+
+    abrirRecebimento(): void {
+
+        this.mostrarPainel = true;
+
+        this.modoPainel = 'pagamento';
+
+    }
+
+    fecharPainel(): void {
+
+        this.mostrarPainel = false;
+
+        this.modoPainel = null;
+
+        this.movimentoSelecionado = null;
 
     }
 
@@ -281,6 +369,20 @@ export class Fiados implements OnInit {
 
             });
 
+        this.vendaService
+            .listar()
+            .subscribe({
+
+                next: vendas => {
+
+                    this.vendas = vendas;
+
+                    this.cdr.detectChanges();
+
+                }
+
+            });
+
     }
 
     selecionarCliente(
@@ -313,6 +415,17 @@ export class Fiados implements OnInit {
                 }
 
             });
+
+    }
+
+    obterVendaPorId(
+        vendaId: string
+    ): any {
+
+        return this.vendas.find(
+            venda =>
+                venda.id === vendaId
+        );
 
     }
 
@@ -423,6 +536,10 @@ export class Fiados implements OnInit {
                         'Pagamento registrado com sucesso.'
                     );
 
+                    this.fecharPainel();
+
+                    this.valorRecebido = 0;
+
                 },
 
                 error: erro => {
@@ -443,15 +560,23 @@ export class Fiados implements OnInit {
         }
 
         const fiados = this.fiados
+
             .filter(
                 fiado =>
                     fiado.clienteId ===
                     this.cliente?.id
             )
+
             .map(fiado => ({
+
                 data: fiado.dataLancamento,
+
                 valor: fiado.valorTotal,
-                tipo: 'fiado'
+
+                tipo: 'fiado',
+
+                vendaId: fiado.vendaId
+
             }));
 
         const pagamentos = this.pagamentos
@@ -474,6 +599,27 @@ export class Fiados implements OnInit {
                     new Date(b.data).getTime() -
                     new Date(a.data).getTime()
             );
+
+    }
+
+    obterItensMovimento(): any[] {
+
+        if (
+            !this.movimentoSelecionado
+                ?.vendaId
+        ) {
+
+            return [];
+
+        }
+
+        const venda =
+            this.obterVendaPorId(
+                this.movimentoSelecionado
+                    .vendaId
+            );
+
+        return venda?.itens ?? [];
 
     }
 
@@ -610,6 +756,101 @@ export class Fiados implements OnInit {
                 return '💰 PAGAMENTO';
 
         }
+
+    }
+
+    get extratoTabela(): unknown[] {
+
+        const movimentos =
+            [...this.obterExtratoCliente()]
+
+                .sort(
+                    (a, b) =>
+
+                        new Date(a.data).getTime()
+                        -
+                        new Date(b.data).getTime()
+                );
+
+        let saldo = 0;
+
+        const resultado = movimentos.map(
+            movimento => {
+
+                if (
+                    movimento.tipo === 'fiado'
+                ) {
+
+                    saldo += movimento.valor;
+
+                } else {
+
+                    saldo -= movimento.valor;
+
+                }
+
+                return {
+
+                    ...movimento,
+
+                    saldoCalculado: saldo
+
+                };
+
+            }
+        );
+
+        return resultado
+
+            .reverse()
+
+            .map(movimento => ({
+
+                ...movimento,
+
+                dataFormatada:
+                    new Date(
+                        movimento.data
+                    )
+                        .toLocaleString(
+                            'pt-BR'
+                        ),
+
+                tipoDescricao:
+                    this.obterDescricaoMovimento(
+                        movimento
+                    ),
+
+                valorFormatado:
+                    movimento.tipo === 'fiado'
+
+                        ? `- ${movimento.valor.toLocaleString(
+                            'pt-BR',
+                            {
+                                style: 'currency',
+                                currency: 'BRL'
+                            }
+                        )}`
+
+                        : `+ ${movimento.valor.toLocaleString(
+                            'pt-BR',
+                            {
+                                style: 'currency',
+                                currency: 'BRL'
+                            }
+                        )}`,
+
+                saldoFormatado:
+                    movimento.saldoCalculado
+                        .toLocaleString(
+                            'pt-BR',
+                            {
+                                style: 'currency',
+                                currency: 'BRL'
+                            }
+                        )
+
+            }));
 
     }
 

@@ -3,6 +3,7 @@
     <app-page-title
         title="Extrato Financeiro"
         subtitle="Acompanhe todas as movimentações financeiras da empresa.">
+
     </app-page-title>
 
     <div class="extrato-indicators">
@@ -13,6 +14,7 @@
             [title]="card.title"
             [value]="card.value"
             [variant]="card.variant">
+
         </app-stat-card>
 
         }
@@ -24,211 +26,152 @@
         <app-select-input
             label="Movimentação"
             [(value)]="tipoMovimentacaoSelecionado "
-            (valueChange)="reiniciarPaginacao()"
             [options]="tiposMovimentacao">
+
+        </app-select-input>
+
+        <app-select-input
+            label="Pagamento"
+            [(value)]="formaPagamentoSelecionada"
+            [options]="formasPagamento">
+
         </app-select-input>
 
         <app-select-input
             label="Período"
             [(value)]="periodoSelecionado"
-            (valueChange)="reiniciarPaginacao()"
             [options]="periodos">
+
         </app-select-input>
 
         <app-search-input
             placeholder="Buscar cliente, operador ou movimentação..."
-            [(value)]="textoBusca"
-            (valueChange)="reiniciarPaginacao()">
+            [(value)]="textoBusca">
+
         </app-search-input>
 
     </app-toolbar>
 
-    <div class="timeline">
-        @if (movimentacoesFiltradas.length === 0) {
+    <app-split-panel
+        [showRight]="mostrarPainel">
 
-        <app-empty-state
-            icon="💰"
-            title="Nenhuma movimentação encontrada"
-            message="Tente alterar os filtros para visualizar resultados.">
-        </app-empty-state>
+        <div left>
 
-        } @else {
+            <div class="card">
 
-        @for (
-        movimentacao of movimentacoesPaginadas;
-        track $index
-        ) {
+                <app-data-table
+                    [columns]="colunasMovimentacoes"
+                    [data]="movimentacoesTabela"
+                    [clickableRows]="true"
+                    [showActions]="false"
+                    (rowClick)="visualizarMovimentacao($event)">
 
-        <div
-            class="card movimentacao-card"
-            [class.movimentacao-card--fiado]="movimentacao.tipo === 'fiado'"
-            [class.movimentacao-card--pagamento]="movimentacao.tipo === 'pagamento' ">
+                </app-data-table>
 
-            <div class="movimentacao-header">
+            </div>
 
-                <div class="movimentacao-principal">
+        </div>
+
+        <div right>
+
+            @if (movimentacaoSelecionada) {
+
+            <div class="card">
+
+                <h3>
+
+                    {{obterTituloMovimentacao(movimentacaoSelecionada) }}
+
+                </h3>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Data
+
+                    </span>
 
                     <strong>
 
-                        {{ obterTituloMovimentacao(movimentacao) }}
+                        {{ movimentacaoSelecionada?.data |
+                        date:'dd/MM/yyyy HH:mm:ss' }}
 
                     </strong>
 
-                    @if (movimentacao.status === 'cancelada') {
+                </div>
 
-                    <div class="status-cancelado">
-                        CANCELADA
-                    </div>
+                <div class="detail-row">
 
-                    }
+                    <span>
 
-                    <div class="movimentacao-meta">
+                        Cliente
 
-                        Cliente:
-                        {{
-                        movimentacao.clienteNome
-                        || 'Consumidor Final'
-                        }}
+                    </span>
 
-                    </div>
+                    <strong>
 
-                    <div class="movimentacao-meta">
+                        {{ movimentacaoSelecionada.clienteNome ||
+                        'Consumidor Final' }}
 
-                        {{
-                        movimentacao.data
-                        | date:'dd/MM/yyyy HH:mm'
-                        }}
-
-                        @if (movimentacao.usuarioNome) {
-
-                        •
-
-                        Operador:
-                        {{
-                        movimentacao.usuarioNome
-                        }}
-
-                        }
-
-                    </div>
+                    </strong>
 
                 </div>
 
-                <div
-                    class="movimentacao-valor">
+                <div class="detail-row">
 
-                    @if (
-                    movimentacao.tipo === 'fiado'
-                    ) {
+                    <span>
 
-                    <span class="valor-negativo">
-
-                        - {{
-                        movimentacao.valor
-                        | currency:'BRL'
-                        }}
+                        Operador
 
                     </span>
 
-                    } @else {
+                    <strong>
 
-                    <span class="valor-positivo">
+                        {{ movimentacaoSelecionada.usuarioNome || '-' }}
 
-                        + {{
-                        movimentacao.valor
-                        | currency:'BRL'
-                        }}
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Forma Pagamento
 
                     </span>
 
-                    }
+                    <strong>
+
+                        {{ movimentacaoSelecionada.formaPagamento }}
+
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Valor
+
+                    </span>
+
+                    <strong>
+
+                        {{ movimentacaoSelecionada.valor | currency:'BRL' }}
+
+                    </strong>
 
                 </div>
 
             </div>
 
-        </div>
-        }
-        }
-
-    </div>
-
-    @if (
-    movimentacoesFiltradas.length > 0
-    ) {
-
-    <div class="pagination">
-
-        <div class="pagination-left">
-
-            <app-select-input
-                label="Registros"
-                [(value)]="itensPorPagina"
-                (valueChange)="alterarItensPorPagina()"
-                [options]="opcoesItensPorPagina">
-            </app-select-input>
-
-            <span class="pagination-info">
-
-                Mostrando
-
-                {{ inicioPagina }}
-
-                -
-
-                {{ fimPagina }}
-
-                de
-
-                {{ movimentacoesFiltradas.length }}
-
-                movimentações
-
-            </span>
+            }
 
         </div>
 
-        <div class="pagination-right">
-
-            <button
-                class="btn"
-                type="button"
-                (click)="paginaAnterior()"
-                [disabled]="paginaAtual === 1">
-
-                Anterior
-
-            </button>
-
-            <span class="pagination-page">
-
-                Página
-
-                {{ paginaAtual }}
-
-                de
-
-                {{ totalPaginas }}
-
-            </span>
-
-            <button
-                class="btn"
-                type="button"
-                (click)="proximaPagina()"
-                [disabled]="
-                paginaAtual ===
-                totalPaginas
-            ">
-
-                Próxima
-
-            </button>
-
-        </div>
-
-    </div>
-
-    }
+    </app-split-panel>
 
 </app-main-layout>

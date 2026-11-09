@@ -196,6 +196,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
 }
 
 .saldo-card__header strong {
@@ -205,7 +206,20 @@
 }
 
 .saldo-card__header span {
+    margin-top: 20px;
     color: var(--color-gray-500);
+}
+
+.card_01 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card_02 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .saldo-card__meta {
@@ -214,6 +228,12 @@
     gap: 12px;
     margin-top: 16px;
     flex-wrap: wrap;
+}
+
+.cliente-nome {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 6px;
 }
 
 .saldo-card__divider {
