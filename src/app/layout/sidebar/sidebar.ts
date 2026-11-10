@@ -58,8 +58,7 @@ export class Sidebar implements OnInit {
 
   private carregarMenu(): void {
 
-    const usuario =
-      this.authService.usuarioLogado();
+    const usuario = this.authService.usuarioLogado();
 
     if (!usuario) {
 
@@ -69,21 +68,20 @@ export class Sidebar implements OnInit {
 
     }
 
-    this.menuFiltrado =
-      this.menu.filter(item => {
+    this.menuFiltrado = this.menu.filter(item => {
 
-        const possuiPerfil =
-          item.perfis.includes(
-            usuario.perfil
-          );
+      const possuiPerfil =
+        item.perfis.includes(
+          usuario.perfil
+        );
 
-        if (!possuiPerfil) {
-          return false;
-        }
+      if (!possuiPerfil) {
+        return false;
+      }
 
-        return true;
+      return true;
 
-      });
+    });
 
   }
 

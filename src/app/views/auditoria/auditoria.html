@@ -3,6 +3,7 @@
     <app-page-title
         title="Auditoria"
         subtitle="Acompanhe todas as ações realizadas no sistema.">
+
     </app-page-title>
 
     <app-toolbar>
@@ -10,167 +11,192 @@
         <app-select-input
             label="Entidade"
             [(value)]="entidadeSelecionada"
-            (valueChange)="reiniciarPaginacao()"
             [options]="entidades">
         </app-select-input>
 
         <app-select-input
             label="Ação"
             [(value)]="acaoSelecionada"
-            (valueChange)="reiniciarPaginacao()"
             [options]="acoes">
         </app-select-input>
 
         <app-select-input
             label="Período"
             [(value)]="periodoSelecionado"
-            (valueChange)="reiniciarPaginacao()"
             [options]="periodos">
         </app-select-input>
 
         <app-search-input
             placeholder="Buscar usuário..."
-            [(value)]="textoBusca"
-            (valueChange)="reiniciarPaginacao()">
+            [(value)]="textoBusca">
         </app-search-input>
 
     </app-toolbar>
 
-    <div class="timeline">
+    <app-split-panel
+        [showRight]="mostrarPainel">
 
-        @if (
-        auditoriasFiltradas.length === 0
-        ) {
+        <div left>
 
-        <app-empty-state
-            icon="📋"
-            title="Nenhum registro encontrado"
-            message="Tente alterar os filtros para visualizar resultados.">
-        </app-empty-state>
+            @if (
+            auditoriasFiltradas.length === 0
+            ) {
 
-        } @else {
+            <app-empty-state
+                icon="📋"
+                title="Nenhum registro encontrado"
+                message="Tente alterar os filtros para visualizar resultados.">
 
-        @for (
-        auditoria of auditoriasPaginadas;
-        track auditoria.id
-        ) {
+            </app-empty-state>
 
-        <div class="card auditoria-card">
+            } @else {
 
-            <div class="auditoria-topo">
+            <div class="card">
 
-                <strong class="auditoria-usuario">
-                    {{ auditoria.usuarioNome }}
-                </strong>
+                <app-data-table
+                    [columns]="colunasAuditoria"
+                    [data]="auditoriasTabela"
+                    [clickableRows]="true"
+                    [showActions]="false"
+                    (rowClick)="visualizarAuditoria($event)">
 
-                <span
-                    class="auditoria-acao"
-                    [class]="getClasseAcao(auditoria.acao)">
-
-                    {{ formatarAcao(auditoria.acao) }}
-
-                </span>
+                </app-data-table>
 
             </div>
 
-            <div class="auditoria-corpo">
+            }
 
-                <div class="auditoria-meta">
+        </div>
 
-                    @if (auditoria.tenantNome) {
+        <div right>
 
-                    <span class="tenant-nome">{{ auditoria.tenantNome }}</span>
-                    •
-                    }
-                    {{ auditoria.dataHora | date:'dd/MM/yyyy HH:mm' }}
+            @if (auditoriaSelecionada) {
+
+            <div class="card">
+
+                <h3>
+
+                    Detalhes da Auditoria
+
+                </h3>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Usuário
+
+                    </span>
+
+                    <strong>
+
+                        {{ auditoriaSelecionada.usuarioNome }}
+
+                    </strong>
 
                 </div>
 
-                <div class="auditoria-descricao">
+                <div class="detail-row">
 
-                    {{ auditoria.descricao }}
+                    <span>
+
+                        Data
+
+                    </span>
+
+                    <strong>
+
+                        {{ auditoriaSelecionada.dataHora
+                        | date:'dd/MM/yyyy HH:mm:ss' }}
+
+                    </strong>
 
                 </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Entidade
+
+                    </span>
+
+                    <strong>
+
+                        {{ auditoriaSelecionada.entidade }}
+
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Ação
+
+                    </span>
+
+                    <strong>
+
+                        {{ formatarAcao(auditoriaSelecionada.acao) }}
+
+                    </strong>
+
+                </div>
+
+                @if (
+                auditoriaSelecionada.tenantNome
+                ) {
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Tenant
+
+                    </span>
+
+                    <strong>
+
+                        {{ auditoriaSelecionada.tenantNome }}
+
+                    </strong>
+
+                </div>
+
+                }
+
+                <div class="evento-box">
+
+                    <span class="evento-label">
+
+                        📋 Evento
+
+                    </span>
+
+                    <p class="evento-paragrafo">
+
+                        {{ auditoriaSelecionada.descricao }}
+
+                    </p>
+
+                </div>
+
+                <button
+                    class="btn btn-secondary"
+                    (click)="fecharPainel()">
+
+                    Fechar
+
+                </button>
+
             </div>
 
-        </div>
-
-        }
-        }
-
-    </div>
-
-    @if (
-    auditoriasFiltradas.length > 0
-    ) {
-
-    <div class="pagination">
-
-        <div class="pagination-left">
-
-            <app-select-input
-                label="Registros"
-                [(value)]="itensPorPagina"
-                (valueChange)="alterarItensPorPagina()"
-                [options]="opcoesItensPorPagina">
-            </app-select-input>
-
-            <span class="pagination-info">
-
-                Mostrando
-
-                {{ inicioPagina }}
-
-                -
-
-                {{ fimPagina }}
-
-                de
-
-                {{ auditoriasFiltradas.length }}
-
-                registros
-
-            </span>
+            }
 
         </div>
 
-        <div class="pagination-right">
-
-            <button
-                class="btn"
-                type="button"
-                (click)="paginaAnterior()"
-                [disabled]="paginaAtual === 1">
-
-                Anterior
-
-            </button>
-
-            <span class="pagination-page">
-
-                Página
-
-                {{ paginaAtual }}
-
-                de
-
-                {{ totalPaginas }}
-
-            </span>
-
-            <button
-                class="btn"
-                type="button"
-                (click)="proximaPagina()"
-                [disabled]="paginaAtual ===totalPaginas">
-
-                Próxima
-
-            </button>
-
-        </div>
-    </div>
-    }
+    </app-split-panel>
 
 </app-main-layout>

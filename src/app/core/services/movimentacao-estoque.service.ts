@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { MovimentacaoEstoque } from '../models/movimentacao-estoque.model';
 import { MovimentacaoEstoqueRequest } from '../models/movimentacao-estoque-request.model';
 import { environment } from '../../../environments/environment';
-
 @Injectable({
 
   providedIn: 'root'

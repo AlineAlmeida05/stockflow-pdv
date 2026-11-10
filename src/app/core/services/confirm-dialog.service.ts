@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-
 import { BehaviorSubject } from 'rxjs';
 
 export interface ConfirmDialogData {
@@ -10,7 +9,7 @@ export interface ConfirmDialogData {
 
     confirmText?: string;
 
-    cancelText?: string;    
+    cancelText?: string;
 
     type?: 'danger' | 'warning' | 'info';
 
