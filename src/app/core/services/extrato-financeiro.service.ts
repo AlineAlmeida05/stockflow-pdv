@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { MovimentacaoFinanceira } from '../models/movimentacao-financeira.model';
 import { IndicadoresExtrato } from '../models/indicadores-extrato.model';
-
 @Injectable({
     providedIn: 'root'
 })
@@ -26,14 +25,14 @@ export class ExtratoFinanceiroService {
     }
 
     obterIndicadores():
-    Observable<IndicadoresExtrato> {
+        Observable<IndicadoresExtrato> {
 
-    return this.http.get<
-        IndicadoresExtrato
-    >(
-        `${this.apiUrl}/indicadores`
-    );
+        return this.http.get<
+            IndicadoresExtrato
+        >(
+            `${this.apiUrl}/indicadores`
+        );
 
-}
+    }
 
 }

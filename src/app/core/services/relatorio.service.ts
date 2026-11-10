@@ -1,10 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-
 import { Observable } from 'rxjs';
-
 import { environment } from '../../../environments/environment';
-
 import { DashboardVendas } from '../models/dashboard-vendas.model';
 
 @Injectable({
@@ -12,11 +9,9 @@ import { DashboardVendas } from '../models/dashboard-vendas.model';
 })
 export class RelatorioService {
 
-    private readonly http =
-        inject(HttpClient);
+    private readonly http = inject(HttpClient);
 
-    private readonly apiUrl =
-        `${environment.apiUrl}/api/relatorios/vendas`;
+    private readonly apiUrl = `${environment.apiUrl}/api/relatorios/vendas`;
 
     buscar(
         inicio: string,

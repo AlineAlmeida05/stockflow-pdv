@@ -9,6 +9,8 @@ import { Toolbar } from '../../shared/components/toolbar/toolbar';
 import { SelectInput } from '../../shared/components/select-input/select-input';
 import { SearchInput } from '../../shared/components/search-input/search-input';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
+import { SplitPanel } from '../../shared/components/split-panel/split-panel';
+import { DataTable } from '../../shared/components/data-table/data-table';
 
 @Component({
     selector: 'app-auditoria',
@@ -20,7 +22,9 @@ import { EmptyState } from '../../shared/components/empty-state/empty-state';
         Toolbar,
         SelectInput,
         SearchInput,
-        EmptyState
+        EmptyState,
+        SplitPanel,
+        DataTable
     ],
     templateUrl: './auditoria.html',
     styleUrls: ['./auditoria.scss']
@@ -34,6 +38,12 @@ export class AuditoriaComponent implements OnInit {
     acaoSelecionada = 'todas';
 
     periodoSelecionado = 'todos';
+
+    mostrarPainel = false;
+
+    auditoriaSelecionada: Auditoria | null = null;
+
+    entidadeSelecionada = 'todas';
 
     periodos = [
         {
@@ -54,9 +64,6 @@ export class AuditoriaComponent implements OnInit {
         }
     ];
 
-
-    entidadeSelecionada = 'todas';
-
     entidades = [
         {
             label: 'Todas',
@@ -64,22 +71,18 @@ export class AuditoriaComponent implements OnInit {
         }
     ];
 
-    paginaAtual = 1;
-
-    itensPorPagina = '10';
-
-    opcoesItensPorPagina = [
+    colunasAuditoria = [
         {
-            label: '10 por página',
-            value: '10'
+            field: 'dataFormatada',
+            header: 'Data'
         },
         {
-            label: '25 por página',
-            value: '25'
+            field: 'usuarioNome',
+            header: 'Usuário'
         },
         {
-            label: '50 por página',
-            value: '50'
+            field: 'entidade',
+            header: 'Entidade'
         }
     ];
 
@@ -108,22 +111,46 @@ export class AuditoriaComponent implements OnInit {
             });
     }
 
-    get auditoriasPaginadas(): Auditoria[] {
+    get auditoriasTabela(): unknown[] {
 
-        const inicio =
-            (this.paginaAtual - 1)
-            * Number(this.itensPorPagina);
+        return this.auditoriasFiltradas.map(
+            auditoria => ({
 
-        const fim =
-            inicio
-            + Number(this.itensPorPagina);
+                ...auditoria,
 
-        return this
-            .auditoriasFiltradas
-            .slice(
-                inicio,
-                fim
-            );
+                dataFormatada:
+                    new Date(
+                        auditoria.dataHora
+                    )
+                        .toLocaleString(
+                            'pt-BR'
+                        ),
+
+                acaoFormatada:
+                    this.formatarAcao(
+                        auditoria.acao
+                    )
+
+            })
+        );
+
+    }
+
+    visualizarAuditoria(
+        auditoria: any
+    ): void {
+
+        this.auditoriaSelecionada = auditoria;
+
+        this.mostrarPainel = true;
+
+    }
+
+    fecharPainel(): void {
+
+        this.mostrarPainel = false;
+
+        this.auditoriaSelecionada = null;
 
     }
 
@@ -342,90 +369,6 @@ export class AuditoriaComponent implements OnInit {
         }
 
         return '';
-    }
-
-    get totalPaginas(): number {
-
-        return Math.max(
-            1,
-            Math.ceil(
-                this.auditoriasFiltradas.length
-                /
-                Number(this.itensPorPagina)
-            )
-        );
-
-    }
-
-    proximaPagina(): void {
-
-        if (
-            this.paginaAtual <
-            this.totalPaginas
-        ) {
-
-            this.paginaAtual++;
-
-        }
-
-    }
-
-    paginaAnterior(): void {
-
-        if (
-            this.paginaAtual > 1
-        ) {
-
-            this.paginaAtual--;
-
-        }
-
-    }
-
-    reiniciarPaginacao(): void {
-
-        this.paginaAtual = 1;
-
-    }
-
-    alterarItensPorPagina(): void {
-
-        this.paginaAtual = 1;
-
-    }
-
-    get inicioPagina(): number {
-
-        return this.auditoriasFiltradas.length === 0
-
-            ? 0
-
-            : (
-                (
-                    this.paginaAtual - 1
-                )
-                *
-                Number(
-                    this.itensPorPagina
-                )
-            ) + 1;
-
-    }
-
-    get fimPagina(): number {
-
-        return Math.min(
-
-            this.paginaAtual
-            *
-            Number(
-                this.itensPorPagina
-            ),
-
-            this.auditoriasFiltradas.length
-
-        );
-
     }
 
 }

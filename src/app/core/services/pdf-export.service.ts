@@ -13,11 +13,10 @@ export class PdfExportService {
     ): Promise<void> {
 
         const canvas = await html2canvas(elemento, {
-                scale: 2
-            });
+            scale: 2
+        });
 
-        const imagem =
-            canvas.toDataURL('image/png');
+        const imagem = canvas.toDataURL('image/png');
 
         const pdf =
             new jsPDF(

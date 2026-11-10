@@ -1,10 +1,8 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { DashboardResponse } from '../models/dashboard-response.model';
-
-
 @Injectable({
     providedIn: 'root'
 })

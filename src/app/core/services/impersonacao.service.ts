@@ -8,7 +8,6 @@ export interface ImpersonacaoResponse {
     tenantId: string;
     impersonando: boolean;
 }
-
 @Injectable({
 
     providedIn: 'root'
@@ -22,7 +21,7 @@ export class ImpersonacaoService {
 
         private http: HttpClient
 
-    ) {}
+    ) { }
 
     impersonar(
 
@@ -37,7 +36,7 @@ export class ImpersonacaoService {
             {}
         );
 
-    }    
+    }
 
     encerrarImpersonacao():
 
@@ -46,7 +45,7 @@ export class ImpersonacaoService {
         return this.http.post<ImpersonacaoResponse>(
 
             `${this.API}/encerrar-impersonacao`,
-            
+
             {}
         );
 

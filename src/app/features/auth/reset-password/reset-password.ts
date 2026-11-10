@@ -173,8 +173,7 @@ export class ResetPassword implements OnInit {
 
   toggleNovaSenha(): void {
 
-    this.mostrarNovaSenha =
-      !this.mostrarNovaSenha;
+    this.mostrarNovaSenha = !this.mostrarNovaSenha;
 
   }
 

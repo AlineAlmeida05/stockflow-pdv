@@ -43,22 +43,6 @@ export class LoginComponent implements OnInit {
 
     private destroyRef = inject(DestroyRef);
 
-    ngOnInit(): void {
-
-        this.route.paramMap
-            .pipe(
-                takeUntilDestroyed(
-                    this.destroyRef
-                )
-            )
-            .subscribe(() => {
-
-                this.carregarTenant();
-
-            });
-
-    }
-
     constructor(
         private fb: FormBuilder,
         private authService: AuthService,
@@ -87,6 +71,22 @@ export class LoginComponent implements OnInit {
             ]
 
         })
+    }
+
+    ngOnInit(): void {
+
+        this.route.paramMap
+            .pipe(
+                takeUntilDestroyed(
+                    this.destroyRef
+                )
+            )
+            .subscribe(() => {
+
+                this.carregarTenant();
+
+            });
+
     }
 
     submit(): void {
