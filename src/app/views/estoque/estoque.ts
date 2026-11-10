@@ -418,8 +418,7 @@ export class Estoque implements OnInit {
         }
     ): void {
 
-        const produto =
-            event.row as ProdutoEstoque;
+        const produto = event.row as ProdutoEstoque;
 
         switch (
         produto.acaoPromocional

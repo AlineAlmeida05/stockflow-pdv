@@ -11,6 +11,14 @@
     margin-top: 16px;
 }
 
+.produto-selecionado {
+    padding: 16px;
+
+    border-radius: 12px;
+
+    background: var(--color-gray-100);
+}
+
 .marketing-ai-links a {
     display: flex;
     flex-direction: column;
