@@ -1,12 +1,9 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { CurrencyPipe } from '@angular/common';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { Produto } from '../../core/models/produto.model';
 import { ProdutoService } from '../../core/services/produto.service';
 import { PageTitle } from '../../shared/components/page-title/page-title';
-import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
-import { SearchInput } from '../../shared/components/search-input/search-input';
 import { AlertService } from '../../core/services/alert.service';
 import { StatusBadge } from '../../shared/components/status-badge/status-badge';
 import { PromocaoService } from '../../core/services/promocao.service';
@@ -15,18 +12,41 @@ import { ProdutoPromocao } from '../../core/models/produto-promocao.model';
 import { NotificacaoService } from '../../core/services/notificacao.service';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
+import { DataTable } from '../../shared/components/data-table/data-table';
+import { CurrencyPipe, DatePipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 
+type PromocaoHistorico =
+    Promocao & {
+
+        statusPromocao: string;
+
+        tipoRegistro:
+        'ativa'
+        | 'encerrada'
+        | 'pendente';
+
+        percentualMeta: number;
+
+        descontoFormatado: string;
+
+        dataInicioFormatada: string;
+
+        dataFimFormatada: string;
+
+    };
 @Component({
     selector: 'app-promocoes',
     standalone: true,
     imports: [
         MainLayout,
-        CurrencyPipe,
         PageTitle,
-        EmptyState,
         SplitPanel,
-        SearchInput,
-        StatusBadge
+        StatusBadge,
+        DataTable,
+        DatePipe,
+        CurrencyPipe,
+        NgClass
     ],
     templateUrl: './promocoes.html',
     styleUrl: './promocoes.scss'
@@ -46,6 +66,40 @@ export class Promocoes implements OnInit {
     ativas: ProdutoPromocao[] = [];
 
     private produtoIdSelecionado?: string;
+
+    mostrarPainel = false;
+
+    promocaoSelecionada: PromocaoHistorico | null = null;
+
+    colunasHistorico: {
+        field: string;
+        header: string;
+        type?: 'text' | 'badge' | 'currency' | 'date' | 'progress' | 'toggle' | 'action';
+        align?: 'left' | 'center' | 'right';
+    }[] = [
+            {
+                field: 'statusPromocao',
+                header: 'Status'
+            },
+            {
+                field: 'dataInicioFormatada',
+                header: 'Início'
+            },
+            {
+                field: 'dataFimFormatada',
+                header: 'Fim'
+            },
+            {
+                field: 'statusMeta',
+                header: 'Meta'
+            },
+            {
+                field: 'percentualMeta',
+                header: 'Progresso',
+                type: 'progress'
+            }
+
+        ];
 
     obterMotivoBackend(
         produtoId: string
@@ -264,6 +318,213 @@ export class Promocoes implements OnInit {
         this.carregarDados();
 
     }
+
+    visualizarPromocao(
+        promocao: any
+    ): void {
+
+        console.log(promocao);
+
+        this.promocaoSelecionada = promocao;
+
+        this.mostrarPainel = true;
+
+    }
+
+    fecharPainel(): void {
+
+        this.mostrarPainel = false;
+
+        this.promocaoSelecionada = null;
+
+    }
+
+    get historicoPromocoes(): PromocaoHistorico[] {
+
+        if (!this.produtoSelecionado) {
+            return [];
+        }
+
+        const produtoId = this.produtoSelecionado.id;
+
+        const historico = this.promocoes
+
+            .filter(
+                promocao =>
+                    promocao.produto.id ===
+                    produtoId
+            )
+
+            .map(promocao => {
+
+                const tipoRegistro:
+                    'ativa' | 'encerrada' =
+                    promocao.ativa
+                        ? 'ativa'
+                        : 'encerrada';
+
+                return {
+
+                    ...promocao,
+
+                    tipoRegistro,
+
+                    statusPromocao:
+                        promocao.ativa
+                            ? '✅ Ativa'
+                            : '🏁 Encerrada',
+
+                    percentualMeta:
+                        promocao.metaUnidades > 0
+                            ? Math.round(
+                                (
+                                    promocao.unidadesVendidas /
+                                    promocao.metaUnidades
+                                ) * 100
+                            )
+                            : 0,
+
+                    statusMeta:
+                        this.obterStatusMeta(
+                            promocao
+                        ),
+
+                    descontoFormatado: `${promocao.percentualDesconto}%`,
+
+                    dataInicioFormatada:
+                        new Date(
+                            promocao.dataInicio
+                        ).toLocaleDateString(
+                            'pt-BR'
+                        ),
+
+                    dataFimFormatada:
+                        promocao.dataFim
+                            ? new Date(
+                                promocao.dataFim
+                            ).toLocaleDateString(
+                                'pt-BR'
+                            )
+                            : 'Ativa'
+
+                } as PromocaoHistorico;
+
+            })
+
+            .sort(
+                (a, b) =>
+                    new Date(
+                        b.dataInicio
+                    ).getTime()
+                    -
+                    new Date(
+                        a.dataInicio
+                    ).getTime()
+            );
+
+        const possuiPromocaoAtiva =
+            historico.some(
+                item =>
+                    item.tipoRegistro ===
+                    'ativa'
+            );
+
+        if (
+            !possuiPromocaoAtiva
+        ) {
+            historico.unshift({
+
+                id: 'pendente' as any,
+
+                produto: this.produtoSelecionado,
+
+                precoOriginal: this.produtoSelecionado.precoVenda,
+
+                precoPromocional:
+                    this.obterPrecoPromocional(
+                        this.produtoSelecionado
+                    ),
+
+                percentualDesconto:
+                    this.obterPercentualDesconto(
+                        produtoId
+                    ),
+
+                motivo:
+                    this.obterMotivoPromocao(
+                        produtoId
+                    ),
+
+                ativa: false,
+
+                dataInicio: '',
+
+                dataFim: undefined,
+
+                estoqueInicio:
+                    this.produtoSelecionado
+                        .estoqueAtual,
+
+                metaUnidades:
+                    this.obterMetaSugestao(
+                        this.produtoSelecionado
+                    ),
+
+                unidadesVendidas: 0,
+
+                receitaGerada: 0,
+
+                statusPromocao: '⚠️ Pendente',
+
+                tipoRegistro: 'pendente',
+
+                percentualMeta: 0,
+
+                descontoFormatado:
+                    `${this.obterPercentualDesconto(
+                        produtoId
+                    )}%`,
+
+                dataInicioFormatada: '-',
+
+                dataFimFormatada: '-'
+
+            } as PromocaoHistorico);
+
+        }
+
+        return historico;
+
+
+    }
+
+    obterClasseProgresso(
+        percentual: number
+    ): string {
+
+        if (percentual <= 25) {
+            return 'progresso-danger';
+        }
+
+        if (percentual <= 75) {
+            return 'progresso-warning';
+        }
+
+        return 'progresso-success';
+
+    }
+
+    metaAtingida(
+        promocao: Promocao
+    ): boolean {
+
+        return (
+            promocao.unidadesVendidas >=
+            promocao.metaUnidades
+        );
+
+    }
+
 
     obterPromocaoAtiva(
         produtoId: string
@@ -518,8 +779,7 @@ export class Promocoes implements OnInit {
 
                     });
 
-                    this.notificacaoService
-                        .notificarAtualizacaoBadges();
+                    this.notificacaoService.notificarAtualizacaoBadges();
 
                     this.cdr.detectChanges();
 
@@ -805,22 +1065,6 @@ export class Promocoes implements OnInit {
 
     }
 
-    get produtosPendentes(): Produto[] {
-
-        return this.pendentes
-            .map(item =>
-                this.produtos.find(
-                    produto =>
-                        produto.id === item.id
-                )
-            )
-            .filter(
-                (produto): produto is Produto =>
-                    !!produto
-            );
-
-    }
-
     get produtosAtivos(): Produto[] {
 
         return this.ativas
@@ -848,31 +1092,6 @@ export class Promocoes implements OnInit {
                             .toLowerCase()
                     )
         );
-
-    }
-
-    get produtosPendentesFiltrados(): Produto[] {
-
-        return this.pendentes
-            .map(item =>
-                this.produtos.find(
-                    produto =>
-                        produto.id === item.id
-                )
-            )
-            .filter(
-                (produto): produto is Produto =>
-                    !!produto
-            )
-            .filter(
-                produto =>
-                    produto.nome
-                        .toLowerCase()
-                        .includes(
-                            this.textoBusca
-                                .toLowerCase()
-                        )
-            );
 
     }
 
@@ -946,8 +1165,7 @@ export class Promocoes implements OnInit {
 
                         if (produto) {
 
-                            this.produtoSelecionado =
-                                produto;
+                            this.produtoSelecionado = produto;
 
                         }
 

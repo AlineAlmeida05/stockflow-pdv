@@ -48,6 +48,8 @@ export class Estoque implements OnInit {
 
     ativas: ProdutoPromocao[] = [];
 
+    filtroAcao = '';
+
     colunasEstoque: {
         field: string;
         header: string;
@@ -102,6 +104,25 @@ export class Estoque implements OnInit {
         {
             value: 'baixo',
             label: 'Crítico'
+        }
+    ];
+
+    opcoesAcao = [
+        {
+            label: 'Todas',
+            value: ''
+        },
+        {
+            label: '📈 Acompanhar',
+            value: 'acompanhar'
+        },
+        {
+            label: '⚠️ Promoção',
+            value: 'promocao'
+        },
+        {
+            label: '➕ Repor',
+            value: 'repor'
         }
     ];
 
@@ -198,6 +219,7 @@ export class Estoque implements OnInit {
 
     }
 
+
     get produtosFiltrados(): Produto[] {
 
         return this.produtos.filter(
@@ -212,6 +234,36 @@ export class Estoque implements OnInit {
 
                 if (!atendeBusca) {
                     return false;
+                }
+
+                if (this.filtroAcao) {
+
+                    const acao =
+                        this.obterAcaoProduto(
+                            produto
+                        );
+
+                    if (
+                        this.filtroAcao === 'acompanhar' &&
+                        acao !== '📈 Acompanhar'
+                    ) {
+                        return false;
+                    }
+
+                    if (
+                        this.filtroAcao === 'promocao' &&
+                        acao !== '⚠️ Promoção'
+                    ) {
+                        return false;
+                    }
+
+                    if (
+                        this.filtroAcao === 'repor' &&
+                        acao !== '➕ Repor'
+                    ) {
+                        return false;
+                    }
+
                 }
 
                 if (!this.filtroStatus) {
@@ -418,8 +470,7 @@ export class Estoque implements OnInit {
         }
     ): void {
 
-        const produto =
-            event.row as ProdutoEstoque;
+        const produto = event.row as ProdutoEstoque;
 
         switch (
         produto.acaoPromocional

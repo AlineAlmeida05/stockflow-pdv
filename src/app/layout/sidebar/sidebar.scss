@@ -15,7 +15,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    padding: 12px 16px;
+    padding: 16px 20px;
     border-radius: 12px;
     text-decoration: none;
     color: var(--color-gray-700);
@@ -69,7 +69,6 @@
     right: -17px;
 }
 
-
 @media (max-width: 768px) {
     :host {
         position: fixed;
@@ -89,5 +88,4 @@
     .sidebar-nav {
         padding-bottom: 20px;
     }
-
 }

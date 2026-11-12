@@ -6,30 +6,6 @@
     border: 1px solid var(--color-gray-200);
 }
 
-.company-info {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-top: 24px;
-}
-
-.company-info__item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--color-gray-200);
-}
-
-.company-info__item span {
-    color: var(--color-gray-500);
-}
-
-.company-info__item strong {
-    color: var(--color-primary);
-    font-weight: 600;
-}
-
 .brand-section {
     display: flex;
     justify-content: space-between;
@@ -49,9 +25,7 @@
 
 .brand-company {
     display: flex;
-
     flex-direction: column;
-
     gap: 20px;
 }
 
@@ -64,11 +38,8 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-
     padding: 12px;
-
     border: 1px solid var(--color-gray-200);
-
     border-radius: 10px;
 }
 
@@ -80,17 +51,13 @@
 
 .brand-slogan span {
     display: block;
-
     margin-bottom: 8px;
-
     color: var(--color-gray-500);
 }
 
 .brand-slogan strong {
     font-size: 1rem;
-
     font-style: italic;
-
     color: var(--color-primary);
 }
 
@@ -102,7 +69,6 @@
 .brand-color strong {
     font-weight: 600;
     color: var(--color-primary);
-
     font-family: monospace;
 }
 
@@ -111,20 +77,6 @@
     gap: 24px;
     align-items: center;
     justify-content: space-between;
-}
-
-.empresa-resumo-item {
-    display: flex;
-    flex-direction: column;
-}
-
-.empresa-resumo-item span {
-    font-size: 0.5rem;
-    color: var(--color-gray-500);
-}
-
-.empresa-resumo-item strong {
-    color: var(--color-primary);
 }
 
 .brand-color__preview {
@@ -153,26 +105,6 @@
     align-items: center;
 }
 
-.status-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-}
-
-.status-item {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 16px;
-    border-radius: 12px;
-    border: 1px solid var(--color-gray-200);
-}
-
-.status-item span {
-    color: var(--color-gray-500);
-    font-size: 0.875rem;
-}
-
 .status-success {
     color: var(--color-success);
 }
@@ -181,47 +113,23 @@
     color: var(--color-danger);
 }
 
-.recursos-container {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 20px;
-}
-
-.recursos-badges {
-    display: flex;
-
-    gap: 12px;
-
-    flex-wrap: wrap;
-}
-
 .company-resumo {
     display: grid;
-
     grid-template-columns: repeat(2, 1fr);
-
     gap: 16px;
-
     margin-top: 20px;
 }
 
 .resumo-item {
     padding: 12px;
-
     border-radius: 10px;
-
     background: var(--color-gray-50);
 }
 
 .resumo-item span {
     display: block;
-
     color: var(--color-gray-500);
-
     font-size: 0.85rem;
-
     margin-bottom: 6px;
 }
 

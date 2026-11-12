@@ -3,6 +3,7 @@
     <app-page-title
         title="Marketing da Promoção"
         subtitle="Crie materiais de divulgação para a promoção selecionada">
+
     </app-page-title>
 
     <button
@@ -16,14 +17,18 @@
 
     <div class="marketing-page">
 
-        <app-split-panel>
+        <app-split-panel
+            [showRight]="true"
+            [invertSizes]="true">
 
             <div left>
 
                 <div class="marketing-card">
 
                     <h3>
+
                         Criar Arte de Divulgação
+
                     </h3>
 
                     <div class="marketing-form">
@@ -33,11 +38,15 @@
                             <div class="produto-selecionado">
 
                                 <h3>
+
                                     Produto Selecionado
+
                                 </h3>
 
                                 <strong>
+
                                     ✅ {{ obterPromocaoSelecionada()?.nome }}
+
                                 </strong>
 
                             </div>
@@ -57,7 +66,9 @@
                         </label>
 
                         <h3>
+
                             Direção Criativa
+
                         </h3>
 
                         <label>
@@ -68,19 +79,27 @@
                                 [(ngModel)]="tomSelecionado">
 
                                 <option>
+
                                     Promocional
+
                                 </option>
 
                                 <option>
+
                                     Divertido
+
                                 </option>
 
                                 <option>
+
                                     Urgente
+
                                 </option>
 
                                 <option>
+
                                     Premium
+
                                 </option>
 
                             </select>
@@ -95,23 +114,33 @@
                                 [(ngModel)]="tipoPromocaoSelecionado">
 
                                 <option>
+
                                     Mega Promoção
+
                                 </option>
 
                                 <option>
+
                                     Oferta Relâmpago
+
                                 </option>
 
                                 <option>
+
                                     Combo Especial
+
                                 </option>
 
                                 <option>
+
                                     Mais Vendido
+
                                 </option>
 
                                 <option>
+
                                     Lançamento
+
                                 </option>
 
                             </select>
@@ -126,35 +155,51 @@
                                 [(ngModel)]="elementoVisualSelecionado">
 
                                 <option>
+
                                     Automático
+
                                 </option>
 
                                 <option>
+
                                     Gelo
+
                                 </option>
 
                                 <option>
+
                                     Fumaça
+
                                 </option>
 
                                 <option>
+
                                     Neon
+
                                 </option>
 
                                 <option>
+
                                     Luxo
+
                                 </option>
 
                                 <option>
+
                                     Madeira
+
                                 </option>
 
                                 <option>
+
                                     Churrasco
+
                                 </option>
 
                                 <option>
+
                                     Balada
+
                                 </option>
 
                             </select>
@@ -186,62 +231,31 @@
                     <div class="prompt-header">
 
                         <h3>
+
                             🎨 Prompt
+
                         </h3>
 
                         <button
                             type="button"
-                            (click)="gerarCampanha()"
-                            class="btn btn-primary"
-                            [disabled]="!promocaoSelecionada || gerandoCampanha">
+                            class="copy-button"
+                            (click)="copiarPrompt()">
 
-                            {{ gerandoCampanha? 'Gerando Prompt...':
-                            '✨ Criar Prompt' }}
+                            📋 Copiar
 
                         </button>
 
                     </div>
 
                     <div class="prompt-container">
+
                         <pre>
+
                             {{ campanhaAtual.prompt }}
+
                         </pre>
-                    </div>
-
-                    @if (campanhas.length > 0) {
-
-                    <div class="marketing-history">
-
-                        <h3>
-                            📜 Campanhas Anteriores
-                        </h3>
-
-                        @for (
-                        campanha of campanhas;
-                        track campanha.id
-                        ) {
-
-                        <button
-                            type="button"
-                            class="campaign-history-item"
-                            (click)="atualizarCampanha(campanha)">
-
-                            <strong>
-                                {{ campanha.produtoNome }}
-                            </strong>
-
-                            <small>
-                                {{ campanha.criadoEm | date:'dd/MM/yyyy HH:mm'
-                                }}
-                            </small>
-
-                        </button>
-
-                        }
 
                     </div>
-
-                    }
 
                     <div class="marketing-ai-tools">
 
@@ -263,11 +277,15 @@
                                 target="_blank">
 
                                 <span>
+
                                     🤖
+
                                 </span>
 
                                 <strong>
+
                                     ChatGPT
+
                                 </strong>
 
                             </a>
@@ -277,11 +295,14 @@
                                 target="_blank">
 
                                 <span>
+
                                     🧠
                                 </span>
 
                                 <strong>
+
                                     Copilot
+
                                 </strong>
 
                             </a>
@@ -291,11 +312,15 @@
                                 target="_blank">
 
                                 <span>
+
                                     ✨
+
                                 </span>
 
                                 <strong>
+
                                     Gemini
+
                                 </strong>
 
                             </a>
@@ -308,8 +333,9 @@
 
                     <app-empty-state
                         icon="🤖"
-                        title="Nenhuma campanha gerada"
-                        message="Selecione uma promoção e clique em Criar Arte para gerar um prompt personalizado.">
+                        title="Selecione uma promoção e clique em"
+                        message="✨ Criar Prompt para gerar um material de divulgação">
+
                     </app-empty-state>
 
                     }

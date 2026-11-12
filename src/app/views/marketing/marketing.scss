@@ -1,14 +1,14 @@
-.marketing-page {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-}
-
 .marketing-ai-links {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     margin-top: 16px;
+}
+
+.produto-selecionado {
+    padding: 16px;
+    border-radius: 12px;
+    background: var(--color-gray-100);
 }
 
 .marketing-ai-links a {

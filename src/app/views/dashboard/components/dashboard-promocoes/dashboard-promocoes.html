@@ -1,4 +1,5 @@
 <app-dashboard-layout>
+
     <div summary>
 
         <app-dashboard-panel
@@ -263,14 +264,24 @@
 
             </h3>
 
+            @if (
+            faturamentoPromocional <= 0
+            ) {
+
+            <app-empty-state
+                icon="💰"
+                title="Nenhum faturamento promocional"
+                message="Ainda não existem vendas promocionais para gerar faturamento.">
+            </app-empty-state>
+
+            } @else {
+
             <div class="card">
 
                 <div class="card-body">
 
                     <strong>
-
                         {{ faturamentoPromocional | currency:'BRL' }}
-
                     </strong>
 
                     <p>
@@ -280,6 +291,8 @@
                 </div>
 
             </div>
+
+            }
 
             }
 

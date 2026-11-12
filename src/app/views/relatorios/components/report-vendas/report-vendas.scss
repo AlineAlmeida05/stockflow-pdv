@@ -1,10 +1,3 @@
-.report-filters {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 8px;
-}
-
 .report-header {
     display: flex;
     justify-content: space-between;
@@ -23,23 +16,6 @@
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1rem;
     margin-bottom: 1.5rem;
-}
-
-.empty-report-state {
-    text-align: center;
-    padding: 4rem 2rem;
-    border: 1px dashed #d1d5db;
-    border-radius: 12px;
-    background: #fafafa;
-}
-
-.empty-report-state .icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-}
-
-.empty-report-state h2 {
-    margin-bottom: 0.5rem;
 }
 
 .resumo-clickable {
@@ -67,13 +43,6 @@
 
 .report-detail h2 {
     margin-bottom: 16px;
-}
-
-.detail-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid #eee;
 }
 
 :host ::ng-deep .split-panel.has-right {

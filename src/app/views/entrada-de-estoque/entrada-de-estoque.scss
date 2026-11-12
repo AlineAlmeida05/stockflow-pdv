@@ -14,23 +14,6 @@
   margin-top: 8px;
 }
 
-.estoque-resumo {
-  display: flex;
-  gap: 16px;
-  margin: 16px 0 24px;
-  flex-wrap: wrap;
-}
-
-.movimentacoes-card {
-  margin-top: 24px;
-}
-
-.movimentacoes-card h3 {
-  margin-top: 0;
-  margin-bottom: 16px;
-  color: var(--color-primary);
-}
-
 .produto-selecionado {
   width: 100%;
   box-sizing: border-box;
@@ -91,10 +74,6 @@
 .resumo-sem-estoque {
   color: #7f1d1d;
   font-weight: 600;
-}
-
-.field {
-  margin-bottom: 0;
 }
 
 @media (max-width: 768px) {

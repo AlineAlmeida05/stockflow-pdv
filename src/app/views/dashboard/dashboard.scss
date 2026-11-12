@@ -2,12 +2,6 @@
     display: block;
 }
 
-.dashboard-analytics {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 16px;
-}
-
 app-dashboard-chart {
     display: block;
     height: 370px;
@@ -167,17 +161,6 @@ app-dashboard-layout {
 }
 
 .dashboard-table__success {
-    color: var(--color-success);
-    font-weight: 700;
-}
-
-.dashboard-resumo-financeiro {
-    text-align: center;
-    padding: 32px;
-}
-
-.dashboard-resumo-financeiro strong {
-    font-size: 2rem;
     color: var(--color-success);
     font-weight: 700;
 }

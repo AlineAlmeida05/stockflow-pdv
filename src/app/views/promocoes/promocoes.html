@@ -1,399 +1,225 @@
 <app-main-layout>
+
     <app-page-title
         title="Promoções Inteligentes"
         subtitle="Identifique produtos com baixo giro e aumente as vendas.">
+
     </app-page-title>
 
-    <app-split-panel>
+    <app-split-panel
+        [showRight]="mostrarPainel">
+
         <div left>
-            <h2>
-                Produtos para Análise
-            </h2>
 
-            <app-search-input
-                placeholder="Buscar produto..."
-                [(value)]="textoBusca">
-            </app-search-input>
-            <h3>
-                ⚠️ Promoções Pendentes
-                ({{ produtosPendentesFiltrados.length }})
-            </h3>
+            @if (produtoSelecionado) {
 
-            @if (
-            produtosPendentesFiltrados.length === 0
-            ) {
+            <div class="titulo-badges">
 
-            <app-empty-state
-                icon="🎯"
-                title="Nenhuma promoção pendente"
-                message="Todos os produtos elegíveis já estão com promoção ativa.">
-            </app-empty-state>
+                <div class="produto-info">
 
-            } @else {
+                    <h2>
 
-            <div class="produtos-lista">
+                        {{ produtoSelecionado.nome }}
 
-                @for (
-                produto of produtosPendentesFiltrados;
-                track produto.id
-                ) {
+                    </h2>
 
-                <div
-                    class="produto-card produto-card--pendente"
-                    [class.produto-card--active]="produtoSelecionado?.id === produto.id"
-                    (click)="selecionarProduto(produto)">
+                    <div class="produto-situacao">
 
-                    <h3>
-                        {{ produto.nome }}
-                    </h3>
+                        @if (
+                        produtoEstaComPromocaoAtiva(
+                        produtoSelecionado.id
+                        )
+                        ) {
 
-                    @if (produto.promocaoAtiva) {
+                        ✅ Promoção Ativa
 
-                    @if (
-                    obterPromocaoAtiva(
-                    produto.id
-                    );
-                    as promocao
-                    ) {
-                    }}
-                </div>
+                        } @else {
 
-                }
-            </div>
+                        ⚠️ Promoção Pendente
 
-            }
+                        }
 
-            <hr class="promocoes-divider">
-
-            <h3>
-                ✅ Promoções Ativas
-                ({{ produtosAtivosFiltrados.length }})
-            </h3>
-
-            @if (
-            produtosAtivosFiltrados.length === 0
-            ) {
-
-            <app-empty-state
-                icon="✅"
-                title="Nenhuma promoção ativa"
-                message="Não existem promoções ativas no momento.">
-            </app-empty-state>
-
-            } @else {
-
-            <div class="produtos-lista">
-
-                @for (
-                produto of produtosAtivosFiltrados;
-                track produto.id
-                ) {
-
-                <div
-                    class="produto-card produto-card--promocao-ativa"
-                    [class.produto-card--active]="produtoSelecionado?.id === produto.id"
-                    (click)="selecionarProduto(produto)">
-
-                    <h3>
-                        {{ produto.nome }}
-                    </h3>
-
-                    @if (
-                    obterPromocaoAtiva(
-                    produto.id
-                    );
-                    as promocao
-                    ) {
-
-                    <div class="promo-progress">
-
-                        <div class="promo-progress__text">
+                        <div class="desconto-highlight">
+                            🏷️
                             {{
-                            obterStatusMeta(
-                            promocao
+                            obterPercentualDesconto(
+                            produtoSelecionado.id
                             )
-                            }}
-                        </div>
-
-                        <div class="promo-progress__bar-container">
-
-                            <div class="promo-progress__bar">
-
-                                <div
-                                    class="promo-progress__fill"
-                                    [style.width.%]="
-                obterPercentualMeta(
-                    promocao
-                )">
-                                </div>
-
-                            </div>
-
-                            <span
-                                class="promo-progress__percent">
-
-                                {{
-                                obterPercentualMeta(
-                                promocao
-                                )
-                                }}%
-
-                            </span>
-
-                        </div>
-
-                        <div class="promo-progress__footer">
-
-                            <div class="promo-progress__remaining">
-
-                                Faltam
-                                {{
-                                obterQuantidadeRestante(
-                                promocao
-                                )
-                                }}
-                                unidades
-
-                            </div>
-
+                            }}% OFF
                         </div>
 
                     </div>
 
-                    }
+                </div>
+
+                <div class="produto-status">
+
+                    <app-status-badge
+                        [text]="obterStatusGiro(produtoSelecionado.id)"
+                        [variant]="obterVariantGiro(produtoSelecionado.id)">
+
+                    </app-status-badge>
+
+                    <app-status-badge
+                        [text]="obterStatusEstoque(produtoSelecionado.id)"
+                        [variant]="obterVariantEstoque(produtoSelecionado.id)">
+
+                    </app-status-badge>
+
+                    <app-status-badge
+                        [text]="obterPrioridade(produtoSelecionado.id)"
+                        [variant]="obterVariantPrioridade(produtoSelecionado.id)">
+
+                    </app-status-badge>
 
                 </div>
 
-                }
+            </div>
+
+            }
+
+            @if (produtoSelecionado) {
+
+            <div class="card">
+
+                <h3>
+
+                    Histórico de Promoções
+
+                </h3>
+
+                <app-data-table
+                    [columns]="colunasHistorico"
+                    [data]="historicoPromocoes"
+                    [clickableRows]="true"
+                    [showActions]="false"
+                    (rowClick)="visualizarPromocao($event)">
+
+                </app-data-table>
 
             </div>
+
             }
 
         </div>
 
         <div right>
-            @if (!produtoSelecionado) {
 
-            <app-empty-state
-                icon="📈"
-                title="Nenhum produto selecionado"
-                message="Selecione um produto para visualizar a análise e as sugestões de promoção.">
-            </app-empty-state>
+            @if (promocaoSelecionada) {
 
-            } @else {
+            <div class="card">
 
-            <div class="card produto-detalhes">
+                <h3>
 
-                <div class="titulo-badges">
+                    Detalhes da Promoção
 
-                    <h2>
-                        {{ produtoSelecionado.nome }}
-                    </h2>
-                    <div class="produto-status">
-                        <app-status-badge
-                            [text]="obterStatusGiro(produtoSelecionado.id)"
-                            [variant]="obterVariantGiro(produtoSelecionado.id)">
-                        </app-status-badge>
-
-                        <app-status-badge
-                            [text]="obterStatusEstoque(produtoSelecionado.id)"
-                            [variant]="obterVariantEstoque(produtoSelecionado.id)">
-                        </app-status-badge>
-
-                        <app-status-badge
-                            [text]="obterPrioridade(produtoSelecionado.id)"
-                            [variant]="obterVariantPrioridade(produtoSelecionado.id)">
-                        </app-status-badge>
-
-                    </div>
-                </div>
-
-                <div class="analise-promocao">
-
-                    <h3>
-                        🎯 Resumo da Promoção
-                    </h3>
-
-                    <div class="desconto-highlight">
-                        🏷️
-                        {{
-                        obterPercentualDesconto(
-                        produtoSelecionado.id
-                        )
-                        }}% OFF
-                    </div>
-
-                    <p>
-                        {{
-                        obterDescricaoPromocao(
-                        produtoSelecionado.id
-                        )
-                        }}
-                    </p>
-
-                    <div class="resumo-promocao-grid">
-
-                        <div class="resumo-promocao-item">
-                            <strong>Motivo:</strong>
-                            {{
-                            obterMotivoPromocao(
-                            produtoSelecionado.id
-                            )
-                            }}
-                        </div>
-
-                        <div class="resumo-promocao-item">
-                            <strong>
-                                Meta Sugerida:
-                            </strong>
-                            {{
-                            obterMetaSugestao(
-                            produtoSelecionado
-                            )
-                            }}
-                            unidades
-                        </div>
-
-                        <div class="resumo-promocao-item">
-                            <strong>Preço Atual</strong>
-                            <span class="valor-atual">
-                                {{
-                                produtoSelecionado.precoVenda
-                                | currency:'BRL'
-                                }}
-                            </span>
-                        </div>
-
-                        <div class="resumo-promocao-item">
-                            <strong>
-                                Receita Potencial:
-                            </strong>
-                            {{
-                            obterReceitaPotencial(
-                            produtoSelecionado
-                            )
-                            | currency:'BRL'
-                            }}
-                        </div>
-
-                        <div class="resumo-promocao-item">
-                            <strong>Preço Promocional</strong>
-                            <span class="valor-promocional">
-                                {{
-                                obterPrecoPromocional(
-                                produtoSelecionado
-                                )
-                                | currency:'BRL'
-                                }}
-                            </span>
-                        </div>
-
-                        <div class="resumo-promocao-item">
-                            <strong>Impacto Máximo:</strong>
-                            {{
-                            obterImpactoFinanceiro(
-                            produtoSelecionado
-                            )
-                            | currency:'BRL'
-                            }}
-                        </div>
-
-                        <div class="resumo-promocao-item">
-                            <strong>Perda por Unidade:</strong>
-                            {{ obterEconomia(produtoSelecionado)|
-                            currency:'BRL'
-                            }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="produto-detalhes__grid">
-
-                    <div class="produto-detalhes__item">
-                        <strong>Dias em Estoque</strong>
-                        <span>
-                            {{
-                            obterDiasEmEstoque(
-                            produtoSelecionado.id
-                            )
-                            }}
-                        </span>
-                    </div>
-
-                    <div class="produto-detalhes__item">
-                        <strong>Estoque Atual</strong>
-                        <span>
-                            {{ produtoSelecionado.estoqueAtual }}
-                        </span>
-                    </div>
-
-                    <div class="produto-detalhes__item">
-                        <strong>Comprado</strong>
-                        <span>
-                            {{
-                            obterQuantidadeComprada(
-                            produtoSelecionado.id
-                            )
-                            }}
-                        </span>
-                    </div>
-
-                    <div class="produto-detalhes__item">
-                        <strong>Vendido</strong>
-                        <span>
-                            {{
-                            obterQuantidadeVendida(
-                            produtoSelecionado.id
-                            )
-                            }}
-                        </span>
-                    </div>
-
-                </div>
+                </h3>
 
                 @if (
-                !produtoEstaComPromocaoAtiva(
-                produtoSelecionado.id
-                )
+                promocaoSelecionada?.tipoRegistro
+                === 'ativa'
                 ) {
-                <div class="produto-acoes">
-                    <button
-                        class="btn btn-success"
-                        type="button"
-                        (click)="ativarPromocao(produtoSelecionado)">
-                        Ativar Promoção
-                    </button>
+
+                <strong>
+
+                    ✅ Promoção Ativa
+
+                </strong>
+
+                <div class="detail-row">
+
+                    <div class="promo-progress">
+
+                        <div class="promo-progress__bar">
+
+                            <div
+                                class="promo-progress__fill"
+                                [class.progresso-danger]="obterPercentualMeta(
+                                    promocaoSelecionada) <= 25"
+                                [class.progresso-warning]="obterPercentualMeta(
+                                    promocaoSelecionada) > 25 &&
+                                    obterPercentualMeta(promocaoSelecionada) <= 75"
+                                [class.progresso-success]="obterPercentualMeta(
+                                    promocaoSelecionada) > 75"
+                                [style.width.%]="obterPercentualMeta(promocaoSelecionada)">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
-                } @else {
+                <div class="detail-row">
+
+                    <span>
+
+                        Meta
+
+                    </span>
+
+                    <strong>
+
+                        {{ promocaoSelecionada.metaUnidades }}
+
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Vendidas
+
+                    </span>
+
+                    <strong>
+
+                        {{ promocaoSelecionada.unidadesVendidas }}
+
+                    </strong>
+
+                </div>
 
                 @if (
+                produtoSelecionado &&
                 promocaoAtingiuObjetivo(
                 produtoSelecionado.id
                 )
                 ) {
 
                 <div class="promocao-sucesso">
+
                     <strong>
+
                         ✅ Promoção eficiente
+
                     </strong>
 
                     <p>
+
                         O giro do produto melhorou.
+
                     </p>
 
                     <p>
+
                         Considere encerrar a promoção.
+
                     </p>
+
                 </div>
+
                 }
 
-                <div class="produto-acoes">
+                <div class="produtos-acoes">
 
                     <button
                         class="btn btn-danger"
                         type="button"
-                        (click)="desativarPromocao(produtoSelecionado)">
+                        (click)="produtoSelecionado && desativarPromocao(produtoSelecionado)">
 
                         Encerrar Promoção
 
@@ -402,17 +228,344 @@
                     <button
                         class="btn btn-primary"
                         type="button"
-                        (click)="criarMarketing(produtoSelecionado.id)">
+                        (click)="produtoSelecionado && criarMarketing(produtoSelecionado.id)">
 
                         ✨ Criar Marketing
 
                     </button>
 
                 </div>
+
+                }
+
+                @if (
+                promocaoSelecionada?.tipoRegistro
+                === 'encerrada'
+                ) {
+
+                <strong>
+
+                    🏁 Promoção Encerrada
+
+                </strong>
+
+                @if (
+                metaAtingida(
+                promocaoSelecionada
+                )
+                ) {
+
+                <div class="resultado-sucesso">
+
+                    ✅ Meta atingida
+
+                </div>
+
+                } @else {
+
+                <div class="resultado-alerta">
+
+                    ⚠️ Meta não atingida
+
+                </div>
+
+                }
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Início
+
+                    </span>
+
+                    <strong>
+
+                        {{ promocaoSelecionada.dataInicio |
+                        date:'dd/MM/yyyy' }}
+
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Fim
+
+                    </span>
+
+                    <strong>
+
+                        {{ promocaoSelecionada.dataFim ? (
+                        promocaoSelecionada.dataFim
+                        | date:'dd/MM/yyyy' ) : 'Promoção Ativa' }}
+
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Desconto
+
+                    </span>
+
+                    <strong>
+
+                        {{ promocaoSelecionada.percentualDesconto }}%
+
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Receita Gerada
+
+                    </span>
+
+                    <strong>
+
+                        {{ promocaoSelecionada.receitaGerada |
+                        currency:'BRL' }}
+
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Estoque Inicial
+
+                    </span>
+
+                    <strong>
+
+                        {{ promocaoSelecionada.estoqueInicio }}
+
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Meta
+
+                    </span>
+
+                    <strong>
+
+                        {{ promocaoSelecionada.metaUnidades }}
+
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Vendidas
+
+                    </span>
+
+                    <strong>
+
+                        {{ promocaoSelecionada.unidadesVendidas }}
+
+                    </strong>
+
+                </div>
+
+                }
+
+                @if (
+                promocaoSelecionada?.tipoRegistro
+                === 'pendente'
+                ) {
+
+                <strong>
+
+                    ⚠️ Sugestão de Promoção
+
+                </strong>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Motivo
+
+                    </span>
+
+                    <strong>
+
+                        {{ promocaoSelecionada.motivo }}
+
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Desconto
+
+                    </span>
+
+                    <strong>
+
+                        {{ promocaoSelecionada.percentualDesconto }}%
+
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Meta
+
+                    </span>
+
+                    <strong>
+
+                        {{ promocaoSelecionada.metaUnidades }}
+
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Preço Atual
+
+                    </span>
+
+                    <strong>
+
+                        {{ produtoSelecionado?.precoVenda | currency:'BRL'
+                        }}
+
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Preço Promocional
+
+                    </span>
+
+                    <strong>
+
+                        {{ promocaoSelecionada.precoPromocional |
+                        currency:'BRL' }}
+
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Receita Potencial
+
+                    </span>
+
+                    <strong>
+
+                        {{
+                        obterReceitaPotencial(
+                        produtoSelecionado!
+                        )
+                        | currency:'BRL'
+                        }}
+
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Impacto Máximo
+
+                    </span>
+
+                    <strong>
+
+                        {{
+                        obterImpactoFinanceiro(
+                        produtoSelecionado!
+                        )
+                        | currency:'BRL'
+                        }}
+
+                    </strong>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <span>
+
+                        Perda por Unidade
+
+                    </span>
+
+                    <strong>
+
+                        {{
+                        obterEconomia(
+                        produtoSelecionado!
+                        )
+                        | currency:'BRL'
+                        }}
+
+                    </strong>
+
+                </div>
+
+                <div class="produto-acoes">
+
+                    <button
+                        class="btn btn-success"
+                        type="button"
+                        (click)="produtoSelecionado &&ativarPromocao(produtoSelecionado)">
+
+                        Ativar Promoção
+
+                    </button>
+
+                </div>
+
                 }
 
             </div>
+
             }
+
         </div>
+
     </app-split-panel>
+
 </app-main-layout>

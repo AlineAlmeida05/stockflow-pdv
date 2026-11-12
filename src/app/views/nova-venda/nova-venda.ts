@@ -21,6 +21,7 @@ import { StatusEstoque } from '../../core/models/estoque-status.model';
 import { SplitPanel } from '../../shared/components/split-panel/split-panel';
 import { VendaLinha } from '../../core/models/venda-linha.model';
 import { Router } from '@angular/router';
+import { EmptyState } from '../../shared/components/empty-state/empty-state';
 
 @Component({
     selector: 'app-nova-venda',
@@ -32,7 +33,8 @@ import { Router } from '@angular/router';
         PageTitle,
         CurrencyInput,
         SmartProductSearch,
-        SplitPanel
+        SplitPanel,
+        EmptyState
     ],
     templateUrl: './nova-venda.html',
     styleUrl: './nova-venda.scss'

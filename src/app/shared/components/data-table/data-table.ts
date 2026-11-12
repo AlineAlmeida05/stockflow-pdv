@@ -157,7 +157,7 @@ export class DataTable {
     }
 
     getProgressValue(
-        value: string
+        value: string | number
     ): number {
 
         return this.obterPercentual(
@@ -167,7 +167,7 @@ export class DataTable {
     }
 
     getProgressClass(
-        value: string
+        value: string | number
     ):
         | 'progress-success'
         | 'progress-warning'
@@ -190,14 +190,23 @@ export class DataTable {
     }
 
     private obterPercentual(
-        value: string
+        value: string | number
     ): number {
+
+        if (
+            typeof value === 'number'
+        ) {
+
+            return value;
+
+        }
 
         return Number(
             value.replace('%', '')
         ) || 0;
 
     }
+
 
     getValue(
         row: unknown,
@@ -272,6 +281,38 @@ export class DataTable {
         return String(
             (row as Record<string, unknown>)[field] ?? ''
         );
+
+    }
+
+    getActionClass(
+        value: string
+    ): string {
+
+        if (
+            value.includes('Promoção')
+        ) {
+            return 'table-action-warning';
+        }
+
+        if (
+            value.includes('Repor')
+        ) {
+            return 'table-action-danger';
+        }
+
+        if (
+            value.includes('Acompanhar')
+        ) {
+            return 'table-action-success';
+        }
+
+        if (
+            value.includes('Impersonar')
+        ) {
+            return 'table-action-warning';
+        }
+
+        return '';
 
     }
 

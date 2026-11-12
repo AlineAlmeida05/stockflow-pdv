@@ -2,6 +2,8 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+    margin-top: 12px;
+    margin-bottom: 12px;
 }
 
 .currency-input__wrapper {
@@ -32,10 +34,5 @@
 
 .currency-input__wrapper:focus-within {
     border-color: var(--color-secondary);
-    box-shadow: 0 0 0 3px
-        color-mix(
-            in srgb,
-            var(--color-secondary) 15%,
-            transparent
-        );
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-secondary) 15%, transparent);
 }
