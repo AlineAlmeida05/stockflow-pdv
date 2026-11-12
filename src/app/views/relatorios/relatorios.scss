@@ -6,39 +6,26 @@
 
 .abas button {
     background: transparent;
-
     border: none;
-
     border-radius: 0;
-
     padding: 14px 24px;
-
     font-weight: 600;
-
     cursor: pointer;
-
     position: relative;
 }
 
 .abas button.active {
     background: transparent;
-
     color: var(--color-primary);
 }
 
 .abas button.active::after {
     content: "";
-
     position: absolute;
-
     left: 0;
-
     right: 0;
-
     bottom: -1px;
-
     height: 3px;
-
     background: var(--color-primary);
 }
 
@@ -67,10 +54,6 @@ app-stat-card {
 
 .indicadores-carrossel::-webkit-scrollbar-thumb {
     border-radius: 999px;
-}
-
-.periodo-select {
-    width: 180px;
 }
 
 [actions] {

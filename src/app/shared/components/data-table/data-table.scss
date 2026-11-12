@@ -283,3 +283,16 @@ tbody tr:hover {
     filter: brightness(1.05);
     transform: translateY(-1px);
 }
+
+.table-action-success {
+    background: var(--color-success);
+}
+
+.table-action-warning {
+    background: var(--color-warning);
+    color: #000;
+}
+
+.table-action-danger {
+    background: var(--color-danger);
+}

@@ -284,4 +284,36 @@ export class DataTable {
 
     }
 
+    getActionClass(
+        value: string
+    ): string {
+
+        if (
+            value.includes('Promoção')
+        ) {
+            return 'table-action-warning';
+        }
+
+        if (
+            value.includes('Repor')
+        ) {
+            return 'table-action-danger';
+        }
+
+        if (
+            value.includes('Acompanhar')
+        ) {
+            return 'table-action-success';
+        }
+
+        if (
+            value.includes('Impersonar')
+        ) {
+            return 'table-action-warning';
+        }
+
+        return '';
+
+    }
+
 }

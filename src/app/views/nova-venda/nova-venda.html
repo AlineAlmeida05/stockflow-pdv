@@ -188,6 +188,16 @@
 
             </div>
 
+            @if (carrinho.length === 0) {
+
+            <app-empty-state
+                icon="🛒"
+                title="Carrinho vazio"
+                message="Pesquise um produto e clique em + para adicionar itens à venda.">
+            </app-empty-state>
+
+            }
+
             <div class="resumo-venda-horizontal">
 
                 <div class="resumo-card">

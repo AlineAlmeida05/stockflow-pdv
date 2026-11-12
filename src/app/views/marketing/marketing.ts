@@ -228,9 +228,16 @@ export class Marketing implements OnInit {
     voltarParaPromocoes(): void {
 
         this.router.navigate(
-            ['/promocoes']
+            ['/promocoes'],
+            {
+                queryParams: {
+                    produtoId:
+                        this.promocaoSelecionada
+                }
+            }
         );
 
     }
+
 
 }

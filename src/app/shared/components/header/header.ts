@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { AlterarSenhaModal } from '../alterar-senha-modal/alterar-senha-modal';
 import { ImpersonacaoService } from '../../../core/services/impersonacao.service';
+import { AlertService } from '../../../core/services/alert.service';
 
 @Component({
     selector: 'app-header',
@@ -34,9 +35,9 @@ export class Header {
         private authService: AuthService,
         private router: Router,
         private impersonacaoService: ImpersonacaoService,
+        private alertService: AlertService,
         private cdr: ChangeDetectorRef
-    ) {
-    }
+    ) { }
 
     get tenantAtual() {
 
@@ -61,6 +62,16 @@ export class Header {
 
     sair(): void {
 
+        if (this.estaImpersonando) {
+
+            this.alertService.warning(
+                'Encerre a impersonação antes de sair do sistema.'
+            );
+
+            return;
+
+        }
+
         this.authService
             .logout()
             .subscribe({
@@ -79,6 +90,7 @@ export class Header {
                     this.cdr.detectChanges();
 
                 },
+
                 error: () => {
 
                     this.authService.limparSessao();

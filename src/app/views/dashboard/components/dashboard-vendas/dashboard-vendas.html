@@ -5,12 +5,27 @@
         <app-dashboard-panel
             title="Receita por Forma de Pagamento">
 
+            @if (
+            !pagamentoChartData.datasets[0].data.some(
+            valor => valor > 0
+            )
+            ) {
+
+            <app-empty-state
+                icon="💳"
+                title="Nenhuma venda encontrada"
+                message="As formas de pagamento aparecerão após o registro das primeiras vendas.">
+            </app-empty-state>
+
+            } @else {
+
             <app-dashboard-chart
                 type="doughnut"
                 [chartData]="pagamentoChartData"
                 [chartOptions]="pagamentoChartOptions">
-
             </app-dashboard-chart>
+
+            }
 
         </app-dashboard-panel>
 

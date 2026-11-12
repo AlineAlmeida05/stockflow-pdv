@@ -3,6 +3,7 @@
     <app-page-title
         title="Histórico de Vendas"
         subtitle="Consulte vendas realizadas, detalhes dos itens e cancelamentos.">
+
     </app-page-title>
 
     <div class="filtros">
@@ -11,28 +12,46 @@
             label="Forma de Pagamento"
             [(value)]="filtroPagamento"
             [options]="opcoesPagamento">
+
         </app-select-input>
 
         <app-select-input
             label="Status"
             [(value)]="filtroStatus"
             [options]="opcoesStatus">
+
         </app-select-input>
 
     </div>
 
     <app-split-panel
         [invertSizes]="true">
+
         <div left class="vendas-panel">
 
             <h2>
+
                 Vendas
+
             </h2>
+
+            @if (
+            vendasFiltradas.length === 0
+            ) {
+
+            <app-empty-state
+                icon="📜"
+                title="Nenhuma venda encontrada"
+                message="Não existem vendas para os filtros selecionados.">
+            </app-empty-state>
+
+            } @else {
 
             @for (
             venda of vendasFiltradas;
             track venda.id
             ) {
+
             <div
                 class="card venda-card"
                 [class.venda-card--active]="vendaSelecionada?.id === venda.id"
@@ -42,11 +61,15 @@
                 <div class="venda-card__header">
 
                     <strong class="venda-card__valor">
+
                         {{ venda.valorTotal | currency:'BRL' }}
+
                     </strong>
 
                     <span class="venda-card__data">
+
                         {{venda.dataVenda| date:'dd/MM/yyyy HH:mm'}}
+
                     </span>
 
                 </div>
@@ -54,25 +77,36 @@
                 <div class="venda-card__footer">
 
                     <span class="venda-card__itens">
+
                         {{ venda.quantidadeItens }} item(ns)
+
                     </span>
 
                     <span
                         class="venda-card__pagamento">
+
                         {{venda.formaPagamento| uppercase }}
+
                     </span>
 
                 </div>
 
             </div>
+
             }
+
+            }
+
         </div>
 
         <div right class="detalhes-panel">
+
             @if (vendaSelecionada) {
 
             <h2>
+
                 Detalhes da Venda
+
             </h2>
 
             <div class="total-venda-card">
@@ -80,25 +114,35 @@
                 <div class="total-venda-card__header">
 
                     <span>
+
                         Total da Venda
+
                     </span>
 
                     <strong>
+
                         {{vendaSelecionada.valorTotal| currency:'BRL' }}
+
                     </strong>
+
                 </div>
 
                 <div class="venda-meta">
 
                     <div class="venda-meta__item">
+
                         {{obterIconePagamento(vendaSelecionada.formaPagamento)}}
+
                         {{ vendaSelecionada.formaPagamento | uppercase }}
+
                     </div>
 
                     <span class="venda-meta__divider">|</span>
 
                     <div class="venda-meta__item">
+
                         👤 {{ vendaSelecionada.usuarioNome }}
+
                     </div>
 
                     <span class="venda-meta__divider">|</span>
@@ -123,7 +167,9 @@
                         class="btn btn-danger"
                         type="button"
                         (click)="mostrarCancelamento = true">
+
                         Cancelar Venda
+
                     </button>
 
                     }
@@ -134,10 +180,13 @@
                     ) {
 
                     <div class="venda-meta__item status-expirado">
+
                         ⏱️ Prazo de cancelamento expirado
+
                     </div>
 
                     }
+
                 </div>
 
             </div>
@@ -147,12 +196,17 @@
             ) {
 
             <div class="motivo-cancelamento">
+
                 <span>
+
                     Motivo do Cancelamento:
+
                 </span>
 
                 <p>
+
                     {{vendaSelecionada.motivoCancelamento}}
+
                 </p>
 
                 @if (vendaSelecionada.dataCancelamento &&
@@ -161,22 +215,34 @@
                 <div class="cancelamento-resumo">
 
                     <div class="info-cancelamento">
+
                         <span>Data do Cancelamento</span>
+
                         <strong>
+
                             {{vendaSelecionada.dataCancelamento|
                             date:'dd/MM/yyyy HH:mm'}}
+
                         </strong>
+
                     </div>
 
                     <div class="info-cancelamento">
+
                         <span>Cancelado por</span>
+
                         <strong>
+
                             {{ vendaSelecionada.usuarioCancelamento }}
+
                         </strong>
+
                     </div>
 
                 </div>
+
                 }
+
             </div>
 
             }
@@ -191,22 +257,29 @@
             ) {
 
             <div class="cancelamento-card">
+
                 <h3>
+
                     Motivo do Cancelamento
+
                 </h3>
 
                 <textarea
                     rows="4"
                     [(ngModel)]="motivoCancelamento"
                     placeholder="Informe o motivo do cancelamento">
+
                 </textarea>
 
                 <div class="cancelamento-card__actions">
+
                     <button
                         class="btn btn-danger"
                         type="button"
                         (click)="abrirConfirmacaoCancelamento()">
+
                         Confirmar Cancelamento
+
                     </button>
 
                     <button
@@ -214,10 +287,15 @@
                         type="button"
                         (click)="mostrarCancelamento = false;
                             motivoCancelamento = '';">
+
                         Cancelar
+
                     </button>
+
                 </div>
+
             </div>
+
             }
 
             }
@@ -235,15 +313,20 @@
                     <div class="item-venda__header">
 
                         <h4 class="item-venda__nome">
+
                             {{ item.produtoNome }}
+
                         </h4>
 
                         @if (item.promocaoAplicada) {
+
                         <app-status-badge
                             text="Promoção"
                             icon="🔥"
                             variant="warning">
+
                         </app-status-badge>
+
                         }
 
                     </div>
@@ -251,26 +334,38 @@
                     <div class="item-venda__info">
 
                         <span>
+
                             Qtd. {{ item.quantidade }}
+
                         </span>
 
                         <strong>
+
                             {{ item.subtotal | currency:'BRL' }}
+
                         </strong>
 
                     </div>
 
                 </div>
+
                 }
+
             </app-expandable-card>
 
             } @else {
+
             <app-empty-state
                 icon="🧾"
                 title="Nenhuma venda selecionada"
                 message="Escolha uma venda na lista para visualizar os detalhes.">
+
             </app-empty-state>
+
             }
+
         </div>
+
     </app-split-panel>
+
 </app-main-layout>

@@ -180,6 +180,14 @@ export class AuthService {
             }
         );
 
-    }    
+    }
+
+    estaImpersonando(): boolean {
+
+        return localStorage.getItem(
+            'impersonando'
+        ) === 'true';
+
+    }
 
 }

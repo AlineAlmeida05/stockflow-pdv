@@ -159,6 +159,8 @@
                     <button
                         type="button"
                         class="table-action"
+                        [class]="'table-action ' +
+                        getActionClass(getStringValue(row, column.field ))"
                         (click)="$event.stopPropagation();
                             actionClick.emit({
                             row,field: column.field})">

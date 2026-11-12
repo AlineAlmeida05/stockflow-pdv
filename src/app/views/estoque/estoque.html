@@ -3,6 +3,7 @@
     <app-page-title
         title="Estoque"
         subtitle="Acompanhe os níveis de estoque e identifique produtos com baixo saldo.">
+
     </app-page-title>
 
     <app-toolbar>
@@ -12,7 +13,19 @@
             <app-search-input
                 placeholder="Buscar produto..."
                 [(value)]="textoBusca">
+
             </app-search-input>
+
+        </div>
+
+        <div class="toolbar-field">
+
+            <app-select-input
+                placeholder="Ação Recomendada..."
+                [(value)]="filtroAcao"
+                [options]="opcoesAcao">
+
+            </app-select-input>
 
         </div>
 
@@ -22,6 +35,7 @@
                 placeholder="Todos os níveis"
                 [(value)]="filtroStatus"
                 [options]="statusOptions">
+
             </app-select-input>
 
         </div>
@@ -39,6 +53,7 @@
                 title="Produtos"
                 [value]="totalProdutos"
                 variant="info">
+
             </app-stat-card>
 
         </div>
@@ -52,6 +67,7 @@
                 title="Normal"
                 [value]="totalEmEstoque"
                 variant="success">
+
             </app-stat-card>
 
         </div>

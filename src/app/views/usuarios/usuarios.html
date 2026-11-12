@@ -147,11 +147,7 @@
 
                     <strong>
 
-                        {{
-                        obterNomeTenant(
-                        tenantCadastroId
-                        )
-                        }}
+                        {{ obterNomeTenant(tenantCadastroId) }}
 
                     </strong>
 
@@ -165,11 +161,7 @@
 
                     <strong>
 
-                        {{
-                        novoAtivo
-                        ? '✅ Ativo'
-                        : '❌ Inativo'
-                        }}
+                        {{ novoAtivo? '✅ Ativo': '❌ Inativo' }}
 
                     </strong>
 

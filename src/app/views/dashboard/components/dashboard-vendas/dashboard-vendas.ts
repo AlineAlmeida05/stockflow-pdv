@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { DashboardChart } from '../../../../shared/components/dashboard-chart/dashboard-chart';
 import { DashboardLayout } from '../../../../shared/components/dashboard-layout/dashboard-layout';
 import { DashboardPanel } from '../../../../shared/components/dashboard-panel/dashboard-panel';
+import { EmptyState } from '../../../../shared/components/empty-state/empty-state';
 
 @Component({
   selector: 'app-dashboard-vendas',
@@ -9,7 +10,8 @@ import { DashboardPanel } from '../../../../shared/components/dashboard-panel/da
   imports: [
     DashboardLayout,
     DashboardChart,
-    DashboardPanel
+    DashboardPanel,
+    EmptyState
   ],
   templateUrl: './dashboard-vendas.html',
 })

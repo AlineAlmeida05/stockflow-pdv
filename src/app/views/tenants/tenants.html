@@ -334,13 +334,28 @@
 
                 </button>
 
+                @if (
+                tenantEditando?.id !== tenantAtual?.id
+                ) {
+
                 <button
-                    class="btn btn-warning"
+                    type="button"
+                    class="btn btn-primary"
                     (click)="impersonarTenant(tenantEditando!)">
 
                     Impersonar
 
                 </button>
+
+                } @else {
+
+                <span class="tenant-atual">
+
+                    ✅ Tenant Atual
+
+                </span>
+
+                }
 
                 <button
                     class="btn btn-secondary"
