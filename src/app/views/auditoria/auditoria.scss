@@ -11,8 +11,20 @@
     white-space: pre-wrap;
     line-height: 1.5;
     display: block;
+    overflow-wrap: break-word;
 }
 
 .evento-paragrafo {
     font-weight: 700;
+}
+
+@media (max-width: 768px) {
+    .card .btn {
+        width: 100%;
+        margin-top: 16px;
+    }
+
+    .card {
+        overflow: hidden;
+    }
 }

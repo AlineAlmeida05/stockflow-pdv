@@ -1,5 +1,5 @@
 :host {
-    min-width: 240px;
+    min-width: 0;
     flex: 1;
 }
 
@@ -8,8 +8,15 @@
     gap: 16px;
     overflow-x: auto;
     scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
     padding-bottom: 4px;
     scrollbar-width: thin;
+}
+
+.indicadores-carrossel > * {
+    flex: 0 0 240px;
+    scroll-snap-align: start;
 }
 
 .indicadores-carrossel::-webkit-scrollbar {
@@ -23,4 +30,15 @@
 
 .indicadores-carrossel::-webkit-scrollbar-track {
     background: transparent;
+}
+
+@media (max-width: 768px) {
+    .indicadores-carrossel {
+        gap: 12px;
+        padding-bottom: 8px;
+    }
+
+    .indicadores-carrossel > * {
+        flex: 0 0 220px;
+    }
 }

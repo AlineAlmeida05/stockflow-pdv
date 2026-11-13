@@ -25,5 +25,23 @@
     color: var(--color-gray-500);
     font-size: 0.95rem;
     max-width: 400px;
+    word-break: break-word;
 }
 
+@media (max-width: 768px) {
+    .empty-state {
+        padding: 1.5rem;
+    }
+
+    .empty-state__icon {
+        font-size: 1.75rem;
+    }
+
+    .empty-state h3 {
+        font-size: 1rem;
+    }
+
+    .empty-state p {
+        font-size: 0.875rem;
+    }
+}

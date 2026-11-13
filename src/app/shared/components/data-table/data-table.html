@@ -46,6 +46,7 @@
                     Nenhum registro encontrado.
 
                 </td>
+
             </tr>
 
             } @else {
@@ -84,9 +85,10 @@
                     } @else if (column.type === 'currency') {
 
                     <span
-                        [class.preco-original-riscado]="column.field === 'precoVenda' &&temPrecoPromocional(row)"
-                        [class.preco-promocional]="column.field === 'precoPromocional' &&
-                            $any(row).precoPromocional > 0">
+                        [class.preco-original-riscado]="column.field 
+                        === 'precoVenda' &&temPrecoPromocional(row)"
+                        [class.preco-promocional]="column.field 
+                        === 'precoPromocional' && $any(row).precoPromocional > 0">
 
                         <span
                             [class.saldo-positivo]="column.field === 'saldoDevedor' &&
@@ -179,24 +181,24 @@
 
                         <button
                             type="button"
-                            (click)="
-            $event.stopPropagation();
-            decrement.emit(row)
-        ">
+                            (click)="$event.stopPropagation();decrement.emit(row)">
+
                             -
+
                         </button>
 
                         <span>
+
                             {{ getValue(row, column.field) }}
+
                         </span>
 
                         <button
                             type="button"
-                            (click)="
-            $event.stopPropagation();
-            increment.emit(row)
-        ">
+                            (click)="$event.stopPropagation();increment.emit(row)">
+
                             +
+
                         </button>
 
                     </div>
@@ -212,10 +214,8 @@
                     <button
                         type="button"
                         class="table-link"
-                        (click)="
-                $event.stopPropagation();
-                rowClick.emit(row)
-            ">
+                        (click)="$event.stopPropagation();
+                        rowClick.emit(row)">
 
                         {{ getValue(row, column.field) }}
 
@@ -239,8 +239,7 @@
 
                     <app-action-icons
                         [showEdit]="showEditAction"
-                        [deleteIcon]="
-                            $any(row).ativo === undefined
+                        [deleteIcon]="$any(row).ativo === undefined
                                 ? deleteIcon
                                 : $any(row).ativo
                                     ? '⏸️'
@@ -249,11 +248,19 @@
                         (delete)="delete.emit(row)">
 
                     </app-action-icons>
+
                 </td>
+
                 }
+
             </tr>
+
             }
+
             }
+
         </tbody>
+
     </table>
+
 </div>

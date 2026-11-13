@@ -122,8 +122,9 @@
 
 .resumo-item {
     padding: 12px;
-    border-radius: 10px;
+    border-radius: 12px;
     background: var(--color-gray-50);
+    border: 1px solid var(--color-gray-200);
 }
 
 .resumo-item span {
@@ -133,12 +134,85 @@
     margin-bottom: 6px;
 }
 
+.status-principal,
+.card-resumo {
+    background: var(--color-gray-50);
+    border: 1px solid var(--color-gray-200);
+    border-radius: 12px;
+    padding: 12px;
+}
+
+.status-principal span,
+.card-resumo span {
+    display: block;
+    color: var(--color-gray-500);
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+}
+
+.resumo-item strong {
+    display: block;
+    word-break: break-word;
+}
+
 @media (max-width: 768px) {
     .brand-layout {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
     }
 
     .brand-logo {
         display: flex;
+    }
+
+    .empresa-resumo {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .empresa-nome {
+        margin: 0;
+        font-size: 1.25rem;
+        text-align: center;
+    }
+
+    .company-resumo {
+        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .brand-logo img {
+        width: 160px;
+        max-width: 100%;
+    }
+
+    .empresa-resumo .btn {
+        width: 100%;
+    }
+
+    .empresa-resumo .btn {
+        width: 100%;
+    }
+
+    .status-principal,
+    .card-resumo {
+        border: 1px solid var(--color-gray-200);
+        border-radius: 12px;
+        padding: 12px;
+    }
+
+    .resumo-item strong {
+        word-break: break-word;
+    }
+
+    .brand-colors {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
     }
 }

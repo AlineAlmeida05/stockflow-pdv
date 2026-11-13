@@ -1,4 +1,5 @@
 <div class="card expandable-card">
+
     <button
         type="button"
         class="expandable-card__header"
@@ -10,9 +11,13 @@
         <span>
 
             @if (icon) {
+
             <span aria-hidden="true">
+
                 {{ icon }}
+
             </span>
+
             }
 
             {{ title }}
@@ -23,8 +28,11 @@
             aria-hidden="true"
             class="expandable-card__icon"
             [class.expanded]="expanded">
+
             ▶
+
         </span>
+
     </button>
 
     @if (expanded) {
@@ -34,8 +42,11 @@
         class="expandable-card__content">
 
         <ng-content>
+
         </ng-content>
 
     </div>
+
     }
+
 </div>

@@ -19,25 +19,34 @@ as dialog
             [ngClass]="dialogType">
 
             <span class="dialog-icon">
+
                 {{ dialogIcon }}
+
             </span>
 
             <h2 id="dialog-title">
+
                 {{ dialog.title }}
+
             </h2>
 
         </div>
 
         <p>
+
             {{ dialog.message }}
+
         </p>
 
         <div class="dialog-actions">
+
             <button
                 type="button"
                 class="btn btn-secondary"
                 (click)="cancelar()">
+
                 {{dialog.cancelText || 'Cancelar'}}
+
             </button>
 
             <button
@@ -47,9 +56,15 @@ as dialog
                 [class.btn-warning]="dialogType === 'warning'"
                 [class.btn-primary]="dialogType === 'info'"
                 (click)="confirmar()">
+
                 {{confirmButtonText}}
+
             </button>
+
         </div>
+
     </div>
+
 </div>
+
 }

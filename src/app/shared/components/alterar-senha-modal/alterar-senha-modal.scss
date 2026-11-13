@@ -1,5 +1,11 @@
 .modal {
-    background: white;
+    width: 420px;
+    max-width: 90vw;
+    background: var(--color-white);
+    padding: 1.5rem;
+    border-radius: 12px;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .modal-backdrop {
@@ -10,14 +16,6 @@
     justify-content: center;
     align-items: center;
     z-index: 3000;
-}
-
-.modal {
-    width: 420px;
-    max-width: 90vw;
-    background: var(--color-white);
-    padding: 1.5rem;
-    border-radius: 12px;
 }
 
 .modal h3 {
@@ -40,6 +38,7 @@
 
 .modal-header h3 {
     margin: 0;
+    min-width: 0;
 }
 
 .modal-close {
@@ -70,7 +69,7 @@
 }
 
 .password-rule {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     color: var(--color-gray-500);
     transition: color 0.2s ease;
 }
@@ -85,7 +84,7 @@
 
 .password-match {
     margin-top: 0.5rem;
-    font-size: 0.65rem;
+    font-size: 0.75rem;
 }
 
 .password-input {
@@ -94,6 +93,8 @@
 
 .password-input input {
     width: 100%;
+    padding-right: 48px;
+    box-sizing: border-box;
 }
 
 .password-toggle {
@@ -104,9 +105,40 @@
     border: none;
     background: transparent;
     cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .password-rule.valid {
     color: var(--color-success);
     font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .modal {
+        width: calc(100vw - 24px);
+        max-width: none;
+        max-height: 90vh;
+        padding: 1rem;
+    }
+
+    .modal-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .modal-actions button {
+        width: 100%;
+    }
+
+    .password-rule {
+        font-size: 0.75rem;
+    }
+
+    .password-match {
+        font-size: 0.75rem;
+    }
 }

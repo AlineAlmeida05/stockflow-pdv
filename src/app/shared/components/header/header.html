@@ -7,6 +7,7 @@
     (click)="alternarMenu()">
 
     ☰
+
   </button>
 
   <div
@@ -15,17 +16,23 @@
     <img
       [src]="tenantAtual?.logoUrl || branding.logo"
       [alt]="tenantAtual?.nome || branding.nomeExibicao">
+
     <div>
 
       <h2>
+
         {{ tenantAtual?.nome || branding.nomeExibicao }}
+
       </h2>
 
       <p>
+
         {{ tenantAtual?.nome || branding.nomeExibicao }}
+
       </p>
 
     </div>
+
   </div>
 
   <div class="header-actions">
@@ -34,10 +41,20 @@
 
     <button
       type="button"
-      class="btn btn-warning"
+      class="btn btn-warning btn-impersonacao"
       (click)="encerrarImpersonacao()">
 
-      Encerrar Impersonação
+      <span class="desktop-only">
+
+        Encerrar Impersonação
+
+      </span>
+
+      <span class="mobile-only">
+
+        🔓
+
+      </span>
 
     </button>
 
@@ -57,21 +74,29 @@
         <div class="profile-button__content">
 
           <span class="profile-button__name">
+
             👤 {{ primeiroNome }}
+
           </span>
 
           <span class="profile-button__role">
+
             Perfil: {{ usuarioLogado?.perfil }}
+
           </span>
 
         </div>
 
         <span class="profile-button__arrow">
+
           {{ menuPerfilAberto ? '▲' : '▼' }}
+
         </span>
+
       </button>
 
       @if (menuPerfilAberto) {
+
       <div
         class="profile-dropdown"
         role="menu">
@@ -79,7 +104,9 @@
         <div class="profile-dropdown__info">
 
           <small>
+
             Email: {{ usuarioLogado?.email }}
+
           </small>
 
         </div>
@@ -89,25 +116,34 @@
         <button
           class="profile-dropdown__action"
           (click)="abrirModalAlterarSenha()">
+
           Alterar Senha
+
         </button>
 
         <button
           class="profile-dropdown__logout"
           (click)="sair()">
+
           Sair
+
         </button>
 
       </div>
+
       }
+
     </div>
+
   </div>
+
 </header>
 
 @if (modalAlterarSenhaAberto) {
 
 <app-alterar-senha-modal
   (fechar)="fecharModalAlterarSenha()">
+
 </app-alterar-senha-modal>
 
 }

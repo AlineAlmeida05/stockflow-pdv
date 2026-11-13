@@ -25,9 +25,12 @@
     </div>
 
     <app-split-panel
-        [invertSizes]="true">
+        [invertSizes]="true"
+        [disableInvertSizesMobile]="true">
 
-        <div left class="vendas-panel">
+        <div
+            left
+            class="vendas-panel">
 
             <h2>
 
@@ -43,6 +46,7 @@
                 icon="📜"
                 title="Nenhuma venda encontrada"
                 message="Não existem vendas para os filtros selecionados.">
+
             </app-empty-state>
 
             } @else {
@@ -188,6 +192,15 @@
                     }
 
                 </div>
+
+                <button
+                    type="button"
+                    class="btn btn-secondary btn-voltar-mobile"
+                    (click)="vendaSelecionada = undefined">
+
+                    ← Voltar para Vendas
+
+                </button>
 
             </div>
 

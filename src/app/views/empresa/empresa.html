@@ -78,134 +78,140 @@
 
     </app-toolbar>
 
-    <app-split-panel
-        [invertSizes]="true">
+    <div class="empresa-layout-mobile">
 
-        <div left>
+        <app-split-panel
+            [invertSizes]="true"
+            [reverseMobile]="true">
 
-            <div class="company-resumo">
+            <div left>
 
-                <div class="resumo-item">
-                    <span>Razão Social</span>
-                    <strong>{{ empresa?.razaoSocial }}</strong>
-                </div>
+                <div class="company-resumo">
 
-                <div class="resumo-item">
-                    <span>CNPJ</span>
-                    <strong>{{ empresa?.cnpj || '-' }}</strong>
-                </div>
+                    <div class="resumo-item">
+                        <span>Razão Social</span>
+                        <strong>{{ empresa?.razaoSocial }}</strong>
+                    </div>
 
-                <div class="resumo-item">
-                    <span>Responsável</span>
-                    <strong>{{ empresa?.proprietario }}</strong>
-                </div>
+                    <div class="resumo-item">
+                        <span>CNPJ</span>
+                        <strong>{{ empresa?.cnpj || '-' }}</strong>
+                    </div>
 
-                <div class="resumo-item">
-                    <span>Contato</span>
-                    <strong>{{ empresa?.email }}</strong>
-                </div>
+                    <div class="resumo-item">
+                        <span>Responsável</span>
+                        <strong>{{ empresa?.proprietario }}</strong>
+                    </div>
 
-                <div class="resumo-item">
-                    <span>Localização</span>
-                    <strong>{{ empresa?.cidade }} - {{ empresa?.uf }}</strong>
-                </div>
+                    <div class="resumo-item">
+                        <span>Contato</span>
+                        <strong>{{ empresa?.email }}</strong>
+                    </div>
 
-                <div class="resumo-item">
-                    <span>Delivery</span>
-                    <strong>
-                        {{
-                        tenantAtual?.deliveryHabilitado
-                        ? '✅ Habilitado'
-                        : '❌ Desabilitado'
-                        }}
-                    </strong>
+                    <div class="resumo-item">
+                        <span>Localização</span>
+                        <strong>{{ empresa?.cidade }} - {{ empresa?.uf
+                            }}</strong>
+                    </div>
+
+                    <div class="resumo-item">
+                        <span>Delivery</span>
+                        <strong>
+                            {{
+                            tenantAtual?.deliveryHabilitado
+                            ? '✅ Habilitado'
+                            : '❌ Desabilitado'
+                            }}
+                        </strong>
+                    </div>
+
                 </div>
 
             </div>
 
-        </div>
+            <div right>
 
-        <div right>
+                <div class="dashboard-panel">
 
-            <div class="dashboard-panel">
+                    <h2>
 
-                <h2>
+                        Identidade Visual
 
-                    Identidade Visual
+                    </h2>
 
-                </h2>
+                    <div class="brand-section">
 
-                <div class="brand-section">
+                        <div class="brand-layout">
 
-                    <div class="brand-layout">
+                            <div class="brand-company">
 
-                        <div class="brand-company">
+                                <div class="brand-logo">
 
-                            <div class="brand-logo">
-
-                                <img
-                                    [src]="logoEmpresa"
-                                    [alt]="empresa?.nomeFantasia || branding.nomeExibicao">
-
-                            </div>
-
-                            <div class="brand-slogan">
-
-                                <span>Slogan</span>
-
-                                <strong>
-
-                                    {{ empresa?.slogan || branding.slogan }}
-
-                                </strong>
-
-                            </div>
-
-                        </div>
-
-                        <div class="brand-colors">
-
-                            <div class="brand-color">
-
-                                <span>
-
-                                    Cor Primária
-
-                                </span>
-
-                                <div
-                                    class="brand-color__preview"
-                                    [style.background]="empresa?.corPrimaria">
+                                    <img
+                                        [src]="logoEmpresa"
+                                        [alt]="empresa?.nomeFantasia || branding.nomeExibicao">
 
                                 </div>
 
-                                <strong>
+                                <div class="brand-slogan">
 
-                                    {{ empresa?.corPrimaria || '-' }}
+                                    <span>Slogan</span>
 
-                                </strong>
+                                    <strong>
 
-                            </div>
+                                        {{ empresa?.slogan || branding.slogan }}
 
-                            <div class="brand-color">
-
-                                <span>
-
-                                    Cor Secundária
-
-                                </span>
-
-                                <div
-                                    class="brand-color__preview"
-                                    [style.background]="empresa?.corSecundaria">
+                                    </strong>
 
                                 </div>
 
-                                <strong>
+                            </div>
 
-                                    {{ empresa?.corSecundaria || '-' }}
+                            <div class="brand-colors">
 
-                                </strong>
+                                <div class="brand-color">
+
+                                    <span>
+
+                                        Cor Primária
+
+                                    </span>
+
+                                    <div
+                                        class="brand-color__preview"
+                                        [style.background]="empresa?.corPrimaria">
+
+                                    </div>
+
+                                    <strong>
+
+                                        {{ empresa?.corPrimaria || '-' }}
+
+                                    </strong>
+
+                                </div>
+
+                                <div class="brand-color">
+
+                                    <span>
+
+                                        Cor Secundária
+
+                                    </span>
+
+                                    <div
+                                        class="brand-color__preview"
+                                        [style.background]="empresa?.corSecundaria">
+
+                                    </div>
+
+                                    <strong>
+
+                                        {{ empresa?.corSecundaria || '-' }}
+
+                                    </strong>
+
+                                </div>
 
                             </div>
 
@@ -217,8 +223,8 @@
 
             </div>
 
-        </div>
+        </app-split-panel>
 
-    </app-split-panel>
+    </div>
 
 </app-main-layout>

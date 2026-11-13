@@ -1,6 +1,6 @@
 .toast-container {
     position: fixed;
-    top: 0;
+    top: 16px;
     right: 24px;
     display: flex;
     flex-direction: column;
@@ -39,6 +39,7 @@
 
 .toast__message {
     flex: 1;
+    min-width: 0;
     line-height: 1.4;
     word-break: break-word;
 }
@@ -79,8 +80,12 @@
     color: inherit;
     font-size: 1rem;
     cursor: pointer;
-    opacity: 0.8;
-    transition: opacity 0.2s ease;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .toast__close:hover {
@@ -137,7 +142,7 @@
 
 @media (max-width: 768px) {
     .toast-container {
-        top: 0;
+        top: 16px;
         left: 16px;
         right: 16px;
     }
@@ -145,5 +150,15 @@
     .toast {
         width: 100%;
         min-width: unset;
+        padding: 12px;
+    }
+
+    .toast__message {
+        font-size: 0.9rem;
+    }
+
+    .toast:hover {
+        transform: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 }

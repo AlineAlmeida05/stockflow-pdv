@@ -91,6 +91,21 @@
 }
 
 @media (max-width: 768px) {
+    .indicadores {
+        grid-template-columns: 1fr;
+    }
+
+    .report-detail {
+        padding: 16px;
+        max-height: 70vh;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
+    }
+
     .pagination {
         flex-direction: column;
         align-items: stretch;
@@ -102,11 +117,20 @@
         justify-content: space-between;
     }
 
+    .btn-pagination {
+        min-height: 44px;
+        padding: 0.75rem 1rem;
+    }
+
     .export-button {
         flex: 1;
     }
 
     .resumo-clickable h2 {
         font-size: 1.1em;
+    }
+
+    .resumo-clickable:hover {
+        transform: none;
     }
 }

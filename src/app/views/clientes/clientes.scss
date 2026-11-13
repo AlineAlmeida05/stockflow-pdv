@@ -40,6 +40,11 @@ app-search-input {
   }
 }
 
+.text-danger {
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
 @media (max-width: 768px) {
   app-search-input {
     min-width: unset;
@@ -52,5 +57,9 @@ app-search-input {
 
   .formulario-acoes {
     flex-direction: column;
+  }
+
+  .formulario-acoes .btn {
+    width: 100%;
   }
 }

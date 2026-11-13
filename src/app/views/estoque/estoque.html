@@ -81,6 +81,7 @@
                 title="Atenção"
                 [value]="totalAtencao"
                 variant="warning">
+
             </app-stat-card>
 
         </div>
@@ -94,6 +95,7 @@
                 title="Crítico"
                 [value]="totalBaixo"
                 variant="danger">
+
             </app-stat-card>
 
         </div>
@@ -108,18 +110,21 @@
         icon="📦"
         title="Nenhum produto encontrado"
         message="Verifique os filtros aplicados ou cadastre novos produtos.">
+
     </app-empty-state>
     }
 
     @if (
     produtosFiltrados.length > 0
     ) {
+
     <div class="card">
 
         <app-data-table
             [columns]="colunasEstoque"
             [data]="produtosEstoque"
             (actionClick)="abrirAcaoProduto($event)">
+
         </app-data-table>
 
     </div>

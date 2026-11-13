@@ -9,7 +9,9 @@
     <app-split-panel
         [showRight]="mostrarPainel">
 
-        <div left>
+        <div
+            left
+            [class.mobile-hidden]="mostrarPainel">
 
             <div class="saldo-card">
 
@@ -37,8 +39,7 @@
 
                         <span>
 
-                            {{ diasSemPagamento }}
-                            • dias sem pagamento
+                            {{ diasSemPagamento }} • dias sem pagamento
 
                         </span>
 
@@ -118,37 +119,50 @@
             <div class="card">
 
                 <h3>
+
                     Receber Pagamento
+
                 </h3>
 
                 <app-currency-input
                     label="Valor a receber"
                     [(value)]="valorRecebido">
+
                 </app-currency-input>
 
                 <div class="field">
 
                     <label>
+
                         Forma de Pagamento
+
                     </label>
 
                     <select
                         [(ngModel)]="formaPagamento">
 
                         <option value="pix">
+
                             PIX
+
                         </option>
 
                         <option value="dinheiro">
+
                             Dinheiro
+
                         </option>
 
                         <option value="debito">
+
                             Débito
+
                         </option>
 
                         <option value="credito">
+
                             Crédito
+
                         </option>
 
                     </select>
@@ -192,7 +206,9 @@
                 <div class="detail-row">
 
                     <span>
+
                         Data
+
                     </span>
 
                     <strong>
@@ -206,7 +222,9 @@
                 <div class="detail-row">
 
                     <span>
+
                         Valor
+
                     </span>
 
                     <strong>
@@ -227,10 +245,7 @@
 
                     <strong>
 
-                        {{
-                        vendaDetalhadaSelecionada
-                        ?.quantidadeItens
-                        }}
+                        {{ vendaDetalhadaSelecionada ?.quantidadeItens }}
 
                     </strong>
 
@@ -242,9 +257,7 @@
 
                 <app-expandable-card
                     icon="🛒"
-                    [title]="'Itens Comprados (' +
-        (vendaDetalhadaSelecionada?.itens?.length ?? 0)
-        + ')'">
+                    [title]="'Itens Comprados (' + (vendaDetalhadaSelecionada?.itens?.length ?? 0)+ ')'">
 
                     @for (
                     item of vendaDetalhadaSelecionada?.itens ?? [];
@@ -276,7 +289,9 @@
                 <div class="detail-row">
 
                     <span>
+
                         Operador
+
                     </span>
 
                     <strong>
@@ -290,7 +305,9 @@
                 <div class="detail-row">
 
                     <span>
+
                         Forma de Pagamento
+
                     </span>
 
                     <strong>

@@ -323,3 +323,33 @@
 .info-aumento strong {
     color: var(--color-success);
 }
+
+@media (max-width: 768px) {
+    .carrinho-editor table {
+        table-layout: auto;
+    }
+
+    .resumo-venda-horizontal {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .atalhos {
+        display: none;
+    }
+
+    .resumo-card {
+        display: contents;
+    }
+
+    .atalhos-venda .btn {
+        width: 100%;
+    }
+
+    .resumo-card--action .btn {
+        width: 100%;
+    }
+
+    .campo {
+        z-index: 9999;
+    }
+}

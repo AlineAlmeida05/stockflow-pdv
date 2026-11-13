@@ -112,6 +112,10 @@
     color: var(--color-gray-700);
 }
 
+.mobile-only {
+    display: none;
+}
+
 @media (max-width: 768px) {
     .menu-toggle {
         display: block;
@@ -132,7 +136,10 @@
     }
 
     .header-company h2 {
-        font-size: 1.1rem;
+        font-size: 0.85rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .profile-button__role {
@@ -145,5 +152,22 @@
         max-width: 90vw;
         right: 0;
         left: auto;
+    }
+
+    .desktop-only {
+        display: none;
+    }
+
+    .mobile-only {
+        display: inline;
+    }
+
+    .btn-impersonacao {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }
