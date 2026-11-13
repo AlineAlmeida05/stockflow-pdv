@@ -10,11 +10,17 @@
     margin-top: 0;
     margin-bottom: 20px;
     color: var(--color-primary);
+    line-height: 1.3;
 }
 
 @media (max-width: 768px) {
     .dashboard-panel {
         min-height: auto;
         padding: 16px;
+    }
+
+    .dashboard-panel h2 {
+        margin-bottom: 16px;
+        font-size: 1.1rem;
     }
 }

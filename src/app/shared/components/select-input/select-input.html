@@ -20,9 +20,10 @@
         [disabled]="disabled"
         [ngModel]="value"
         (ngModelChange)="valueChange.emit($event)">
+
         @if (placeholder) {
 
-        <option value="">
+        <option value>
 
             {{ placeholder }}
 
@@ -41,7 +42,9 @@
             {{ option.label }}
 
         </option>
+
         }
 
     </select>
+
 </div>

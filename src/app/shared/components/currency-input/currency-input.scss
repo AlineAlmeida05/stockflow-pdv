@@ -4,6 +4,7 @@
     gap: 6px;
     margin-top: 12px;
     margin-bottom: 12px;
+    width: 100%;
 }
 
 .currency-input__wrapper {
@@ -24,6 +25,9 @@
 
 .currency-input__wrapper input {
     flex: 1;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
     border: none;
     padding: 12px;
 }
@@ -35,4 +39,15 @@
 .currency-input__wrapper:focus-within {
     border-color: var(--color-secondary);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-secondary) 15%, transparent);
+}
+
+@media (max-width: 768px) {
+    .currency-input__wrapper {
+        min-height: 48px;
+    }
+
+    .currency-input__wrapper span {
+        padding: 0 10px;
+        white-space: nowrap;
+    }
 }

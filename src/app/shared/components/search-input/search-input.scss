@@ -12,7 +12,7 @@
         box-shadow 0.2s ease;
 }
 
-.search-icon {    
+.search-icon {
     font-size: 1rem;
     color: var(--color-secondary);
 }
@@ -27,6 +27,7 @@
 
 .search-input input {
     width: 100%;
+    min-width: 0;
     border: none;
     outline: none;
     background: transparent;
@@ -58,5 +59,11 @@
 @media (max-width: 768px) {
     .search-input {
         min-width: 240px;
+        min-height: 48px;
+    }
+
+    .clear-button {
+        min-width: 32px;
+        min-height: 32px;
     }
 }

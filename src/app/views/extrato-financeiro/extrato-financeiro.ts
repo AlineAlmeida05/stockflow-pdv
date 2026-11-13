@@ -188,6 +188,11 @@ export class ExtratoFinanceiro
 
     }
 
+    fecharPainel(): void {
+        this.movimentacaoSelecionada = null;
+        this.mostrarPainel = false;
+    }
+
     private carregarIndicadores(): void {
 
         this.extratoFinanceiroService

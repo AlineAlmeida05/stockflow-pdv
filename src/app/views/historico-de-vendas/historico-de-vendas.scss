@@ -295,12 +295,15 @@ app-expandable-card {
   color: var(--color-danger);
 }
 
+.btn-voltar-mobile {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .filtros {
     grid-template-columns: 1fr;
   }
-}
-@media (max-width: 768px) {
+
   .venda-card__header {
     flex-direction: column;
 
@@ -310,13 +313,11 @@ app-expandable-card {
   .venda-card__data {
     text-align: left;
   }
-}
 
-@media (max-width: 768px) {
   .venda-meta {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: 12px;
   }
 
   .venda-meta__divider {
@@ -362,16 +363,18 @@ app-expandable-card {
   .total-venda-card strong {
     font-size: 1.6rem;
   }
-}
 
-@media (max-width: 768px) {
   .item-venda__info {
     display: flex;
-
     flex-direction: row;
-
     justify-content: space-between;
-
     align-items: center;
+  }
+
+  .btn-voltar-mobile {
+    display: block;
+    width: 100%;
+    margin-bottom: 16px;
+    margin-top: 16px;
   }
 }

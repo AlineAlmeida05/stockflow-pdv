@@ -12,4 +12,18 @@
         flex-direction: column;
         align-items: stretch;
     }
+
+    .toolbar > * {
+        width: 100%;
+    }
+
+    .toolbar .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .toolbar .actions > * {
+        width: 100%;
+    }
 }

@@ -66,6 +66,7 @@
     top: 0;
     z-index: 10;
     background: white;
+    padding: 16px;
 }
 
 @media (max-width: 768px) {
@@ -100,5 +101,64 @@
 
     .saldo-card__header strong {
         font-size: 1.75rem;
+    }
+    .card_01,
+    .card_02 {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .cliente-nome {
+        font-size: 1.4rem;
+        line-height: 1.2;
+    }
+
+    .saldo-card__status {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .saldo-card__header strong {
+        font-size: 1.5rem;
+    }
+
+    .saldo-card__meta {
+        width: 100%;
+    }
+
+    .formulario-acoes {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .formulario-acoes .btn {
+        width: 100%;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    app-expandable-card .detail-row {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    app-expandable-card .detail-row span {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .mobile-hidden {
+        display: none;
+    }
+
+    .btn {
+        width: 100%;
     }
 }

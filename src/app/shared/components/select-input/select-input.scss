@@ -6,6 +6,7 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+    width: 100%;
 }
 
 .select-input label {
@@ -22,6 +23,9 @@
     background: var(--color-white);
     color: var(--color-gray-900);
     transition: border-color 0.2s ease;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 .select-input select:focus {
@@ -41,9 +45,21 @@
 }
 
 .select-input--md select {
-    height: 45px;
+    height: 48px;
 }
 
 .select-input--lg select {
     height: 52px;
+}
+
+@media (max-width: 768px) {
+    .select-input {
+        width: 100%;
+    }
+
+    .select-input select {
+        width: 100%;
+        min-width: 0;
+        font-size: 16px;
+    }
 }

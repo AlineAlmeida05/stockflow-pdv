@@ -1,14 +1,16 @@
 .table-container {
     width: 100%;
     overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     border-radius: 12px;
     background: var(--color-white);
     max-height: 420px;
-    overflow-y: auto;
 }
 
 .table {
     width: 100%;
+    min-width: 700px;
     border-collapse: collapse;
 }
 
@@ -48,4 +50,25 @@
 .table-actions {
     display: flex;
     gap: 8px;
+}
+
+@media (max-width: 768px) {
+    .table th,
+    .table td {
+        padding: 10px 8px;
+        font-size: 0.875rem;
+    }
+
+    .table-actions {
+        gap: 4px;
+    }
+
+    .table-container::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+        background: var(--color-gray-400);
+        border-radius: 999px;
+    }
 }

@@ -21,6 +21,7 @@
     max-height: 500px;
     overflow-y: auto;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .table thead th {
@@ -43,6 +44,7 @@ tbody tr:hover {
 
 .table {
     width: 100%;
+    min-width: 700px;
 }
 
 .table th {
@@ -295,4 +297,68 @@ tbody tr:hover {
 
 .table-action-danger {
     background: var(--color-danger);
+}
+
+@media (max-width: 768px) {
+    .table th,
+    .table td {
+        padding: 8px;
+        font-size: 0.875rem;
+    }
+
+    .table-action {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+    }
+
+    .table-progress {
+        min-width: 60px;
+        gap: 4px;
+    }
+
+    .table-progress span {
+        min-width: auto;
+        font-size: 0.75rem;
+    }
+
+    .quantity-control {
+        gap: 4px;
+    }
+
+    .quantity-control button {
+        width: 24px;
+        height: 24px;
+    }
+
+    .table-actions-column {
+        width: 60px;
+        min-width: 60px;
+    }
+
+    .toggle-switch {
+        width: 60px;
+        height: 22px;
+    }
+
+    .toggle-slider {
+        font-size: 9px;
+    }
+
+    .toggle-switch.toggle-ativo .toggle-slider::before {
+        transform: translateX(36px);
+    }
+
+    .table-container {
+        border-radius: 8px;
+        overflow-x: auto;
+    }
+
+    .table-container::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+        background: var(--color-gray-400);
+        border-radius: 999px;
+    }
 }

@@ -40,15 +40,23 @@
             (click)="selecionarProduto(produto)">
 
             <strong>
+
                 {{ produto.nome }}
+
             </strong>
 
             <small>
+
                 {{ produto.codigo }}
+
                 •
+
                 <span class="estoque-info">
+
                     Estoque: {{ produto.estoqueAtual }}
+
                 </span>
+
             </small>
 
         </button>

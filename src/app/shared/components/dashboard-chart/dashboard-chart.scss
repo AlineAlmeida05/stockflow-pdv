@@ -7,10 +7,19 @@
     min-height: 300px;
 }
 
+.dashboard-chart canvas {
+    display: block;
+    width: 100% !important;
+    max-width: 100%;
+}
+
 @media (max-width: 768px) {
-    canvas {
-        max-width: 100%;
-        width: 100%;
-        display: block;
+    .dashboard-chart {
+        padding: 8px;
+        min-height: 240px;
+    }
+
+    .dashboard-chart canvas {
+        max-height: 300px;
     }
 }
