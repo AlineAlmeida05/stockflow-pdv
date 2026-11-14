@@ -4,3 +4,36 @@
     gap: 12px;
     min-width: 0;
 }
+
+@media (max-width: 768px) {
+    .pagination,
+    .pagination-left,
+    .pagination-right {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .report-detail {
+        max-height: none;
+        overflow: visible;
+        padding: 16px;
+    }
+
+    .indicadores {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .indicadores::-webkit-scrollbar {
+        display: none;
+    }
+
+    .indicadores .indicador-clickable {
+        flex: 0 0 220px;
+    }
+}

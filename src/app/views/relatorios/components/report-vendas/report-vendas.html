@@ -24,7 +24,8 @@
 </div>
 
 <app-split-panel
-    [invertSizes]="true">
+    [invertSizes]="true"
+    [reverseMobile]="true">
 
     <div left>
 
@@ -148,8 +149,7 @@
 
                             Mostrando {{ inicioPagina }}
                             -
-                            {{ fimPagina }} de {{ vendasTabela.length
-                            }}registros
+                            {{ fimPagina }} de {{ vendasTabela.length}}registros
 
                         </span>
 
@@ -198,7 +198,9 @@
         <div class="report-detail">
 
             <h2>
+
                 💰 Faturamento
+
             </h2>
 
             <div class="detail-row">
@@ -352,24 +354,17 @@
 
             <div class="detail-row">
 
-                <p>
-                    <strong>Data:</strong>
+                <span>Data:</span>
 
-                    {{ melhorDiaData }}
-
-                </p>
+                <strong>{{ melhorDiaData }}</strong>
 
             </div>
 
             <div class="detail-row">
 
-                <p>
+                <span>Faturamento:</span>
 
-                    <strong>Faturamento:</strong>
-
-                    {{ melhorDiaValor }}
-
-                </p>
+                <strong>{{ melhorDiaValor }}</strong>
 
             </div>
 
@@ -396,17 +391,13 @@
 
                 <div class="detail-row">
 
-                    <p>
+                    <span>{{ forma.formaPagamento }}</span>
 
-                        <strong>
-
-                            {{ forma.formaPagamento }}
-
-                        </strong>
+                    <strong>
 
                         - {{ forma.valor | currency:'BRL' }}
 
-                    </p>
+                    </strong>
 
                 </div>
 
@@ -442,12 +433,13 @@
 
             <div class="detail-row">
 
-                <p>
-                    <strong>Faturamento:</strong>
+                <span>Faturamento:</span>
 
-                    {{ produtoMaisFaturou?.faturamento | currency:'BRL' }}
+                <strong>
 
-                </p>
+                    {{ produtoMaisFaturou?.faturamento | currency:'BRL'}}
+
+                </strong>
 
             </div>
 
@@ -485,23 +477,19 @@
 
                 <div class="detail-row">
 
-                    <p>
+                    <span>
 
-                        <strong>
+                        {{ dia.data }}
 
-                            {{ dia.data }}
+                    </span>
 
-                        </strong>
+                    -
 
-                        -
+                    <strong>
 
-                        <span>
+                        {{ dia.total | currency:'BRL' }}
 
-                            {{ dia.total | currency:'BRL' }}
-
-                        </span>
-
-                    </p>
+                    </strong>
 
                 </div>
 
@@ -545,23 +533,19 @@
 
                 <div class="detail-row">
 
-                    <p>
+                    <span>
 
-                        <strong>
+                        {{ produto.nome }}
 
-                            {{ produto.nome }}
+                    </span>
 
-                        </strong>
+                    -
 
-                        -
+                    <strong>
 
-                        <span>
+                        {{ produto.quantidade }}
 
-                            {{ produto.quantidade }}
-
-                            un.</span>
-
-                    </p>
+                        un.</strong>
 
                 </div>
 

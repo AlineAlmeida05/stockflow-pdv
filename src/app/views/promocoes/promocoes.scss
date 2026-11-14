@@ -94,6 +94,7 @@
 
 .promo-progress {
   margin-top: 12px;
+  width: 100%;
 }
 
 .promo-progress__text {
@@ -120,6 +121,7 @@
 
 .produto-info {
   display: block;
+  word-break: break-word;
   gap: 12px;
 }
 
@@ -142,9 +144,20 @@
   font-weight: 700;
 }
 
+.btn-voltar-mobile {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .produto-status {
-    justify-content: flex-end;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .btn-voltar-mobile {
+    display: block;
+    width: 100%;
+    margin-bottom: 16px;
   }
 
   .desconto-highlight {
@@ -154,5 +167,30 @@
 
   .btn-danger {
     width: 100%;
+  }
+
+  .titulo-badges {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .produto-situacao {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .produtos-acoes,
+  .produto-acoes {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .produtos-acoes .btn,
+  .produto-acoes .btn {
+    width: 100%;
+    gap: 16px;
   }
 }

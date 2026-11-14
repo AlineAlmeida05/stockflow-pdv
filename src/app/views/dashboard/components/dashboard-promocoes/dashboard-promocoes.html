@@ -78,6 +78,16 @@
         <app-dashboard-panel
             title="Detalhamento">
 
+            @if (!resumoPromocoesSelecionado) {
+
+            <app-empty-state
+                icon="🎯"
+                title="Nenhum indicador selecionado"
+                message="Clique em um indicador para visualizar os detalhes das promoções.">
+            </app-empty-state>
+
+            }
+
             @if (
             resumoPromocoesSelecionado === 'promocoesAtivas'
             ) {
@@ -87,19 +97,6 @@
                 Promoções Ativas
 
             </h3>
-
-            @if (
-            promocoesAtivasDetalhes.length === 0
-            ) {
-
-            <app-empty-state
-                icon="🎯"
-                title="Nenhuma promoção ativa"
-                message="Não existem promoções ativas no momento.">
-
-            </app-empty-state>
-
-            } @else {
 
             <div class="table-container">
 
@@ -167,8 +164,6 @@
                 </table>
 
             </div>
-
-            }
 
             }
 
