@@ -1,0 +1,194 @@
+<app-main-layout>
+
+    <app-page-title
+        title="Delivery"
+        subtitle="Acompanhe pedidos e entregas em tempo real.">
+
+    </app-page-title>
+
+    <app-report-header>
+
+        <div tabs>
+
+            <div class="header-coluna">
+
+                <div class="abas">
+
+                    <button
+                        type="button"
+                        [class.active]="abaSelecionada === 'financeiro'"
+                        (click)="abaSelecionada = 'financeiro'">
+
+                        Financeiro
+
+                    </button>
+
+                    <button
+                        type="button"
+                        [class.active]="abaSelecionada === 'catalogo'"
+                        (click)="abaSelecionada = 'catalogo'">
+
+                        Catálogo
+
+                    </button>
+
+                    <button
+                        type="button"
+                        [class.active]="abaSelecionada === 'entregas'"
+                        (click)="abaSelecionada = 'entregas'">
+
+                        Entregas
+
+                    </button>
+
+                </div>
+
+                <div class="dashboard-filters">
+
+                    <button
+                        class="btn"
+                        [class.active]="periodoSelecionado === 'hoje'"
+                        (click)="alterarPeriodo('hoje')">
+
+                        Hoje
+
+                    </button>
+
+                    <button
+                        class="btn"
+                        [class.active]="periodoSelecionado === '7dias'"
+                        (click)="alterarPeriodo('7dias')">
+
+                        7 dias
+
+                    </button>
+
+                    <button
+                        class="btn"
+                        [class.active]="periodoSelecionado === '30dias'"
+                        (click)="alterarPeriodo('30dias')">
+
+                        30 dias
+
+                    </button>
+
+                    <button
+                        class="btn"
+                        [class.active]="periodoSelecionado === 'mes'"
+                        (click)="alterarPeriodo('mes')">
+
+                        Mês Atual
+
+                    </button>
+
+                    <button
+                        class="btn"
+                        [class.active]="periodoSelecionado === 'todos'"
+                        (click)="alterarPeriodo('todos')">
+
+                        Todos
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div actions>
+
+            <div class="header-coluna header-coluna-direita">
+
+                <div class="acoes-navegacao">
+
+                    <div class="relatorios-acoes">
+
+                        <button
+                            class="btn btn-secondary border"
+                            (click)="abrirPedidos()">
+
+                            📦 Acompanhar Pedidos
+
+                        </button>
+
+                        <button
+                            class="btn btn-secondary border"
+                            (click)="abrirCatalogo()">
+
+                            🛵 Ver Catálogo
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="acoes-exportacao">
+
+                    <button
+                        type="button"
+                        class="export-button pdf">
+
+                        📄 PDF
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="export-button excel">
+
+                        📊 Excel
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </app-report-header>
+
+    @if (
+    abaSelecionada === 'financeiro'
+    ) {
+
+    <app-report-delivery-financeiro
+        [resumo]="resumo"
+        [slugTenant]="slugTenant"
+        [periodoSelecionado]="periodoSelecionado"
+        (periodoSelecionadoChange)="alterarPeriodo($event)">
+
+    </app-report-delivery-financeiro>
+
+    }
+
+    @if (
+    abaSelecionada === 'catalogo'
+    ) {
+
+    <app-report-delivery-catalogo
+        [produtos]="produtos"
+        [produtosSemEstoque]="produtosSemEstoque"
+        [produtosEstoqueBaixo]="produtosEstoqueBaixo"
+        [produtosPromocionais]="produtosPromocionais">
+
+    </app-report-delivery-catalogo>
+
+    }
+
+    @if (
+    abaSelecionada === 'entregas'
+    ) {
+
+    <app-report-delivery-entregas
+        [resumo]="resumoEntregas"
+        [slugTenant]="slugTenant"
+        [periodoSelecionado]="periodoSelecionado">
+
+    </app-report-delivery-entregas>
+
+    }
+
+</app-main-layout>

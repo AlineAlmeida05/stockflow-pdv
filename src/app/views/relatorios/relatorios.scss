@@ -108,11 +108,13 @@ app-stat-card {
 
 @media (max-width: 768px) {
     .abas {
-        width: 95%;
+        width: 100%;
         flex-wrap: nowrap;
         overflow-x: auto;
         padding-bottom: 4px;
         scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x proximity;
     }
 
     .abas::-webkit-scrollbar {
@@ -122,5 +124,28 @@ app-stat-card {
     .abas button {
         flex-shrink: 0;
         white-space: nowrap;
+        scroll-snap-align: start;
+        padding: 12px 16px;
+    }
+
+    [actions] {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .relatorios-acoes {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .relatorios-acoes .btn {
+        width: 100%;
+    }
+
+    .acoes-exportacao {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 100%;
     }
 }

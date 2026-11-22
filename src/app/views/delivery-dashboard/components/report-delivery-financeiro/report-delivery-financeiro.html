@@ -1,0 +1,342 @@
+<app-split-panel
+    [invertSizes]="true"
+    [reverseMobile]="true">
+
+    <div left>
+
+        <div
+            class="card resumo-clickable"
+            [class.active]="selectedSection === 'faturamento'"
+            (click)="selecionarResumo('faturamento')">
+
+            <h2>
+
+                💰 Faturamento
+
+            </h2>
+
+            <strong>
+
+                {{ resumo?.valorEntregues | currency:'BRL' }}
+
+            </strong>
+
+        </div>
+
+        <div
+            class="card resumo-clickable"
+            [class.active]="selectedSection === 'ticket-medio'"
+            (click)="selecionarResumo('ticket-medio')">
+
+            <h2>
+
+                🎯 Ticket Médio
+
+            </h2>
+
+            <strong>
+
+                {{ ticketMedio | currency:'BRL' }}
+
+            </strong>
+
+        </div>
+
+        <div
+            class="card resumo-clickable"
+            [class.active]="selectedSection === 'pagamentos'"
+            (click)="selecionarResumo('pagamentos')">
+
+            <h2>
+
+                💳 Forma de Pagamento
+
+            </h2>
+
+            <strong>
+
+                Em breve
+
+            </strong>
+
+        </div>
+
+        <div
+            class="card resumo-clickable"
+            [class.active]="selectedSection === 'entregues'"
+            (click)="selecionarResumo('entregues')">
+
+            <h2>
+
+                ✅ Entregues
+
+            </h2>
+
+            <strong>
+
+                {{ resumo?.entreguesHoje ?? 0 }}
+
+            </strong>
+
+        </div>
+
+    </div>
+
+    <div right>
+
+        @if (!selectedSection) {
+
+        <app-empty-state
+            icon="💰"
+            title="Explore os dados"
+            message="Selecione um resumo para visualizar os detalhes.">
+
+        </app-empty-state>
+
+        }
+
+        @if (selectedSection) {
+
+        <div class="report-detail">
+
+            <div class="card indicador-principal">
+
+                <h3>
+
+                    {{ tituloDetalhe }}
+
+                </h3>
+
+                <strong>
+
+                    {{ valorPrincipal }}
+
+                </strong>
+
+                <small>
+
+                    {{ descricaoPeriodo }}
+
+                </small>
+
+            </div>
+
+            @if (
+            selectedSection === 'pagamentos'
+            ) {
+
+            <app-dashboard-chart
+                type="doughnut"
+                [chartData]="pagamentosChartData"
+                [chartOptions]="chartOptions">
+
+            </app-dashboard-chart>
+
+            }
+
+            @if (
+            selectedSection === 'faturamento'
+            ) {
+
+            <div class="card">
+
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Pedido</th>
+
+                            <th>Cliente</th>
+
+                            <th>Pagamento</th>
+
+                            <th>Valor</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @for (
+                        pedido of pedidosEntregues;
+                        track pedido.id
+                        ) {
+
+                        <tr>
+
+                            <td>
+
+                                {{ pedido.numero }}
+
+                            </td>
+
+                            <td>
+
+                                {{ pedido.clienteNome }}
+
+                            </td>
+
+                            <td>
+
+                                {{ pedido.formaPagamento }}
+
+                            </td>
+
+                            <td>
+
+                                {{ pedido.valorTotal | currency:'BRL' }}
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            }
+
+            @if (
+            selectedSection === 'ticket-medio'
+            ) {
+
+            <div class="card">
+
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Pedido</th>
+
+                            <th>Cliente</th>
+
+                            <th>Valor</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @for (
+                        pedido of pedidosMaiorValor;
+                        track pedido.id
+                        ) {
+
+                        <tr>
+
+                            <td>
+
+                                {{ pedido.numero }}
+
+                            </td>
+
+                            <td>
+
+                                {{ pedido.clienteNome }}
+
+                            </td>
+
+                            <td>
+
+                                {{ pedido.valorTotal | currency:'BRL' }}
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            }
+
+            @if (
+            selectedSection === 'entregues'
+            ) {
+
+            <div class="card">
+
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Pedido</th>
+
+                            <th>Cliente</th>
+
+                            <th>Hora</th>
+
+                            <th>Valor</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @for (
+                        pedido of pedidosEntregues;
+                        track pedido.id
+                        ) {
+
+                        <tr>
+
+                            <td>
+
+                                {{ pedido.numero }}
+
+                            </td>
+
+                            <td>
+
+                                {{ pedido.clienteNome }}
+
+                            </td>
+
+                            <td>
+
+                                {{ pedido.horaPedido }}
+
+                            </td>
+
+                            <td>
+
+                                {{ pedido.valorTotal | currency:'BRL' }}
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            }
+
+        </div>
+
+        }
+
+    </div>
+
+</app-split-panel>

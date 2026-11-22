@@ -201,12 +201,12 @@ tbody tr:hover {
 
 .status-success {
     color: var(--color-success);
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .status-warning {
     color: var(--color-warning);
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .status-danger {
@@ -297,6 +297,24 @@ tbody tr:hover {
 
 .table-action-danger {
     background: var(--color-danger);
+}
+
+.status-info {
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-weight: 700;
+}
+
+.status-ready {
+    background: #ffedd5;
+    color: #ea580c;
+    font-weight: 700;
+}
+
+.status-delivery {
+    background: #ede9fe;
+    color: #7c3aed;
+    font-weight: 700;
 }
 
 @media (max-width: 768px) {

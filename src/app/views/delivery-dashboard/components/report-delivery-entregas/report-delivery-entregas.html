@@ -1,0 +1,405 @@
+<app-split-panel
+    [invertSizes]="true"
+    [reverseMobile]="true">
+
+    <div left>
+
+        <div class="entregas-grid">
+
+            <div
+                class="card resumo-clickable"
+                [class.active]="selectedSection === 'tempo'"
+                (click)="selecionarResumo('tempo')">
+
+                <h3>
+
+                    ⏱ Tempo Médio
+
+                </h3>
+
+                <strong>
+
+                    {{ resumo?.tempoMedioEntrega ?? 0 }} min
+
+                </strong>
+
+            </div>
+
+            <div
+                class="card resumo-clickable"
+                [class.active]="selectedSection === 'entregues'"
+                (click)="selecionarResumo('entregues')">
+
+                <h3>
+
+                    ✅ Entregues
+
+                </h3>
+
+                <strong>
+
+                    {{ resumo?.entregasConcluidas ?? 0 }}
+
+                </strong>
+
+            </div>
+
+            <div
+                class="card resumo-clickable"
+                [class.active]="selectedSection === 'em-entrega'"
+                (click)="selecionarResumo('em-entrega')">
+
+                <h3>
+
+                    🛵 Em Entrega
+
+                </h3>
+
+                <strong>
+
+                    {{ resumo?.pedidosEmEntrega ?? 0 }}
+
+                </strong>
+
+            </div>
+
+            <div
+                class="card resumo-clickable"
+                [class.active]="selectedSection === 'atrasados'"
+                (click)="selecionarResumo('atrasados')">
+
+                <h3>
+
+                    ⚠️ Atrasados
+
+                </h3>
+
+                <strong>
+
+                    {{ resumo?.pedidosAtrasados ?? 0 }}
+
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div right>
+
+        @if (!selectedSection) {
+
+        <app-empty-state
+            icon="💰"
+            title="Explore os dados"
+            message="Selecione um resumo para visualizar os detalhes.">
+
+        </app-empty-state>
+
+        }
+
+        @if (selectedSection) {
+
+        <div class="report-detail">
+
+            @if (selectedSection === 'tempo') {
+
+            <div class="card indicador-principal">
+
+                <h3>
+                    ⏱ Tempo Médio de Entrega
+                </h3>
+
+                <strong>
+                    {{ resumo?.tempoMedioEntrega ?? 0 }} min
+                </strong>
+
+            </div>
+
+            <div class="card">
+
+                <table class="dashboard-table">
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+
+                                Tempo médio
+
+                            </td>
+
+                            <td>
+
+                                {{ resumo?.tempoMedioEntrega ?? 0 }} min
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+
+                                Entregas concluídas
+
+                            </td>
+
+                            <td>
+
+                                {{ resumo?.entregasConcluidas ?? 0 }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+
+                                Em entrega
+
+                            </td>
+
+                            <td>
+
+                                {{ resumo?.pedidosEmEntrega ?? 0 }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+
+                                Atrasadas
+
+                            </td>
+
+                            <td>
+
+                                {{ resumo?.pedidosAtrasados ?? 0 }}
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            }
+
+            @if (selectedSection === 'entregues') {
+
+            <div class="card">
+
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Pedido</th>
+
+                            <th>Cliente</th>
+
+                            <th>Valor</th>
+
+                            <th>Hora</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @for (
+                        pedido of pedidos;
+                        track pedido.id
+                        ) {
+
+                        <tr>
+
+                            <td>
+
+                                {{ pedido.numero }}
+
+                            </td>
+
+                            <td>
+
+                                {{ pedido.clienteNome }}
+
+                            </td>
+
+                            <td>
+
+                                {{ pedido.valorTotal | currency:'BRL' }}
+
+                            </td>
+
+                            <td>
+
+                                {{ pedido.horaPedido }}
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            }
+
+            @if (selectedSection === 'em-entrega') {
+
+            <div class="card">
+
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Pedido</th>
+
+                            <th>Cliente</th>
+
+                            <th>Status</th>
+
+                            <th>Hora</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @for (
+                        pedido of pedidos;
+                        track pedido.id
+                        ) {
+
+                        <tr>
+
+                            <td>
+
+                                {{ pedido.numero }}
+
+                            </td>
+
+                            <td>
+
+                                {{ pedido.clienteNome }}
+
+                            </td>
+
+                            <td>
+
+                                {{ pedido.status }}
+
+                            </td>
+
+                            <td>
+
+                                {{ pedido.horaPedido }}
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            }
+
+            @if (selectedSection === 'atrasados') {
+
+            <div class="card">
+
+                <table class="dashboard-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Pedido</th>
+
+                            <th>Cliente</th>
+
+                            <th>Status</th>
+
+                            <th>Hora</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @for (
+                        pedido of pedidos;
+                        track pedido.id
+                        ) {
+
+                        <tr>
+
+                            <td>
+
+                                {{ pedido.numero }}
+
+                            </td>
+
+                            <td>
+
+                                {{ pedido.clienteNome }}
+
+                            </td>
+
+                            <td>
+
+                                {{ pedido.status }}
+
+                            </td>
+
+                            <td>
+
+                                {{ pedido.horaPedido }}
+
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            }
+
+        </div>
+
+        }
+
+    </div>
+
+</app-split-panel>

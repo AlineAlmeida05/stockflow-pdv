@@ -1,0 +1,373 @@
+<app-main-layout>
+
+    <app-page-title
+        title="Pedidos Delivery"
+        subtitle="Gerencie os pedidos do delivery.">
+
+    </app-page-title>
+
+    <app-toolbar>
+
+        <app-search-input
+            placeholder="Buscar pedido..."
+            [(value)]="textoBusca">
+
+        </app-search-input>
+
+    </app-toolbar>
+
+    <div class="indicadores-carrossel">
+
+        <div
+            (click)="abrirPedidosPorStatus('NOVO')">
+
+            <app-stat-card
+                title="Novos"
+                [value]="resumo?.novos ?? 0"
+                variant="info">
+
+            </app-stat-card>
+
+        </div>
+
+        <div
+            (click)="abrirPedidosPorStatus('SEPARANDO')">
+
+            <app-stat-card
+                title="Separando"
+                [value]="resumo?.separando ?? 0"
+                variant="warning">
+
+            </app-stat-card>
+
+        </div>
+
+        <div
+            (click)="abrirPedidosPorStatus('PRONTO_PARA_ENTREGA')">
+
+            <app-stat-card
+                title="Prontos"
+                [value]="resumo?.prontosParaEntrega ?? 0"
+                variant="primary">
+
+            </app-stat-card>
+
+        </div>
+
+        <div
+            (click)="abrirPedidosPorStatus('EM_ENTREGA')">
+
+            <app-stat-card
+                title="Em Entrega"
+                [value]="resumo?.emEntrega ?? 0"
+                variant="info">
+
+            </app-stat-card>
+
+        </div>
+
+        <div
+            (click)="abrirPedidosPorStatus('ENTREGUE')">
+
+            <app-stat-card
+                title="Entregues"
+                [value]="resumo?.entreguesHoje ?? 0"
+                variant="success">
+
+            </app-stat-card>
+
+        </div>
+
+        <div
+            (click)="abrirPedidosPorStatus('CANCELADO')">
+
+            <app-stat-card
+                title="Cancelados"
+                [value]="resumo?.canceladosHoje ?? 0"
+                variant="danger">
+
+            </app-stat-card>
+
+        </div>
+
+    </div>
+
+    <div class="delivery-tabs">
+
+        <button
+            class="btn"
+            [class.btn-primary]="abaSelecionada === 'OPERACAO'"
+            [class.btn-secondary]="abaSelecionada !== 'OPERACAO'"
+            (click)="selecionarAba('OPERACAO')">
+
+            Em Operação
+
+        </button>
+
+        <button
+            class="btn"
+            [class.btn-primary]="abaSelecionada === 'ENTREGUES'"
+            [class.btn-secondary]="abaSelecionada !== 'ENTREGUES'"
+            (click)="selecionarAba('ENTREGUES')">
+
+            Entregues Hoje
+
+        </button>
+
+        <button
+            class="btn"
+            [class.btn-primary]="abaSelecionada === 'HISTORICO'"
+            [class.btn-secondary]="abaSelecionada !== 'HISTORICO'"
+            (click)="selecionarAba('HISTORICO')">
+
+            Histórico
+
+        </button>
+
+    </div>
+
+    @if (abaSelecionada === 'HISTORICO') {
+
+    <div class="dashboard-filters">
+
+        <button
+            class="btn"
+            [class.active]="periodoHistorico === 'hoje'"
+            (click)="alterarPeriodoHistorico('hoje')">
+
+            Hoje
+
+        </button>
+
+        <button
+            class="btn"
+            [class.active]="periodoHistorico === '7dias'"
+            (click)="alterarPeriodoHistorico('7dias')">
+
+            7 dias
+
+        </button>
+
+        <button
+            class="btn"
+            [class.active]="periodoHistorico === '30dias'"
+            (click)="alterarPeriodoHistorico('30dias')">
+
+            30 dias
+
+        </button>
+
+        <button
+            class="btn"
+            [class.active]="periodoHistorico === 'mes'"
+            (click)="alterarPeriodoHistorico('mes')">
+
+            Mês
+
+        </button>
+
+        <button
+            class="btn"
+            [class.active]="periodoHistorico === 'todos'"
+            (click)="alterarPeriodoHistorico('todos')">
+
+            Todos
+
+        </button>
+
+    </div>
+
+    }
+
+    @if (pedidosExibidos.length === 0) {
+
+    <app-empty-state
+        icon="🛵"
+        title="Nenhum pedido encontrado"
+        message="Não existem pedidos cadastrados.">
+
+    </app-empty-state>
+
+    } @else {
+
+    <app-split-panel
+        [reverse]="false"
+        [showRight]="mostrarDetalhes">
+
+        <div left>
+
+            <div class="card">
+
+                <app-data-table
+                    [columns]="abaSelecionada === 'OPERACAO'? colunasPedidosOperacao
+                    : abaSelecionada === 'ENTREGUES'? colunasPedidosEntregues: colunasPedidosHistorico"
+                    [data]="pedidosExibidos"
+                    [showActions]="false"
+                    [clickableRows]="true"
+                    (rowClick)="visualizarPedido($event)">
+
+                </app-data-table>
+
+            </div>
+
+        </div>
+
+        <div right>
+
+            @if (pedidoSelecionado) {
+
+            <div class="card">
+
+                <div class="header-card">
+
+                    <h3>
+
+                        {{ formatarNumeroPedido(pedidoSelecionado!.numero) }}
+
+                    </h3>
+
+                    <div
+                        class="pedido-status"
+                        [ngClass]="obterClasseStatus()">
+
+                        {{ pedidoSelecionado?.status }}
+
+                    </div>
+
+                </div>
+
+                <div class="detail-row">
+
+                    <strong>Cliente:</strong>
+
+                    {{ pedidoSelecionado.clienteNome }}
+
+                </div>
+
+                <div class="detail-row">
+
+                    <strong>Telefone:</strong>
+
+                    {{ pedidoSelecionado.telefone }}
+
+                </div>
+
+                <div class="detail-row">
+
+                    <strong>Observação:</strong>
+
+                    {{ pedidoSelecionado.observacao }}
+
+                </div>
+
+                <h4>
+                    📦 Itens do Pedido
+                </h4>
+
+                @for (
+                item of pedidoSelecionado?.itens;
+                track $index
+                ) {
+
+                <div class="item-card">
+
+                    <div class="produto">
+
+                        {{ item.produto }}
+
+                    </div>
+
+                    <div class="quantidade">
+
+                        Qtd: {{ item.quantidade }}
+
+                    </div>
+
+                </div>
+
+                }
+
+                @if (mostrarEndereco()) {
+
+                <div class="detail-row">
+
+                    <strong>Endereço:</strong>
+
+                    {{ pedidoSelecionado?.endereco }}
+
+                </div>
+
+                <div class="detail-row">
+
+                    <strong>Complemento:</strong>
+
+                    {{ pedidoSelecionado?.complemento }}
+
+                </div>
+
+                }
+
+                @if (isEntregue()) {
+
+                <div class="detail-row">
+
+                    <strong>Pagamento:</strong>
+
+                    {{ pedidoSelecionado.formaPagamento }}
+
+                </div>
+
+                <div class="detail-row">
+
+                    <strong>Valor:</strong>
+
+                    {{ pedidoSelecionado.valorTotal }}
+
+                </div>
+
+                <div class="detail-row">
+
+                    <strong>
+
+                        Venda
+
+                    </strong>
+
+                    <span>
+
+                        ✅ Venda Concluída
+
+                    </span>
+
+                </div>
+
+                }
+
+                @if (
+                pedidoSelecionado?.status !== 'ENTREGUE'
+                &&
+                pedidoSelecionado?.status !== 'CANCELADO'
+                ) {
+
+                <button
+                    class="btn"
+                    [ngClass]="obterClasseBotaoStatus()"
+                    (click)="avancarStatus()">
+
+                    {{ obterTextoAcao() }}
+
+                </button>
+
+                }
+
+            </div>
+
+            }
+
+        </div>
+
+    </app-split-panel>
+
+    }
+
+</app-main-layout>

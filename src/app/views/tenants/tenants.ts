@@ -71,6 +71,10 @@ export class Tenants implements OnInit {
 
     novoDeliveryHabilitado = false;
 
+    novoClientesHabilitado = false;
+
+    novoMarketingIaHabilitado = false;
+
     salvando = false;
 
     tenantEditando: Tenant | null = null;
@@ -147,6 +151,8 @@ export class Tenants implements OnInit {
         this.novoEndereco = '';
         this.novoUf = '';
         this.novoDeliveryHabilitado = false;
+        this.novoClientesHabilitado = false;
+        this.novoMarketingIaHabilitado = false;
     }
 
     private obterDadosTenant() {
@@ -169,7 +175,9 @@ export class Tenants implements OnInit {
             faviconUrl: this.novoFaviconUrl,
             corPrimaria: this.novaCorPrimaria,
             corSecundaria: this.novaCorSecundaria,
-            deliveryHabilitado: this.novoDeliveryHabilitado
+            deliveryHabilitado: this.novoDeliveryHabilitado,
+            clientesHabilitado: this.novoClientesHabilitado,
+            marketingIaHabilitado: this.novoMarketingIaHabilitado,
 
         };
 
@@ -196,6 +204,8 @@ export class Tenants implements OnInit {
         this.novoEndereco = tenant.endereco ?? '';
         this.novoUf = tenant.uf ?? '';
         this.novoDeliveryHabilitado = tenant.deliveryHabilitado ?? false;
+        this.novoClientesHabilitado = tenant.clientesHabilitado ?? false;
+        this.novoMarketingIaHabilitado = tenant.marketingIaHabilitado ?? false;
 
     }
 
@@ -555,9 +565,18 @@ export class Tenants implements OnInit {
         tenant: Tenant
     ): void {
 
-        const atualizado = {
+        const atualizado: TenantUpdateRequest = {
+
             ...tenant,
-            ativo: !tenant.ativo
+
+            ativo: !tenant.ativo,
+
+            deliveryHabilitado: tenant.deliveryHabilitado ?? false,
+
+            clientesHabilitado: tenant.clientesHabilitado ?? false,
+
+            marketingIaHabilitado: tenant.marketingIaHabilitado ?? false
+
         };
 
         this.confirmDialogService.open({

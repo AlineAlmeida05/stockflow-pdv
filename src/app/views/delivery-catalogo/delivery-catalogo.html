@@ -1,0 +1,247 @@
+<div class="catalogo-container">
+
+    <h1>
+        🛵 StockFlow Delivery
+    </h1>
+
+    <input
+        type="text"
+        placeholder="Buscar produto..."
+        [(ngModel)]="textoBusca">
+
+    @for (
+    categoria of categorias;
+    track categoria
+    ) {
+
+    <h2 class="categoria-titulo">
+
+        {{ categoria }}
+
+    </h2>
+
+    <hr>
+
+    <div class="produtos-grid">
+
+        @for (
+        produto of obterProdutosCategoria(
+        categoria
+        );
+        track produto.id
+        ) {
+
+        <div class="produto-card">
+
+            <h3>
+
+                {{ produto.nome }}
+
+            </h3>
+
+            <span
+                class="categoria">
+
+                {{ produto.categoria }}
+
+            </span>
+
+            <div
+                class="preco">
+
+                R$ {{ produto.preco }}
+
+            </div>
+
+            <button
+                class="btn btn-primary"
+                (click)="adicionarProduto(produto)">
+
+                + Adicionar
+
+            </button>
+
+        </div>
+
+        }
+
+        @if (carrinho.length > 0) {
+
+        <div class="carrinho-resumo">
+
+            <h3>
+
+                🛒 Carrinho
+
+            </h3>
+
+            @for (
+            item of carrinho;
+            track item.produto.id
+            ) {
+
+            <div class="carrinho-item">
+
+                <span>
+
+                    {{ item.produto.nome }}
+
+                </span>
+
+                <div class="controle-quantidade">
+
+                    <button
+                        (click)="decrementarQuantidade(item.produto.id)">
+
+                        -
+
+                    </button>
+
+                    <span>
+
+                        {{ item.quantidade }}
+
+                    </span>
+
+                    <button
+                        (click)="incrementarQuantidade(item.produto.id)">
+
+                        +
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            }
+
+            <p>
+
+                Itens:
+                {{ totalItens }}
+
+            </p>
+
+            <p>
+
+                Total:
+                R$ {{ valorTotal | number:'1.2-2' }}
+
+            </p>
+
+            <button
+                class="btn btn-success"
+                (click)="abrirCheckout()">
+
+                Finalizar Pedido
+
+            </button>
+
+            @if (mostrarCheckout) {
+
+            <div class="checkout-form">
+
+                <h3>
+                    Finalizar Pedido
+                </h3>
+
+                <div class="field">
+
+                    <input
+                        type="text"
+                        placeholder="Nome"
+                        [(ngModel)]="clienteNome">
+
+                </div>
+
+                <div class="field">
+
+                    <input
+                        type="text"
+                        placeholder="Telefone"
+                        [(ngModel)]="telefone">
+
+                </div>
+
+                <div class="field">
+
+                    <input
+                        type="text"
+                        placeholder="Endereço"
+                        [(ngModel)]="endereco">
+
+                </div>
+
+                <div class="field">
+
+                    <input
+                        type="text"
+                        placeholder="Complemento"
+                        [(ngModel)]="complemento">
+
+                </div>
+
+                <div class="field">
+
+                    <textarea
+                        placeholder="Observação"
+                        [(ngModel)]="observacao">
+
+                    </textarea>
+
+                </div>
+
+                <div class="field">
+
+                    <select
+                        [(ngModel)]="formaPagamento">
+
+                        <option value="PIX">
+
+                            Pix
+
+                        </option>
+
+                        <option value="DEBITO">
+
+                            Débito
+
+                        </option>
+
+                        <option value="CREDITO">
+
+                            Crédito
+
+                        </option>
+
+                        <option value="DINHEIRO">
+
+                            Dinheiro
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <button
+                    class="btn btn-primary"
+                    (click)="confirmarPedido()">
+
+                    Confirmar Pedido
+
+                </button>
+
+            </div>
+
+            }
+
+        </div>
+
+        }
+
+    </div>
+    }
+
+</div>

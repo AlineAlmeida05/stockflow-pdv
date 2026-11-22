@@ -40,12 +40,10 @@
                         }
 
                         <div class="desconto-highlight">
-                            🏷️
-                            {{
-                            obterPercentualDesconto(
-                            produtoSelecionado.id
-                            )
-                            }}% OFF
+
+                            🏷️{{obterPercentualDesconto(
+                            produtoSelecionado.id) }}% OFF
+
                         </div>
 
                     </div>
@@ -108,6 +106,15 @@
             @if (promocaoSelecionada) {
 
             <div class="card">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary btn-voltar-mobile"
+                    (click)="fecharPainel()">
+
+                    ← Voltar para Promoções
+
+                </button>
 
                 <h3>
 
@@ -281,8 +288,7 @@
 
                     <strong>
 
-                        {{ promocaoSelecionada.dataInicio |
-                        date:'dd/MM/yyyy' }}
+                        {{ promocaoSelecionada.dataInicio | date:'dd/MM/yyyy' }}
 
                     </strong>
 
@@ -332,8 +338,7 @@
 
                     <strong>
 
-                        {{ promocaoSelecionada.receitaGerada |
-                        currency:'BRL' }}
+                        {{ promocaoSelecionada.receitaGerada | currency:'BRL' }}
 
                     </strong>
 

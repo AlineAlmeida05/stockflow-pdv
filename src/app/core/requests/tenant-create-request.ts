@@ -36,4 +36,6 @@ export interface TenantCreateRequest {
 
     deliveryHabilitado?: boolean;
 
+    clientesHabilitado: boolean;
+
 }

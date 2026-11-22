@@ -14,6 +14,17 @@ export const MENU_CONFIG: MenuItem[] = [
     ]
   },
   {
+    label: 'Delivery',
+    route: '/delivery-dashboard',
+    perfis: [
+      'SUPER_ADMIN',
+      'PROPRIETARIO',
+      'SOCIO',
+      'GERENTE',
+      'Operador_Caixa'
+    ]
+  },
+  {
     label: 'Nova Venda',
     route: '/nova-venda',
     perfis: [

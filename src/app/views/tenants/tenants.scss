@@ -74,6 +74,15 @@ app-search-input {
 .tenant-atual {
   color: var(--color-success);
   font-weight: 700;
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 12px;
+}
+
+.field.compact input {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
@@ -84,6 +93,35 @@ app-search-input {
 
   .formulario-acoes {
     flex-direction: column;
+    width: 100%;
+  }
+
+  .btn.btn-primary {
+    width: 100%;
+  }
+
+  .tenant-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+
+  .tenant-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .btn-tab {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .tenant-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .formulario-acoes .btn {
     width: 100%;
   }
 }

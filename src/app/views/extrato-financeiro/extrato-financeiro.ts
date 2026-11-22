@@ -3,7 +3,6 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 import { MainLayout } from '../../layout/main-layout/main-layout';
 import { PageTitle } from '../../shared/components/page-title/page-title';
 import { MovimentacaoFinanceira } from '../../core/models/movimentacao-financeira.model';
-import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { SearchInput } from '../../shared/components/search-input/search-input';
 import { Toolbar } from '../../shared/components/toolbar/toolbar';
 import { SelectInput } from '../../shared/components/select-input/select-input';
@@ -20,7 +19,6 @@ import { SplitPanel } from '../../shared/components/split-panel/split-panel';
         PageTitle,
         CurrencyPipe,
         DatePipe,
-        EmptyState,
         SearchInput,
         Toolbar,
         SelectInput,

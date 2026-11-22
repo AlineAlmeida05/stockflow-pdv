@@ -24,7 +24,8 @@
 </div>
 
 <app-split-panel
-    [invertSizes]="true">
+    [invertSizes]="true"
+    [reverseMobile]="true">
 
     <div left>
 
@@ -221,15 +222,21 @@
                     track cliente.nome
                     ) {
 
-                    <p>
+                    <div class="cliente-devedor">
 
-                        {{ cliente.nome }}
+                        <strong>
 
-                        -
+                            {{ cliente.nome }}
 
-                        {{ cliente.total| currency:'BRL' }}
+                        </strong>
 
-                    </p>
+                        <span>
+
+                            {{ cliente.total | currency:'BRL' }}
+
+                        </span>
+
+                    </div>
 
                     }
 

@@ -70,7 +70,8 @@
 
     <app-split-panel
         [reverse]="true"
-        [showRight]="mostrarPainel">
+        [showRight]="mostrarPainel"
+        [reverseMobile]="true">
 
         <div left>
 
@@ -200,8 +201,7 @@
                     <h3>
 
                         {{!usuarioEmEdicao ? 'Cadastrar Usuário':
-                        modoVisualizacao?
-                        'Usuário': 'Editar Usuário' }}
+                        modoVisualizacao?'Usuário': 'Editar Usuário' }}
 
                     </h3>
 
