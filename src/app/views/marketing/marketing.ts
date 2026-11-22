@@ -10,7 +10,6 @@ import { ProdutoPromocao } from '../../core/models/produto-promocao.model';
 import { PromocaoService } from '../../core/services/promocao.service';
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { AlertService } from '../../core/services/alert.service';
-import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 @Component({
     selector: 'app-marketing',
@@ -20,8 +19,7 @@ import { ActivatedRoute, Router } from '@angular/router';
         PageTitle,
         SplitPanel,
         FormsModule,
-        EmptyState,
-        DatePipe
+        EmptyState
     ],
     templateUrl: './marketing.html',
     styleUrl: './marketing.scss'

@@ -40,6 +40,8 @@ export interface Tenant {
 
     deliveryHabilitado?: boolean;
 
+    clientesHabilitado?: boolean;
+
     criadoEm?: string;
 
 }

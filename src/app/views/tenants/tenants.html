@@ -310,12 +310,47 @@
 
                 <div class="tenant-item">
 
+                    <span>Clientes</span>
+
+                    <strong>
+
+                        {{
+                        tenantEditando?.clientesHabilitado
+                        ? '✅ Habilitado'
+                        : '❌ Desabilitado'
+                        }}
+
+                    </strong>
+
+                </div>
+
+                <div class="tenant-item">
+
                     <span>Delivery</span>
 
                     <strong>
 
-                        {{ tenantEditando?.deliveryHabilitado ? '✅ Habilitado' :
-                        '❌ Desabilitado' }}
+                        {{
+                        tenantEditando?.deliveryHabilitado
+                        ? '✅ Habilitado'
+                        : '❌ Desabilitado'
+                        }}
+
+                    </strong>
+
+                </div>
+
+                <div class="tenant-item">
+
+                    <span>Marketing IA</span>
+
+                    <strong>
+
+                        {{
+                        tenantEditando?.marketingIaHabilitado
+                        ? '✅ Habilitado'
+                        : '❌ Desabilitado'
+                        }}
 
                     </strong>
 
@@ -623,9 +658,39 @@
                     <input
                         type="checkbox"
                         [disabled]="modoVisualizacao"
+                        [(ngModel)]="novoClientesHabilitado">
+
+                    Clientes
+
+                </label>
+
+            </div>
+
+            <div class="field compact">
+
+                <label>
+
+                    <input
+                        type="checkbox"
+                        [disabled]="modoVisualizacao"
                         [(ngModel)]="novoDeliveryHabilitado">
 
                     Delivery
+
+                </label>
+
+            </div>
+
+            <div class="field compact">
+
+                <label>
+
+                    <input
+                        type="checkbox"
+                        [disabled]="modoVisualizacao"
+                        [(ngModel)]="novoMarketingIaHabilitado">
+
+                    Marketing IA
 
                 </label>
 

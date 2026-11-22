@@ -36,4 +36,6 @@ export interface TenantUpdateRequest {
 
     deliveryHabilitado?: boolean;
 
+    clientesHabilitado: boolean;
+
 }

@@ -14,7 +14,6 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { DataTable } from '../../shared/components/data-table/data-table';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { NgClass } from '@angular/common';
 
 type PromocaoHistorico =
     Promocao & {
@@ -46,7 +45,6 @@ type PromocaoHistorico =
         DataTable,
         DatePipe,
         CurrencyPipe,
-        NgClass
     ],
     templateUrl: './promocoes.html',
     styleUrl: './promocoes.scss'

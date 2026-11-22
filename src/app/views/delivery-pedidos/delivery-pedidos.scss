@@ -1,0 +1,76 @@
+.header-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.item-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.pedido-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    min-width: 120px;
+}
+
+.status-info {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.status-warning {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.status-ready {
+    background: #ffedd5;
+    color: #ea580c;
+}
+
+.status-delivery {
+    background: #ede9fe;
+    color: #7c3aed;
+}
+
+.status-success {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.status-danger {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.indicadores-carrossel {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+}
+
+.indicadores-carrossel app-stat-card {
+    flex: 0 0 240px;
+}
+
+app-stat-card {
+    height: 100%;
+}
+
+.indicadores-carrossel::-webkit-scrollbar {
+    height: 8px;
+}
+
+.indicadores-carrossel::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+}

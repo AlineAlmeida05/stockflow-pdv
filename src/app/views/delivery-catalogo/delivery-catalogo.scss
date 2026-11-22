@@ -1,0 +1,50 @@
+.catalogo-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.produtos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.produto-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid #ddd;
+}
+
+.categoria {
+    color: #666;
+    font-size: 0.875rem;
+}
+
+.preco {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 12px 0;
+}
+
+.carrinho-resumo {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+    padding: 16px;
+    width: 240px;
+    z-index: 1000;
+    overflow: auto;
+}
+
+.checkout-form {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}

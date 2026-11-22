@@ -21,6 +21,9 @@ import { ExtratoFinanceiro } from './views/extrato-financeiro/extrato-financeiro
 import { AuditoriaComponent } from './views/auditoria/auditoria';
 import { ForgotPassword } from './features/auth/forgot-password/forgot-password';
 import { ResetPassword } from './features/auth/reset-password/reset-password';
+import { DeliveryDashboard } from './views/delivery-dashboard/delivery-dashboard';
+import { DeliveryPedidos } from './views/delivery-pedidos/delivery-pedidos';
+import { DeliveryCatalogo } from './views/delivery-catalogo/delivery-catalogo';
 
 export const routes: Routes = [
     {
@@ -171,6 +174,16 @@ export const routes: Routes = [
         canActivate: [authGuard]
     },
     {
+        path: 'delivery-dashboard',
+        component: DeliveryDashboard,
+        canActivate: [authGuard]
+    },
+    {
+        path: 'delivery-pedidos',
+        component: DeliveryPedidos,
+        canActivate: [authGuard]
+    },
+    {
         path: 'promocoes',
         component: Promocoes,
         canActivate: [
@@ -290,6 +303,11 @@ export const routes: Routes = [
                 'PROPRIETARIO']
         }
     },
+    {
+        path: 'delivery-catalogo',
+        component: DeliveryCatalogo,
+        canActivate: [authGuard]
+    }
 
 
 ];

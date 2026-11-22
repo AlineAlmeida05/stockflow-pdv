@@ -7,6 +7,7 @@ import { NotificacaoService } from '../../core/services/notificacao.service';
 import { MenuBadge } from '../../core/models/menu-badge.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MenuItem } from '../../core/models/menu-item.model';
+import { TenantContextService } from '../../core/services/tenant-context.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -32,6 +33,7 @@ export class Sidebar implements OnInit {
   constructor(
     private authService: AuthService,
     private notificacaoService: NotificacaoService,
+    private tenantContextService: TenantContextService,
     private cdr: ChangeDetectorRef
   ) { }
 
@@ -77,6 +79,63 @@ export class Sidebar implements OnInit {
 
       if (!possuiPerfil) {
         return false;
+      }
+
+      const tenant =
+        this.tenantAtual;
+
+      if (!tenant) {
+        return true;
+      }
+
+      if (
+        item.route === '/clientes'
+        &&
+        !tenant.clientesHabilitado
+      ) {
+
+        return false;
+
+      }
+
+      if (
+        item.route === '/delivery-dashboard'
+        &&
+        !tenant.deliveryHabilitado
+      ) {
+
+        return false;
+
+      }
+
+      if (
+        item.route === '/delivery-pedidos'
+        &&
+        !tenant.deliveryHabilitado
+      ) {
+
+        return false;
+
+      }
+
+      if (
+        item.route === '/delivery-catalogo'
+        &&
+        !tenant.deliveryHabilitado
+      ) {
+
+        return false;
+
+      }
+
+      if (
+        item.route === '/marketing'
+        &&
+        !tenant.marketingIaHabilitado
+      ) {
+
+        return false;
+
       }
 
       return true;
@@ -125,6 +184,14 @@ export class Sidebar implements OnInit {
 
         }
       });
+
+  }
+
+  get tenantAtual() {
+
+    return this
+      .tenantContextService
+      .tenantAtual;
 
   }
 

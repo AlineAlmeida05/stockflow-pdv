@@ -115,9 +115,12 @@ export class DataTable {
 
     getBadgeClass(
         value: string
-    ):
+    ): string
+        | 'status-info'
         | 'status-success'
         | 'status-warning'
+        | 'status-ready'
+        | 'status-delivery'
         | 'status-danger'
         | '' {
 
@@ -149,11 +152,29 @@ export class DataTable {
             case '➕ Repor':
                 return 'status-danger';
 
+            // DELIVERY
+
+            case 'NOVO':
+                return 'status-info';
+
+            case 'SEPARANDO':
+                return 'status-warning';
+
+            case 'PRONTO_PARA_ENTREGA':
+                return 'status-ready';
+
+            case 'EM_ENTREGA':
+                return 'status-delivery';
+
+            case 'ENTREGUE':
+                return 'status-success';
+
+            case 'CANCELADO':
+                return 'status-danger';
+
             default:
                 return '';
-
         }
-
     }
 
     getProgressValue(
@@ -206,7 +227,6 @@ export class DataTable {
         ) || 0;
 
     }
-
 
     getValue(
         row: unknown,
